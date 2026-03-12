@@ -73,3 +73,5 @@ Roms/**/*.rar
 # Database files (keep the zip, exclude extracted JSON)
 # rom_database.json
 # md5_lookup.json
+
+tasks/
