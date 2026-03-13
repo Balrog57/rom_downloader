@@ -46,6 +46,40 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from urllib.parse import quote, unquote
 
+# ============================================================================
+# Chargement des variables d'environnement (.env)
+# ============================================================================
+
+def load_env_file(file_path: str = '.env'):
+    """Charge les variables d'un fichier .env dans os.environ."""
+    if not os.path.exists(file_path):
+        return
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith('#'):
+                    continue
+                if '=' in line:
+                    key, value = line.split('=', 1)
+                    # Supprime les guillemets si présents
+                    val = value.strip()
+                    if (val.startswith('"') and val.endswith('"')) or \
+                       (val.startswith("'") and val.endswith("'")):
+                        val = val[1:-1]
+                    os.environ[key.strip()] = val
+    except Exception as e:
+        print(f"Avertissement: Erreur lors du chargement du fichier .env: {e}")
+
+# Charger le fichier .env dès le début
+load_env_file()
+
+# Mapping des credentials archive.org pour la librairie internetarchive
+if 'IA_S3_ACCESS_KEY' in os.environ and 'IAS3_ACCESS_KEY' not in os.environ:
+    os.environ['IAS3_ACCESS_KEY'] = os.environ['IA_S3_ACCESS_KEY']
+if 'IA_S3_SECRET_KEY' in os.environ and 'IAS3_SECRET_KEY' not in os.environ:
+    os.environ['IAS3_SECRET_KEY'] = os.environ['IA_S3_SECRET_KEY']
+
 try:
     import requests
     from bs4 import BeautifulSoup
@@ -337,36 +371,79 @@ API_CONFIG_FILE = 'api_keys.json'
 
 
 def load_api_keys() -> dict:
-    """Load API keys from configuration file."""
-    default_keys = {
-        '1fichier': '',
-        'alldebrid': '',
-        'realdebrid': ''
+    """
+    Charge les clés API depuis le fichier de configuration et les variables d'environnement.
+    Priorité: Variables d'environnement (.env) > Fichier api_keys.json
+    """
+    keys = {
+        '1fichier': os.environ.get('ONE_FICHIER_API_KEY', ''),
+        'alldebrid': os.environ.get('ALLDEBRID_API_KEY', ''),
+        'realdebrid': os.environ.get('REALDEBRID_API_KEY', '')
     }
     
+    # Si les clés du .env sont vides, on tente de charger depuis le fichier JSON
     if os.path.exists(API_CONFIG_FILE):
         try:
             with open(API_CONFIG_FILE, 'r', encoding='utf-8') as f:
-                keys = json.load(f)
-                # Merge with defaults
-                for key in default_keys:
-                    if key not in keys:
-                        keys[key] = default_keys[key]
-                return keys
+                json_keys = json.load(f)
+                # On ne surcharge que si la clé .env est vide
+                for k in keys:
+                    if not keys[k] and k in json_keys:
+                        keys[k] = json_keys[k]
         except Exception as e:
-            print(f"Erreur lors du chargement des clés API: {e}")
+            print(f"Erreur lors du chargement des clés API (JSON): {e}")
     
-    return default_keys
+    return keys
 
 
 def save_api_keys(keys: dict) -> bool:
-    """Save API keys to configuration file."""
+    """Sauvegarde les clés API dans le fichier .env."""
     try:
-        with open(API_CONFIG_FILE, 'w', encoding='utf-8') as f:
-            json.dump(keys, f, indent=2)
+        env_path = '.env'
+        # On lit le fichier existant pour ne pas écraser les autres variables
+        lines = []
+        if os.path.exists(env_path):
+            with open(env_path, 'r', encoding='utf-8') as f:
+                lines = f.readlines()
+        
+        # Mappings entre clés internes et noms de variables d'env
+        mapping = {
+            '1fichier': 'ONE_FICHIER_API_KEY',
+            'alldebrid': 'ALLDEBRID_API_KEY',
+            'realdebrid': 'REALDEBRID_API_KEY'
+        }
+        
+        # On met à jour ou on ajoute les lignes
+        new_lines = []
+        found_keys = set()
+        
+        for line in lines:
+            stripped = line.strip()
+            handled = False
+            for k, env_name in mapping.items():
+                if stripped.startswith(f"{env_name}="):
+                    new_lines.append(f"{env_name}={keys[k]}\n")
+                    found_keys.add(k)
+                    handled = True
+                    break
+            if not handled:
+                new_lines.append(line)
+        
+        # On ajoute les clés manquantes
+        for k, env_name in mapping.items():
+            if k not in found_keys:
+                new_lines.append(f"{env_name}={keys[k]}\n")
+        
+        with open(env_path, 'w', encoding='utf-8') as f:
+            f.writelines(new_lines)
+            
+        # On met aussi à jour l'os.environ actuel
+        for k, env_name in mapping.items():
+            os.environ[env_name] = keys[k]
+            
         return True
     except Exception as e:
-        print(f"Erreur lors de la sauvegarde des clés API: {e}")
+        print(f"Erreur lors de la sauvegarde des clés API dans .env: {e}")
         return False
 
 
@@ -397,9 +474,9 @@ def configure_api_keys():
             keys[service] = new_key
     
     if save_api_keys(keys):
-        print("\nClés API sauvegardées avec succès!")
+        print("\nClés API sauvegardées avec succès dans le fichier .env!")
     else:
-        print("\nErreur lors de la sauvegarde des clés API.")
+        print("\nErreur lors de la sauvegarde des clés API dans .env.")
     
     return keys
 
@@ -939,6 +1016,66 @@ def search_archive_org_by_md5(md5_hash: str, rom_name: str) -> dict:
 
     print(f"  ✗ Non trouvé sur archive.org (stratégies: {', '.join(strategies_tried)})")
     return {'found': False, 'strategies_tried': strategies_tried}
+
+
+def download_from_ia_zip(identifier: str, zip_path: str, filename: str, dest_path: str, progress_callback=None) -> bool:
+    """
+    Télécharge un fichier spécifique à l'intérieur d'un ZIP sur archive.org.
+    Gère les redirections vers view_archive.php.
+    """
+    try:
+        from urllib.parse import quote
+        
+        # URL de base pour l'accès aux fichiers (IA S3 / Direct)
+        clean_zip = quote(zip_path.replace("\\", "/"))
+        clean_file = quote(filename.replace("\\", "/"))
+        url = f"https://archive.org/download/{identifier}/{clean_zip}/{clean_file}"
+        
+        print(f"  Tentative IA-ZIP: {identifier}/{zip_path}/{filename}")
+        
+        session = requests.Session()
+        session.headers.update({'User-Agent': 'Mozilla/5.0'})
+        
+        # Credentials IA
+        access_key = os.environ.get('IAS3_ACCESS_KEY')
+        secret_key = os.environ.get('IAS3_SECRET_KEY')
+        auth = None
+        if access_key and secret_key:
+            from requests.auth import HTTPBasicAuth
+            auth = HTTPBasicAuth(access_key, secret_key)
+
+        # Première tentative
+        resp = session.get(url, stream=True, allow_redirects=True, timeout=120, auth=auth)
+        
+        # Si redirection vers view_archive sans le paramètre file
+        if "view_archive.php" in resp.url and "file=" not in resp.url:
+            final_url = f"{resp.url}&file={clean_file}"
+            print(f"  Redirection view_archive: {final_url}")
+            resp = session.get(final_url, stream=True, allow_redirects=True, timeout=120, auth=auth)
+
+        if resp.status_code == 503:
+            print("  ⚠ Service IA (view_archive) temporairement indisponible (503)")
+            return False
+            
+        resp.raise_for_status()
+        
+        total = int(resp.headers.get('content-length', 0))
+        downloaded = 0
+        
+        with open(dest_path, 'wb') as f:
+            for chunk in resp.iter_content(chunk_size=8192):
+                if chunk:
+                    f.write(chunk)
+                    downloaded += len(chunk)
+                    if total > 0 and progress_callback:
+                        progress_callback((downloaded / total) * 100)
+        
+        if progress_callback:
+            progress_callback(100.0)
+        return True
+    except Exception as e:
+        print(f"  ✗ Erreur IA-ZIP: {e}")
+        return False
 
 
 def download_from_archive_org(identifier: str, filename: str, dest_path: str, session: requests.Session = None, progress_callback=None) -> bool:
