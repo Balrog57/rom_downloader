@@ -37,14 +37,20 @@ Options:
 
 import argparse
 import hashlib
+import html as html_module
 import json
 import os
 import re
+import shutil
+import subprocess
 import sys
+import tempfile
 import time
 import xml.etree.ElementTree as ET
 from pathlib import Path
-from urllib.parse import quote, unquote
+from urllib.parse import quote, unquote, urljoin
+
+APP_ROOT = Path(__file__).resolve().parent
 
 # ============================================================================
 # Chargement des variables d'environnement (.env)
@@ -86,7 +92,11 @@ try:
     import internetarchive
 except ImportError:
     print("Installation des packages requis (requests, beautifulsoup4, internetarchive)...")
-    os.system("pip install requests beautifulsoup4 internetarchive -q")
+    subprocess.run(
+        [sys.executable, '-m', 'pip', 'install',
+         'requests', 'beautifulsoup4', 'internetarchive', 'charset_normalizer', '-q'],
+        check=False
+    )
     import requests
     from bs4 import BeautifulSoup
     import internetarchive
@@ -143,6 +153,39 @@ ROM_EXTENSIONS = (
     # ColecoVision
     '.col', '.cv',
 )
+
+MINERVA_BROWSE_BASE = 'https://minerva-archive.org/browse/'
+MINERVA_TORRENT_CDN = 'https://cdn.minerva-archive.org/'
+NPM_CACHE_DIR = APP_ROOT / '.npm-cache'
+WEBTORRENT_HELPER = APP_ROOT / 'scripts' / 'minerva_torrent_download.js'
+BALROG_TOOLKIT_ROOT = APP_ROOT.parent / 'Balrog Toolkit'
+BALROG_ASSETS_DIR = BALROG_TOOLKIT_ROOT / 'assets'
+BALROG_WINDOW_ICON = BALROG_ASSETS_DIR / 'Retrogaming-Toolkit-AIO.ico'
+BALROG_1G1R_ICON = BALROG_ASSETS_DIR / 'icon_1g1r.png'
+BALROG_FOLDER_ICON = BALROG_ASSETS_DIR / 'icon_folder.png'
+BALROG_SAKURA_BG = BALROG_ASSETS_DIR / 'sakura_bg.png'
+
+UI_COLOR_BG = '#151515'
+UI_COLOR_CARD_BG = '#1e1e1e'
+UI_COLOR_CARD_BORDER = '#444444'
+UI_COLOR_INPUT_BG = '#202020'
+UI_COLOR_INPUT_BORDER = '#3d3d3d'
+UI_COLOR_TEXT_MAIN = '#ffffff'
+UI_COLOR_TEXT_SUB = '#aaaaaa'
+UI_COLOR_ACCENT = '#ff6699'
+UI_COLOR_ACCENT_HOVER = '#ff3385'
+UI_COLOR_GHOST = '#2b2b2b'
+UI_COLOR_GHOST_HOVER = '#333333'
+UI_COLOR_SUCCESS = '#2ecc71'
+UI_COLOR_ERROR = '#e74c3c'
+UI_COLOR_WARNING = '#f39c12'
+
+SOURCE_FAMILY_MAP = {
+    'No-Intro': 'no-intro',
+    'Redump': 'redump',
+    'TOSEC': 'tosec'
+}
+WEBTORRENT_MODULE_DIR = APP_ROOT / 'node_modules' / 'torrent-stream'
 
 # ============================================================================
 # Base de données locale des URLs (extrait de RGSX games.zip)
@@ -223,7 +266,7 @@ def search_by_name(game_name: str) -> list:
 # Sources extraites de games.zip RGSX (74,189 URLs analysées)
 # Ces sources sont utilisées indépendamment de RGSX
 
-def get_default_sources():
+def get_default_sources_legacy():
     if ROM_DATABASE is None:
         load_rom_database()
     config = ROM_DATABASE.get('config_urls', {})
@@ -315,6 +358,109 @@ def get_default_sources():
 
 # Mappings des systèmes pour les scrapers
 # Permet de traduire le nom du système (extrait du DAT) en slug pour le site
+def get_default_sources():
+    if ROM_DATABASE is None:
+        load_rom_database()
+
+    config = ROM_DATABASE.get('config_urls', {})
+    return [
+        {
+            'name': 'Minerva No-Intro',
+            'base_url': f'{MINERVA_BROWSE_BASE}No-Intro/',
+            'type': 'minerva',
+            'enabled': True,
+            'description': 'Source principale torrent pour les DAT No-Intro / Retool',
+            'collection': 'No-Intro',
+            'minerva_path_mode': 'single',
+            'scan_depth': 0,
+            'torrent_scope': 'system',
+            'priority': 1
+        },
+        {
+            'name': 'Minerva Redump',
+            'base_url': f'{MINERVA_BROWSE_BASE}Redump/',
+            'type': 'minerva',
+            'enabled': True,
+            'description': 'Source principale torrent pour les DAT Redump / Retool',
+            'collection': 'Redump',
+            'minerva_path_mode': 'single',
+            'scan_depth': 0,
+            'torrent_scope': 'system',
+            'priority': 1
+        },
+        {
+            'name': 'Minerva TOSEC',
+            'base_url': f'{MINERVA_BROWSE_BASE}TOSEC/',
+            'type': 'minerva',
+            'enabled': False,
+            'description': 'Collection optionnelle TOSEC',
+            'collection': 'TOSEC',
+            'minerva_path_mode': 'split',
+            'scan_depth': 2,
+            'torrent_scope': 'vendor',
+            'priority': 1
+        },
+        {
+            'name': 'archive.org',
+            'base_url': config.get('archive_org', ''),
+            'type': 'archive_org',
+            'enabled': True,
+            'description': 'Fallback MD5 / téléchargement direct',
+            'priority': 2
+        },
+        {
+            'name': 'EdgeEmu',
+            'base_url': config.get('edgeemu_browse', ''),
+            'type': 'edgeemu',
+            'enabled': False,
+            'description': 'Lien direct (Excellent pour le retro)',
+            'priority': 3
+        },
+        {
+            'name': 'PlanetEmu',
+            'base_url': config.get('planetemu_roms', ''),
+            'type': 'planetemu',
+            'enabled': False,
+            'description': 'Lien direct (POST) - Source FR majeure',
+            'priority': 3
+        },
+        {
+            'name': '1fichier (API)',
+            'base_url': config.get('1fichier_api_base', ''),
+            'type': 'premium_api',
+            'enabled': False,
+            'description': 'TÃ©lÃ©chargement via API',
+            'api_key_required': True,
+            'priority': 4
+        },
+        {
+            'name': '1fichier (Gratuit)',
+            'base_url': config.get('1fichier_free', ''),
+            'type': 'free_host',
+            'enabled': True,
+            'description': 'Mode gratuit avec attente (si lien dÃ©tectÃ©)',
+            'priority': 4
+        },
+        {
+            'name': 'AllDebrid (API)',
+            'base_url': config.get('alldebrid_api_base', ''),
+            'type': 'debrid_api',
+            'enabled': False,
+            'description': 'Service debrid multi-hÃ©bergeurs',
+            'api_key_required': True,
+            'priority': 4
+        },
+        {
+            'name': 'RealDebrid (API)',
+            'base_url': config.get('realdebrid_api_base', ''),
+            'type': 'debrid_api',
+            'enabled': False,
+            'description': 'Service debrid multi-hÃ©bergeurs',
+            'api_key_required': True,
+            'priority': 4
+        }
+    ]
+
 SYSTEM_MAPPINGS = {
     'Nintendo - Game Boy': {
         'edgeemu': 'nintendo-gameboy',
@@ -366,6 +512,417 @@ SYSTEM_MAPPINGS = {
 # ============================================================================
 # Configuration des clés API
 # ============================================================================
+
+def build_minerva_directory_url(source: dict, system_name: str | None) -> str:
+    """Construit l'URL de listing Minerva à partir de la source et du système."""
+    base_url = source.get('base_url', '').rstrip('/') + '/'
+    if source.get('fixed_directory'):
+        return base_url
+    if not system_name:
+        return base_url
+
+    path_mode = source.get('minerva_path_mode', 'single')
+    if path_mode == 'split':
+        segments = [segment.strip() for segment in system_name.split(' - ') if segment.strip()]
+    else:
+        segments = [system_name.strip()]
+
+    if not segments:
+        return base_url
+
+    return base_url + '/'.join(quote(segment) for segment in segments) + '/'
+
+
+def build_minerva_torrent_url(source: dict, system_name: str | None) -> str:
+    """Construit l'URL du torrent Minerva correspondant au système."""
+    collection = source.get('collection', '').strip()
+    if not collection:
+        return ''
+
+    if system_name:
+        if source.get('torrent_scope') == 'vendor':
+            target = system_name.split(' - ')[0].strip()
+        else:
+            target = system_name.strip()
+    else:
+        target = ''
+
+    if not target:
+        return ''
+
+    torrent_name = f"Minerva_Myrient - {collection} - {target}.torrent"
+    return urljoin(MINERVA_TORRENT_CDN, quote(torrent_name))
+
+
+def normalize_system_name(system_name: str) -> str:
+    """Nettoie le nom d'un système issu d'un DAT tout en gardant l'intitulé Minerva."""
+    cleaned = re.sub(r'\s+', ' ', (system_name or '')).strip()
+    if not cleaned:
+        return ''
+
+    cleanup_patterns = [
+        r'\s*[\(\[]\s*(?:retool|1g1r)[^\)\]]*[\)\]]\s*$',
+        r'\s*-\s*retool\s*$',
+        r'\s+retool\s*$'
+    ]
+
+    previous = None
+    while cleaned and cleaned != previous:
+        previous = cleaned
+        for pattern in cleanup_patterns:
+            cleaned = re.sub(pattern, '', cleaned, flags=re.IGNORECASE).strip()
+
+    return re.sub(r'\s+', ' ', cleaned).strip()
+
+
+def detect_dat_profile(dat_file_path: str) -> dict:
+    """
+    Détecte le profil d'un DAT afin d'aiguiller automatiquement les sources.
+    Compatible avec les DAT No-Intro / Redump retraités via Retool pour le 1G1R.
+    """
+    header_name = ''
+    header_url = ''
+    header_description = ''
+    retool_marker = ''
+
+    try:
+        tree = ET.parse(dat_file_path)
+        root = tree.getroot()
+        header_name = root.findtext('./header/name', default='').strip()
+        header_url = root.findtext('./header/url', default='').strip()
+        header_description = root.findtext('./header/description', default='').strip()
+        retool_marker = (
+            root.findtext('./header/retool', default='').strip()
+            or root.findtext('.//retool', default='').strip()
+        )
+    except Exception:
+        pass
+
+    fallback_name = os.path.splitext(os.path.basename(dat_file_path))[0]
+    fallback_name = re.sub(r'[\(\[].*?[\)\]]', '', fallback_name).strip()
+    fallback_name = re.sub(r'\s+', ' ', fallback_name)
+
+    raw_system_name = header_name or fallback_name
+    system_name = normalize_system_name(raw_system_name) or fallback_name
+
+    header_url_lower = header_url.lower()
+    header_name_lower = header_name.lower()
+    header_description_lower = header_description.lower()
+
+    family = 'unknown'
+    family_label = 'Inconnu'
+    if 'redump.org' in header_url_lower or 'redump' in header_name_lower:
+        family = 'redump'
+        family_label = 'Redump'
+    elif 'no-intro.org' in header_url_lower or 'no-intro' in header_name_lower:
+        family = 'no-intro'
+        family_label = 'No-Intro'
+    elif 'tosec' in header_url_lower or 'tosec' in header_name_lower:
+        family = 'tosec'
+        family_label = 'TOSEC'
+
+    is_retool = bool(
+        retool_marker
+        or re.search(r'\bretool\b', header_name_lower)
+        or re.search(r'\bretool\b', header_description_lower)
+    )
+
+    return {
+        'path': dat_file_path,
+        'raw_system_name': raw_system_name,
+        'system_name': system_name,
+        'header_name': header_name,
+        'header_url': header_url,
+        'family': family,
+        'family_label': family_label,
+        'is_retool': is_retool,
+        'retool_label': 'Retool / 1G1R' if is_retool else 'DAT brut',
+        'default_source_url': ''
+    }
+
+
+def build_profile_default_source_url(dat_profile: dict) -> str:
+    """Construit l'URL Minerva par défaut correspondant au profil DAT."""
+    family = (dat_profile or {}).get('family', 'unknown')
+    system_name = (dat_profile or {}).get('system_name')
+    collection = next(
+        (name for name, mapped_family in SOURCE_FAMILY_MAP.items() if mapped_family == family),
+        ''
+    )
+    if not collection or not system_name:
+        return ''
+
+    source = next(
+        (item for item in get_default_sources() if item.get('collection') == collection),
+        None
+    )
+    if not source:
+        return ''
+    return build_minerva_directory_url(source, system_name)
+
+
+def finalize_dat_profile(dat_profile: dict) -> dict:
+    """Complète un profil DAT avec les champs dérivés utiles à la CLI et à la GUI."""
+    profile = (dat_profile or {}).copy()
+    profile['default_source_url'] = build_profile_default_source_url(profile)
+    return profile
+
+
+def get_source_family(source: dict) -> str:
+    """Retourne la famille logique couverte par une source."""
+    if source.get('fixed_directory') or source.get('name') == 'Minerva Custom':
+        return 'custom'
+    return SOURCE_FAMILY_MAP.get(source.get('collection', '').strip(), '')
+
+
+def is_source_compatible_with_profile(source: dict, dat_profile: dict | None) -> bool:
+    """Détermine si une source est cohérente avec le DAT détecté."""
+    if not dat_profile:
+        return True
+
+    family = dat_profile.get('family', 'unknown')
+    if family == 'unknown':
+        return True
+
+    source_type = source.get('type')
+    if source_type == 'minerva':
+        source_family = get_source_family(source)
+        return source_family in {'', 'custom', family}
+
+    if family == 'redump' and source_type in {'edgeemu', 'planetemu'}:
+        return False
+
+    return True
+
+
+def prepare_sources_for_profile(sources: list, dat_profile: dict | None) -> list:
+    """Applique les recommandations de sources à partir du profil DAT."""
+    prepared = []
+    for source in sources:
+        source_copy = source.copy()
+        compatible = is_source_compatible_with_profile(source_copy, dat_profile)
+        source_copy['compatible'] = compatible
+
+        if source_copy.get('type') == 'minerva' and not source_copy.get('fixed_directory'):
+            if dat_profile and dat_profile.get('family') in {'no-intro', 'redump', 'tosec'}:
+                source_copy['enabled'] = source_copy.get('enabled', True) and compatible
+        elif dat_profile and dat_profile.get('family') == 'redump' and source_copy.get('type') in {'edgeemu', 'planetemu'}:
+            source_copy['enabled'] = False
+
+        prepared.append(source_copy)
+
+    return prepared
+
+
+def describe_dat_profile(dat_profile: dict | None) -> str:
+    """Retourne un résumé lisible du DAT détecté."""
+    if not dat_profile:
+        return "Profil DAT inconnu"
+
+    parts = []
+    system_name = dat_profile.get('system_name')
+    if system_name:
+        parts.append(system_name)
+
+    family_label = dat_profile.get('family_label')
+    if family_label and family_label != 'Inconnu':
+        parts.append(family_label)
+
+    retool_label = dat_profile.get('retool_label')
+    if retool_label:
+        parts.append(retool_label)
+
+    return " | ".join(parts) if parts else "Profil DAT inconnu"
+
+
+def list_minerva_directory(minerva_url: str, session: requests.Session) -> tuple[set, list]:
+    """Liste les fichiers et sous-dossiers d'un répertoire Minerva."""
+    print(f"Fetching Minerva directory listing: {minerva_url}")
+
+    files = set()
+    directories = []
+
+    try:
+        response = session.get(minerva_url, timeout=60)
+        if response.status_code != 200:
+            print(f"Erreur Minerva ({response.status_code}) pour {minerva_url}")
+            return files, directories
+
+        soup = BeautifulSoup(response.text, 'html.parser')
+        seen_dirs = set()
+        for link in soup.find_all('a', href=True):
+            href = html_module.unescape(link.get('href', '')).strip()
+            text = html_module.unescape(link.get_text().strip())
+
+            if not href or not text or text in {'Home', 'Browse', 'Search', 'Contact Us', 'FAQ', 'DMCA', 'Root', '../'}:
+                continue
+
+            if href.startswith('/rom'):
+                if text.lower().endswith(ROM_EXTENSIONS):
+                    files.add(text.rstrip('/'))
+                continue
+
+            if '/browse/' in href and text.endswith('/'):
+                directory_url = urljoin(MINERVA_BROWSE_BASE, href.replace('/browse/', ''))
+                normalized = directory_url.rstrip('/').lower()
+                if normalized not in seen_dirs:
+                    seen_dirs.add(normalized)
+                    directories.append({
+                        'name': text.rstrip('/'),
+                        'url': directory_url
+                    })
+
+        print(f"Found {len(files)} files and {len(directories)} subdirectories on Minerva")
+    except Exception as e:
+        print(f"Error fetching Minerva directory: {e}")
+
+    return files, directories
+
+
+def collect_minerva_files_from_url(minerva_url: str, session: requests.Session, depth: int = 0) -> set:
+    """Collecte récursivement les fichiers d'un dossier Minerva."""
+    files, directories = list_minerva_directory(minerva_url, session)
+    if depth <= 0 or not directories:
+        return files
+
+    collected = set(files)
+    for directory in directories:
+        collected.update(collect_minerva_files_from_url(directory['url'], session, depth - 1))
+    return collected
+
+
+def select_database_result(db_results: list) -> dict | None:
+    """Choisit un résultat de la base locale sans privilégier les URLs Myrient mortes."""
+    candidates = []
+    for result in db_results:
+        host = (result.get('host') or '').lower()
+        url = (result.get('url') or '').lower()
+        if 'myrient' in host or 'myrient' in url:
+            continue
+        candidates.append(result)
+
+    if not candidates:
+        return None
+
+    for result in candidates:
+        host = (result.get('host') or '').lower()
+        url = (result.get('url') or '').lower()
+        if 'archive.org' in host or 'archive.org' in url:
+            return result
+        if '1fichier.com' in host or '1fichier.com' in url:
+            return result
+
+    return candidates[0]
+
+
+def ensure_webtorrent_runtime() -> bool:
+    """Installe le runtime torrent Node localement si nécessaire."""
+    if WEBTORRENT_MODULE_DIR.exists():
+        return True
+
+    if not shutil.which('node'):
+        print("  Erreur: Node.js est requis pour le téléchargement torrent Minerva")
+        return False
+
+    if not shutil.which('npm'):
+        print("  Erreur: npm est requis pour installer le runtime torrent")
+        return False
+
+    print("  Installation du runtime torrent Node...")
+    env = os.environ.copy()
+    env['npm_config_cache'] = str(NPM_CACHE_DIR)
+
+    try:
+        subprocess.run(
+            ['npm', 'install', '--no-fund', '--no-audit', '--ignore-scripts', 'torrent-stream'],
+            cwd=str(APP_ROOT),
+            check=True,
+            env=env,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            encoding='utf-8',
+            errors='replace'
+        )
+    except subprocess.CalledProcessError as e:
+        print("  Échec de l'installation du runtime torrent:")
+        print(e.stdout or str(e))
+        return False
+
+    return WEBTORRENT_MODULE_DIR.exists()
+
+
+def download_from_minerva_torrent(torrent_url: str, target_filename: str, dest_path: str,
+                                  progress_callback=None) -> bool:
+    """Télécharge un fichier précis depuis un torrent Minerva via le runtime Node local."""
+    if not torrent_url or not target_filename:
+        print("  Erreur: URL de torrent ou nom de fichier manquant")
+        return False
+
+    if not ensure_webtorrent_runtime():
+        return False
+
+    if not WEBTORRENT_HELPER.exists():
+        print(f"  Erreur: helper torrent introuvable: {WEBTORRENT_HELPER}")
+        return False
+
+    temp_dir = Path(tempfile.mkdtemp(prefix='minerva-torrent-'))
+    env = os.environ.copy()
+    if 'MINERVA_TORRENT_TIMEOUT_MS' not in env:
+        env['MINERVA_TORRENT_TIMEOUT_MS'] = '0'
+
+    try:
+        process = subprocess.Popen(
+            ['node', str(WEBTORRENT_HELPER), torrent_url, target_filename, dest_path, str(temp_dir)],
+            cwd=str(APP_ROOT),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            encoding='utf-8',
+            errors='replace',
+            env=env
+        )
+
+        if not process.stdout:
+            print("  Erreur: impossible de lire la sortie du helper torrent")
+            return False
+
+        for raw_line in process.stdout:
+            line = raw_line.strip()
+            if not line:
+                continue
+
+            try:
+                event = json.loads(line)
+            except json.JSONDecodeError:
+                print(f"  [torrent] {line}")
+                continue
+
+            event_type = event.get('type')
+            if event_type == 'metadata':
+                print(f"  Torrent chargé: {event.get('torrentName', 'Inconnu')} ({event.get('files', 0)} fichiers)")
+            elif event_type == 'selected':
+                print(f"  Fichier sélectionné dans le torrent: {event.get('file', target_filename)}")
+            elif event_type == 'progress':
+                progress = float(event.get('progress', 0))
+                if progress_callback:
+                    progress_callback(progress)
+            elif event_type == 'warning':
+                print(f"  Avertissement torrent: {event.get('message', '')}")
+            elif event_type == 'error':
+                print(f"  Erreur torrent: {event.get('message', '')}")
+            elif event_type == 'done':
+                if progress_callback:
+                    progress_callback(100.0)
+                print(f"  Torrent terminé: {event.get('destination', dest_path)}")
+
+        return process.wait() == 0 and os.path.exists(dest_path)
+    except Exception as e:
+        print(f"  Erreur téléchargement torrent Minerva: {e}")
+        return False
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+
 
 API_CONFIG_FILE = 'api_keys.json'
 
@@ -830,16 +1387,17 @@ def print_sources_info():
     
     print("\n--- Source Principale ---")
     for i, source in enumerate(get_default_sources(), 1):
-        if source['type'] != 'archive_org':
+        if source['type'] != 'minerva':
             continue
         print(f"\n{i}. {source['name']}")
         print(f"   Type: {source['type']}")
+        print(f"   Collection: {source.get('collection', 'N/A')}")
         print(f"   Description: {source.get('description', 'N/A')}")
         print(f"   Priorité: {source.get('priority', 'N/A')}")
     
     print("\n--- Sources Secondaires ---")
     for i, source in enumerate(get_default_sources(), 1):
-        if source['type'] != 'myrient':
+        if source['type'] not in ('archive_org', 'edgeemu', 'planetemu'):
             continue
         print(f"\n{i}. {source['name']}")
         print(f"   Type: {source['type']}")
@@ -883,7 +1441,8 @@ def print_sources_info():
         print(f"   Priorité: {source.get('priority', 'N/A')}")
     
     print("\n--- Sources Supplémentaires ---")
-    for i, source in enumerate(ADDITIONAL_SOURCES, 1):
+    additional_sources = globals().get('ADDITIONAL_SOURCES', [])
+    for i, source in enumerate(additional_sources, 1):
         status = "ACTIVABLE" if not source.get('enabled', False) else "ACTIVE"
         print(f"\n{i}. {source['name']} [{status}]")
         print(f"   Type: {source['type']}")
@@ -916,7 +1475,7 @@ def search_archive_org_by_md5(md5_hash: str, rom_name: str) -> dict:
     # Stratégie 1: Recherche directe par MD5
     try:
         query = f'md5:{md5_hash}'
-        print(f"    → Recherche: {query}")
+        print(f"    -> Recherche: {query}")
         results = internetarchive.search_items(query)
 
         for result in results:
@@ -931,7 +1490,7 @@ def search_archive_org_by_md5(md5_hash: str, rom_name: str) -> dict:
                         file_md5 = file_info.get('md5', '')
 
                         if file_md5 and file_md5.lower() == md5_hash.lower():
-                            print(f"    ✓ Trouvé: {identifier}/{file_name}")
+                            print(f"    [OK] Trouvé: {identifier}/{file_name}")
                             return {
                                 'found': True,
                                 'identifier': identifier,
@@ -944,7 +1503,7 @@ def search_archive_org_by_md5(md5_hash: str, rom_name: str) -> dict:
 
         strategies_tried.append('md5_direct')
     except Exception as e:
-        print(f"    ✗ Erreur recherche MD5: {e}")
+        print(f"    [ERREUR] Recherche MD5: {e}")
         strategies_tried.append(f'md5_error: {e}')
 
     # Stratégie 2: Recherche par nom de ROM avec différentes collections
@@ -966,7 +1525,7 @@ def search_archive_org_by_md5(md5_hash: str, rom_name: str) -> dict:
                 else:
                     query = clean_name
                 
-                print(f"    → Recherche nom: {query[:50]}...")
+                print(f"    -> Recherche nom: {query[:50]}...")
                 results = list(internetarchive.search_items(query))[:15]
 
                 for result in results:
@@ -989,7 +1548,7 @@ def search_archive_org_by_md5(md5_hash: str, rom_name: str) -> dict:
                                 if file_name.endswith(('.zip', '.gb', '.gbc', '.7z', '.rar')):
                                     # Si on a un MD5, le vérifier
                                     if file_md5 and file_md5.lower() == md5_hash.lower():
-                                        print(f"    ✓ Trouvé (nom+MD5): {identifier}/{file_name}")
+                                        print(f"    [OK] Trouvé (nom+MD5): {identifier}/{file_name}")
                                         return {
                                             'found': True,
                                             'identifier': identifier,
@@ -999,7 +1558,7 @@ def search_archive_org_by_md5(md5_hash: str, rom_name: str) -> dict:
                                         }
                                     elif not file_md5:
                                         # Pas de MD5 disponible, on prend quand même en dernier recours
-                                        print(f"    ✓ Trouvé (nom seulement): {identifier}/{file_name}")
+                                        print(f"    [OK] Trouvé (nom seulement): {identifier}/{file_name}")
                                         return {
                                             'found': True,
                                             'identifier': identifier,
@@ -1014,7 +1573,7 @@ def search_archive_org_by_md5(md5_hash: str, rom_name: str) -> dict:
             except Exception as e:
                 strategies_tried.append(f'name_error_{collection}: {e}')
 
-    print(f"  ✗ Non trouvé sur archive.org (stratégies: {', '.join(strategies_tried)})")
+    print(f"  [KO] Non trouvé sur archive.org (stratégies: {', '.join(strategies_tried)})")
     return {'found': False, 'strategies_tried': strategies_tried}
 
 
@@ -1054,7 +1613,7 @@ def download_from_ia_zip(identifier: str, zip_path: str, filename: str, dest_pat
             resp = session.get(final_url, stream=True, allow_redirects=True, timeout=120, auth=auth)
 
         if resp.status_code == 503:
-            print("  ⚠ Service IA (view_archive) temporairement indisponible (503)")
+            print("  [WARN] Service IA (view_archive) temporairement indisponible (503)")
             return False
             
         resp.raise_for_status()
@@ -1074,7 +1633,7 @@ def download_from_ia_zip(identifier: str, zip_path: str, filename: str, dest_pat
             progress_callback(100.0)
         return True
     except Exception as e:
-        print(f"  ✗ Erreur IA-ZIP: {e}")
+        print(f"  [ERREUR] IA-ZIP: {e}")
         return False
 
 
@@ -1100,12 +1659,12 @@ def download_from_archive_org(identifier: str, filename: str, dest_path: str, se
                     
                     if dest_path.exists():
                         size = dest_path.stat().st_size
-                        print(f"  ✓ Téléchargé via internetarchive ({size:,} octets)")
+                        print(f"  [OK] Téléchargé via internetarchive ({size:,} octets)")
                         if progress_callback:
                             progress_callback(100.0)
                         return True
             except Exception as e:
-                print(f"  ⚠ Erreur internetarchive: {e}, tentative HTTP directe...")
+                print(f"  [WARN] Erreur internetarchive: {e}, tentative HTTP directe...")
             
             # Méthode 2: Download HTTP direct (fallback)
             if session is None:
@@ -1134,14 +1693,14 @@ def download_from_archive_org(identifier: str, filename: str, dest_path: str, se
             
             if dest_path.exists():
                 size = dest_path.stat().st_size
-                print(f"  ✓ Téléchargé via HTTP direct ({size:,} octets)")
+                print(f"  [OK] Téléchargé via HTTP direct ({size:,} octets)")
                 return True
             else:
-                print(f"  ✗ Fichier non créé")
+                print(f"  [ERREUR] Fichier non créé")
                 return False
                 
         except Exception as e:
-            print(f"  ✗ Tentative {attempt + 1}/{max_retries} échouée: {e}")
+            print(f"  [ERREUR] Tentative {attempt + 1}/{max_retries} échouée: {e}")
             if os.path.exists(dest_path):
                 try:
                     os.remove(dest_path)
@@ -1490,11 +2049,24 @@ def move_files_to_tosort(files_to_move: list, rom_folder: str, tosort_folder: st
 
 
 def detect_system_name(dat_file_path: str) -> str:
+    profile_system_name = finalize_dat_profile(detect_dat_profile(dat_file_path)).get('system_name', '')
+    if profile_system_name:
+        return profile_system_name
+
     """
     Tente de détecter le nom du système à partir du nom du fichier DAT.
     Gère les noms complexes (Retool, dates, tags).
     Exemple: 'Nintendo - Game Boy (Retool).dat' -> 'Nintendo - Game Boy'
     """
+    try:
+        tree = ET.parse(dat_file_path)
+        root = tree.getroot()
+        header_name = root.findtext('./header/name', default='').strip()
+        if header_name:
+            return re.sub(r'\s+', ' ', header_name)
+    except Exception:
+        pass
+
     filename = os.path.basename(dat_file_path)
     # Retirer l'extension
     name = os.path.splitext(filename)[0]
@@ -1699,7 +2271,7 @@ def match_myrient_files(missing_games: list, myrient_files: set, source_name: st
     return to_download, not_available
 
 
-def search_all_sources(missing_games: list, sources: list, session: requests.Session, system_name: str = None) -> tuple:
+def search_all_sources_legacy(missing_games: list, sources: list, session: requests.Session, system_name: str = None) -> tuple:
     """
     Search for missing games across all configured sources.
     Utilise la base de données locale (74,189 URLs) + recherche directe + nouveaux scrapers.
@@ -1710,8 +2282,17 @@ def search_all_sources(missing_games: list, sources: list, session: requests.Ses
     print("=" * 70)
     
     # Charger la base de données
+    effective_profile = finalize_dat_profile(dat_profile) if dat_profile else None
+    if effective_profile and effective_profile.get('system_name'):
+        system_name = effective_profile.get('system_name')
+
+    sources = prepare_sources_for_profile(sources, effective_profile)
+
     load_rom_database()
     
+    if effective_profile:
+        print(f"Profil DAT: {describe_dat_profile(effective_profile)}")
+
     all_found = []
     still_missing = missing_games.copy()
     
@@ -1764,7 +2345,7 @@ def search_all_sources(missing_games: list, sources: list, session: requests.Ses
             game_info['source'] = 'database'
             game_info['database_host'] = best_result.get('host')
             found_in_db.append(game_info)
-            print(f"  [DB] {game_name} → {best_result.get('host')}")
+            print(f"  [DB] {game_name} -> {best_result.get('host')}")
         else:
             not_in_db.append(game_info)
     
@@ -1779,7 +2360,7 @@ def search_all_sources(missing_games: list, sources: list, session: requests.Ses
     # ========================================================================
     if still_missing and system_name:
         for source in sources:
-            if source['type'] == 'edgeemu' and source.get('enabled', True):
+            if source['type'] == 'edgeemu' and source.get('enabled', True) and source.get('compatible', True):
                 slug = mappings.get('edgeemu')
                 if slug:
                     print(f"\n--- Recherche sur EdgeEmu ({slug}) ---")
@@ -1800,7 +2381,7 @@ def search_all_sources(missing_games: list, sources: list, session: requests.Ses
                         all_found.extend(newly_found)
                         still_missing = remaining
 
-            elif source['type'] == 'planetemu' and source.get('enabled', True):
+            elif source['type'] == 'planetemu' and source.get('enabled', True) and source.get('compatible', True):
                 slug = mappings.get('planetemu')
                 if slug:
                     print(f"\n--- Recherche sur PlanetEmu ({slug}) ---")
@@ -1846,7 +2427,10 @@ def search_all_sources(missing_games: list, sources: list, session: requests.Ses
     # ========================================================================
     # ÉTAPE 4 : Recherche archive.org par MD5 (fallback final)
     # ========================================================================
-    archive_sources = [s for s in sources if s['type'] == 'archive_org' and s.get('enabled', True)]
+    archive_sources = [
+        s for s in sources
+        if s['type'] == 'archive_org' and s.get('enabled', True) and s.get('compatible', True)
+    ]
     
     if archive_sources and still_missing:
         print(f"\n--- Recherche archive.org par MD5 (fallback) ---")
@@ -1865,6 +2449,183 @@ def search_all_sources(missing_games: list, sources: list, session: requests.Ses
     print(f"  Jeux non trouvés: {len(still_missing)}")
     print(f"{'=' * 70}")
     
+    return all_found, still_missing
+
+
+def search_all_sources(
+    missing_games: list,
+    sources: list,
+    session: requests.Session,
+    system_name: str = None,
+    dat_profile: dict | None = None
+) -> tuple:
+    """
+    Search for missing games across all configured sources.
+    Minerva est la source principale; les autres services servent de fallback.
+    Returns (found_games: list, not_found_games: list)
+    """
+    print("\n" + "=" * 70)
+    print(f"Recherche des jeux manquants pour le systÃ¨me: {system_name or 'Inconnu'}")
+    print("=" * 70)
+
+    load_rom_database()
+
+    all_found = []
+    still_missing = missing_games.copy()
+    direct_found = []
+    found_in_db = []
+
+    mappings = SYSTEM_MAPPINGS.get(system_name, {}) if system_name else {}
+
+    # ========================================================================
+    # Ã‰TAPE 1 : Recherche directe sur Minerva / sources HTML
+    # ========================================================================
+    print(f"\n{'=' * 70}")
+    print("Ã‰TAPE 1: Recherche directe sur la source principale (Minerva)")
+    print(f"{'=' * 70}")
+
+    direct_sources = [
+        s for s in sources
+        if s.get('enabled', True)
+        and s.get('compatible', True)
+        and s['type'] in {'minerva', 'myrient'}
+    ]
+
+    if direct_sources and still_missing:
+        for source in direct_sources:
+            print(f"\n--- Recherche directe sur {source['name']} ---")
+
+            if source['type'] == 'minerva':
+                base_url = build_minerva_directory_url(source, system_name)
+                minerva_files = collect_minerva_files_from_url(base_url, session, source.get('scan_depth', 0))
+                if minerva_files:
+                    found, still_missing = match_myrient_files(still_missing, minerva_files, source['name'])
+                    torrent_url = build_minerva_torrent_url(source, system_name)
+                    for game in found:
+                        game['torrent_url'] = torrent_url
+                        game['source'] = source['name']
+                    direct_found.extend(found)
+                    all_found.extend(found)
+            else:
+                base_url = source['base_url']
+                if base_url.endswith('/No-Intro/') and system_name:
+                    base_url = f"{base_url}{quote(system_name)}/"
+
+                myrient_files = list_myrient_directory(base_url, session)
+                if myrient_files:
+                    found, still_missing = match_myrient_files(still_missing, myrient_files, source['name'])
+                    for game in found:
+                        game['download_url'] = f"{base_url.rstrip('/')}/{quote(game['download_filename'])}"
+                    direct_found.extend(found)
+                    all_found.extend(found)
+
+    print(f"\n  TrouvÃ© via source principale: {len(direct_found)} jeux")
+    print(f"  Restants aprÃ¨s Minerva: {len(still_missing)} jeux")
+
+    # ========================================================================
+    # Ã‰TAPE 2 : Recherche dans la base de donnÃ©es locale (fallback)
+    # ========================================================================
+    print(f"\n{'=' * 70}")
+    print("Ã‰TAPE 2: Recherche dans la base de donnÃ©es locale (fallback)")
+    print(f"{'=' * 70}")
+
+    not_in_db = []
+    for game_info in still_missing:
+        game_name = game_info['game_name']
+        roms = game_info.get('roms', [])
+        db_results = search_by_name(game_name)
+
+        if not db_results:
+            for rom_info in roms:
+                md5_hash = rom_info.get('md5', '')
+                if md5_hash:
+                    db_results = search_by_md5(md5_hash)
+                    if db_results:
+                        print(f"  [DB] {game_name} trouvÃ© par MD5: {md5_hash}")
+                        break
+
+        best_result = select_database_result(db_results)
+        if best_result:
+            game_info['download_filename'] = best_result.get('full_name', game_name)
+            game_info['download_url'] = best_result.get('url')
+            game_info['source'] = 'database'
+            game_info['database_host'] = best_result.get('host')
+            found_in_db.append(game_info)
+            print(f"  [DB] {game_name} â†’ {best_result.get('host')}")
+        else:
+            not_in_db.append(game_info)
+
+    all_found.extend(found_in_db)
+    still_missing = not_in_db
+
+    print(f"\n  TrouvÃ© dans la base: {len(found_in_db)} jeux")
+    print(f"  Non trouvÃ© dans la base: {len(still_missing)} jeux")
+
+    # ========================================================================
+    # Ã‰TAPE 3 : Recherche via scrapers secondaires
+    # ========================================================================
+    if still_missing and system_name:
+        for source in sources:
+            if source['type'] == 'edgeemu' and source.get('enabled', True):
+                slug = mappings.get('edgeemu')
+                if slug:
+                    print(f"\n--- Recherche sur EdgeEmu ({slug}) ---")
+                    edge_files = list_edgeemu_directory(slug, session)
+                    if edge_files:
+                        newly_found = []
+                        remaining = []
+                        for game_info in still_missing:
+                            name_lower = game_info['game_name'].lower()
+                            if name_lower in edge_files:
+                                game_info['download_url'] = edge_files[name_lower]['url']
+                                game_info['source'] = 'EdgeEmu'
+                                game_info['download_filename'] = edge_files[name_lower]['full_name']
+                                newly_found.append(game_info)
+                                print(f"  [EdgeEmu] {game_info['game_name']} trouvÃ©")
+                            else:
+                                remaining.append(game_info)
+                        all_found.extend(newly_found)
+                        still_missing = remaining
+
+            elif source['type'] == 'planetemu' and source.get('enabled', True):
+                slug = mappings.get('planetemu')
+                if slug:
+                    print(f"\n--- Recherche sur PlanetEmu ({slug}) ---")
+                    planet_files = list_planetemu_directory(slug, session)
+                    if planet_files:
+                        newly_found = []
+                        remaining = []
+                        for game_info in still_missing:
+                            name_lower = game_info['game_name'].lower()
+                            if name_lower in planet_files:
+                                game_info['page_url'] = planet_files[name_lower]['page_url']
+                                game_info['source'] = 'PlanetEmu'
+                                game_info['download_filename'] = game_info['game_name']
+                                newly_found.append(game_info)
+                                print(f"  [PlanetEmu] {game_info['game_name']} trouvÃ©")
+                            else:
+                                remaining.append(game_info)
+                        all_found.extend(newly_found)
+                        still_missing = remaining
+
+    # ========================================================================
+    # Ã‰TAPE 4 : Recherche archive.org par MD5 (fallback final)
+    # ========================================================================
+    archive_sources = [s for s in sources if s['type'] == 'archive_org' and s.get('enabled', True)]
+    if archive_sources and still_missing:
+        print(f"\n--- Recherche archive.org par MD5 (fallback final) ---")
+        found, still_missing = search_archive_org_for_games(still_missing)
+        all_found.extend(found)
+
+    print(f"\n{'=' * 70}")
+    print("RÃ‰SUMÃ‰ DE LA RECHERCHE")
+    print(f"{'=' * 70}")
+    print(f"  Jeux trouvÃ©s (Minerva / direct): {len(direct_found)}")
+    print(f"  Jeux trouvÃ©s (base locale): {len(found_in_db)}")
+    print(f"  Total trouvÃ©s: {len(all_found)}")
+    print(f"  Jeux non trouvÃ©s: {len(still_missing)}")
+    print(f"{'=' * 70}")
+
     return all_found, still_missing
 
 
@@ -2058,7 +2819,7 @@ def interactive_mode():
 
     dat_file = get_input("Chemin vers le fichier DAT: ")
     rom_folder = get_input("Chemin vers le dossier des ROMs: ")
-    myrient_url = get_input("URL Myrient: ")
+    myrient_url = get_input("URL source optionnelle (laisser vide pour l'auto Minerva): ")
     print()
     
     tosort_input = get_input("Deplacer les ROMs non presentes dans le DAT vers ToSort ? (o/n): ")
@@ -2108,7 +2869,68 @@ def file_exists_in_folder(folder: str, filename: str) -> tuple:
     return False, None
 
 
-def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limit, move_to_tosort=False, custom_sources=None):
+def build_custom_source(source_url: str) -> dict:
+    """Détecte et construit une source personnalisée Minerva ou legacy."""
+    normalized_url = (source_url or '').strip()
+    lower_url = normalized_url.lower()
+
+    if 'minerva-archive.org/browse/' in lower_url:
+        if '/browse/no-intro' in lower_url:
+            fixed_directory = '/browse/no-intro/' in lower_url and not lower_url.endswith('/browse/no-intro/')
+            return {
+                'name': 'Minerva Custom',
+                'base_url': normalized_url if normalized_url.endswith('/') else normalized_url + '/',
+                'type': 'minerva',
+                'enabled': True,
+                'description': 'Source personnalisée Minerva',
+                'collection': 'No-Intro',
+                'minerva_path_mode': 'single',
+                'scan_depth': 0,
+                'fixed_directory': fixed_directory,
+                'torrent_scope': 'system',
+                'priority': 0
+            }
+        if '/browse/redump' in lower_url:
+            fixed_directory = '/browse/redump/' in lower_url and not lower_url.endswith('/browse/redump/')
+            return {
+                'name': 'Minerva Custom',
+                'base_url': normalized_url if normalized_url.endswith('/') else normalized_url + '/',
+                'type': 'minerva',
+                'enabled': True,
+                'description': 'Source personnalisée Minerva',
+                'collection': 'Redump',
+                'minerva_path_mode': 'single',
+                'scan_depth': 0,
+                'fixed_directory': fixed_directory,
+                'torrent_scope': 'system',
+                'priority': 0
+            }
+        if '/browse/tosec' in lower_url:
+            fixed_directory = '/browse/tosec/' in lower_url and not lower_url.endswith('/browse/tosec/')
+            return {
+                'name': 'Minerva Custom',
+                'base_url': normalized_url if normalized_url.endswith('/') else normalized_url + '/',
+                'type': 'minerva',
+                'enabled': True,
+                'description': 'Source personnalisée Minerva',
+                'collection': 'TOSEC',
+                'minerva_path_mode': 'split',
+                'scan_depth': 2,
+                'fixed_directory': fixed_directory,
+                'torrent_scope': 'vendor',
+                'priority': 0
+            }
+
+    return {
+        'name': 'Source Custom',
+        'base_url': normalized_url,
+        'type': 'myrient',
+        'enabled': True,
+        'priority': 0
+    }
+
+
+def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_run, limit, move_to_tosort=False, custom_sources=None):
     """Run the download process."""
     session = requests.Session()
     session.headers.update({
@@ -2125,8 +2947,10 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
     missing_games = find_missing_games(dat_games, local_roms, local_roms_normalized, local_game_names)
 
     # Détection du système
-    system_name = detect_system_name(dat_file)
+    system_name = dat_profile.get('system_name') or detect_system_name(dat_file)
     print(f"Système détecté : {system_name}")
+
+    print(f"Profil DAT : {describe_dat_profile(dat_profile)}")
 
     if not missing_games:
         print("\nAucun jeu manquant trouvé !")
@@ -2134,14 +2958,9 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
         # Use custom sources if provided, otherwise use default sources
         sources = custom_sources if custom_sources else get_default_sources().copy()
         
-        # If a custom myrient_url is provided, add it as first source
+        # If a custom source URL is provided, add it as first source
         if myrient_url and myrient_url not in [s['base_url'] for s in sources]:
-            sources.insert(0, {
-                'name': 'Myrient Custom',
-                'base_url': myrient_url,
-                'type': 'myrient',
-                'enabled': True
-            })
+            sources.insert(0, build_custom_source(myrient_url))
         
         # Search across all sources
         to_download, not_available = search_all_sources(missing_games, sources, session, system_name)
@@ -2192,11 +3011,12 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
                 
                 # Get download URL
                 download_url = game_info.get('download_url')
+                torrent_url = game_info.get('torrent_url')
                 
                 if source == 'archive_org':
                     identifier = game_info.get('archive_org_identifier', '')
                     if identifier and filename:
-                        success = download_from_archive_org(identifier, filename, dest_path, session)
+                        success = download_from_archive_org(identifier, filename, dest_path)
 
                 elif source == 'EdgeEmu':
                     success = download_file(download_url, dest_path, session)
@@ -2205,6 +3025,10 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
                     page_url = game_info.get('page_url')
                     if page_url:
                         success = download_planetemu(page_url, dest_path, session)
+
+                elif source.startswith('Minerva') and torrent_url:
+                    print(f"  Torrent: {torrent_url[:80]}...")
+                    success = download_from_minerva_torrent(torrent_url, filename, dest_path)
 
                 elif source in ['myrient', 'Myrient', 'Myrient No-Intro', 'Myrient Redump', 'Myrient TOSEC', 'Myrient Custom'] and download_url:
                     # Télécharger depuis Myrient
@@ -2273,6 +3097,162 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
             print(f"  Échecs: {failed}")
         else:
             print("\nAucun fichier à déplacer.")
+
+
+def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limit, move_to_tosort=False, custom_sources=None):
+    """Run the download process with Minerva as the primary source."""
+    session = requests.Session()
+    session.headers.update({
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+    })
+
+    dat_games = parse_dat_file(dat_file)
+    local_roms, local_roms_normalized, local_game_names = scan_local_roms(rom_folder)
+    missing_games = find_missing_games(dat_games, local_roms, local_roms_normalized, local_game_names)
+    dat_profile = finalize_dat_profile(detect_dat_profile(dat_file))
+
+    system_name = dat_profile.get('system_name') or detect_system_name(dat_file)
+    print(f"SystÃ¨me dÃ©tectÃ© : {system_name}")
+
+    if not missing_games:
+        print("\nAucun jeu manquant trouvÃ© !")
+    else:
+        sources = [source.copy() for source in (custom_sources if custom_sources else get_default_sources())]
+
+        if myrient_url and myrient_url not in [s['base_url'] for s in sources]:
+            sources.insert(0, build_custom_source(myrient_url))
+
+        sources = prepare_sources_for_profile(sources, dat_profile)
+
+        to_download, not_available = search_all_sources(
+            missing_games,
+            sources,
+            session,
+            system_name,
+            dat_profile
+        )
+
+        if not_available:
+            print("\n" + "=" * 60)
+            print("Jeux NON trouvÃ©s sur aucune source:")
+            print("=" * 60)
+            for game_info in not_available:
+                print(f"  - {game_info['game_name']}")
+            print()
+
+        if to_download:
+            print(f"\n{'TÃ©lÃ©chargement' if not dry_run else 'Simulation'} de {len(to_download)} jeu(x)...")
+
+            downloaded = 0
+            failed = 0
+            skipped = 0
+
+            for i, game_info in enumerate(to_download, 1):
+                game_name = game_info['game_name']
+                source = game_info.get('source', 'unknown')
+                filename = game_info.get('download_filename', game_name)
+
+                print(f"\n[{i}/{len(to_download)}] {game_name} [{source}]")
+
+                if limit and downloaded >= limit:
+                    print("  IgnorÃ© (limite atteinte)")
+                    skipped += 1
+                    continue
+
+                exists, existing_path = file_exists_in_folder(output_folder, filename)
+                if exists:
+                    print(f"  DÃ©jÃ  prÃ©sent: {os.path.basename(existing_path)}")
+                    skipped += 1
+                    continue
+
+                if dry_run:
+                    if game_info.get('torrent_url'):
+                        print(f"  Serait tÃ©lÃ©chargÃ© via torrent Minerva vers: {output_folder}")
+                    else:
+                        print(f"  Serait tÃ©lÃ©chargÃ© vers: {output_folder}")
+                    continue
+
+                dest_path = os.path.join(output_folder, filename)
+                download_url = game_info.get('download_url')
+                torrent_url = game_info.get('torrent_url')
+                success = False
+
+                if source == 'archive_org':
+                    identifier = game_info.get('archive_org_identifier', '')
+                    if identifier and filename:
+                        success = download_from_archive_org(identifier, filename, dest_path, session)
+
+                elif source == 'EdgeEmu' and download_url:
+                    success = download_file(download_url, dest_path, session)
+
+                elif source == 'PlanetEmu':
+                    page_url = game_info.get('page_url')
+                    if page_url:
+                        success = download_planetemu(page_url, dest_path, session)
+
+                elif source.startswith('Minerva') and torrent_url:
+                    print(f"  Torrent: {torrent_url[:80]}...")
+                    success = download_from_minerva_torrent(torrent_url, filename, dest_path)
+
+                elif source in ['myrient', 'Myrient', 'Myrient No-Intro', 'Myrient Redump', 'Myrient TOSEC', 'Source Custom'] and download_url:
+                    print(f"  URL: {download_url[:80]}...")
+                    success = download_file(download_url, dest_path, session)
+
+                elif source == 'database' and download_url:
+                    print(f"  URL: {download_url[:80]}...")
+
+                    if '1fichier.com' in download_url:
+                        api_keys = load_api_keys()
+                        success = download_from_premium_source('1fichier', download_url, dest_path, api_keys)
+                    elif 'archive.org' in download_url:
+                        success = download_file(download_url, dest_path, session)
+                    elif 'myrient' in download_url:
+                        print("  URL Myrient ignorée (source fermée)")
+                        success = False
+                    else:
+                        success = download_file(download_url, dest_path, session)
+
+                else:
+                    source_info = next((s for s in sources if s['name'] == source), None)
+                    base_url = source_info['base_url'] if source_info else myrient_url
+                    if base_url:
+                        download_url = f"{base_url.rstrip('/')}/{quote(filename)}"
+                        print(f"  URL: {download_url[:80]}...")
+                        success = download_file(download_url, dest_path, session)
+
+                if success:
+                    print(f"  TÃ©lÃ©chargÃ©: {filename}")
+                    downloaded += 1
+                    time.sleep(0.5)
+                else:
+                    failed += 1
+
+            print("\n" + "=" * 60)
+            print("RÃ©sumÃ©:")
+            print(f"  TÃ©lÃ©chargÃ©s: {downloaded}")
+            print(f"  Ã‰checs: {failed}")
+            print(f"  IgnorÃ©s: {skipped}")
+            if dry_run:
+                print("\n(Simulation - aucun fichier tÃ©lÃ©chargÃ©)")
+
+    if move_to_tosort and missing_games:
+        print("\n" + "=" * 60)
+        print("Recherche des fichiers Ã  dÃ©placer vers ToSort...")
+        print("=" * 60)
+
+        parent_folder = os.path.dirname(rom_folder)
+        tosort_folder = os.path.join(parent_folder, "ToSort")
+
+        files_to_move = find_roms_not_in_dat(dat_games, local_roms, local_roms_normalized, rom_folder)
+
+        if files_to_move:
+            print(f"\n{len(files_to_move)} fichiers Ã  dÃ©placer vers: {tosort_folder}")
+            moved, failed = move_files_to_tosort(files_to_move, rom_folder, tosort_folder, dry_run)
+            print(f"\nRÃ©sumÃ© ToSort:")
+            print(f"  DÃ©placÃ©s: {moved}")
+            print(f"  Ã‰checs: {failed}")
+        else:
+            print("\nAucun fichier Ã  dÃ©placer.")
 
 
 def cli_mode(args):
@@ -2346,7 +3326,7 @@ def gui_mode():
                     self.rom_entry.drop_target_register(tkinterdnd2.DND_FILES)
                 ttk.Button(main_frame, text="Parcourir...", command=self.browse_rom).grid(row=2, column=2, pady=5)
 
-                ttk.Label(main_frame, text="URL Myrient (optionnel):").grid(row=3, column=0, sticky=tk.W, pady=5)
+                ttk.Label(main_frame, text="URL source (optionnel):").grid(row=3, column=0, sticky=tk.W, pady=5)
                 self.url_entry = ttk.Entry(main_frame, textvariable=self.myrient_url, width=80)
                 self.url_entry.grid(row=3, column=1, sticky=(tk.W, tk.E), pady=5, padx=5)
                 ttk.Button(main_frame, text="Defaut GB", command=self.set_default_gb).grid(row=3, column=2, pady=5)
@@ -2438,10 +3418,7 @@ def gui_mode():
                     self.rom_folder.set(folder)
             
             def set_default_gb(self):
-                if ROM_DATABASE is None:
-                    load_rom_database()
-                config = ROM_DATABASE.get('config_urls', {})
-                self.myrient_url.set(config.get('myrient_no_intro', '') + "Nintendo%20-%20Game%20Boy/")
+                self.myrient_url.set(f"{MINERVA_BROWSE_BASE}No-Intro/Nintendo%20-%20Game%20Boy/")
             
             def log(self, message: str):
                 self.log_text.insert(tk.END, message + "\n")
@@ -2460,9 +3437,6 @@ def gui_mode():
                     return False
                 if not os.path.exists(self.rom_folder.get()):
                     messagebox.showerror("Erreur", f"Dossier ROMs introuvable: {self.rom_folder.get()}")
-                    return False
-                if not self.myrient_url.get():
-                    messagebox.showerror("Erreur", "Veuillez entrer une URL Myrient")
                     return False
                 return True
             
@@ -2497,12 +3471,7 @@ def gui_mode():
                     
                     # Add custom URL if provided
                     if myrient_url and myrient_url not in [s['base_url'] for s in sources]:
-                        sources.insert(0, {
-                            'name': 'Myrient Custom',
-                            'base_url': myrient_url,
-                            'type': 'myrient',
-                            'enabled': True
-                        })
+                        sources.insert(0, build_custom_source(myrient_url))
 
                     self.log(f"Parsing DAT file: {dat_path}")
                     self.status_var.set("Analyse du fichier DAT...")
@@ -2514,6 +3483,7 @@ def gui_mode():
 
                     self.status_var.set("Recherche des jeux manquants...")
                     missing_games = find_missing_games(dat_games, local_roms, local_roms_normalized, local_game_names)
+                    system_name = detect_system_name(dat_path)
 
                     if not missing_games:
                         self.log("Aucun jeu manquant trouve !")
@@ -2527,7 +3497,7 @@ def gui_mode():
 
                     # Search across all sources
                     self.status_var.set("Recherche sur les sources...")
-                    to_download, not_available = search_all_sources(missing_games, sources, self.session)
+                    to_download, not_available = search_all_sources(missing_games, sources, self.session, system_name)
 
                     if not_available:
                         self.log(f"\n{len(not_available)} jeux NON disponibles sur aucune source:")
@@ -2572,16 +3542,36 @@ def gui_mode():
                         # Download based on source
                         dest_path = os.path.join(output_folder, filename)
                         success = False
+                        download_url = game_info.get('download_url')
+                        torrent_url = game_info.get('torrent_url')
                         
                         if source == 'archive_org':
                             identifier = game_info.get('archive_org_identifier', '')
                             if identifier and filename:
-                                success = download_from_archive_org(identifier, filename, dest_path, self.session, update_progress)
+                                success = download_from_archive_org(identifier, filename, dest_path, update_progress)
+                        elif source == 'EdgeEmu' and download_url:
+                            success = download_file(download_url, dest_path, self.session, update_progress)
+                        elif source == 'PlanetEmu':
+                            page_url = game_info.get('page_url')
+                            if page_url:
+                                success = download_planetemu(page_url, dest_path, self.session, update_progress)
+                        elif source.startswith('Minerva') and torrent_url:
+                            success = download_from_minerva_torrent(torrent_url, filename, dest_path, update_progress)
+                        elif source == 'database' and download_url:
+                            if '1fichier.com' in download_url:
+                                api_keys = load_api_keys()
+                                success = download_from_premium_source('1fichier', download_url, dest_path, api_keys, update_progress)
+                            elif 'myrient' in download_url:
+                                self.log("  URL Myrient ignorée (source fermée)")
+                                success = False
+                            else:
+                                success = download_file(download_url, dest_path, self.session, update_progress)
                         else:
                             source_info = next((s for s in sources if s['name'] == source), None)
                             base_url = source_info['base_url'] if source_info else myrient_url
-                            download_url = f"{base_url.rstrip('/')}/{quote(filename)}"
-                            success = download_file(download_url, dest_path, self.session, update_progress)
+                            if base_url:
+                                download_url = f"{base_url.rstrip('/')}/{quote(filename)}"
+                                success = download_file(download_url, dest_path, self.session, update_progress)
                         
                         if success:
                             self.log(f"  Telecharge: {filename}")
@@ -2658,23 +3648,391 @@ def gui_mode():
 # Point d'entrée principal
 # ============================================================================
 
+def detect_system_name(dat_file_path: str) -> str:
+    """Retourne le nom de systeme normalise a partir du profil DAT."""
+    return finalize_dat_profile(detect_dat_profile(dat_file_path)).get('system_name', '')
+
+
+def gui_mode():
+    """GUI sombre inspiree de la charte Balrog Toolkit."""
+    try:
+        import tkinter as tk
+        import tkinter.font as tkfont
+        from tkinter import filedialog, messagebox, scrolledtext, ttk
+        import threading
+
+        try:
+            import tkinterdnd2
+            has_dnd = True
+        except ImportError:
+            tkinterdnd2 = None
+            has_dnd = False
+
+        class App:
+            def __init__(self, root, use_dnd=False):
+                self.root = root
+                self.use_dnd = use_dnd
+                self.font = "Roboto" if "Roboto" in tkfont.families() else "Segoe UI"
+                self.session = requests.Session()
+                self.session.headers.update({'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'})
+                self.default_sources = [source.copy() for source in get_default_sources()]
+                self.source_vars = {}
+                self.source_widgets = {}
+                self.images = {}
+                self.running = False
+                self.dat_profile = finalize_dat_profile({'family': 'unknown', 'family_label': 'Inconnu', 'system_name': '', 'is_retool': False, 'retool_label': 'DAT brut'})
+                self.dat_file = tk.StringVar()
+                self.rom_folder = tk.StringVar()
+                self.myrient_url = tk.StringVar()
+                self.progress_var = tk.DoubleVar(value=0)
+                self.status_var = tk.StringVar(value="Pret a consolider un set 1G1R")
+                self.system_var = tk.StringVar(value="En attente d'un DAT")
+                self.family_var = tk.StringVar(value="No-Intro ou Redump")
+                self.source_var = tk.StringVar(value="Selection auto Minerva")
+                self.hint_var = tk.StringVar(value="Charge un DAT Retool pour orienter automatiquement la bonne collection Minerva.")
+                self.root.title("ROM Downloader")
+                self.root.geometry("1040x820")
+                self.root.minsize(920, 700)
+                self.root.configure(bg=UI_COLOR_BG)
+                self.root.columnconfigure(0, weight=1)
+                self.root.rowconfigure(0, weight=1)
+                self.style = ttk.Style(self.root)
+                try:
+                    self.style.theme_use('clam')
+                except Exception:
+                    pass
+                self.style.configure('Balrog.Horizontal.TProgressbar', troughcolor=UI_COLOR_INPUT_BG, background=UI_COLOR_ACCENT, bordercolor=UI_COLOR_CARD_BORDER, lightcolor=UI_COLOR_ACCENT, darkcolor=UI_COLOR_ACCENT)
+                try:
+                    if BALROG_WINDOW_ICON.exists():
+                        self.root.iconbitmap(str(BALROG_WINDOW_ICON))
+                except Exception:
+                    pass
+                self.images['hero'] = self.load_photo(BALROG_1G1R_ICON, 8)
+                self.images['folder'] = self.load_photo(BALROG_FOLDER_ICON, 14)
+                self.build_ui()
+                self.dat_file.trace_add('write', lambda *_: self.root.after(120, self.refresh_profile))
+                if self.use_dnd:
+                    self.dat_entry.drop_target_register(tkinterdnd2.DND_FILES)
+                    self.rom_entry.drop_target_register(tkinterdnd2.DND_FILES)
+                    self.dat_entry.dnd_bind('<<Drop>>', lambda e: self._drop(self.dat_file, e))
+                    self.rom_entry.dnd_bind('<<Drop>>', lambda e: self._drop(self.rom_folder, e))
+                self.url_entry.bind('<Control-v>', lambda _e: self.root.after(10, lambda: self.myrient_url.set(self.myrient_url.get().strip())))
+                self.refresh_profile()
+
+            def load_photo(self, path, subsample):
+                if not path.exists():
+                    return None
+                try:
+                    image = tk.PhotoImage(file=str(path))
+                    return image.subsample(subsample, subsample) if subsample > 1 else image
+                except Exception:
+                    return None
+
+            def card(self, parent, row, expand=False):
+                outer = tk.Frame(parent, bg=UI_COLOR_CARD_BG, highlightbackground=UI_COLOR_CARD_BORDER, highlightthickness=1)
+                outer.grid(row=row, column=0, sticky='nsew' if expand else 'ew', padx=18, pady=(18 if row == 0 else 0, 12))
+                inner = tk.Frame(outer, bg=UI_COLOR_CARD_BG)
+                inner.pack(fill='both', expand=True, padx=16, pady=16)
+                return inner
+
+            def entry(self, parent, var):
+                return tk.Entry(parent, textvariable=var, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, insertbackground=UI_COLOR_TEXT_MAIN, relief='flat', bd=0, highlightthickness=1, highlightbackground=UI_COLOR_INPUT_BORDER, highlightcolor=UI_COLOR_ACCENT, font=(self.font, 11))
+
+            def button(self, parent, text, command, kind='ghost', width=14, image=None):
+                palette = {'accent': (UI_COLOR_ACCENT, UI_COLOR_ACCENT_HOVER), 'danger': (UI_COLOR_ERROR, '#c0392b'), 'ghost': (UI_COLOR_GHOST, UI_COLOR_GHOST_HOVER)}
+                bg, active = palette[kind]
+                btn = tk.Button(parent, text=text, command=command, bg=bg, fg=UI_COLOR_TEXT_MAIN, activebackground=active, activeforeground=UI_COLOR_TEXT_MAIN, relief='flat', bd=0, padx=14, pady=10, width=width, font=(self.font, 10, 'bold'), cursor='hand2')
+                if image:
+                    btn.configure(image=image, compound='left')
+                return btn
+
+            def toggle(self, parent, text, var):
+                return tk.Checkbutton(parent, text=text, variable=var, bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, activebackground=UI_COLOR_CARD_BG, activeforeground=UI_COLOR_TEXT_MAIN, selectcolor=UI_COLOR_INPUT_BG, anchor='w', font=(self.font, 10), disabledforeground=UI_COLOR_TEXT_SUB)
+
+            def build_ui(self):
+                main = tk.Frame(self.root, bg=UI_COLOR_BG)
+                main.grid(row=0, column=0, sticky='nsew')
+                main.columnconfigure(0, weight=1)
+                main.rowconfigure(3, weight=1)
+
+                header = self.card(main, 0)
+                header.columnconfigure(1, weight=1)
+                tk.Frame(header, bg=UI_COLOR_ACCENT, width=8).grid(row=0, column=0, rowspan=3, sticky='ns', padx=(0, 16))
+                tk.Label(header, text="BALROG TOOLKIT LOOK", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_ACCENT, font=(self.font, 9, 'bold')).grid(row=0, column=1, sticky='w')
+                tk.Label(header, text="ROM Downloader", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 24, 'bold')).grid(row=1, column=1, sticky='w', pady=(6, 4))
+                tk.Label(header, text="DAT No-Intro ou Redump retraite avec Retool, telechargement 1G1R direct via Minerva, consolidation d'un repertoire existant.", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, justify='left', wraplength=720, font=(self.font, 10)).grid(row=2, column=1, sticky='w')
+                badge_row = tk.Frame(header, bg=UI_COLOR_CARD_BG)
+                badge_row.grid(row=3, column=1, sticky='w', pady=(12, 0))
+                self.family_badge = tk.Label(badge_row, text="Profil manuel", bg=UI_COLOR_WARNING, fg=UI_COLOR_TEXT_MAIN, padx=10, pady=4, font=(self.font, 9, 'bold'))
+                self.family_badge.pack(side='left', padx=(0, 8))
+                self.mode_badge = tk.Label(badge_row, text="DAT brut", bg=UI_COLOR_GHOST_HOVER, fg=UI_COLOR_TEXT_MAIN, padx=10, pady=4, font=(self.font, 9, 'bold'))
+                self.mode_badge.pack(side='left')
+                if self.images.get('hero'):
+                    tk.Label(header, image=self.images['hero'], bg=UI_COLOR_CARD_BG).grid(row=0, column=2, rowspan=4, sticky='e')
+
+                fields = self.card(main, 1)
+                fields.columnconfigure(1, weight=1)
+                for row, label, var, action, text, img in [(0, "Fichier DAT", self.dat_file, self.browse_dat, "Parcourir", None), (1, "Dossier a consolider", self.rom_folder, self.browse_rom, "Parcourir", self.images.get('folder')), (2, "Source Minerva (optionnelle)", self.myrient_url, self.auto_source, "Auto DAT", None)]:
+                    tk.Label(fields, text=label, bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 11, 'bold')).grid(row=row, column=0, sticky='w', pady=(0 if row == 0 else 14, 0))
+                    widget = self.entry(fields, var)
+                    widget.grid(row=row, column=1, sticky='ew', padx=(14, 12), pady=(0 if row == 0 else 14, 0), ipady=10)
+                    self.button(fields, text, action, kind='accent' if row == 2 else 'ghost', image=img).grid(row=row, column=2, sticky='e', pady=(0 if row == 0 else 14, 0))
+                    if row == 0:
+                        self.dat_entry = widget
+                    elif row == 1:
+                        self.rom_entry = widget
+                    else:
+                        self.url_entry = widget
+                tk.Label(fields, textvariable=self.hint_var, bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, justify='left', wraplength=860, font=(self.font, 9)).grid(row=3, column=0, columnspan=3, sticky='w', pady=(10, 0))
+                summary = tk.Frame(fields, bg=UI_COLOR_INPUT_BG, highlightbackground=UI_COLOR_INPUT_BORDER, highlightthickness=1)
+                summary.grid(row=4, column=0, columnspan=3, sticky='ew', pady=(16, 0))
+                for column, (title, var) in enumerate([("SYSTEME", self.system_var), ("PROFIL", self.family_var), ("MINERVA", self.source_var)]):
+                    summary.columnconfigure(column, weight=1)
+                    cell = tk.Frame(summary, bg=UI_COLOR_INPUT_BG)
+                    cell.grid(row=0, column=column, sticky='nsew', padx=12, pady=10)
+                    tk.Label(cell, text=title, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_SUB, font=(self.font, 8, 'bold')).pack(anchor='w')
+                    tk.Label(cell, textvariable=var, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, justify='left', wraplength=260, font=(self.font, 10, 'bold')).pack(anchor='w', pady=(4, 0))
+
+                sources = self.card(main, 2)
+                tk.Label(sources, text="Sources de telechargement", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 13, 'bold')).grid(row=0, column=0, sticky='w')
+                tk.Label(sources, text="La collection Minerva adaptee au DAT devient la source principale. Les autres restent en fallback.", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, justify='left', wraplength=880, font=(self.font, 9)).grid(row=1, column=0, sticky='w', pady=(6, 12))
+                grid = tk.Frame(sources, bg=UI_COLOR_CARD_BG)
+                grid.grid(row=2, column=0, sticky='ew')
+                for index, source in enumerate(self.default_sources):
+                    var = tk.BooleanVar(value=source.get('enabled', True))
+                    widget = self.toggle(grid, source['name'], var)
+                    widget.grid(row=index // 3, column=index % 3, sticky='w', padx=(0, 18))
+                    self.source_vars[source['name']] = var
+                    self.source_widgets[source['name']] = widget
+                self.move_to_tosort_var = tk.BooleanVar(value=False)
+                self.toggle(sources, "Deplacer les ROMs hors DAT vers ToSort apres consolidation", self.move_to_tosort_var).grid(row=3, column=0, sticky='w', pady=(14, 0))
+
+                progress = self.card(main, 3, expand=True)
+                progress.columnconfigure(0, weight=1)
+                progress.rowconfigure(3, weight=1)
+                tk.Label(progress, text="Pipeline de consolidation", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 13, 'bold')).grid(row=0, column=0, sticky='w')
+                ttk.Progressbar(progress, variable=self.progress_var, maximum=100, mode='determinate', style='Balrog.Horizontal.TProgressbar').grid(row=1, column=0, sticky='ew', pady=(10, 8))
+                tk.Label(progress, textvariable=self.status_var, bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, font=(self.font, 10)).grid(row=2, column=0, sticky='w')
+                self.log_text = scrolledtext.ScrolledText(progress, height=14, wrap=tk.WORD, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, insertbackground=UI_COLOR_TEXT_MAIN, relief='flat', bd=0, highlightthickness=1, highlightbackground=UI_COLOR_INPUT_BORDER, highlightcolor=UI_COLOR_ACCENT, font=(self.font, 10))
+                self.log_text.grid(row=3, column=0, sticky='nsew', pady=(12, 0))
+
+                actions = tk.Frame(main, bg=UI_COLOR_BG)
+                actions.grid(row=4, column=0, sticky='ew', padx=18, pady=(0, 18))
+                actions.columnconfigure(0, weight=1)
+                self.start_button = self.button(actions, "Lancer la consolidation", self.start, kind='accent', width=22)
+                self.start_button.grid(row=0, column=1, padx=(0, 10))
+                self.stop_button = self.button(actions, "Arreter", self.stop, kind='danger', width=12)
+                self.stop_button.grid(row=0, column=2, padx=(0, 10))
+                self.stop_button.configure(state=tk.DISABLED)
+                self.button(actions, "Quitter", self.root.quit, width=12).grid(row=0, column=3)
+
+            def _drop(self, variable, event):
+                variable.set(self._clean(event.data))
+                return event.action
+
+            def _clean(self, path):
+                path = path.strip()
+                if path.startswith('"') and path.endswith('"'):
+                    path = path[1:-1]
+                if path.startswith('{') and path.endswith('}'):
+                    path = path[1:-1]
+                return path.split('\n')[0].strip()
+
+            def _ui(self, callback):
+                if threading.current_thread() is threading.main_thread():
+                    callback()
+                else:
+                    self.root.after(0, callback)
+
+            def browse_dat(self):
+                filename = filedialog.askopenfilename(title="Selectionner le fichier DAT", filetypes=[("DAT files", "*.dat"), ("All files", "*.*")])
+                if filename:
+                    self.dat_file.set(filename)
+
+            def browse_rom(self):
+                folder = filedialog.askdirectory(title="Selectionner le dossier a consolider")
+                if folder:
+                    self.rom_folder.set(folder)
+
+            def auto_source(self):
+                default_url = self.dat_profile.get('default_source_url', '')
+                if default_url:
+                    self.myrient_url.set(default_url)
+                    self.status_var.set("URL Minerva renseignee depuis le DAT")
+                else:
+                    messagebox.showwarning("Profil DAT", "Impossible de proposer une URL auto pour ce DAT.")
+
+            def refresh_profile(self):
+                path = self.dat_file.get().strip()
+                profile = finalize_dat_profile(detect_dat_profile(path)) if path and os.path.exists(path) else finalize_dat_profile({'family': 'unknown', 'family_label': 'Inconnu', 'system_name': '', 'is_retool': False, 'retool_label': 'DAT brut'})
+                self.dat_profile = profile
+                self.system_var.set(profile.get('system_name') or "Selectionnez un DAT No-Intro ou Redump")
+                self.family_var.set(f"{profile.get('family_label', 'Inconnu')}{' via Retool' if profile.get('is_retool') else ''}")
+                self.source_var.set(profile.get('default_source_url') or "Selection auto Minerva")
+                self.hint_var.set("Le dossier cible peut etre vide ou deja contenir un set partiel a consolider." if profile.get('system_name') else "Charge un DAT Retool pour orienter automatiquement la bonne collection Minerva.")
+                self.family_badge.configure(text=profile.get('family_label') if profile.get('family') != 'unknown' else "Profil manuel", bg={'no-intro': UI_COLOR_ACCENT, 'redump': UI_COLOR_SUCCESS, 'tosec': UI_COLOR_WARNING}.get(profile.get('family'), UI_COLOR_WARNING))
+                self.mode_badge.configure(text="Retool / 1G1R" if profile.get('is_retool') else "DAT brut", bg=UI_COLOR_SUCCESS if profile.get('is_retool') else UI_COLOR_GHOST_HOVER)
+                for source in prepare_sources_for_profile([source.copy() for source in self.default_sources], profile):
+                    self.source_vars[source['name']].set(source.get('enabled', True))
+                    self.source_widgets[source['name']].configure(state=tk.NORMAL if source.get('compatible', True) else tk.DISABLED)
+
+            def selected_sources(self):
+                sources = []
+                for source in self.default_sources:
+                    item = source.copy()
+                    item['enabled'] = bool(self.source_vars[source['name']].get())
+                    sources.append(item)
+                custom_url = self.myrient_url.get().strip()
+                if custom_url and custom_url.rstrip('/').lower() not in {s.get('base_url', '').rstrip('/').lower() for s in sources if s.get('base_url')}:
+                    sources.insert(0, build_custom_source(custom_url))
+                return prepare_sources_for_profile(sources, self.dat_profile)
+
+            def log(self, message):
+                self._ui(lambda: (self.log_text.insert(tk.END, message + "\n"), self.log_text.see(tk.END)))
+
+            def start(self):
+                if not self.dat_file.get() or not os.path.exists(self.dat_file.get()):
+                    messagebox.showerror("Erreur", "Veuillez selectionner un fichier DAT valide")
+                    return
+                if not self.rom_folder.get() or not os.path.exists(self.rom_folder.get()):
+                    messagebox.showerror("Erreur", "Veuillez selectionner un dossier a consolider valide")
+                    return
+                self.running = True
+                self.start_button.configure(state=tk.DISABLED)
+                self.stop_button.configure(state=tk.NORMAL)
+                self.progress_var.set(0)
+                self.log_text.delete(1.0, tk.END)
+                self.status_var.set("Preparation de la consolidation...")
+                threading.Thread(target=self.run_download, daemon=True).start()
+
+            def stop(self):
+                self.running = False
+                self.status_var.set("Arret en cours...")
+
+            def run_download(self):
+                try:
+                    dat_path = self.dat_file.get().strip()
+                    rom_folder = self.rom_folder.get().strip()
+                    dat_profile = finalize_dat_profile(detect_dat_profile(dat_path))
+                    system_name = dat_profile.get('system_name') or detect_system_name(dat_path)
+                    sources = self.selected_sources()
+                    dat_games = parse_dat_file(dat_path)
+                    local_roms, local_roms_normalized, local_game_names = scan_local_roms(rom_folder)
+                    missing_games = find_missing_games(dat_games, local_roms, local_roms_normalized, local_game_names)
+                    if not missing_games:
+                        self.status_var.set("Termine - dossier deja complet")
+                        self._ui(lambda: messagebox.showinfo("Termine", "Tous les jeux du DAT sont deja presents localement."))
+                        return
+                    self.log(f"Profil DAT: {describe_dat_profile(dat_profile)}")
+                    self.log(f"Sources actives: {', '.join([s['name'] for s in sources if s.get('enabled', True)])}")
+                    to_download, not_available = search_all_sources(missing_games, sources, self.session, system_name, dat_profile)
+                    if not_available:
+                        self.log(f"{len(not_available)} jeux non disponibles:")
+                        for game in not_available[:20]:
+                            self.log(f"  - {game['game_name']}")
+                    if not to_download:
+                        self.status_var.set("Aucun jeu trouve sur les sources")
+                        self._ui(lambda: messagebox.showwarning("Attention", "Aucun jeu manquant n'a ete trouve sur les sources actives."))
+                        return
+                    downloaded = failed = skipped = 0
+                    for index, game_info in enumerate(to_download, 1):
+                        if not self.running:
+                            self.log("Arrete par l'utilisateur.")
+                            break
+                        game_name = game_info['game_name']
+                        source = game_info.get('source', 'unknown')
+                        filename = game_info.get('download_filename', game_name)
+                        self.log(f"[{index}/{len(to_download)}] {game_name} [{source}]")
+                        self.status_var.set(f"Telechargement {index}/{len(to_download)} : {game_name[:60]}")
+                        exists, existing_path = file_exists_in_folder(rom_folder, filename)
+                        if exists:
+                            self.log(f"  Deja present: {os.path.basename(existing_path)}")
+                            skipped += 1
+                            continue
+                        dest_path = os.path.join(rom_folder, filename)
+                        progress = lambda value: self._ui(lambda: self.progress_var.set(value))
+                        success = False
+                        download_url = game_info.get('download_url')
+                        torrent_url = game_info.get('torrent_url')
+                        if source == 'archive_org':
+                            identifier = game_info.get('archive_org_identifier', '')
+                            if identifier and filename:
+                                success = download_from_archive_org(identifier, filename, dest_path, progress)
+                        elif source == 'EdgeEmu' and download_url:
+                            success = download_file(download_url, dest_path, self.session, progress)
+                        elif source == 'PlanetEmu' and game_info.get('page_url'):
+                            success = download_planetemu(game_info['page_url'], dest_path, self.session, progress)
+                        elif source.startswith('Minerva') and torrent_url:
+                            success = download_from_minerva_torrent(torrent_url, filename, dest_path, progress)
+                        elif source == 'database' and download_url:
+                            if '1fichier.com' in download_url:
+                                success = download_from_premium_source('1fichier', download_url, dest_path, load_api_keys(), progress)
+                            elif 'myrient' in download_url:
+                                success = False
+                            else:
+                                success = download_file(download_url, dest_path, self.session, progress)
+                        else:
+                            source_info = next((item for item in sources if item['name'] == source), None)
+                            base_url = source_info['base_url'] if source_info else self.myrient_url.get().strip()
+                            if base_url:
+                                success = download_file(f"{base_url.rstrip('/')}/{quote(filename)}", dest_path, self.session, progress)
+                        if success:
+                            self.log(f"  Telecharge: {filename}")
+                            downloaded += 1
+                            time.sleep(0.5)
+                        else:
+                            self.log("  Echec du telechargement")
+                            failed += 1
+                    if self.move_to_tosort_var.get():
+                        parent_folder = os.path.dirname(rom_folder)
+                        tosort_folder = os.path.join(parent_folder, "ToSort")
+                        files_to_move = find_roms_not_in_dat(dat_games, local_roms, local_roms_normalized, rom_folder)
+                        if files_to_move:
+                            moved, move_failed = move_files_to_tosort(files_to_move, rom_folder, tosort_folder, False)
+                            self.log(f"ToSort -> deplaces: {moved}, echecs: {move_failed}")
+                    self.status_var.set(f"Termine - {downloaded} telecharge(s)")
+                    self._ui(lambda: messagebox.showinfo("Termine", f"Consolidation terminee.\n\nTelecharges: {downloaded}\nEchecs: {failed}\nIgnores: {skipped}"))
+                except Exception as e:
+                    self.log(f"ERREUR: {e}")
+                    self.status_var.set("Erreur")
+                    self._ui(lambda: messagebox.showerror("Erreur", f"Une erreur est survenue:\n{e}"))
+                finally:
+                    self.running = False
+                    self._ui(lambda: (self.start_button.configure(state=tk.NORMAL), self.stop_button.configure(state=tk.DISABLED), self.progress_var.set(0)))
+
+        if has_dnd:
+            root = tkinterdnd2.TkinterDnD.Tk()
+            App(root, use_dnd=True)
+        else:
+            root = tk.Tk()
+            App(root, use_dnd=False)
+            root.after(500, lambda: messagebox.showinfo("Info", "Le drag and drop n'est pas disponible. Installez tkinterdnd2 pour l'activer, ou utilisez les boutons Parcourir."))
+        root.protocol("WM_DELETE_WINDOW", root.quit)
+        root.mainloop()
+        root.destroy()
+    except Exception as e:
+        print(f"Erreur GUI: {e}")
+        print("Bascule vers le mode interactif...")
+        interactive_mode()
+
+
 def main():
     parser = argparse.ArgumentParser(
-        description='ROM Downloader - Compare DAT avec ROMs locales et telecharge depuis plusieurs sources',
+        description='ROM Downloader - Consolide un dossier 1G1R a partir d un DAT No-Intro ou Redump et telecharge les manquants',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=r'''
 Exemples:
   python rom_downloader.py --gui
-  python rom_downloader.py "Dat\Nintendo - Game Boy.dat" "Roms\GB"
-  python rom_downloader.py "Dat\PS1.dat" "Roms\PS1" --limit 10
+  python rom_downloader.py "Dat\Nintendo - Game Boy (Retool).dat" "Roms\Game Boy"
+  python rom_downloader.py "Dat\Sony - PlayStation 2 (Retool).dat" "Roms\PS2" --limit 10
   python rom_downloader.py  (mode interactif)
   python rom_downloader.py --sources  (afficher les sources disponibles)
   python rom_downloader.py --configure-api  (configurer les clés API)
         '''
     )
     parser.add_argument('dat_file', nargs='?', help='Chemin vers le fichier DAT')
-    parser.add_argument('rom_folder', nargs='?', help='Chemin vers le dossier des ROMs')
-    parser.add_argument('myrient_url', nargs='?', help='URL Myrient')
+    parser.add_argument('rom_folder', nargs='?', help='Chemin vers le dossier de ROMs a consolider')
+    parser.add_argument('myrient_url', nargs='?', help='URL source optionnelle (laisser vide pour la selection Minerva auto)')
     parser.add_argument('-o', '--output', help='Dossier de sortie (defaut: rom_folder)')
     parser.add_argument('--dry-run', action='store_true', help='Simulation sans telechargement')
     parser.add_argument('--limit', type=int, help='Limite de telechargements')
