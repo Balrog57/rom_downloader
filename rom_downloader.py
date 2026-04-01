@@ -2372,6 +2372,70 @@ def list_edgeemu_directory(system_slug: str, session: requests.Session) -> dict:
     return mapping
 
 
+def iter_game_candidate_names(game_info: dict) -> list:
+    """Retourne les meilleurs noms candidats pour résoudre un jeu sur une source externe."""
+    candidates = []
+
+    primary_rom = strip_rom_extension(game_info.get('primary_rom', '')).strip()
+    if primary_rom and primary_rom not in candidates:
+        candidates.append(primary_rom)
+
+    for rom_info in game_info.get('roms', []):
+        rom_name = strip_rom_extension(rom_info.get('name', '')).strip()
+        if rom_name and rom_name not in candidates:
+            candidates.append(rom_name)
+
+    game_name = (game_info.get('game_name') or '').strip()
+    if game_name and game_name not in candidates:
+        candidates.append(game_name)
+
+    return candidates
+
+
+def resolve_edgeemu_game(game_info: dict, system_slug: str, session: requests.Session) -> dict | None:
+    """
+    Résout directement une URL EdgeEmu à partir du nom de ROM.
+    Le browse EdgeEmu ne retourne qu'un petit sous-ensemble variable de jeux,
+    donc on privilégie ici l'URL de téléchargement déterministe.
+    """
+    if not system_slug:
+        return None
+
+    if ROM_DATABASE is None:
+        load_rom_database()
+
+    config = ROM_DATABASE.get('config_urls', {})
+    edgeemu_base = (config.get('edgeemu_base', '') or '').rstrip('/')
+    if not edgeemu_base:
+        return None
+
+    for candidate_name in iter_game_candidate_names(game_info):
+        filename = f"{candidate_name}.zip"
+        download_url = f"{edgeemu_base}/download/{system_slug}/{quote(filename)}"
+        try:
+            response = session.get(download_url, timeout=30, allow_redirects=True, stream=True)
+            status_code = response.status_code
+            content_type = (response.headers.get('content-type') or '').lower()
+            content_disposition = response.headers.get('content-disposition') or ''
+            final_url = response.url
+            response.close()
+
+            if status_code == 200 and (
+                'application/octet-stream' in content_type
+                or 'application/zip' in content_type
+                or content_disposition
+            ):
+                return {
+                    'full_name': candidate_name,
+                    'filename': filename,
+                    'url': final_url
+                }
+        except Exception:
+            continue
+
+    return None
+
+
 def list_planetemu_directory(system_slug: str, session: requests.Session) -> dict:
     """Scrape PlanetEmu pour un système donné."""
     if not system_slug:
@@ -2618,22 +2682,20 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
                 slug = mappings.get('edgeemu')
                 if slug:
                     print(f"\n--- Recherche sur EdgeEmu ({slug}) ---")
-                    edge_files = list_edgeemu_directory(slug, session)
-                    if edge_files:
-                        newly_found = []
-                        remaining = []
-                        for game_info in still_missing:
-                            name_lower = game_info['game_name'].lower()
-                            if name_lower in edge_files:
-                                game_info['download_url'] = edge_files[name_lower]['url']
-                                game_info['source'] = 'EdgeEmu'
-                                game_info['download_filename'] = game_info['game_name']
-                                newly_found.append(game_info)
-                                print(f"  [EdgeEmu] {game_info['game_name']} trouvé")
-                            else:
-                                remaining.append(game_info)
-                        all_found.extend(newly_found)
-                        still_missing = remaining
+                    newly_found = []
+                    remaining = []
+                    for game_info in still_missing:
+                        edge_match = resolve_edgeemu_game(game_info, slug, session)
+                        if edge_match:
+                            game_info['download_url'] = edge_match['url']
+                            game_info['source'] = 'EdgeEmu'
+                            game_info['download_filename'] = edge_match['filename']
+                            newly_found.append(game_info)
+                            print(f"  [EdgeEmu] {game_info['game_name']} trouvé")
+                        else:
+                            remaining.append(game_info)
+                    all_found.extend(newly_found)
+                    still_missing = remaining
 
             elif source['type'] == 'planetemu' and source.get('enabled', True) and source.get('compatible', True):
                 slug = mappings.get('planetemu')
@@ -2648,7 +2710,7 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
                             if name_lower in planet_files:
                                 game_info['page_url'] = planet_files[name_lower]['page_url']
                                 game_info['source'] = 'PlanetEmu'
-                                game_info['download_filename'] = game_info['game_name']
+                                game_info['download_filename'] = f"{game_info['game_name']}.zip"
                                 newly_found.append(game_info)
                                 print(f"  [PlanetEmu] {game_info['game_name']} trouvé")
                             else:
@@ -2788,15 +2850,6 @@ def search_all_sources(
         game_name = game_info['game_name']
         db_results, search_hint = search_database_for_game(game_info)
 
-        if () and not db_results:
-            for rom_info in roms:
-                md5_hash = rom_info.get('md5', '')
-                if md5_hash:
-                    db_results = search_by_md5(md5_hash)
-                    if db_results:
-                        print(f"  [DB] {game_name} trouvÃ© par MD5: {md5_hash}")
-                        break
-
         best_result = select_database_result(db_results)
         if best_result:
             game_info['download_filename'] = database_result_filename(best_result, game_name)
@@ -2823,16 +2876,15 @@ def search_all_sources(
                 slug = mappings.get('edgeemu')
                 if slug:
                     print(f"\n--- Recherche sur EdgeEmu ({slug}) ---")
-                    edge_files = list_edgeemu_directory(slug, session)
-                    if edge_files:
-                        newly_found = []
+                    newly_found = []
+                    if still_missing:
                         remaining = []
                         for game_info in still_missing:
-                            name_lower = game_info['game_name'].lower()
-                            if name_lower in edge_files:
-                                game_info['download_url'] = edge_files[name_lower]['url']
+                            edge_match = resolve_edgeemu_game(game_info, slug, session)
+                            if edge_match:
+                                game_info['download_url'] = edge_match['url']
                                 game_info['source'] = 'EdgeEmu'
-                                game_info['download_filename'] = edge_files[name_lower]['full_name']
+                                game_info['download_filename'] = edge_match['filename']
                                 newly_found.append(game_info)
                                 print(f"  [EdgeEmu] {game_info['game_name']} trouvÃ©")
                             else:
@@ -2853,7 +2905,7 @@ def search_all_sources(
                             if name_lower in planet_files:
                                 game_info['page_url'] = planet_files[name_lower]['page_url']
                                 game_info['source'] = 'PlanetEmu'
-                                game_info['download_filename'] = game_info['game_name']
+                                game_info['download_filename'] = f"{game_info['game_name']}.zip"
                                 newly_found.append(game_info)
                                 print(f"  [PlanetEmu] {game_info['game_name']} trouvÃ©")
                             else:
