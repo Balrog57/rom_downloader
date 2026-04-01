@@ -1,38 +1,40 @@
 #!/usr/bin/env python3
 r"""
-ROMVault Missing ROM Downloader
+ROM Downloader
 
-Compare un fichier DAT avec des ROMs locales et télécharge les manquantes depuis plusieurs sources.
+Compare un DAT No-Intro ou Redump retraite avec Retool a un dossier cible
+et telecharge uniquement les ROMs manquantes.
 
-Sources supportées:
+Sources supportees:
     GRATUITES:
-    - Myrient No-Intro
-    - Myrient Redump
-    - Myrient TOSEC
-    - archive.org: Recherche par signature MD5
-    
-    PREMIUM (nécessitent une clé API):
-    - 1fichier: Téléchargement via API
-    - AllDebrid: Service debrid multi-hébergeurs
-    - RealDebrid: Service debrid multi-hébergeurs
+    - Minerva No-Intro / Redump / TOSEC
+    - archive.org
+    - EdgeEmu
+    - PlanetEmu
+    - 1fichier (gratuit)
+
+    PREMIUM:
+    - 1fichier (API)
+    - AllDebrid
+    - RealDebrid
 
 Usage en ligne de commande:
-    python rom_downloader.py <dat_file> <rom_folder> <myrient_url> [--dry-run] [--limit N] [--tosort]
+    python rom_downloader.py <dat_file> <rom_folder> [url_source] [--dry-run] [--limit N] [--tosort]
 
 Usage interactif (sans arguments):
     python rom_downloader.py
-    (Pose des questions pour les chemins)
+    (pose les questions pour les chemins)
 
 Usage GUI (interface graphique):
     python rom_downloader.py --gui
 
 Options:
-    --dry-run         Simulation sans téléchargement
-    --limit N         Limite le nombre de téléchargements
-    --tosort          Déplace les ROMs non présentes dans le DAT vers le dossier ToSort
+    --dry-run         Simulation sans telechargement
+    --limit N         Limite le nombre de telechargements
+    --tosort          Deplace les ROMs hors DAT dans un sous-dossier ToSort
     --gui             Lance l'interface graphique
-    --sources         Affiche la liste des sources de téléchargement
-    --configure-api   Configure les clés API pour les services premium
+    --sources         Affiche la liste des sources de telechargement
+    --configure-api   Configure les cles API pour les services premium
 """
 
 import argparse
@@ -47,6 +49,7 @@ import sys
 import tempfile
 import time
 import xml.etree.ElementTree as ET
+import zlib
 from pathlib import Path
 from urllib.parse import quote, unquote, urljoin
 
@@ -233,6 +236,32 @@ def search_by_md5(md5_hash: str) -> list:
     return []
 
 
+def database_result_filename(entry: dict, fallback: str = '') -> str:
+    """Retourne le meilleur nom de fichier disponible pour une entrée de base locale."""
+    return (
+        entry.get('filename')
+        or entry.get('full_name')
+        or entry.get('game_name')
+        or fallback
+    )
+
+
+def search_by_crc(crc_hash: str) -> list:
+    """
+    Recherche une ROM par CRC dans la base locale.
+    La base actuelle ne contient pas d'index CRC dédié.
+    """
+    return []
+
+
+def search_by_sha1(sha1_hash: str) -> list:
+    """
+    Recherche une ROM par SHA1 dans la base locale.
+    La base actuelle ne contient pas d'index SHA1 dédié.
+    """
+    return []
+
+
 def search_by_name(game_name: str) -> list:
     """
     Recherche une ROM par son nom dans la base de données locale.
@@ -243,21 +272,37 @@ def search_by_name(game_name: str) -> list:
     if not game_name:
         return []
     
-    # Recherche dans la base
-    results = []
-    game_normalized = game_name.lower().strip()
-    
-    # On parcourt les URLs de la base pour trouver une correspondance sur le nom
-    # Note: C'est plus lent que le lookup mais évite le fichier de 20MB
+    exact_results = []
+    partial_results = []
+    game_normalized = strip_rom_extension(game_name).lower().strip()
+    if not game_normalized:
+        return []
+
     urls = ROM_DATABASE.get('urls', [])
     for entry in urls:
-        full_name = entry.get('full_name', '').lower()
-        if game_normalized in full_name:
-            results.append(entry)
-            if len(results) >= 50:
-                break
-                
-    return results
+        filename = database_result_filename(entry).lower()
+        filename_no_ext = strip_rom_extension(filename).lower()
+        entry_game_name = str(entry.get('game_name', '')).lower().strip()
+        entry_game_name_normalized = str(entry.get('game_name_normalized', '')).lower().strip()
+
+        candidates = {
+            value for value in (
+                filename,
+                filename_no_ext,
+                entry_game_name,
+                entry_game_name_normalized
+            ) if value
+        }
+
+        if game_normalized in candidates:
+            exact_results.append(entry)
+        elif any(game_normalized in candidate for candidate in candidates):
+            partial_results.append(entry)
+
+        if len(exact_results) + len(partial_results) >= 50:
+            break
+
+    return exact_results + partial_results
 
 # ============================================================================
 # Configuration des sources de téléchargement
@@ -405,7 +450,7 @@ def get_default_sources():
             'base_url': config.get('archive_org', ''),
             'type': 'archive_org',
             'enabled': True,
-            'description': 'Fallback MD5 / téléchargement direct',
+            'description': 'Fallback checksum / téléchargement direct',
             'priority': 2
         },
         {
@@ -717,7 +762,7 @@ def prepare_sources_for_profile(sources: list, dat_profile: dict | None) -> list
 def describe_dat_profile(dat_profile: dict | None) -> str:
     """Retourne un résumé lisible du DAT détecté."""
     if not dat_profile:
-        return "Profil DAT inconnu"
+        return "DAT inconnu"
 
     parts = []
     system_name = dat_profile.get('system_name')
@@ -732,7 +777,7 @@ def describe_dat_profile(dat_profile: dict | None) -> str:
     if retool_label:
         parts.append(retool_label)
 
-    return " | ".join(parts) if parts else "Profil DAT inconnu"
+    return " | ".join(parts) if parts else "DAT inconnu"
 
 
 def list_minerva_directory(minerva_url: str, session: requests.Session) -> tuple[set, list]:
@@ -813,6 +858,40 @@ def select_database_result(db_results: list) -> dict | None:
             return result
 
     return candidates[0]
+
+
+def search_database_for_game(game_info: dict) -> tuple[list, str]:
+    """Recherche un jeu dans la base locale selon la priorité MD5 -> CRC -> SHA1 -> nom."""
+    roms = game_info.get('roms', [])
+    search_plan = [
+        ('MD5', 'md5', search_by_md5),
+        ('CRC', 'crc', search_by_crc),
+        ('SHA1', 'sha1', search_by_sha1)
+    ]
+
+    for label, checksum_type, resolver in search_plan:
+        for rom_info in roms:
+            checksum_value = normalize_checksum(rom_info.get(checksum_type, ''), checksum_type)
+            if not checksum_value:
+                continue
+            results = resolver(checksum_value)
+            if results:
+                return results, f"{label}: {checksum_value}"
+
+    primary_rom = game_info.get('primary_rom', '')
+    primary_name = strip_rom_extension(primary_rom).strip()
+    if primary_name:
+        results = search_by_name(primary_name)
+        if results:
+            return results, f"nom ROM: {primary_name}"
+
+    game_name = game_info.get('game_name', '')
+    if game_name:
+        results = search_by_name(game_name)
+        if results:
+            return results, f"nom jeu: {game_name}"
+
+    return [], ''
 
 
 def ensure_webtorrent_runtime() -> bool:
@@ -1459,72 +1538,106 @@ def print_sources_info():
 # Fonctions de traitement
 # ============================================================================
 
-def search_archive_org_by_md5(md5_hash: str, rom_name: str) -> dict:
+ARCHIVE_CHECKSUM_QUERY_FIELDS = {
+    'md5': ['md5'],
+    'crc': ['crc32', 'crc'],
+    'sha1': ['sha1']
+}
+
+ARCHIVE_CHECKSUM_FILE_FIELDS = {
+    'md5': ['md5'],
+    'crc': ['crc32', 'crc'],
+    'sha1': ['sha1']
+}
+
+
+def archive_org_result(identifier: str, file_name: str, checksum_type: str, checksum_value: str, source: str) -> dict:
+    """Construit une réponse archive.org uniforme."""
+    return {
+        'found': True,
+        'identifier': identifier,
+        'filename': file_name,
+        checksum_type: checksum_value,
+        'checksum_type': checksum_type,
+        'source': source
+    }
+
+
+def archive_org_matches_name(file_name: str, rom_name: str) -> bool:
+    """Vérifie si un nom de fichier archive.org correspond au nom attendu."""
+    if not file_name or not rom_name:
+        return False
+
+    file_lower = file_name.lower()
+    rom_lower = rom_name.lower()
+    clean_name = rom_lower.split('(')[0].strip()
+    return (
+        rom_lower in file_lower
+        or clean_name in file_lower
+        or strip_rom_extension(file_name).lower() == strip_rom_extension(rom_name).lower()
+    )
+
+
+def get_archive_file_checksum(file_info: dict, checksum_type: str) -> str:
+    """Récupère une somme de contrôle archive.org normalisée."""
+    for field_name in ARCHIVE_CHECKSUM_FILE_FIELDS.get(checksum_type, []):
+        checksum_value = normalize_checksum(file_info.get(field_name, ''), checksum_type)
+        if checksum_value:
+            return checksum_value
+    return ''
+
+
+def search_archive_org_by_checksum(checksum_value: str, rom_name: str, checksum_type: str) -> dict:
     """
-    Search for a ROM on archive.org using MD5 hash with multiple strategies.
-    NOTE: archive.org a des limitations pour les ROMs No-Intro.
-    Cette fonction est un dernier recours après Myrient.
+    Recherche un fichier sur archive.org par checksum, puis recoupe par nom si nécessaire.
+    archive.org reste un fallback final après Minerva et la base locale.
     """
-    if not md5_hash:
+    normalized_checksum = normalize_checksum(checksum_value, checksum_type)
+    if not normalized_checksum:
         return {'found': False}
 
-    print(f"  Recherche archive.org par MD5: {md5_hash}")
-
+    label = checksum_type.upper()
     strategies_tried = []
+    query_fields = ARCHIVE_CHECKSUM_QUERY_FIELDS.get(checksum_type, [checksum_type])
 
-    # Stratégie 1: Recherche directe par MD5
-    try:
-        query = f'md5:{md5_hash}'
-        print(f"    -> Recherche: {query}")
-        results = internetarchive.search_items(query)
+    print(f"  Recherche archive.org par {label}: {normalized_checksum}")
 
-        for result in results:
-            identifier = result.get('identifier', '')
-            if identifier:
+    for query_field in query_fields:
+        try:
+            query = f'{query_field}:{normalized_checksum}'
+            print(f"    -> Recherche: {query}")
+            results = list(internetarchive.search_items(query))[:20]
+
+            for result in results:
+                identifier = result.get('identifier', '')
+                if not identifier:
+                    continue
+
                 try:
                     item = internetarchive.get_item(identifier)
                     files = item.get_files()
 
                     for file_info in files:
                         file_name = file_info.get('name', '')
-                        file_md5 = file_info.get('md5', '')
-
-                        if file_md5 and file_md5.lower() == md5_hash.lower():
+                        file_checksum = get_archive_file_checksum(file_info, checksum_type)
+                        if file_checksum and file_checksum == normalized_checksum:
                             print(f"    [OK] Trouvé: {identifier}/{file_name}")
-                            return {
-                                'found': True,
-                                'identifier': identifier,
-                                'filename': file_name,
-                                'md5': md5_hash,
-                                'source': 'archive_org_md5'
-                            }
-                except Exception as e:
+                            return archive_org_result(identifier, file_name, checksum_type, normalized_checksum, f'archive_org_{checksum_type}')
+                except Exception:
                     continue
 
-        strategies_tried.append('md5_direct')
-    except Exception as e:
-        print(f"    [ERREUR] Recherche MD5: {e}")
-        strategies_tried.append(f'md5_error: {e}')
+            strategies_tried.append(query_field)
+        except Exception as e:
+            print(f"    [ERREUR] Recherche {label}: {e}")
+            strategies_tried.append(f'{query_field}_error: {e}')
 
-    # Stratégie 2: Recherche par nom de ROM avec différentes collections
     if rom_name:
-        collections_to_try = [
-            'softwarelibrary',
-            'retrogames',
-            'classicgames',
-            'gameboy',
-            ''  # No filter (all archive.org)
-        ]
-        
+        collections_to_try = ['softwarelibrary', 'retrogames', 'classicgames', 'gameboy', '']
         clean_name = rom_name.split('(')[0].strip()
-        
+
         for collection in collections_to_try:
             try:
-                if collection:
-                    query = f'{clean_name} AND collection:{collection}'
-                else:
-                    query = clean_name
-                
+                query = f'{clean_name} AND collection:{collection}' if collection else clean_name
                 print(f"    -> Recherche nom: {query[:50]}...")
                 results = list(internetarchive.search_items(query))[:15]
 
@@ -1539,34 +1652,14 @@ def search_archive_org_by_md5(md5_hash: str, rom_name: str) -> dict:
 
                         for file_info in files:
                             file_name = file_info.get('name', '')
-                            file_md5 = file_info.get('md5', '')
+                            if not archive_org_matches_name(file_name, rom_name):
+                                continue
 
-                            # Vérifier correspondance nom
-                            if (rom_name.lower() in file_name.lower() or 
-                                clean_name.lower() in file_name.lower()):
-                                
-                                if file_name.endswith(('.zip', '.gb', '.gbc', '.7z', '.rar')):
-                                    # Si on a un MD5, le vérifier
-                                    if file_md5 and file_md5.lower() == md5_hash.lower():
-                                        print(f"    [OK] Trouvé (nom+MD5): {identifier}/{file_name}")
-                                        return {
-                                            'found': True,
-                                            'identifier': identifier,
-                                            'filename': file_name,
-                                            'md5': md5_hash,
-                                            'source': 'archive_org_name'
-                                        }
-                                    elif not file_md5:
-                                        # Pas de MD5 disponible, on prend quand même en dernier recours
-                                        print(f"    [OK] Trouvé (nom seulement): {identifier}/{file_name}")
-                                        return {
-                                            'found': True,
-                                            'identifier': identifier,
-                                            'filename': file_name,
-                                            'md5': md5_hash,
-                                            'source': 'archive_org_name'
-                                        }
-                    except Exception as e:
+                            file_checksum = get_archive_file_checksum(file_info, checksum_type)
+                            if file_checksum and file_checksum == normalized_checksum:
+                                print(f"    [OK] Trouvé (nom+{label}): {identifier}/{file_name}")
+                                return archive_org_result(identifier, file_name, checksum_type, normalized_checksum, f'archive_org_{checksum_type}')
+                    except Exception:
                         continue
 
                 strategies_tried.append(f'name_{collection or "all"}')
@@ -1575,6 +1668,21 @@ def search_archive_org_by_md5(md5_hash: str, rom_name: str) -> dict:
 
     print(f"  [KO] Non trouvé sur archive.org (stratégies: {', '.join(strategies_tried)})")
     return {'found': False, 'strategies_tried': strategies_tried}
+
+
+def search_archive_org_by_md5(md5_hash: str, rom_name: str) -> dict:
+    """Recherche archive.org par MD5."""
+    return search_archive_org_by_checksum(md5_hash, rom_name, 'md5')
+
+
+def search_archive_org_by_crc(crc_hash: str, rom_name: str) -> dict:
+    """Recherche archive.org par CRC."""
+    return search_archive_org_by_checksum(crc_hash, rom_name, 'crc')
+
+
+def search_archive_org_by_sha1(sha1_hash: str, rom_name: str) -> dict:
+    """Recherche archive.org par SHA1."""
+    return search_archive_org_by_checksum(sha1_hash, rom_name, 'sha1')
 
 
 def download_from_ia_zip(identifier: str, zip_path: str, filename: str, dest_path: str, progress_callback=None) -> bool:
@@ -1825,80 +1933,232 @@ def parse_dat_file(dat_path: str) -> dict:
     return games
 
 
-def scan_local_roms(rom_folder: str) -> tuple:
+def normalize_checksum(value: str, checksum_type: str) -> str:
+    """Normalise un hash pour les comparaisons."""
+    normalized = (value or '').strip().lower()
+    if not normalized:
+        return ''
+    if checksum_type == 'crc':
+        return normalized.zfill(8)
+    return normalized
+
+
+def parse_rom_size(value) -> int | None:
+    """Convertit une taille de ROM DAT en entier si possible."""
+    try:
+        size = int(str(value).strip())
+        return size if size >= 0 else None
+    except Exception:
+        return None
+
+
+def strip_rom_extension(filename: str) -> str:
+    """Retire l'extension ROM reconnue d'un nom de fichier."""
+    name_no_ext = filename
+    for ext in ROM_EXTENSIONS:
+        if name_no_ext.lower().endswith(ext):
+            return name_no_ext[:-len(ext)]
+    return name_no_ext
+
+
+def add_local_name_reference(filename: str, local_roms: set, local_roms_normalized: set, local_game_names: set):
+    """Ajoute un nom de fichier dans les index de comparaison locale."""
+    if not filename:
+        return
+    basename = Path(filename).name
+    name_no_ext = strip_rom_extension(basename)
+    local_roms.add(basename)
+    local_roms_normalized.add(name_no_ext.lower())
+    local_game_names.add(name_no_ext.lower())
+
+
+def compute_stream_checksums(stream) -> tuple[str, str, str]:
+    """Calcule CRC32, MD5 et SHA1 d'un flux binaire."""
+    md5_hash = hashlib.md5()
+    sha1_hash = hashlib.sha1()
+    crc_value = 0
+
+    for chunk in iter(lambda: stream.read(1024 * 1024), b''):
+        if not chunk:
+            break
+        md5_hash.update(chunk)
+        sha1_hash.update(chunk)
+        crc_value = zlib.crc32(chunk, crc_value)
+
+    return (
+        normalize_checksum(f"{crc_value & 0xffffffff:08x}", 'crc'),
+        normalize_checksum(md5_hash.hexdigest(), 'md5'),
+        normalize_checksum(sha1_hash.hexdigest(), 'sha1')
+    )
+
+
+def index_signature_value(signature_index: dict, checksum_type: str, checksum_value: str, reference: dict):
+    """Indexe une signature locale pour les comparaisons rapides."""
+    normalized_value = normalize_checksum(checksum_value, checksum_type)
+    if not normalized_value:
+        return
+    signature_index[checksum_type].setdefault(normalized_value, []).append(reference)
+
+
+def build_target_signature_sets(dat_games: dict | None) -> dict:
+    """Construit les ensembles de signatures présentes dans le DAT."""
+    targets = {
+        'md5': set(),
+        'crc': set(),
+        'sha1': set(),
+        'size': set()
+    }
+    if not dat_games:
+        return targets
+
+    for game_info in dat_games.values():
+        for rom_info in game_info.get('roms', []):
+            for checksum_type in ('md5', 'crc', 'sha1'):
+                normalized_value = normalize_checksum(rom_info.get(checksum_type, ''), checksum_type)
+                if normalized_value:
+                    targets[checksum_type].add(normalized_value)
+            rom_size = parse_rom_size(rom_info.get('size'))
+            if rom_size is not None:
+                targets['size'].add(rom_size)
+
+    return targets
+
+
+def hash_file_signatures(file_path: Path) -> dict:
+    """Calcule les signatures d'un fichier local."""
+    with open(file_path, 'rb') as file_handle:
+        crc_value, md5_hash, sha1_hash = compute_stream_checksums(file_handle)
+    return {
+        'crc': crc_value,
+        'md5': md5_hash,
+        'sha1': sha1_hash
+    }
+
+
+def hash_zip_entry_signatures(zip_file, zip_info) -> dict:
+    """Calcule les signatures d'une entrée ZIP locale."""
+    with zip_file.open(zip_info, 'r') as entry_handle:
+        crc_value, md5_hash, sha1_hash = compute_stream_checksums(entry_handle)
+    return {
+        'crc': normalize_checksum(f"{zip_info.CRC & 0xffffffff:08x}", 'crc') or crc_value,
+        'md5': md5_hash,
+        'sha1': sha1_hash
+    }
+
+
+def scan_local_roms(rom_folder: str, dat_games: dict | None = None) -> tuple:
     """Scan a folder for local ROM files."""
     print(f"Scanning local ROMs folder: {rom_folder}")
 
     local_roms = set()
     local_roms_normalized = set()
     local_game_names = set()
+    signature_index = {'md5': {}, 'crc': {}, 'sha1': {}}
     rom_path = Path(rom_folder)
 
     if not rom_path.exists():
         print(f"Warning: ROM folder does not exist: {rom_folder}")
-        return local_roms, local_roms_normalized, local_game_names
+        return local_roms, local_roms_normalized, local_game_names, signature_index
 
-    # Utiliser la constante globale
-    archive_extensions = ('.zip', '.7z', '.rar', '.gz', '.z')
+    target_signatures = build_target_signature_sets(dat_games)
+    target_sizes = target_signatures['size']
+    archive_extensions = ('.zip',)
+    hashed_items = 0
 
     for file_path in rom_path.rglob('*'):
         if file_path.is_file():
             filename = file_path.name
-            local_roms.add(filename)
-
-            name_no_ext = filename
-            for ext in ROM_EXTENSIONS:
-                if name_no_ext.lower().endswith(ext):
-                    name_no_ext = name_no_ext[:-len(ext)]
-                    break
-            local_roms_normalized.add(name_no_ext.lower())
-            local_game_names.add(name_no_ext.lower())
+            add_local_name_reference(filename, local_roms, local_roms_normalized, local_game_names)
 
             if file_path.suffix.lower() in archive_extensions:
                 try:
                     import zipfile
-                    if file_path.suffix.lower() == '.zip':
-                        with zipfile.ZipFile(file_path, 'r') as zf:
-                            for zip_info in zf.infolist():
-                                if not zip_info.is_dir():
-                                    internal_name = zip_info.filename
-                                    local_roms.add(internal_name)
-                                    for ext in ROM_EXTENSIONS:
-                                        if internal_name.lower().endswith(ext):
-                                            internal_name = internal_name[:-len(ext)]
-                                            break
-                                    local_roms_normalized.add(internal_name.lower())
+                    with zipfile.ZipFile(file_path, 'r') as zf:
+                        for zip_info in zf.infolist():
+                            if zip_info.is_dir():
+                                continue
+
+                            internal_name = Path(zip_info.filename).name or zip_info.filename
+                            add_local_name_reference(internal_name, local_roms, local_roms_normalized, local_game_names)
+
+                            if target_sizes and zip_info.file_size not in target_sizes:
+                                continue
+
+                            signatures = hash_zip_entry_signatures(zf, zip_info)
+                            reference = {
+                                'path': str(file_path),
+                                'member': zip_info.filename,
+                                'name': internal_name,
+                                'size': zip_info.file_size,
+                                **signatures
+                            }
+                            for checksum_type in ('md5', 'crc', 'sha1'):
+                                index_signature_value(signature_index, checksum_type, reference.get(checksum_type, ''), reference)
+                            hashed_items += 1
                 except Exception:
                     pass
+            else:
+                try:
+                    file_size = file_path.stat().st_size
+                except Exception:
+                    continue
+
+                if target_sizes and file_size not in target_sizes:
+                    continue
+
+                try:
+                    signatures = hash_file_signatures(file_path)
+                except Exception:
+                    continue
+
+                reference = {
+                    'path': str(file_path),
+                    'member': '',
+                    'name': filename,
+                    'size': file_size,
+                    **signatures
+                }
+                for checksum_type in ('md5', 'crc', 'sha1'):
+                    index_signature_value(signature_index, checksum_type, reference.get(checksum_type, ''), reference)
+                hashed_items += 1
 
     print(f"Found {len(local_roms)} local ROM files")
-    return local_roms, local_roms_normalized, local_game_names
+    print(f"Indexed {hashed_items} local entries by checksums")
+    return local_roms, local_roms_normalized, local_game_names, signature_index
 
 
-def find_missing_games(dat_games: dict, local_roms: set, local_roms_normalized: set, local_game_names: set) -> list:
+def find_missing_games(dat_games: dict, local_roms: set, local_roms_normalized: set, local_game_names: set,
+                       signature_index: dict | None = None) -> list:
     """Compare DAT games with local ROMs and return missing ones."""
     print("Comparing DAT games with local ROMs...")
 
+    signature_index = signature_index or {'md5': {}, 'crc': {}, 'sha1': {}}
     missing = []
     for game_name, game_info in dat_games.items():
         found = False
 
-        game_name_normalized = game_name.lower()
-        if game_name_normalized in local_game_names:
-            found = True
+        for checksum_type in ('md5', 'crc', 'sha1'):
+            for rom_info in game_info.get('roms', []):
+                checksum_value = normalize_checksum(rom_info.get(checksum_type, ''), checksum_type)
+                if checksum_value and checksum_value in signature_index.get(checksum_type, {}):
+                    found = True
+                    break
+            if found:
+                break
 
         if not found:
             for rom_info in game_info['roms']:
                 rom_name = rom_info['name']
-                rom_name_no_ext = rom_name
-                for ext in ROM_EXTENSIONS:
-                    if rom_name.lower().endswith(ext):
-                        rom_name_no_ext = rom_name[:-len(ext)]
-                        break
+                rom_name_no_ext = strip_rom_extension(rom_name)
 
                 if rom_name in local_roms or rom_name_no_ext.lower() in local_roms_normalized:
                     found = True
                     break
+
+        if not found:
+            game_name_normalized = game_name.lower()
+            if game_name_normalized in local_game_names:
+                found = True
 
         if not found:
             missing.append(game_info)
@@ -2241,21 +2501,24 @@ def match_myrient_files(missing_games: list, myrient_files: set, source_name: st
     not_available = []
     for game_info in missing_games:
         game_name = game_info['game_name']
-        game_name_normalized = game_name.lower()
-
         matched_file = None
-        if game_name_normalized in myrient_lookup:
-            matched_file = myrient_lookup[game_name_normalized]
+        for rom_info in game_info.get('roms', []):
+            rom_name = rom_info.get('name', '')
+            rom_name_no_ext = strip_rom_extension(rom_name)
+            if rom_name_no_ext.lower() in myrient_lookup:
+                matched_file = myrient_lookup[rom_name_no_ext.lower()]
+                break
 
         if not matched_file:
             primary_rom = game_info.get('primary_rom', '')
-            primary_rom_no_ext = primary_rom
-            for ext in ROM_EXTENSIONS:
-                if primary_rom.lower().endswith(ext):
-                    primary_rom_no_ext = primary_rom[:-len(ext)]
-                    break
+            primary_rom_no_ext = strip_rom_extension(primary_rom)
             if primary_rom_no_ext.lower() in myrient_lookup:
                 matched_file = myrient_lookup[primary_rom_no_ext.lower()]
+
+        if not matched_file:
+            game_name_normalized = game_name.lower()
+            if game_name_normalized in myrient_lookup:
+                matched_file = myrient_lookup[game_name_normalized]
 
         if matched_file:
             game_info['download_filename'] = matched_file
@@ -2291,7 +2554,7 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
     load_rom_database()
     
     if effective_profile:
-        print(f"Profil DAT: {describe_dat_profile(effective_profile)}")
+        print(f"DAT detecte: {describe_dat_profile(effective_profile)}")
 
     all_found = []
     still_missing = missing_games.copy()
@@ -2314,18 +2577,9 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
         roms = game_info.get('roms', [])
         
         # Recherche par nom dans la base
-        db_results = search_by_name(game_name)
+        db_results, search_hint = search_database_for_game(game_info)
         
         # Si pas trouvé par nom, essayer par MD5
-        if not db_results:
-            for rom_info in roms:
-                md5_hash = rom_info.get('md5', '')
-                if md5_hash:
-                    db_results = search_by_md5(md5_hash)
-                    if db_results:
-                        print(f"  [DB] {game_name} trouvé par MD5: {md5_hash}")
-                        break
-        
         if db_results:
             # Prendre le premier résultat (priorité: archive.org > myrient > 1fichier)
             best_result = None
@@ -2340,7 +2594,7 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
             if not best_result:
                 best_result = db_results[0]
             
-            game_info['download_filename'] = best_result.get('full_name', game_name)
+            game_info['download_filename'] = database_result_filename(best_result, game_name)
             game_info['download_url'] = best_result.get('url')
             game_info['source'] = 'database'
             game_info['database_host'] = best_result.get('host')
@@ -2425,7 +2679,7 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
                 all_found.extend(found)
     
     # ========================================================================
-    # ÉTAPE 4 : Recherche archive.org par MD5 (fallback final)
+    # ÉTAPE 4 : Recherche archive.org par checksum puis nom (fallback final)
     # ========================================================================
     archive_sources = [
         s for s in sources
@@ -2532,10 +2786,9 @@ def search_all_sources(
     not_in_db = []
     for game_info in still_missing:
         game_name = game_info['game_name']
-        roms = game_info.get('roms', [])
-        db_results = search_by_name(game_name)
+        db_results, search_hint = search_database_for_game(game_info)
 
-        if not db_results:
+        if () and not db_results:
             for rom_info in roms:
                 md5_hash = rom_info.get('md5', '')
                 if md5_hash:
@@ -2546,12 +2799,12 @@ def search_all_sources(
 
         best_result = select_database_result(db_results)
         if best_result:
-            game_info['download_filename'] = best_result.get('full_name', game_name)
+            game_info['download_filename'] = database_result_filename(best_result, game_name)
             game_info['download_url'] = best_result.get('url')
             game_info['source'] = 'database'
             game_info['database_host'] = best_result.get('host')
             found_in_db.append(game_info)
-            print(f"  [DB] {game_name} â†’ {best_result.get('host')}")
+            print(f"  [DB] {game_name} -> {best_result.get('host')}{f' ({search_hint})' if search_hint else ''}")
         else:
             not_in_db.append(game_info)
 
@@ -2609,11 +2862,11 @@ def search_all_sources(
                         still_missing = remaining
 
     # ========================================================================
-    # Ã‰TAPE 4 : Recherche archive.org par MD5 (fallback final)
+    # Ã‰TAPE 4 : Recherche archive.org par checksum puis nom (fallback final)
     # ========================================================================
     archive_sources = [s for s in sources if s['type'] == 'archive_org' and s.get('enabled', True)]
     if archive_sources and still_missing:
-        print(f"\n--- Recherche archive.org par MD5 (fallback final) ---")
+        print(f"\n--- Recherche archive.org par checksum puis nom (fallback final) ---")
         found, still_missing = search_archive_org_for_games(still_missing)
         all_found.extend(found)
 
@@ -2630,44 +2883,68 @@ def search_all_sources(
 
 
 def search_archive_org_for_games(not_available: list) -> tuple:
-    """
-    Search for games not available on other sources using archive.org by MD5 hash or name.
-    Returns (found_on_archive: list, still_not_available: list)
-    """
+    """Recherche archive.org avec priorite md5 -> crc -> sha1 -> nom."""
     found_on_archive = []
     still_not_available = []
 
     for game_info in not_available:
         game_name = game_info['game_name']
         roms = game_info.get('roms', [])
-
         archive_result = None
 
-        # Try to find ROM by MD5 hash first
-        for rom_info in roms:
-            md5_hash = rom_info.get('md5', '')
-            if md5_hash:
-                result = search_archive_org_by_md5(md5_hash, rom_info.get('name', ''))
-                if result['found']:
+        checksum_plan = (
+            ('md5', search_archive_org_by_md5),
+            ('crc', search_archive_org_by_crc),
+            ('sha1', search_archive_org_by_sha1)
+        )
+
+        for checksum_type, resolver in checksum_plan:
+            if archive_result:
+                break
+
+            for rom_info in roms:
+                checksum_value = normalize_checksum(rom_info.get(checksum_type, ''), checksum_type)
+                rom_name = rom_info.get('name', '')
+                if not checksum_value:
+                    continue
+
+                result = resolver(checksum_value, rom_name)
+                if result.get('found'):
                     archive_result = result
-                    archive_result['rom_name'] = rom_info.get('name', '')
+                    archive_result['rom_name'] = rom_name
                     break
 
-        # Fallback: search by name if MD5 search failed
         if not archive_result:
-            result = search_archive_org_by_name(game_name)
-            if result['found']:
-                archive_result = result
-                archive_result['rom_name'] = game_name
+            rom_names = []
+            primary_rom = game_info.get('primary_rom', '')
+            if primary_rom:
+                rom_names.append(primary_rom)
+            for rom_info in roms:
+                rom_name = rom_info.get('name', '')
+                if rom_name and rom_name not in rom_names:
+                    rom_names.append(rom_name)
+            if game_name not in rom_names:
+                rom_names.append(game_name)
+
+            for rom_name in rom_names:
+                result = search_archive_org_by_name(rom_name)
+                if result.get('found'):
+                    archive_result = result
+                    archive_result['rom_name'] = rom_name
+                    break
 
         if archive_result:
             game_info['download_filename'] = archive_result['filename']
             game_info['archive_org_identifier'] = archive_result['identifier']
             game_info['archive_org_filename'] = archive_result['filename']
             game_info['archive_org_md5'] = archive_result.get('md5', '')
+            game_info['archive_org_crc'] = archive_result.get('crc', '')
+            game_info['archive_org_sha1'] = archive_result.get('sha1', '')
+            game_info['archive_org_checksum_type'] = archive_result.get('checksum_type', '')
             game_info['source'] = 'archive_org'
             found_on_archive.append(game_info)
-            print(f"  [TROUVÉ] {game_name} sur archive.org")
+            checksum_label = archive_result.get('checksum_type') or 'name'
+            print(f"  [TROUVE] {game_name} sur archive.org ({checksum_label})")
         else:
             still_not_available.append(game_info)
 
@@ -2941,16 +3218,16 @@ def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_ru
     dat_games = parse_dat_file(dat_file)
 
     # Scan local ROMs
-    local_roms, local_roms_normalized, local_game_names = scan_local_roms(rom_folder)
+    local_roms, local_roms_normalized, local_game_names, signature_index = scan_local_roms(rom_folder, dat_games)
 
     # Find missing games
-    missing_games = find_missing_games(dat_games, local_roms, local_roms_normalized, local_game_names)
+    missing_games = find_missing_games(dat_games, local_roms, local_roms_normalized, local_game_names, signature_index)
 
     # Détection du système
     system_name = dat_profile.get('system_name') or detect_system_name(dat_file)
     print(f"Système détecté : {system_name}")
 
-    print(f"Profil DAT : {describe_dat_profile(dat_profile)}")
+    print(f"DAT detecte : {describe_dat_profile(dat_profile)}")
 
     if not missing_games:
         print("\nAucun jeu manquant trouvé !")
@@ -3107,8 +3384,8 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
     })
 
     dat_games = parse_dat_file(dat_file)
-    local_roms, local_roms_normalized, local_game_names = scan_local_roms(rom_folder)
-    missing_games = find_missing_games(dat_games, local_roms, local_roms_normalized, local_game_names)
+    local_roms, local_roms_normalized, local_game_names, signature_index = scan_local_roms(rom_folder, dat_games)
+    missing_games = find_missing_games(dat_games, local_roms, local_roms_normalized, local_game_names, signature_index)
     dat_profile = finalize_dat_profile(detect_dat_profile(dat_file))
 
     system_name = dat_profile.get('system_name') or detect_system_name(dat_file)
@@ -3479,10 +3756,10 @@ def gui_mode():
 
                     self.log(f"Scanning ROM folder: {rom_folder}")
                     self.status_var.set("Analyse des ROMs locales...")
-                    local_roms, local_roms_normalized, local_game_names = scan_local_roms(rom_folder)
+                    local_roms, local_roms_normalized, local_game_names, signature_index = scan_local_roms(rom_folder, dat_games)
 
                     self.status_var.set("Recherche des jeux manquants...")
-                    missing_games = find_missing_games(dat_games, local_roms, local_roms_normalized, local_game_names)
+                    missing_games = find_missing_games(dat_games, local_roms, local_roms_normalized, local_game_names, signature_index)
                     system_name = detect_system_name(dat_path)
 
                     if not missing_games:
@@ -3685,7 +3962,7 @@ def gui_mode():
                 self.rom_folder = tk.StringVar()
                 self.myrient_url = tk.StringVar()
                 self.progress_var = tk.DoubleVar(value=0)
-                self.status_var = tk.StringVar(value="Pret a consolider un set 1G1R")
+                self.status_var = tk.StringVar(value="Pret a telecharger les jeux manquants")
                 self.hint_var = tk.StringVar(value="Laisse vide pour utiliser automatiquement la bonne source Minerva selon le DAT.")
                 self.root.title("ROM Downloader")
                 self.root.geometry("1100x900")
@@ -3756,7 +4033,7 @@ def gui_mode():
                 header.columnconfigure(1, weight=1)
                 tk.Frame(header, bg=UI_COLOR_ACCENT, width=6).grid(row=0, column=0, rowspan=2, sticky='ns', padx=(0, 14))
                 tk.Label(header, text="ROM Downloader", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 18, 'bold')).grid(row=0, column=1, sticky='w')
-                tk.Label(header, text="DAT No-Intro ou Redump traite avec Retool, telechargement 1G1R direct via Minerva et consolidation d'un repertoire existant.", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, justify='left', wraplength=760, font=(self.font, 10)).grid(row=1, column=1, sticky='w', pady=(2, 0))
+                tk.Label(header, text="Charge un DAT No-Intro ou Redump retraite avec Retool, compare le dossier cible et telecharge les ROMs manquantes en priorite depuis Minerva.", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, justify='left', wraplength=760, font=(self.font, 10)).grid(row=1, column=1, sticky='w', pady=(2, 0))
                 self.family_badge = None
                 self.mode_badge = None
                 if self.images.get('hero'):
@@ -3766,7 +4043,7 @@ def gui_mode():
                 fields.columnconfigure(1, weight=1)
                 field_specs = [
                     (0, "Fichier DAT", self.dat_file, self.browse_dat),
-                    (1, "Dossier a consolider", self.rom_folder, self.browse_rom),
+                    (1, "Dossier de sortie", self.rom_folder, self.browse_rom),
                     (2, "URL source (optionnelle)", self.myrient_url, None)
                 ]
                 for row, label, var, action in field_specs:
@@ -3797,7 +4074,7 @@ def gui_mode():
                     self.source_vars[source['name']] = var
                     self.source_widgets[source['name']] = widget
                 self.move_to_tosort_var = tk.BooleanVar(value=False)
-                self.toggle(sources, "Deplacer les ROMs hors DAT vers ToSort apres consolidation", self.move_to_tosort_var).grid(row=3, column=0, sticky='w', pady=(14, 0))
+                self.toggle(sources, "Deplacer les ROMs hors DAT dans un sous-dossier ToSort", self.move_to_tosort_var).grid(row=3, column=0, sticky='w', pady=(14, 0))
 
                 progress = self.card(main, 3, expand=True)
                 progress.columnconfigure(0, weight=1)
@@ -3843,7 +4120,7 @@ def gui_mode():
                     self.dat_file.set(filename)
 
             def browse_rom(self):
-                folder = filedialog.askdirectory(title="Selectionner le dossier a consolider")
+                folder = filedialog.askdirectory(title="Selectionner le dossier de sortie")
                 if folder:
                     self.rom_folder.set(folder)
 
@@ -3853,7 +4130,7 @@ def gui_mode():
                     self.myrient_url.set(default_url)
                     self.status_var.set("URL Minerva renseignee depuis le DAT")
                 else:
-                    messagebox.showwarning("Profil DAT", "Impossible de proposer une URL auto pour ce DAT.")
+                    messagebox.showwarning("DAT", "Impossible de proposer une URL auto pour ce DAT.")
 
             def refresh_profile(self):
                 path = self.dat_file.get().strip()
@@ -3887,14 +4164,14 @@ def gui_mode():
                     messagebox.showerror("Erreur", "Veuillez selectionner un fichier DAT valide")
                     return
                 if not self.rom_folder.get() or not os.path.exists(self.rom_folder.get()):
-                    messagebox.showerror("Erreur", "Veuillez selectionner un dossier a consolider valide")
+                    messagebox.showerror("Erreur", "Veuillez selectionner un dossier de sortie valide")
                     return
                 self.running = True
                 self.start_button.configure(state=tk.DISABLED)
                 self.stop_button.configure(state=tk.NORMAL)
                 self.progress_var.set(0)
                 self.log_text.delete(1.0, tk.END)
-                self.status_var.set("Preparation de la consolidation...")
+                self.status_var.set("Preparation de l'analyse du DAT...")
                 threading.Thread(target=self.run_download, daemon=True).start()
 
             def stop(self):
@@ -3909,13 +4186,13 @@ def gui_mode():
                     system_name = dat_profile.get('system_name') or detect_system_name(dat_path)
                     sources = self.selected_sources()
                     dat_games = parse_dat_file(dat_path)
-                    local_roms, local_roms_normalized, local_game_names = scan_local_roms(rom_folder)
-                    missing_games = find_missing_games(dat_games, local_roms, local_roms_normalized, local_game_names)
+                    local_roms, local_roms_normalized, local_game_names, signature_index = scan_local_roms(rom_folder, dat_games)
+                    missing_games = find_missing_games(dat_games, local_roms, local_roms_normalized, local_game_names, signature_index)
                     if not missing_games:
                         self.status_var.set("Termine - dossier deja complet")
                         self._ui(lambda: messagebox.showinfo("Termine", "Tous les jeux du DAT sont deja presents localement."))
                         return
-                    self.log(f"Profil DAT: {describe_dat_profile(dat_profile)}")
+                    self.log(f"DAT detecte: {describe_dat_profile(dat_profile)}")
                     self.log(f"Sources actives: {', '.join([s['name'] for s in sources if s.get('enabled', True)])}")
                     to_download, not_available = search_all_sources(missing_games, sources, self.session, system_name, dat_profile)
                     if not_available:
@@ -4010,7 +4287,7 @@ def gui_mode():
 
 def main():
     parser = argparse.ArgumentParser(
-        description='ROM Downloader - Consolide un dossier 1G1R a partir d un DAT No-Intro ou Redump et telecharge les manquants',
+        description='ROM Downloader - Compare un DAT 1G1R a un dossier cible et telecharge les jeux manquants',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=r'''
 Exemples:
@@ -4023,13 +4300,13 @@ Exemples:
         '''
     )
     parser.add_argument('dat_file', nargs='?', help='Chemin vers le fichier DAT')
-    parser.add_argument('rom_folder', nargs='?', help='Chemin vers le dossier de ROMs a consolider')
+    parser.add_argument('rom_folder', nargs='?', help='Chemin vers le dossier de sortie ou de ROMs existantes')
     parser.add_argument('myrient_url', nargs='?', help='URL source optionnelle (laisser vide pour la selection Minerva auto)')
     parser.add_argument('-o', '--output', help='Dossier de sortie (defaut: rom_folder)')
     parser.add_argument('--dry-run', action='store_true', help='Simulation sans telechargement')
     parser.add_argument('--limit', type=int, help='Limite de telechargements')
     parser.add_argument('--gui', action='store_true', help='Mode interface graphique')
-    parser.add_argument('--tosort', action='store_true', help='Deplacer les ROMs non presentes dans le DAT vers ToSort')
+    parser.add_argument('--tosort', action='store_true', help='Deplacer les ROMs non presentes dans le DAT vers un sous-dossier ToSort')
     parser.add_argument('--sources', action='store_true', help='Afficher les sources de telechargement')
     parser.add_argument('--configure-api', action='store_true', help='Configurer les cles API premium')
 
