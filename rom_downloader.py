@@ -392,7 +392,7 @@ def get_default_sources():
             'name': 'Minerva TOSEC',
             'base_url': f'{MINERVA_BROWSE_BASE}TOSEC/',
             'type': 'minerva',
-            'enabled': False,
+            'enabled': True,
             'description': 'Collection optionnelle TOSEC',
             'collection': 'TOSEC',
             'minerva_path_mode': 'split',
@@ -412,7 +412,7 @@ def get_default_sources():
             'name': 'EdgeEmu',
             'base_url': config.get('edgeemu_browse', ''),
             'type': 'edgeemu',
-            'enabled': False,
+            'enabled': True,
             'description': 'Lien direct (Excellent pour le retro)',
             'priority': 3
         },
@@ -420,7 +420,7 @@ def get_default_sources():
             'name': 'PlanetEmu',
             'base_url': config.get('planetemu_roms', ''),
             'type': 'planetemu',
-            'enabled': False,
+            'enabled': True,
             'description': 'Lien direct (POST) - Source FR majeure',
             'priority': 3
         },
@@ -3686,13 +3686,10 @@ def gui_mode():
                 self.myrient_url = tk.StringVar()
                 self.progress_var = tk.DoubleVar(value=0)
                 self.status_var = tk.StringVar(value="Pret a consolider un set 1G1R")
-                self.system_var = tk.StringVar(value="En attente d'un DAT")
-                self.family_var = tk.StringVar(value="No-Intro ou Redump")
-                self.source_var = tk.StringVar(value="Selection auto Minerva")
-                self.hint_var = tk.StringVar(value="Charge un DAT Retool pour orienter automatiquement la bonne collection Minerva.")
+                self.hint_var = tk.StringVar(value="Laisse vide pour utiliser automatiquement la bonne source Minerva selon le DAT.")
                 self.root.title("ROM Downloader")
-                self.root.geometry("1100x920")
-                self.root.minsize(980, 760)
+                self.root.geometry("1100x900")
+                self.root.minsize(980, 740)
                 self.root.configure(bg=UI_COLOR_BG)
                 self.root.columnconfigure(0, weight=1)
                 self.root.rowconfigure(0, weight=1)
@@ -3707,7 +3704,7 @@ def gui_mode():
                         self.root.iconbitmap(str(BALROG_WINDOW_ICON))
                 except Exception:
                     pass
-                self.images['hero'] = self.load_photo(BALROG_1G1R_ICON, 12)
+                self.images['hero'] = self.load_photo(BALROG_1G1R_ICON, 16)
                 self.images['folder'] = None
                 self.build_ui()
                 self.dat_file.trace_add('write', lambda *_: self.root.after(120, self.refresh_profile))
@@ -3758,8 +3755,8 @@ def gui_mode():
                 header = self.card(main, 0)
                 header.columnconfigure(1, weight=1)
                 tk.Frame(header, bg=UI_COLOR_ACCENT, width=6).grid(row=0, column=0, rowspan=2, sticky='ns', padx=(0, 14))
-                tk.Label(header, text="ROM Downloader", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 20, 'bold')).grid(row=0, column=1, sticky='w')
-                tk.Label(header, text="DAT No-Intro ou Redump traite avec Retool, telechargement 1G1R direct via Minerva et consolidation d'un repertoire existant.", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, justify='left', wraplength=760, font=(self.font, 10)).grid(row=1, column=1, sticky='w', pady=(4, 0))
+                tk.Label(header, text="ROM Downloader", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 18, 'bold')).grid(row=0, column=1, sticky='w')
+                tk.Label(header, text="DAT No-Intro ou Redump traite avec Retool, telechargement 1G1R direct via Minerva et consolidation d'un repertoire existant.", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, justify='left', wraplength=760, font=(self.font, 10)).grid(row=1, column=1, sticky='w', pady=(2, 0))
                 self.family_badge = None
                 self.mode_badge = None
                 if self.images.get('hero'):
@@ -3767,11 +3764,19 @@ def gui_mode():
 
                 fields = self.card(main, 1)
                 fields.columnconfigure(1, weight=1)
-                for row, label, var, action, text, img in [(0, "Fichier DAT", self.dat_file, self.browse_dat, "Parcourir", None), (1, "Dossier a consolider", self.rom_folder, self.browse_rom, "Parcourir", None), (2, "Source Minerva (optionnelle)", self.myrient_url, self.auto_source, "Auto DAT", None)]:
+                field_specs = [
+                    (0, "Fichier DAT", self.dat_file, self.browse_dat),
+                    (1, "Dossier a consolider", self.rom_folder, self.browse_rom),
+                    (2, "URL source (optionnelle)", self.myrient_url, None)
+                ]
+                for row, label, var, action in field_specs:
                     tk.Label(fields, text=label, bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 11, 'bold')).grid(row=row, column=0, sticky='w', pady=(0 if row == 0 else 14, 0))
                     widget = self.entry(fields, var)
-                    widget.grid(row=row, column=1, sticky='ew', padx=(14, 12), pady=(0 if row == 0 else 14, 0), ipady=10)
-                    self.button(fields, text, action, kind='accent' if row == 2 else 'ghost', width=12, image=img).grid(row=row, column=2, sticky='e', pady=(0 if row == 0 else 14, 0))
+                    if action:
+                        widget.grid(row=row, column=1, sticky='ew', padx=(14, 12), pady=(0 if row == 0 else 14, 0), ipady=10)
+                        self.button(fields, "Parcourir", action, kind='ghost', width=12).grid(row=row, column=2, sticky='e', pady=(0 if row == 0 else 14, 0))
+                    else:
+                        widget.grid(row=row, column=1, columnspan=2, sticky='ew', padx=(14, 0), pady=(14, 0), ipady=10)
                     if row == 0:
                         self.dat_entry = widget
                     elif row == 1:
@@ -3779,14 +3784,6 @@ def gui_mode():
                     else:
                         self.url_entry = widget
                 tk.Label(fields, textvariable=self.hint_var, bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, justify='left', wraplength=860, font=(self.font, 9)).grid(row=3, column=0, columnspan=3, sticky='w', pady=(10, 0))
-                summary = tk.Frame(fields, bg=UI_COLOR_INPUT_BG, highlightbackground=UI_COLOR_INPUT_BORDER, highlightthickness=1)
-                summary.grid(row=4, column=0, columnspan=3, sticky='ew', pady=(16, 0))
-                for column, (title, var) in enumerate([("SYSTEME", self.system_var), ("PROFIL", self.family_var), ("MINERVA", self.source_var)]):
-                    summary.columnconfigure(column, weight=1)
-                    cell = tk.Frame(summary, bg=UI_COLOR_INPUT_BG)
-                    cell.grid(row=0, column=column, sticky='nsew', padx=12, pady=10)
-                    tk.Label(cell, text=title, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_SUB, font=(self.font, 8, 'bold')).pack(anchor='w')
-                    tk.Label(cell, textvariable=var, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, justify='left', wraplength=260, font=(self.font, 10, 'bold')).pack(anchor='w', pady=(4, 0))
 
                 sources = self.card(main, 2)
                 tk.Label(sources, text="Sources de telechargement", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 13, 'bold')).grid(row=0, column=0, sticky='w')
@@ -3804,17 +3801,18 @@ def gui_mode():
 
                 progress = self.card(main, 3, expand=True)
                 progress.columnconfigure(0, weight=1)
-                progress.rowconfigure(3, weight=1)
-                tk.Label(progress, text="Pipeline de consolidation", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 13, 'bold')).grid(row=0, column=0, sticky='w')
+                progress.rowconfigure(4, weight=1)
+                tk.Label(progress, text="Telechargement et journal", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 13, 'bold')).grid(row=0, column=0, sticky='w')
                 ttk.Progressbar(progress, variable=self.progress_var, maximum=100, mode='determinate', style='Balrog.Horizontal.TProgressbar').grid(row=1, column=0, sticky='ew', pady=(10, 8))
                 tk.Label(progress, textvariable=self.status_var, bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, font=(self.font, 10)).grid(row=2, column=0, sticky='w')
-                self.log_text = scrolledtext.ScrolledText(progress, height=14, wrap=tk.WORD, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, insertbackground=UI_COLOR_TEXT_MAIN, relief='flat', bd=0, highlightthickness=1, highlightbackground=UI_COLOR_INPUT_BORDER, highlightcolor=UI_COLOR_ACCENT, font=(self.font, 10))
-                self.log_text.grid(row=3, column=0, sticky='nsew', pady=(12, 0))
+                tk.Label(progress, text="Journal", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, font=(self.font, 9, 'bold')).grid(row=3, column=0, sticky='w', pady=(12, 6))
+                self.log_text = scrolledtext.ScrolledText(progress, height=18, wrap=tk.WORD, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, insertbackground=UI_COLOR_TEXT_MAIN, relief='flat', bd=0, highlightthickness=1, highlightbackground=UI_COLOR_INPUT_BORDER, highlightcolor=UI_COLOR_ACCENT, font=(self.font, 10))
+                self.log_text.grid(row=4, column=0, sticky='nsew')
 
                 actions = tk.Frame(main, bg=UI_COLOR_BG)
                 actions.grid(row=4, column=0, sticky='ew', padx=18, pady=(0, 18))
                 actions.columnconfigure(0, weight=1)
-                self.start_button = self.button(actions, "Lancer la consolidation", self.start, kind='accent', width=22)
+                self.start_button = self.button(actions, "Lancer le telechargement", self.start, kind='accent', width=24)
                 self.start_button.grid(row=0, column=1, padx=(0, 10))
                 self.stop_button = self.button(actions, "Arreter", self.stop, kind='danger', width=12)
                 self.stop_button.grid(row=0, column=2, padx=(0, 10))
@@ -3861,10 +3859,7 @@ def gui_mode():
                 path = self.dat_file.get().strip()
                 profile = finalize_dat_profile(detect_dat_profile(path)) if path and os.path.exists(path) else finalize_dat_profile({'family': 'unknown', 'family_label': 'Inconnu', 'system_name': '', 'is_retool': False, 'retool_label': 'DAT brut'})
                 self.dat_profile = profile
-                self.system_var.set(profile.get('system_name') or "Selectionnez un DAT No-Intro ou Redump")
-                self.family_var.set(f"{profile.get('family_label', 'Inconnu')}{' via Retool' if profile.get('is_retool') else ''}")
-                self.source_var.set(profile.get('default_source_url') or "Selection auto Minerva")
-                self.hint_var.set("Le dossier cible peut etre vide ou deja contenir un set partiel a consolider." if profile.get('system_name') else "Charge un DAT Retool pour orienter automatiquement la bonne collection Minerva.")
+                self.hint_var.set("Laisse vide pour utiliser automatiquement la bonne source Minerva selon le DAT." if profile.get('system_name') else "Tu peux laisser l'URL vide pour la detection automatique, ou en saisir une manuellement.")
                 if self.family_badge:
                     self.family_badge.configure(text=profile.get('family_label') if profile.get('family') != 'unknown' else "Profil manuel", bg={'no-intro': UI_COLOR_ACCENT, 'redump': UI_COLOR_SUCCESS, 'tosec': UI_COLOR_WARNING}.get(profile.get('family'), UI_COLOR_WARNING))
                 if self.mode_badge:
