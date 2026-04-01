@@ -29,12 +29,25 @@ Le meme ordre est utilise pour les fallbacks `archive.org` quand c'est possible.
 Note importante :
 La base locale `rom_database.zip` ne contient pas d'index checksum dedie. Elle sert donc surtout de fallback par nom de fichier ou nom de jeu.
 
+## Ordre de recherche
+
+L'ordre reel de recherche est le suivant :
+
+1. `Minerva` en source principale, en se basant sur le DAT detecte ou sur l'URL manuelle si tu en fournis une.
+2. `rom_database.zip` comme catalogue local de fallbacks.
+3. `EdgeEmu` et `PlanetEmu` si le jeu n'a pas encore ete resolu.
+4. `archive.org` en recherche live par `md5 -> crc -> sha1 -> nom` quand aucun autre fallback n'a abouti.
+
+Important :
+La base locale peut elle-meme renvoyer des liens `archive.org`, `1fichier` ou d'autres URLs directes. En pratique, `archive.org` peut donc etre atteint soit via la base locale, soit via la recherche live finale.
+
 ## Sources de telechargement
 
 - `Minerva No-Intro`, `Minerva Redump`, `Minerva TOSEC` : source principale
-- `archive.org` : fallback
-- `EdgeEmu` : fallback
-- `PlanetEmu` : fallback
+- `rom_database.zip` : catalogue local de fallbacks
+- `archive.org` : fallback direct via base locale ou recherche live checksum
+- `EdgeEmu` : fallback direct
+- `PlanetEmu` : fallback direct
 - `1fichier (Gratuit)` : fallback
 - `1fichier (API)`, `AllDebrid (API)`, `RealDebrid (API)` : options necessitant une cle
 
@@ -117,6 +130,15 @@ npm install
 - L'URL source est optionnelle.
 - Si elle est vide, le script essaie de deduire automatiquement la bonne collection Minerva depuis le DAT.
 - Les fichiers ZIP locaux sont aussi inspectes pour verifier les checksums internes quand la taille correspond au DAT.
+
+## Validation
+
+Le fonctionnement principal a ete verifie sur les DAT d'exemple du repo, avec des telechargements reels :
+
+- `Minerva` : `Malibu Beach Volleyball (USA)`
+- `archive.org` via base locale : `4 in 1 (Europe) (4B-001, Sachen-Commin) (Unl)`
+- `EdgeEmu` : `Malibu Beach Volleyball (USA)`
+- `PlanetEmu` : `4 in 1 (Europe) (4B-001, Sachen-Commin) (Unl)`
 
 ## Verification rapide
 
