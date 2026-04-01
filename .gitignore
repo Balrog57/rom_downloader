@@ -32,6 +32,10 @@ ENV/
 *.swp
 *.swo
 *~
+node_modules/
+.npm-cache/
+.python_packages/
+minerva-torrent-*/
 
 # API Keys (IMPORTANT: Never commit these!)
 api_keys.json
