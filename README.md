@@ -1,196 +1,126 @@
-# ROMVault Missing ROM Downloader
+# ROM Downloader
 
-Compare un fichier DAT avec des ROMs locales et télécharge les manquantes depuis plusieurs sources.
+Compare un DAT No-Intro ou Redump deja retraite avec Retool a un dossier cible, detecte les ROMs manquantes, puis telecharge ce qui manque en priorite depuis Minerva.
 
-## 🎯 Fonctionnalités
+## Fonctionnement
 
-- ✅ **Comparaison DAT** - Analyse les fichiers DAT No-Intro et identifie les ROMs manquantes
-- 🔍 **Recherche multi-sources** - Myrient, archive.org, 1fichier, services Debrid
-- 📦 **Support étendu** - Toutes extensions de ROMs (GB, GBC, GBA, NES, SNES, N64, MD, etc.)
-- 🗂️ **ToSort** - Déplace automatiquement les ROMs non présentes dans le DAT
-- 💻 **3 modes** - GUI, ligne de commande, ou interactif
+Le workflow attendu est simple :
 
-## 📊 Sources de téléchargement
+1. Tu donnes un fichier `.dat`.
+2. Tu donnes un dossier de sortie, qui peut deja contenir des ROMs.
+3. Tu peux laisser l'URL source vide pour la detection automatique Minerva, ou renseigner manuellement la bonne URL console si besoin.
+4. Le script verifie ce qui est deja present dans le dossier.
+5. Il ne telecharge que les jeux manquants.
 
-### Sources gratuites
-| Source | Type | Priorité | Statut |
-|--------|------|----------|--------|
-| **Myrient No-Intro** | Direct | 1 | ✅ Actif (ferme le 31/03/2026) |
-| **Myrient Redump** | Direct | 2 | ✅ Actif |
-| **Myrient TOSEC** | Direct | 2 | ✅ Actif |
-| **archive.org** | Recherche MD5 | 3 | ⚠️ Limité (fallback) |
+Le projet est pense pour des DAT 1G1R deja prepares avec Retool. Des exemples sont fournis dans [dat.exemple](rom_downloader\dat.exemple).
 
-### Sources Premium (clé API requise)
-| Source | Type | Description |
-|--------|------|-------------|
-| **1fichier (API)** | API directe | Téléchargement via API |
-| **1fichier (Gratuit)** | Mode free | Avec attente et captcha |
-| **AllDebrid** | Service Debrid | Multi-hébergeurs |
-| **RealDebrid** | Service Debrid | Multi-hébergeurs |
+## Priorite de correspondance
 
-## 🚀 Utilisation
+Pour verifier si un jeu est deja present localement, la priorite est :
 
-### Mode Interface Graphique (Recommandé)
+1. `md5`
+2. `crc`
+3. `sha1`
+4. nom de ROM
+5. nom du jeu
+
+Le meme ordre est utilise pour les fallbacks `archive.org` quand c'est possible.
+
+Note importante :
+La base locale `rom_database.zip` ne contient pas d'index checksum dedie. Elle sert donc surtout de fallback par nom de fichier ou nom de jeu.
+
+## Sources de telechargement
+
+- `Minerva No-Intro`, `Minerva Redump`, `Minerva TOSEC` : source principale
+- `archive.org` : fallback
+- `EdgeEmu` : fallback
+- `PlanetEmu` : fallback
+- `1fichier (Gratuit)` : fallback
+- `1fichier (API)`, `AllDebrid (API)`, `RealDebrid (API)` : options necessitant une cle
+
+Minerva est telecharge en direct via torrent sans sortir de l'application.
+
+## Option ToSort
+
+Si l'option est cochee, les fichiers presents dans le dossier mais absents du DAT sont deplaces vers un sous-dossier `ToSort`.
+
+## Utilisation
+
+### Interface graphique
+
 ```bash
 python rom_downloader.py --gui
 ```
 
-### Mode Ligne de commande
+### Ligne de commande
+
 ```bash
-python rom_downloader.py <fichier.dat> <dossier_roms> [url_myrient] [--dry-run] [--limit N] [--tosort]
+python rom_downloader.py <fichier.dat> <dossier_roms> [url_source] [--dry-run] [--limit N] [--tosort]
 ```
 
-**Exemples :**
+Exemples :
+
 ```bash
-# Téléchargement normal
-python rom_downloader.py "Dat\Nintendo - Game Boy.dat" "Roms\GB"
+python rom_downloader.py "dat.exemple\\retool\\Nintendo - Game Boy (20260314-052418) (Retool 2026-03-15 19-50-33) (625) (-nz) [-aABbcDdekMmoPrv].dat" "Roms\\Game Boy"
 
-# Simulation (sans téléchargement)
-python rom_downloader.py "Dat\Nintendo - Game Boy.dat" "Roms\GB" "" --dry-run
+python rom_downloader.py "dat.exemple\\retool\\Sony - PlayStation (2026-03-15 02-49-21) (Retool 2026-03-15 19-51-21) (1,805) (-nz) [-aABbcDdekMmoPrv].dat" "Roms\\PS1" "https://minerva-archive.org/browse/Redump/Sony%20-%20PlayStation/"
 
-# Limiter à 10 téléchargements
-python rom_downloader.py "Dat\Nintendo - Game Boy.dat" "Roms\GB" "" --limit 10
-
-# Avec déplacement des ROMs hors DAT vers ToSort
-python rom_downloader.py "Dat\Nintendo - Game Boy.dat" "Roms\GB" "" --tosort
+python rom_downloader.py "dat.exemple\\retool\\Nintendo - Game Boy (20260314-052418) (Retool 2026-03-15 19-50-33) (625) (-nz) [-aABbcDdekMmoPrv].dat" "Roms\\Game Boy" "" --tosort
 ```
 
-### Mode Interactif
+### Mode interactif
+
 ```bash
 python rom_downloader.py
 ```
-(Pose des questions pour les chemins et options)
 
-## 📦 Installation
+## Installation
 
-### Prérequis
-- Python 3.8 ou supérieur
-- pip (gestionnaire de packages Python)
+### Prerequis
 
-### Installation des dépendances
-Le script installe automatiquement les dépendances manquantes. Sinon :
+- Python 3.10 ou plus recent recommande
+- Node.js et `npm` pour le helper torrent Minerva
+
+### Dependances Python
+
+Le script peut installer les dependances manquantes automatiquement. Sinon :
 
 ```bash
 pip install requests beautifulsoup4 internetarchive
 ```
 
-### Structure des fichiers
-```
-rom_downloader/
-├── rom_downloader.py          # Script principal
-├── rom_database.zip           # Base de données (74 189 URLs)
-├── README.md                  # Ce fichier
-├── api_keys.json              # Clés API (créé automatiquement)
-└── Roms/                      # Dossier des ROMs
-    └── GB_Test/              # Dossier de test
-```
+### Dependances Node
 
-## 🔑 Configuration des clés API
-
-Pour les services premium (1fichier, AllDebrid, RealDebrid) :
+Le runtime torrent est installe automatiquement au premier telechargement Minerva. Si besoin :
 
 ```bash
-python rom_downloader.py --configure-api
+npm install
 ```
 
-Ou via le menu dans l'interface graphique.
+## Structure utile
 
-**Obtenir vos clés API :**
-- 1fichier : https://1fichier.com/api/
-- AllDebrid : https://alldebrid.com/apikeys/
-- RealDebrid : https://real-debrid.com/apitoken
+- [rom_downloader.py](rom_downloader\rom_downloader.py) : script principal
+- [scripts/minerva_torrent_download.js](rom_downloader\scripts\minerva_torrent_download.js) : helper torrent Minerva
+- [rom_database.zip](rom_downloader\rom_database.zip) : base locale des URLs
+- [dat.exemple](rom_downloader\dat.exemple) : exemples de DAT No-Intro, Redump et Retool
 
-## 🔄 Flux de travail
+## Options utiles
 
-1. **Parsing DAT** - Lit le fichier DAT et extrait la liste des jeux
-2. **Scan local** - Analyse le dossier de ROMs existantes
-3. **Comparaison** - Identifie les jeux manquants
-4. **Recherche** :
-   - Base de données locale (74 189 URLs)
-   - Myrient (listing direct des dossiers)
-   - archive.org (recherche par MD5 en dernier recours)
-5. **Téléchargement** - Télécharge les ROMs trouvées
-6. **ToSort** (optionnel) - Déplace les ROMs hors DAT
+- `--dry-run` : simule sans telecharger
+- `--limit N` : limite le nombre de telechargements
+- `--tosort` : deplace le hors-DAT dans `ToSort`
+- `--sources` : affiche les sources disponibles
+- `--configure-api` : configure les services necessitant une cle
 
-## 📁 Extensions supportées
+## Notes
 
-Le script gère **toutes les extensions de ROMs** :
+- L'URL source est optionnelle.
+- Si elle est vide, le script essaie de deduire automatiquement la bonne collection Minerva depuis le DAT.
+- Les fichiers ZIP locaux sont aussi inspectes pour verifier les checksums internes quand la taille correspond au DAT.
 
-- **Nintendo** : `.gb`, `.gbc`, `.gba`, `.nes`, `.smc`, `.sfc`, `.n64`, `.z64`, `.nds`, `.3ds`, `.cia`
-- **GameCube/Wii** : `.gcm`, `.rvz`, `.iso`, `.wbfs`, `.nkit.iso`, `.ciso`, `.gcz`
-- **Sega** : `.sms`, `.gg`, `.md`, `.gen`, `.32x`, `.chd`, `.cue`, `.iso`
-- **Sony** : `.psx`, `.psf`, `.pbp`, `.ecm`, `.img`, `.ccd`
-- **Autres** : `.pce`, `.ngp`, `.ws`, `.vb`, `.lnx`, `.a26`, `.jag`, etc.
-- **Archives** : `.zip`, `.7z`, `.rar`, `.gz`, `.tar`
-
-## ⚠️ Notes importantes
-
-### Myrient
-- ⚠️ **Myrient fermera le 31 mars 2026**
-- Profitez-en pour télécharger les ROMs importantes avant cette date
-- Le script est optimisé pour Myrient actuellement
-
-### archive.org
-- Recherche par MD5 souvent infructueuse pour les ROMs No-Intro
-- Utilisé en **dernier recours** après Myrient
-- Collections No-Intro non accessibles publiquement
-
-### ToSort
-- Les ROMs non présentes dans le DAT sont déplacées vers `../ToSort/`
-- Utile pour nettoyer les collections mélangées
-
-## 🛠️ Options avancées
-
-### `--dry-run`
-Simulation sans téléchargement réel. Utile pour tester.
-
-### `--limit N`
-Limite le nombre de téléchargements (ex: `--limit 5`)
-
-### `--tosort`
-Active le déplacement des ROMs hors DAT vers le dossier ToSort
-
-### `--sources`
-Affiche la liste complète des sources disponibles
-
-### `--configure-api`
-Configure interactivement les clés API premium
-
-## 📝 Exemple complet
+## Verification rapide
 
 ```bash
-# Télécharger 20 ROMs manquantes depuis Game Boy DAT
-# avec déplacement des fichiers hors DAT
-python rom_downloader.py "Dat\Nintendo - Game Boy.dat" "Roms\GB" "" --limit 20 --tosort
+python rom_downloader.py --sources
+python -m py_compile rom_downloader.py
 ```
-
-## 🐛 Dépannage
-
-### "Aucune ROM trouvée sur Myrient"
-- Vérifiez que le dossier Myrient existe pour votre système
-- Le nom du système dans le DAT doit correspondre (ex: "Nintendo - Game Boy")
-
-### "archive.org ne trouve rien"
-- Normal : archive.org a des limitations pour les ROMs No-Intro
-- Privilégiez Myrient tant qu'il est en ligne
-
-### Erreurs de téléchargement
-- Vérifiez votre connexion internet
-- Certains hébergeurs ont des limites de débit
-- Réessayez avec `--limit` plus bas
-
-## 📄 Licence
-
-Script à but éducatif. Téléchargez uniquement les ROMs que vous possédez physiquement.
-
-## 🤝 Contribution
-
-Les améliorations sont les bienvenues ! Fonctionnalités possibles :
-- Support d'autres sources (EdgeEmu, PlanetEmu)
-- Amélioration de la recherche archive.org
-- Support des torrents
-- Interface web
-
----
-
-**Développé avec ❤️ pour la préservation du rétro-gaming**
