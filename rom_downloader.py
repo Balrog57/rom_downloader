@@ -192,7 +192,7 @@ WEBTORRENT_MODULE_DIR = APP_ROOT / 'node_modules' / 'torrent-stream'
 # 74,189 URLs - 100% autonome, ne dépend plus de RGSX
 # ============================================================================
 
-ROM_DATABASE_FILE = 'rom_database.zip'
+ROM_DATABASE_FILE = APP_ROOT / 'rom_database.zip'
 ROM_DATABASE = None
 
 
@@ -3691,8 +3691,8 @@ def gui_mode():
                 self.source_var = tk.StringVar(value="Selection auto Minerva")
                 self.hint_var = tk.StringVar(value="Charge un DAT Retool pour orienter automatiquement la bonne collection Minerva.")
                 self.root.title("ROM Downloader")
-                self.root.geometry("1040x820")
-                self.root.minsize(920, 700)
+                self.root.geometry("1100x920")
+                self.root.minsize(980, 760)
                 self.root.configure(bg=UI_COLOR_BG)
                 self.root.columnconfigure(0, weight=1)
                 self.root.rowconfigure(0, weight=1)
@@ -3707,8 +3707,8 @@ def gui_mode():
                         self.root.iconbitmap(str(BALROG_WINDOW_ICON))
                 except Exception:
                     pass
-                self.images['hero'] = self.load_photo(BALROG_1G1R_ICON, 8)
-                self.images['folder'] = self.load_photo(BALROG_FOLDER_ICON, 14)
+                self.images['hero'] = self.load_photo(BALROG_1G1R_ICON, 12)
+                self.images['folder'] = None
                 self.build_ui()
                 self.dat_file.trace_add('write', lambda *_: self.root.after(120, self.refresh_profile))
                 if self.use_dnd:
@@ -3757,26 +3757,21 @@ def gui_mode():
 
                 header = self.card(main, 0)
                 header.columnconfigure(1, weight=1)
-                tk.Frame(header, bg=UI_COLOR_ACCENT, width=8).grid(row=0, column=0, rowspan=3, sticky='ns', padx=(0, 16))
-                tk.Label(header, text="BALROG TOOLKIT LOOK", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_ACCENT, font=(self.font, 9, 'bold')).grid(row=0, column=1, sticky='w')
-                tk.Label(header, text="ROM Downloader", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 24, 'bold')).grid(row=1, column=1, sticky='w', pady=(6, 4))
-                tk.Label(header, text="DAT No-Intro ou Redump retraite avec Retool, telechargement 1G1R direct via Minerva, consolidation d'un repertoire existant.", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, justify='left', wraplength=720, font=(self.font, 10)).grid(row=2, column=1, sticky='w')
-                badge_row = tk.Frame(header, bg=UI_COLOR_CARD_BG)
-                badge_row.grid(row=3, column=1, sticky='w', pady=(12, 0))
-                self.family_badge = tk.Label(badge_row, text="Profil manuel", bg=UI_COLOR_WARNING, fg=UI_COLOR_TEXT_MAIN, padx=10, pady=4, font=(self.font, 9, 'bold'))
-                self.family_badge.pack(side='left', padx=(0, 8))
-                self.mode_badge = tk.Label(badge_row, text="DAT brut", bg=UI_COLOR_GHOST_HOVER, fg=UI_COLOR_TEXT_MAIN, padx=10, pady=4, font=(self.font, 9, 'bold'))
-                self.mode_badge.pack(side='left')
+                tk.Frame(header, bg=UI_COLOR_ACCENT, width=6).grid(row=0, column=0, rowspan=2, sticky='ns', padx=(0, 14))
+                tk.Label(header, text="ROM Downloader", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 20, 'bold')).grid(row=0, column=1, sticky='w')
+                tk.Label(header, text="DAT No-Intro ou Redump traite avec Retool, telechargement 1G1R direct via Minerva et consolidation d'un repertoire existant.", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, justify='left', wraplength=760, font=(self.font, 10)).grid(row=1, column=1, sticky='w', pady=(4, 0))
+                self.family_badge = None
+                self.mode_badge = None
                 if self.images.get('hero'):
-                    tk.Label(header, image=self.images['hero'], bg=UI_COLOR_CARD_BG).grid(row=0, column=2, rowspan=4, sticky='e')
+                    tk.Label(header, image=self.images['hero'], bg=UI_COLOR_CARD_BG).grid(row=0, column=2, rowspan=2, sticky='e')
 
                 fields = self.card(main, 1)
                 fields.columnconfigure(1, weight=1)
-                for row, label, var, action, text, img in [(0, "Fichier DAT", self.dat_file, self.browse_dat, "Parcourir", None), (1, "Dossier a consolider", self.rom_folder, self.browse_rom, "Parcourir", self.images.get('folder')), (2, "Source Minerva (optionnelle)", self.myrient_url, self.auto_source, "Auto DAT", None)]:
+                for row, label, var, action, text, img in [(0, "Fichier DAT", self.dat_file, self.browse_dat, "Parcourir", None), (1, "Dossier a consolider", self.rom_folder, self.browse_rom, "Parcourir", None), (2, "Source Minerva (optionnelle)", self.myrient_url, self.auto_source, "Auto DAT", None)]:
                     tk.Label(fields, text=label, bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 11, 'bold')).grid(row=row, column=0, sticky='w', pady=(0 if row == 0 else 14, 0))
                     widget = self.entry(fields, var)
                     widget.grid(row=row, column=1, sticky='ew', padx=(14, 12), pady=(0 if row == 0 else 14, 0), ipady=10)
-                    self.button(fields, text, action, kind='accent' if row == 2 else 'ghost', image=img).grid(row=row, column=2, sticky='e', pady=(0 if row == 0 else 14, 0))
+                    self.button(fields, text, action, kind='accent' if row == 2 else 'ghost', width=12, image=img).grid(row=row, column=2, sticky='e', pady=(0 if row == 0 else 14, 0))
                     if row == 0:
                         self.dat_entry = widget
                     elif row == 1:
@@ -3870,8 +3865,10 @@ def gui_mode():
                 self.family_var.set(f"{profile.get('family_label', 'Inconnu')}{' via Retool' if profile.get('is_retool') else ''}")
                 self.source_var.set(profile.get('default_source_url') or "Selection auto Minerva")
                 self.hint_var.set("Le dossier cible peut etre vide ou deja contenir un set partiel a consolider." if profile.get('system_name') else "Charge un DAT Retool pour orienter automatiquement la bonne collection Minerva.")
-                self.family_badge.configure(text=profile.get('family_label') if profile.get('family') != 'unknown' else "Profil manuel", bg={'no-intro': UI_COLOR_ACCENT, 'redump': UI_COLOR_SUCCESS, 'tosec': UI_COLOR_WARNING}.get(profile.get('family'), UI_COLOR_WARNING))
-                self.mode_badge.configure(text="Retool / 1G1R" if profile.get('is_retool') else "DAT brut", bg=UI_COLOR_SUCCESS if profile.get('is_retool') else UI_COLOR_GHOST_HOVER)
+                if self.family_badge:
+                    self.family_badge.configure(text=profile.get('family_label') if profile.get('family') != 'unknown' else "Profil manuel", bg={'no-intro': UI_COLOR_ACCENT, 'redump': UI_COLOR_SUCCESS, 'tosec': UI_COLOR_WARNING}.get(profile.get('family'), UI_COLOR_WARNING))
+                if self.mode_badge:
+                    self.mode_badge.configure(text="Retool / 1G1R" if profile.get('is_retool') else "DAT brut", bg=UI_COLOR_SUCCESS if profile.get('is_retool') else UI_COLOR_GHOST_HOVER)
                 for source in prepare_sources_for_profile([source.copy() for source in self.default_sources], profile):
                     self.source_vars[source['name']].set(source.get('enabled', True))
                     self.source_widgets[source['name']].configure(state=tk.NORMAL if source.get('compatible', True) else tk.DISABLED)
