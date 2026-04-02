@@ -168,12 +168,9 @@ MINERVA_TORRENT_BASE_CANDIDATES = (
 LOLROMS_BASE = 'https://lolroms.com/'
 NPM_CACHE_DIR = APP_ROOT / '.npm-cache'
 WEBTORRENT_HELPER = APP_ROOT / 'scripts' / 'minerva_torrent_download.js'
-BALROG_TOOLKIT_ROOT = APP_ROOT.parent / 'Balrog Toolkit'
-BALROG_ASSETS_DIR = BALROG_TOOLKIT_ROOT / 'assets'
+BALROG_ASSETS_DIR = APP_ROOT / 'assets'
 BALROG_WINDOW_ICON = BALROG_ASSETS_DIR / 'Retrogaming-Toolkit-AIO.ico'
 BALROG_1G1R_ICON = BALROG_ASSETS_DIR / 'icon_1g1r.png'
-BALROG_FOLDER_ICON = BALROG_ASSETS_DIR / 'icon_folder.png'
-BALROG_SAKURA_BG = BALROG_ASSETS_DIR / 'sakura_bg.png'
 
 UI_COLOR_BG = '#151515'
 UI_COLOR_CARD_BG = '#1e1e1e'
