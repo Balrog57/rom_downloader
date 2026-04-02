@@ -78,6 +78,9 @@ def load_env_file(file_path: str = '.env'):
                        (val.startswith("'") and val.endswith("'")):
                         val = val[1:-1]
                     os.environ[key.strip()] = val
+    except FileNotFoundError as e:
+        print(f"  Erreur lancement du helper torrent: {e}")
+        return False
     except Exception as e:
         print(f"Avertissement: Erreur lors du chargement du fichier .env: {e}")
 
@@ -190,6 +193,19 @@ SOURCE_FAMILY_MAP = {
     'TOSEC': 'tosec'
 }
 WEBTORRENT_MODULE_DIR = APP_ROOT / 'node_modules' / 'torrent-stream'
+
+WINDOWS_NODE_PATHS = (
+    r'%ProgramFiles%\nodejs\node.exe',
+    r'%ProgramFiles(x86)%\nodejs\node.exe',
+    r'%LocalAppData%\Programs\nodejs\node.exe'
+)
+WINDOWS_NPM_PATHS = (
+    r'%ProgramFiles%\nodejs\npm.cmd',
+    r'%ProgramFiles%\nodejs\npm',
+    r'%ProgramFiles(x86)%\nodejs\npm.cmd',
+    r'%AppData%\npm\npm.cmd'
+)
+MINERVA_TORRENT_AVAILABILITY = {}
 
 # ============================================================================
 # Base de données locale des URLs (extrait de RGSX games.zip)
@@ -600,6 +616,26 @@ def build_minerva_torrent_url(source: dict, system_name: str | None) -> str:
     return urljoin(MINERVA_TORRENT_CDN, quote(torrent_name))
 
 
+def is_minerva_torrent_available(torrent_url: str, session: requests.Session) -> bool:
+    """Valide rapidement qu'un torrent Minerva existe avant de l'utiliser pour toute une collection."""
+    if not torrent_url:
+        return False
+
+    cached = MINERVA_TORRENT_AVAILABILITY.get(torrent_url)
+    if cached is not None:
+        return cached
+
+    try:
+        response = session.get(torrent_url, timeout=20, stream=True, allow_redirects=True)
+        available = response.status_code == 200
+        response.close()
+    except Exception:
+        available = False
+
+    MINERVA_TORRENT_AVAILABILITY[torrent_url] = available
+    return available
+
+
 def normalize_system_name(system_name: str) -> str:
     """Nettoie le nom d'un système issu d'un DAT tout en gardant l'intitulé Minerva."""
     cleaned = re.sub(r'\s+', ' ', (system_name or '')).strip()
@@ -895,16 +931,40 @@ def search_database_for_game(game_info: dict) -> tuple[list, str]:
     return [], ''
 
 
+def resolve_executable_path(candidates: tuple[str, ...], fallback_paths: tuple[str, ...] = ()) -> str:
+    """Resout le chemin d'un executable depuis le PATH ou des emplacements Windows frequents."""
+    for candidate in candidates:
+        resolved = shutil.which(candidate)
+        if resolved:
+            return resolved
+
+    for raw_path in fallback_paths:
+        expanded = os.path.expandvars(raw_path)
+        if expanded and os.path.exists(expanded):
+            return expanded
+
+    return ''
+
+
+def resolve_node_runtime_paths() -> tuple[str, str]:
+    """Retourne les chemins vers node et npm, meme si le PATH du processus GUI est incomplet."""
+    node_path = resolve_executable_path(('node', 'node.exe'), WINDOWS_NODE_PATHS)
+    npm_path = resolve_executable_path(('npm', 'npm.cmd', 'npm.exe'), WINDOWS_NPM_PATHS)
+    return node_path, npm_path
+
+
 def ensure_webtorrent_runtime() -> bool:
     """Installe le runtime torrent Node localement si nécessaire."""
     if WEBTORRENT_MODULE_DIR.exists():
         return True
 
-    if not shutil.which('node'):
+    node_path, npm_path = resolve_node_runtime_paths()
+
+    if not node_path:
         print("  Erreur: Node.js est requis pour le téléchargement torrent Minerva")
         return False
 
-    if not shutil.which('npm'):
+    if not npm_path:
         print("  Erreur: npm est requis pour installer le runtime torrent")
         return False
 
@@ -914,7 +974,7 @@ def ensure_webtorrent_runtime() -> bool:
 
     try:
         subprocess.run(
-            ['npm', 'install', '--no-fund', '--no-audit', '--ignore-scripts', 'torrent-stream'],
+            [npm_path, 'install', '--no-fund', '--no-audit', '--ignore-scripts', 'torrent-stream'],
             cwd=str(APP_ROOT),
             check=True,
             env=env,
@@ -924,6 +984,10 @@ def ensure_webtorrent_runtime() -> bool:
             encoding='utf-8',
             errors='replace'
         )
+    except FileNotFoundError as e:
+        print(f"  Erreur lancement npm: {e}")
+        print(f"  npm detecte: {npm_path or 'introuvable'}")
+        return False
     except subprocess.CalledProcessError as e:
         print("  Échec de l'installation du runtime torrent:")
         print(e.stdout or str(e))
@@ -946,6 +1010,11 @@ def download_from_minerva_torrent(torrent_url: str, target_filename: str, dest_p
         print(f"  Erreur: helper torrent introuvable: {WEBTORRENT_HELPER}")
         return False
 
+    node_path, _ = resolve_node_runtime_paths()
+    if not node_path:
+        print("  Erreur: executable Node.js introuvable pour le helper torrent")
+        return False
+
     temp_dir = Path(tempfile.mkdtemp(prefix='minerva-torrent-'))
     env = os.environ.copy()
     if 'MINERVA_TORRENT_TIMEOUT_MS' not in env:
@@ -953,7 +1022,7 @@ def download_from_minerva_torrent(torrent_url: str, target_filename: str, dest_p
 
     try:
         process = subprocess.Popen(
-            ['node', str(WEBTORRENT_HELPER), torrent_url, target_filename, dest_path, str(temp_dir)],
+            [node_path, str(WEBTORRENT_HELPER), torrent_url, target_filename, dest_path, str(temp_dir)],
             cwd=str(APP_ROOT),
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
@@ -2841,8 +2910,13 @@ def search_all_sources(
                 base_url = build_minerva_directory_url(source, system_name)
                 minerva_files = collect_minerva_files_from_url(base_url, session, source.get('scan_depth', 0))
                 if minerva_files:
-                    found, still_missing = match_myrient_files(still_missing, minerva_files, source['name'])
                     torrent_url = build_minerva_torrent_url(source, system_name)
+                    if not is_minerva_torrent_available(torrent_url, session):
+                        print(f"  Avertissement: torrent Minerva introuvable pour {source['name']} ({torrent_url})")
+                        print("  Bascule vers les sources de fallback pour ce systeme.")
+                        continue
+
+                    found, still_missing = match_myrient_files(still_missing, minerva_files, source['name'])
                     for game in found:
                         game['torrent_url'] = torrent_url
                         game['source'] = source['name']
@@ -4336,9 +4410,10 @@ def gui_mode():
                     self.status_var.set(f"Termine - {downloaded} telecharge(s)")
                     self._ui(lambda: messagebox.showinfo("Termine", f"Consolidation terminee.\n\nTelecharges: {downloaded}\nEchecs: {failed}\nIgnores: {skipped}"))
                 except Exception as e:
-                    self.log(f"ERREUR: {e}")
+                    error_message = str(e)
+                    self.log(f"ERREUR: {error_message}")
                     self.status_var.set("Erreur")
-                    self._ui(lambda: messagebox.showerror("Erreur", f"Une erreur est survenue:\n{e}"))
+                    self._ui(lambda msg=error_message: messagebox.showerror("Erreur", f"Une erreur est survenue:\n{msg}"))
                 finally:
                     self.running = False
                     self._ui(lambda: (self.start_button.configure(state=tk.NORMAL), self.stop_button.configure(state=tk.DISABLED), self.progress_var.set(0)))
