@@ -15,6 +15,11 @@ Le workflow attendu est simple :
 
 Le projet est pense pour des DAT 1G1R deja prepares avec Retool. Des exemples sont fournis dans [dat.exemple](rom_downloader\dat.exemple).
 
+Le projet est autonome pour son interface :
+
+- les assets GUI necessaires sont inclus dans [assets](rom_downloader\assets)
+- il ne depend plus du dossier `Balrog Toolkit`
+
 ## Priorite de correspondance
 
 Pour verifier si un jeu est deja present localement, la priorite est :
@@ -128,6 +133,7 @@ npm install
 ## Structure utile
 
 - [rom_downloader.py](rom_downloader\rom_downloader.py) : script principal
+- [assets](rom_downloader\assets) : icones locales necessaires a la GUI
 - [scripts/minerva_torrent_download.js](rom_downloader\scripts\minerva_torrent_download.js) : helper torrent Minerva
 - [rom_database.zip](rom_downloader\rom_database.zip) : base locale des URLs
 - [dat.exemple](rom_downloader\dat.exemple) : exemples de DAT No-Intro, Redump et Retool
