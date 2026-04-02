@@ -9,14 +9,10 @@ Sources supportees:
     GRATUITES:
     - Minerva No-Intro / Redump / TOSEC
     - archive.org
+    - LoLROMs
     - EdgeEmu
     - PlanetEmu
     - 1fichier (gratuit)
-
-    PREMIUM:
-    - 1fichier (API)
-    - AllDebrid
-    - RealDebrid
 
 Usage en ligne de commande:
     python rom_downloader.py <dat_file> <rom_folder> [url_source] [--dry-run] [--limit N] [--tosort]
@@ -34,7 +30,6 @@ Options:
     --tosort          Deplace les ROMs hors DAT dans un sous-dossier ToSort
     --gui             Lance l'interface graphique
     --sources         Affiche la liste des sources de telechargement
-    --configure-api   Configure les cles API pour les services premium
 """
 
 import argparse
@@ -50,6 +45,7 @@ import tempfile
 import time
 import xml.etree.ElementTree as ET
 import zlib
+from datetime import datetime
 from itertools import islice
 from pathlib import Path
 from urllib.parse import quote, unquote, urljoin
@@ -97,16 +93,18 @@ try:
     import requests
     from bs4 import BeautifulSoup
     import internetarchive
+    import cloudscraper
 except ImportError:
-    print("Installation des packages requis (requests, beautifulsoup4, internetarchive)...")
+    print("Installation des packages requis (requests, beautifulsoup4, internetarchive, cloudscraper)...")
     subprocess.run(
         [sys.executable, '-m', 'pip', 'install',
-         'requests', 'beautifulsoup4', 'internetarchive', 'charset_normalizer', '-q'],
+         'requests', 'beautifulsoup4', 'internetarchive', 'charset_normalizer', 'cloudscraper', '-q'],
         check=False
     )
     import requests
     from bs4 import BeautifulSoup
     import internetarchive
+    import cloudscraper
 
 # ============================================================================
 # Extensions de ROMs supportées (constante globale)
@@ -167,6 +165,7 @@ MINERVA_TORRENT_BASE_CANDIDATES = (
     'https://minerva-archive.org/assets/',
     'https://cdn.minerva-archive.org/'
 )
+LOLROMS_BASE = 'https://lolroms.com/'
 NPM_CACHE_DIR = APP_ROOT / '.npm-cache'
 WEBTORRENT_HELPER = APP_ROOT / 'scripts' / 'minerva_torrent_download.js'
 BALROG_TOOLKIT_ROOT = APP_ROOT.parent / 'Balrog Toolkit'
@@ -211,6 +210,7 @@ WINDOWS_NPM_PATHS = (
 )
 MINERVA_TORRENT_AVAILABILITY = {}
 MINERVA_TORRENT_URL_CACHE = {}
+LOLROMS_SESSION = None
 
 # ============================================================================
 # Base de données locale des URLs (extrait de RGSX games.zip)
@@ -387,38 +387,11 @@ def get_default_sources_legacy():
             'priority': 2
         },
         {
-            'name': '1fichier (API)',
-            'base_url': config.get('1fichier_api_base', ''),
-            'type': 'premium_api',
-            'enabled': False,
-            'description': 'Téléchargement via API',
-            'api_key_required': True,
-            'priority': 3
-        },
-        {
             'name': '1fichier (Gratuit)',
             'base_url': config.get('1fichier_free', ''),
             'type': 'free_host',
             'enabled': True,
             'description': 'Mode gratuit avec attente (si lien détecté)',
-            'priority': 3
-        },
-        {
-            'name': 'AllDebrid (API)',
-            'base_url': config.get('alldebrid_api_base', ''),
-            'type': 'debrid_api',
-            'enabled': False,
-            'description': 'Service debrid multi-hébergeurs',
-            'api_key_required': True,
-            'priority': 3
-        },
-        {
-            'name': 'RealDebrid (API)',
-            'base_url': config.get('realdebrid_api_base', ''),
-            'type': 'debrid_api',
-            'enabled': False,
-            'description': 'Service debrid multi-hébergeurs',
-            'api_key_required': True,
             'priority': 3
         }
     ]
@@ -492,13 +465,12 @@ def get_default_sources():
             'priority': 3
         },
         {
-            'name': '1fichier (API)',
-            'base_url': config.get('1fichier_api_base', ''),
-            'type': 'premium_api',
-            'enabled': False,
-            'description': 'TÃ©lÃ©chargement via API',
-            'api_key_required': True,
-            'priority': 4
+            'name': 'LoLROMs',
+            'base_url': LOLROMS_BASE,
+            'type': 'lolroms',
+            'enabled': True,
+            'description': 'Fallback direct via Cloudflare-compatible listing',
+            'priority': 3
         },
         {
             'name': '1fichier (Gratuit)',
@@ -507,63 +479,59 @@ def get_default_sources():
             'enabled': True,
             'description': 'Mode gratuit avec attente (si lien dÃ©tectÃ©)',
             'priority': 4
-        },
-        {
-            'name': 'AllDebrid (API)',
-            'base_url': config.get('alldebrid_api_base', ''),
-            'type': 'debrid_api',
-            'enabled': False,
-            'description': 'Service debrid multi-hÃ©bergeurs',
-            'api_key_required': True,
-            'priority': 4
-        },
-        {
-            'name': 'RealDebrid (API)',
-            'base_url': config.get('realdebrid_api_base', ''),
-            'type': 'debrid_api',
-            'enabled': False,
-            'description': 'Service debrid multi-hÃ©bergeurs',
-            'api_key_required': True,
-            'priority': 4
         }
     ]
 
 SYSTEM_MAPPINGS = {
     'Nintendo - Game Boy': {
         'edgeemu': 'nintendo-gameboy',
-        'planetemu': 'nintendo-game-boy'
+        'planetemu': 'nintendo-game-boy',
+        'lolroms': 'Nintendo - Game Boy'
     },
     'Nintendo - Game Boy Color': {
         'edgeemu': 'nintendo-gameboycolor',
-        'planetemu': 'nintendo-game-boy-color'
+        'planetemu': 'nintendo-game-boy-color',
+        'lolroms': 'Nintendo - Game Boy Color'
     },
     'Nintendo - Game Boy Advance': {
         'edgeemu': 'nintendo-gba',
-        'planetemu': 'nintendo-game-boy-advance'
+        'planetemu': 'nintendo-game-boy-advance',
+        'lolroms': 'Nintendo - Game Boy Advance'
     },
     'Nintendo - Nintendo Entertainment System': {
         'edgeemu': 'nintendo-nes',
-        'planetemu': 'nintendo-entertainment-system'
+        'planetemu': 'nintendo-entertainment-system',
+        'lolroms': 'Nintendo - Famicom/Headerless'
+    },
+    'Nintendo - Nintendo Entertainment System (Headered)': {
+        'edgeemu': 'nintendo-nes',
+        'planetemu': 'nintendo-entertainment-system',
+        'lolroms': 'Nintendo - Famicom/Headered'
     },
     'Nintendo - Super Nintendo Entertainment System': {
         'edgeemu': 'nintendo-snes',
-        'planetemu': 'nintendo-super-nintendo-entertainment-system'
+        'planetemu': 'nintendo-super-nintendo-entertainment-system',
+        'lolroms': 'Nintendo - Super Famicom'
     },
     'Nintendo - Nintendo 64': {
         'edgeemu': 'nintendo-n64',
-        'planetemu': 'nintendo-64'
+        'planetemu': 'nintendo-64',
+        'lolroms': 'Nintendo - 64'
     },
     'Sega - Mega Drive - Genesis': {
         'edgeemu': 'sega-genesis',
-        'planetemu': 'sega-mega-drive'
+        'planetemu': 'sega-mega-drive',
+        'lolroms': 'SEGA/Mega Drive'
     },
     'Sega - Master System - Mark III': {
         'edgeemu': 'sega-mastersystem',
-        'planetemu': 'sega-master-system'
+        'planetemu': 'sega-master-system',
+        'lolroms': 'SEGA/Master System'
     },
     'Sega - Game Gear': {
         'edgeemu': 'sega-gamegear',
-        'planetemu': 'sega-game-gear'
+        'planetemu': 'sega-game-gear',
+        'lolroms': 'SEGA/Game Gear'
     },
     'NEC - PC Engine - TurboGrafx 16': {
         'edgeemu': 'nec-pcengine',
@@ -571,7 +539,35 @@ SYSTEM_MAPPINGS = {
     },
     'SNK - Neo Geo Pocket Color': {
         'edgeemu': 'snk-neogeopocketcolor',
-        'planetemu': 'snk-neo-geo-pocket-color'
+        'planetemu': 'snk-neo-geo-pocket-color',
+        'lolroms': 'SNK/NeoGeo Pocket Color'
+    },
+    'Sony - PlayStation': {
+        'lolroms': 'SONY/PlayStation'
+    },
+    'Sony - PlayStation Portable': {
+        'lolroms': 'SONY/PlayStation Portable'
+    },
+    'Nintendo - DS': {
+        'lolroms': 'Nintendo - DS'
+    },
+    'Nintendo - 3DS': {
+        'lolroms': 'Nintendo - 3DS'
+    },
+    'Nintendo - GameCube': {
+        'lolroms': 'Nintendo - GameCube'
+    },
+    'Nintendo - Wii': {
+        'lolroms': 'Nintendo - Wii'
+    },
+    'Nintendo - Wii U': {
+        'lolroms': 'Nintendo - Wii U'
+    },
+    'Nintendo - Virtual Boy': {
+        'lolroms': 'Nintendo - Virtual Boy'
+    },
+    'Nintendo - Pokémon Mini': {
+        'lolroms': 'Nintendo - Pokémon Mini'
     }
 }
 
@@ -804,7 +800,7 @@ def is_source_compatible_with_profile(source: dict, dat_profile: dict | None) ->
         source_family = get_source_family(source)
         return source_family in {'', 'custom', family}
 
-    if family == 'redump' and source_type in {'edgeemu', 'planetemu'}:
+    if family == 'redump' and source_type in {'edgeemu', 'planetemu', 'lolroms'}:
         return False
 
     return True
@@ -821,7 +817,7 @@ def prepare_sources_for_profile(sources: list, dat_profile: dict | None) -> list
         if source_copy.get('type') == 'minerva' and not source_copy.get('fixed_directory'):
             if dat_profile and dat_profile.get('family') in {'no-intro', 'redump', 'tosec'}:
                 source_copy['enabled'] = source_copy.get('enabled', True) and compatible
-        elif dat_profile and dat_profile.get('family') == 'redump' and source_copy.get('type') in {'edgeemu', 'planetemu'}:
+        elif dat_profile and dat_profile.get('family') == 'redump' and source_copy.get('type') in {'edgeemu', 'planetemu', 'lolroms'}:
             source_copy['enabled'] = False
 
         prepared.append(source_copy)
@@ -1559,9 +1555,6 @@ def download_from_premium_source(source_type: str, url: str, dest_path: str,
 
 def print_sources_info():
     """Print information about available download sources."""
-    # Load API keys to show status
-    api_keys = load_api_keys()
-    
     print("\n" + "=" * 70)
     print("SOURCES DE TÉLÉCHARGEMENT DISPONIBLES")
     print("Extrait de games.zip RGSX (74,189 URLs analysées)")
@@ -1579,46 +1572,12 @@ def print_sources_info():
     
     print("\n--- Sources Secondaires ---")
     for i, source in enumerate(get_default_sources(), 1):
-        if source['type'] not in ('archive_org', 'edgeemu', 'planetemu'):
+        if source['type'] not in ('archive_org', 'edgeemu', 'planetemu', 'lolroms', 'free_host'):
             continue
         print(f"\n{i}. {source['name']}")
         print(f"   Type: {source['type']}")
         if source['base_url']:
             print(f"   URL: Masquée")
-        print(f"   Description: {source.get('description', 'N/A')}")
-        print(f"   Priorité: {source.get('priority', 'N/A')}")
-    
-    print("\n--- 1fichier ---")
-    for i, source in enumerate(get_default_sources(), 1):
-        if source['type'] not in ('premium_api', 'free_host'):
-            continue
-        
-        if source.get('api_key_required', False):
-            api_key = api_keys.get('1fichier', '')
-            key_status = "CONFIGURÉE" if api_key else "NON CONFIGURÉE"
-            print(f"\n{i}. {source['name']} [{key_status}]")
-        else:
-            print(f"\n{i}. {source['name']} [TOUJOURS DISPONIBLE]")
-        
-        print(f"   Type: {source['type']}")
-        if source['base_url']:
-            print(f"   URL: Masquée")
-        print(f"   Description: {source.get('description', 'N/A')}")
-        print(f"   Priorité: {source.get('priority', 'N/A')}")
-    
-    print("\n--- Services Debrid (Premium) ---")
-    for i, source in enumerate(get_default_sources(), 1):
-        if source['type'] != 'debrid_api':
-            continue
-        
-        service_name = source['name'].split(' ')[0].lower()
-        api_key = api_keys.get(service_name, '')
-        key_status = "CONFIGURÉE" if api_key else "NON CONFIGURÉE"
-        
-        print(f"\n{i}. {source['name']} [{key_status}]")
-        print(f"   Type: {source['type']}")
-        if source['base_url']:
-            print(f"   URL: {source['base_url']}")
         print(f"   Description: {source.get('description', 'N/A')}")
         print(f"   Priorité: {source.get('priority', 'N/A')}")
     
@@ -1633,9 +1592,6 @@ def print_sources_info():
         print(f"   Description: {source.get('description', 'N/A')}")
     
     print("\n" + "=" * 70)
-    print("Pour configurer les clés API premium :")
-    print("  python rom_downloader.py --configure-api")
-    print("=" * 70)
 
 # ============================================================================
 # Fonctions de traitement
@@ -2436,6 +2392,94 @@ def move_files_to_tosort(files_to_move: list, rom_folder: str, tosort_folder: st
     return moved, failed
 
 
+def build_report_slug(value: str) -> str:
+    """Nettoie une valeur pour un nom de fichier de rapport."""
+    cleaned = re.sub(r'[^A-Za-z0-9._-]+', '_', (value or '').strip())
+    return cleaned.strip('._-') or 'run'
+
+
+def write_download_report(output_folder: str, summary: dict) -> str:
+    """Écrit un récapitulatif lisible de la session dans le dossier de destination."""
+    os.makedirs(output_folder, exist_ok=True)
+
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    system_slug = build_report_slug(summary.get('system_name', 'systeme'))
+    report_path = os.path.join(output_folder, f"rom_downloader_report_{system_slug}_{timestamp}.txt")
+
+    missing_titles = [item['game_name'] for item in summary.get('not_available', [])]
+    failed_titles = [item['game_name'] for item in summary.get('failed_items', [])]
+    downloaded_titles = [item['game_name'] for item in summary.get('downloaded_items', [])]
+    skipped_titles = [item['game_name'] for item in summary.get('skipped_items', [])]
+
+    source_counts = {}
+    for item in summary.get('resolved_items', []):
+        source_name = item.get('source', 'Inconnu')
+        source_counts[source_name] = source_counts.get(source_name, 0) + 1
+
+    lines = [
+        "ROM Downloader - Recapitulatif",
+        "=" * 72,
+        f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+        f"DAT: {summary.get('dat_file', '')}",
+        f"Systeme: {summary.get('system_name', '')}",
+        f"Profil: {summary.get('dat_profile', '')}",
+        f"Dossier de destination: {summary.get('output_folder', '')}",
+        f"URL source manuelle: {summary.get('source_url', '') or 'Auto'}",
+        f"Sources actives: {', '.join(summary.get('active_sources', [])) or 'Aucune'}",
+        "",
+        "Resume",
+        "-" * 72,
+        f"Jeux dans le DAT: {summary.get('total_dat_games', 0)}",
+        f"Jeux manquants avant telechargement: {summary.get('missing_before', 0)}",
+        f"Jeux resolves sur les providers: {len(summary.get('resolved_items', []))}",
+        f"Telecharges: {len(downloaded_titles)}",
+        f"Echecs de telechargement: {len(failed_titles)}",
+        f"Ignores / deja presents / limite: {len(skipped_titles)}",
+        f"Introuvables sur toutes les sources: {len(missing_titles)}",
+    ]
+
+    if 'tosort_moved' in summary or 'tosort_failed' in summary:
+        lines.extend([
+            f"ToSort deplaces: {summary.get('tosort_moved', 0)}",
+            f"ToSort echecs: {summary.get('tosort_failed', 0)}",
+        ])
+
+    lines.extend(["", "Resolution par source", "-" * 72])
+    if source_counts:
+        for source_name, count in sorted(source_counts.items(), key=lambda item: (-item[1], item[0].lower())):
+            lines.append(f"- {source_name}: {count}")
+    else:
+        lines.append("- Aucun jeu resolu")
+
+    lines.extend(["", "Manquants non trouves", "-" * 72])
+    if missing_titles:
+        lines.extend(f"- {title}" for title in missing_titles)
+    else:
+        lines.append("- Aucun")
+
+    lines.extend(["", "Echecs de telechargement", "-" * 72])
+    if failed_titles:
+        lines.extend(f"- {title}" for title in failed_titles)
+    else:
+        lines.append("- Aucun")
+
+    lines.extend(["", "Telecharges", "-" * 72])
+    if downloaded_titles:
+        lines.extend(f"- {title}" for title in downloaded_titles)
+    else:
+        lines.append("- Aucun")
+
+    lines.extend(["", "Ignores", "-" * 72])
+    if skipped_titles:
+        lines.extend(f"- {title}" for title in skipped_titles)
+    else:
+        lines.append("- Aucun")
+
+    Path(report_path).write_text("\n".join(lines) + "\n", encoding='utf-8')
+    print(f"Rapport ecrit: {report_path}")
+    return report_path
+
+
 def detect_system_name(dat_file_path: str) -> str:
     profile_system_name = finalize_dat_profile(detect_dat_profile(dat_file_path)).get('system_name', '')
     if profile_system_name:
@@ -2463,6 +2507,107 @@ def detect_system_name(dat_file_path: str) -> str:
     # Normaliser les espaces multiples
     name = re.sub(r'\s+', ' ', name)
     return name
+
+
+def get_lolroms_session():
+    """Retourne une session Cloudflare-compatible pour LoLROMs."""
+    global LOLROMS_SESSION
+
+    if LOLROMS_SESSION is None:
+        LOLROMS_SESSION = cloudscraper.create_scraper(
+            browser={'browser': 'chrome', 'platform': 'windows', 'mobile': False}
+        )
+        LOLROMS_SESSION.headers.update({
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        })
+
+    return LOLROMS_SESSION
+
+
+def build_lolroms_url(path: str) -> str:
+    """Construit une URL LoLROMs depuis un chemin logique avec slashs."""
+    segments = [quote(segment) for segment in str(path or '').split('/') if segment]
+    return urljoin(LOLROMS_BASE, '/'.join(segments))
+
+
+def resolve_lolroms_system_path(system_name: str) -> str:
+    """Résout le chemin LoLROMs correspondant au système demandé."""
+    if not system_name:
+        return ''
+
+    mappings = SYSTEM_MAPPINGS.get(system_name, {})
+    candidate_paths = []
+
+    mapped_path = mappings.get('lolroms')
+    if mapped_path:
+        candidate_paths.append(mapped_path)
+
+    candidate_paths.append(system_name.strip())
+    candidate_paths.append(re.sub(r'\s*\(Headered\)\s*$', '', system_name).strip())
+    candidate_paths.append(re.sub(r'\s*\(Headerless\)\s*$', '', system_name).strip())
+
+    session = get_lolroms_session()
+    seen = set()
+    for candidate in candidate_paths:
+        normalized = candidate.strip().strip('/')
+        if not normalized or normalized.lower() in seen:
+            continue
+        seen.add(normalized.lower())
+        try:
+            response = session.get(build_lolroms_url(normalized), timeout=45)
+            if response.status_code == 200 and 'Just a moment...' not in response.text:
+                return normalized
+        except Exception:
+            continue
+
+    return ''
+
+
+def list_lolroms_directory(system_path: str) -> dict:
+    """Scrape LoLROMs pour un système donné et retourne un mapping par nom normalisé."""
+    if not system_path:
+        return {}
+
+    url = build_lolroms_url(system_path)
+    print(f"Scraping LoLROMs: {url}")
+
+    mapping = {}
+    try:
+        response = get_lolroms_session().get(url, timeout=60)
+        if response.status_code != 200 or 'Just a moment...' in response.text:
+            print(f"Erreur LoLROMs ({response.status_code}) pour {url}")
+            return mapping
+
+        soup = BeautifulSoup(response.text, 'html.parser')
+        for link in soup.find_all('a', href=True):
+            href = html_module.unescape(link.get('href', '')).strip()
+            text = html_module.unescape(link.get_text().strip())
+
+            if not href or not text or text in {'RSS', 'Donate', 'Main', '../'}:
+                continue
+            if href.endswith('/') or href.lower().endswith('/feed'):
+                continue
+            if '/.' in href:
+                continue
+
+            full_url = urljoin(LOLROMS_BASE, href)
+            parsed_name = os.path.basename(unquote(href))
+            filename = parsed_name if any(parsed_name.lower().endswith(ext) for ext in ROM_EXTENSIONS) else ''
+            if not filename:
+                continue
+
+            display_name = strip_rom_extension(filename)
+            mapping[display_name.lower()] = {
+                'full_name': display_name,
+                'filename': filename,
+                'url': full_url
+            }
+
+        print(f"Found {len(mapping)} files on LoLROMs")
+    except Exception as e:
+        print(f"Erreur scraping LoLROMs: {e}")
+
+    return mapping
 
 
 def list_edgeemu_directory(system_slug: str, session: requests.Session) -> dict:
@@ -3048,6 +3193,33 @@ def search_all_sources(
                         all_found.extend(newly_found)
                         still_missing = remaining
 
+            elif source['type'] == 'lolroms' and source.get('enabled', True):
+                lolroms_path = resolve_lolroms_system_path(system_name)
+                if lolroms_path:
+                    print(f"\n--- Recherche sur LoLROMs ({lolroms_path}) ---")
+                    lolroms_files = list_lolroms_directory(lolroms_path)
+                    if lolroms_files:
+                        newly_found = []
+                        remaining = []
+                        for game_info in still_missing:
+                            matched = None
+                            for candidate_name in iter_game_candidate_names(game_info):
+                                matched = lolroms_files.get(candidate_name.lower())
+                                if matched:
+                                    break
+
+                            if matched:
+                                game_info['download_url'] = matched['url']
+                                game_info['source'] = 'LoLROMs'
+                                game_info['download_filename'] = matched['filename']
+                                newly_found.append(game_info)
+                                print(f"  [LoLROMs] {game_info['game_name']} trouvé")
+                            else:
+                                remaining.append(game_info)
+
+                        all_found.extend(newly_found)
+                        still_missing = remaining
+
     # ========================================================================
     # Ã‰TAPE 4 : Recherche archive.org par checksum puis nom (fallback final)
     # ========================================================================
@@ -3492,6 +3664,9 @@ def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_ru
                     if page_url:
                         success = download_planetemu(page_url, dest_path, session)
 
+                elif source == 'LoLROMs' and download_url:
+                    success = download_file(download_url, dest_path, get_lolroms_session())
+
                 elif source.startswith('Minerva') and torrent_url:
                     print(f"  Torrent: {torrent_url[:80]}...")
                     success = download_from_minerva_torrent(torrent_url, filename, dest_path)
@@ -3576,6 +3751,14 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
     local_roms, local_roms_normalized, local_game_names, signature_index = scan_local_roms(rom_folder, dat_games)
     missing_games = find_missing_games(dat_games, local_roms, local_roms_normalized, local_game_names, signature_index)
     dat_profile = finalize_dat_profile(detect_dat_profile(dat_file))
+    report_active_sources = []
+    to_download = []
+    not_available = []
+    downloaded_items = []
+    failed_items = []
+    skipped_items = []
+    tosort_moved = 0
+    tosort_failed = 0
 
     system_name = dat_profile.get('system_name') or detect_system_name(dat_file)
     print(f"SystÃ¨me dÃ©tectÃ© : {system_name}")
@@ -3589,6 +3772,7 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
             sources.insert(0, build_custom_source(myrient_url))
 
         sources = prepare_sources_for_profile(sources, dat_profile)
+        report_active_sources = [source['name'] for source in sources if source.get('enabled', True)]
 
         to_download, not_available = search_all_sources(
             missing_games,
@@ -3623,12 +3807,14 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
                 if limit and downloaded >= limit:
                     print("  IgnorÃ© (limite atteinte)")
                     skipped += 1
+                    skipped_items.append(game_info.copy())
                     continue
 
                 exists, existing_path = file_exists_in_folder(output_folder, filename)
                 if exists:
                     print(f"  DÃ©jÃ  prÃ©sent: {os.path.basename(existing_path)}")
                     skipped += 1
+                    skipped_items.append(game_info.copy())
                     continue
 
                 if dry_run:
@@ -3655,6 +3841,9 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
                     page_url = game_info.get('page_url')
                     if page_url:
                         success = download_planetemu(page_url, dest_path, session)
+
+                elif source == 'LoLROMs' and download_url:
+                    success = download_file(download_url, dest_path, get_lolroms_session())
 
                 elif source.startswith('Minerva') and torrent_url:
                     print(f"  Torrent: {torrent_url[:80]}...")
@@ -3689,9 +3878,11 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
                 if success:
                     print(f"  TÃ©lÃ©chargÃ©: {filename}")
                     downloaded += 1
+                    downloaded_items.append(game_info.copy())
                     time.sleep(0.5)
                 else:
                     failed += 1
+                    failed_items.append(game_info.copy())
 
             print("\n" + "=" * 60)
             print("RÃ©sumÃ©:")
@@ -3701,7 +3892,7 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
             if dry_run:
                 print("\n(Simulation - aucun fichier tÃ©lÃ©chargÃ©)")
 
-    if move_to_tosort and missing_games:
+    if move_to_tosort:
         print("\n" + "=" * 60)
         print("Recherche des fichiers Ã  dÃ©placer vers ToSort...")
         print("=" * 60)
@@ -3714,11 +3905,32 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
         if files_to_move:
             print(f"\n{len(files_to_move)} fichiers Ã  dÃ©placer vers: {tosort_folder}")
             moved, failed = move_files_to_tosort(files_to_move, rom_folder, tosort_folder, dry_run)
+            tosort_moved = moved
+            tosort_failed = failed
             print(f"\nRÃ©sumÃ© ToSort:")
             print(f"  DÃ©placÃ©s: {moved}")
             print(f"  Ã‰checs: {failed}")
         else:
             print("\nAucun fichier Ã  dÃ©placer.")
+
+    report_path = write_download_report(output_folder, {
+        'dat_file': dat_file,
+        'system_name': system_name,
+        'dat_profile': describe_dat_profile(dat_profile),
+        'output_folder': output_folder,
+        'source_url': myrient_url,
+        'active_sources': report_active_sources,
+        'total_dat_games': len(dat_games),
+        'missing_before': len(missing_games),
+        'resolved_items': to_download,
+        'downloaded_items': downloaded_items,
+        'failed_items': failed_items,
+        'skipped_items': skipped_items,
+        'not_available': not_available,
+        'tosort_moved': tosort_moved,
+        'tosort_failed': tosort_failed,
+    })
+    return report_path
 
 
 def cli_mode(args):
@@ -4021,6 +4233,8 @@ def gui_mode():
                             page_url = game_info.get('page_url')
                             if page_url:
                                 success = download_planetemu(page_url, dest_path, self.session, update_progress)
+                        elif source == 'LoLROMs' and download_url:
+                            success = download_file(download_url, dest_path, get_lolroms_session(), update_progress)
                         elif source.startswith('Minerva') and torrent_url:
                             success = download_from_minerva_torrent(torrent_url, filename, dest_path, update_progress)
                         elif source == 'database' and download_url:
@@ -4383,15 +4597,46 @@ def gui_mode():
                 try:
                     dat_path = self.dat_file.get().strip()
                     rom_folder = self.rom_folder.get().strip()
+                    source_url = self.myrient_url.get().strip()
                     dat_profile = finalize_dat_profile(detect_dat_profile(dat_path))
                     system_name = dat_profile.get('system_name') or detect_system_name(dat_path)
                     sources = self.selected_sources()
                     dat_games = parse_dat_file(dat_path)
                     local_roms, local_roms_normalized, local_game_names, signature_index = scan_local_roms(rom_folder, dat_games)
                     missing_games = find_missing_games(dat_games, local_roms, local_roms_normalized, local_game_names, signature_index)
+                    downloaded_items = []
+                    failed_items = []
+                    skipped_items = []
+                    to_download = []
+                    not_available = []
+                    moved = move_failed = 0
                     if not missing_games:
+                        if self.move_to_tosort_var.get():
+                            parent_folder = os.path.dirname(rom_folder)
+                            tosort_folder = os.path.join(parent_folder, "ToSort")
+                            files_to_move = find_roms_not_in_dat(dat_games, local_roms, local_roms_normalized, rom_folder)
+                            if files_to_move:
+                                moved, move_failed = move_files_to_tosort(files_to_move, rom_folder, tosort_folder, False)
+                                self.log(f"ToSort -> deplaces: {moved}, echecs: {move_failed}")
+                        report_path = write_download_report(rom_folder, {
+                            'dat_file': dat_path,
+                            'system_name': system_name,
+                            'dat_profile': describe_dat_profile(dat_profile),
+                            'output_folder': rom_folder,
+                            'source_url': source_url,
+                            'active_sources': [s['name'] for s in sources if s.get('enabled', True)],
+                            'total_dat_games': len(dat_games),
+                            'missing_before': 0,
+                            'resolved_items': [],
+                            'downloaded_items': [],
+                            'failed_items': [],
+                            'skipped_items': [],
+                            'not_available': [],
+                            'tosort_moved': moved,
+                            'tosort_failed': move_failed,
+                        })
                         self.status_var.set("Termine - dossier deja complet")
-                        self._ui(lambda: messagebox.showinfo("Termine", "Tous les jeux du DAT sont deja presents localement."))
+                        self._ui(lambda path=report_path: messagebox.showinfo("Termine", f"Tous les jeux du DAT sont deja presents localement.\n\nRapport:\n{path}"))
                         return
                     self.log(f"DAT detecte: {describe_dat_profile(dat_profile)}")
                     self.log(f"Sources actives: {', '.join([s['name'] for s in sources if s.get('enabled', True)])}")
@@ -4418,6 +4663,7 @@ def gui_mode():
                         if exists:
                             self.log(f"  Deja present: {os.path.basename(existing_path)}")
                             skipped += 1
+                            skipped_items.append(game_info.copy())
                             continue
                         dest_path = os.path.join(rom_folder, filename)
                         progress = lambda value: self._ui(lambda: self.progress_var.set(value))
@@ -4432,6 +4678,8 @@ def gui_mode():
                             success = download_file(download_url, dest_path, self.session, progress)
                         elif source == 'PlanetEmu' and game_info.get('page_url'):
                             success = download_planetemu(game_info['page_url'], dest_path, self.session, progress)
+                        elif source == 'LoLROMs' and download_url:
+                            success = download_file(download_url, dest_path, get_lolroms_session(), progress)
                         elif source.startswith('Minerva') and torrent_url:
                             success = download_from_minerva_torrent(torrent_url, filename, dest_path, progress)
                         elif source == 'database' and download_url:
@@ -4449,10 +4697,12 @@ def gui_mode():
                         if success:
                             self.log(f"  Telecharge: {filename}")
                             downloaded += 1
+                            downloaded_items.append(game_info.copy())
                             time.sleep(0.5)
                         else:
                             self.log("  Echec du telechargement")
                             failed += 1
+                            failed_items.append(game_info.copy())
                     if self.move_to_tosort_var.get():
                         parent_folder = os.path.dirname(rom_folder)
                         tosort_folder = os.path.join(parent_folder, "ToSort")
@@ -4460,8 +4710,25 @@ def gui_mode():
                         if files_to_move:
                             moved, move_failed = move_files_to_tosort(files_to_move, rom_folder, tosort_folder, False)
                             self.log(f"ToSort -> deplaces: {moved}, echecs: {move_failed}")
+                    report_path = write_download_report(rom_folder, {
+                        'dat_file': dat_path,
+                        'system_name': system_name,
+                        'dat_profile': describe_dat_profile(dat_profile),
+                        'output_folder': rom_folder,
+                        'source_url': source_url,
+                        'active_sources': [s['name'] for s in sources if s.get('enabled', True)],
+                        'total_dat_games': len(dat_games),
+                        'missing_before': len(missing_games),
+                        'resolved_items': to_download,
+                        'downloaded_items': downloaded_items,
+                        'failed_items': failed_items,
+                        'skipped_items': skipped_items,
+                        'not_available': not_available,
+                        'tosort_moved': moved,
+                        'tosort_failed': move_failed,
+                    })
                     self.status_var.set(f"Termine - {downloaded} telecharge(s)")
-                    self._ui(lambda: messagebox.showinfo("Termine", f"Consolidation terminee.\n\nTelecharges: {downloaded}\nEchecs: {failed}\nIgnores: {skipped}"))
+                    self._ui(lambda path=report_path: messagebox.showinfo("Termine", f"Telechargement termine.\n\nTelecharges: {downloaded}\nEchecs: {failed}\nIgnores: {skipped}\n\nRapport:\n{path}"))
                 except Exception as e:
                     error_message = str(e)
                     self.log(f"ERREUR: {error_message}")
@@ -4498,7 +4765,6 @@ Exemples:
   python rom_downloader.py "Dat\Sony - PlayStation 2 (Retool).dat" "Roms\PS2" --limit 10
   python rom_downloader.py  (mode interactif)
   python rom_downloader.py --sources  (afficher les sources disponibles)
-  python rom_downloader.py --configure-api  (configurer les clés API)
         '''
     )
     parser.add_argument('dat_file', nargs='?', help='Chemin vers le fichier DAT')
@@ -4510,14 +4776,8 @@ Exemples:
     parser.add_argument('--gui', action='store_true', help='Mode interface graphique')
     parser.add_argument('--tosort', action='store_true', help='Deplacer les ROMs non presentes dans le DAT vers un sous-dossier ToSort')
     parser.add_argument('--sources', action='store_true', help='Afficher les sources de telechargement')
-    parser.add_argument('--configure-api', action='store_true', help='Configurer les cles API premium')
 
     args = parser.parse_args()
-
-    # Configure API keys
-    if args.configure_api:
-        configure_api_keys()
-        return
 
     # Show sources
     if args.sources:
