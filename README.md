@@ -11,6 +11,7 @@ Le workflow attendu est simple :
 3. Tu peux laisser l'URL source vide pour la detection automatique Minerva, ou renseigner manuellement la bonne URL console si besoin.
 4. Le script verifie ce qui est deja present dans le dossier.
 5. Il ne telecharge que les jeux manquants.
+6. A la fin, il ecrit un rapport texte dans le dossier de destination avec le resume complet et surtout les jeux manquants.
 
 Le projet est pense pour des DAT 1G1R deja prepares avec Retool. Des exemples sont fournis dans [dat.exemple](rom_downloader\dat.exemple).
 
@@ -35,7 +36,7 @@ L'ordre reel de recherche est le suivant :
 
 1. `Minerva` en source principale, en se basant sur le DAT detecte ou sur l'URL manuelle si tu en fournis une.
 2. `rom_database.zip` comme catalogue local de fallbacks.
-3. `EdgeEmu` et `PlanetEmu` si le jeu n'a pas encore ete resolu.
+3. `EdgeEmu`, `PlanetEmu` et `LoLROMs` si le jeu n'a pas encore ete resolu.
 4. `archive.org` en recherche live par `md5 -> crc -> sha1 -> nom` quand aucun autre fallback n'a abouti.
 
 Important :
@@ -46,12 +47,25 @@ La base locale peut elle-meme renvoyer des liens `archive.org`, `1fichier` ou d'
 - `Minerva No-Intro`, `Minerva Redump`, `Minerva TOSEC` : source principale
 - `rom_database.zip` : catalogue local de fallbacks
 - `archive.org` : fallback direct via base locale ou recherche live checksum
+- `LoLROMs` : fallback direct via listing Cloudflare-compatible
 - `EdgeEmu` : fallback direct
 - `PlanetEmu` : fallback direct
 - `1fichier (Gratuit)` : fallback
-- `1fichier (API)`, `AllDebrid (API)`, `RealDebrid (API)` : options necessitant une cle
 
 Minerva est telecharge en direct via torrent sans sortir de l'application.
+
+## Rapport de fin
+
+Chaque execution ecrit un fichier `rom_downloader_report_*.txt` dans le dossier de destination.
+
+Le rapport contient notamment :
+
+- le DAT utilise
+- le systeme detecte
+- les sources actives
+- le nombre de jeux resolus / telecharges / ignores / en echec
+- la liste complete des jeux introuvables
+- le recap `ToSort` si l'option est active
 
 ## Option ToSort
 
@@ -100,6 +114,7 @@ Le script peut installer les dependances manquantes automatiquement. Sinon :
 
 ```bash
 pip install requests beautifulsoup4 internetarchive
+pip install cloudscraper
 ```
 
 ### Dependances Node
@@ -123,7 +138,6 @@ npm install
 - `--limit N` : limite le nombre de telechargements
 - `--tosort` : deplace le hors-DAT dans `ToSort`
 - `--sources` : affiche les sources disponibles
-- `--configure-api` : configure les services necessitant une cle
 
 ## Notes
 
@@ -137,6 +151,7 @@ Le fonctionnement principal a ete verifie sur les DAT d'exemple du repo, avec de
 
 - `Minerva` : `Malibu Beach Volleyball (USA)`
 - `archive.org` via base locale : `4 in 1 (Europe) (4B-001, Sachen-Commin) (Unl)`
+- `LoLROMs` : `10-Pin Bowling (USA) (Proto)`
 - `EdgeEmu` : `Malibu Beach Volleyball (USA)`
 - `PlanetEmu` : `4 in 1 (Europe) (4B-001, Sachen-Commin) (Unl)`
 
