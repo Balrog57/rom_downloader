@@ -50,6 +50,7 @@ import tempfile
 import time
 import xml.etree.ElementTree as ET
 import zlib
+from itertools import islice
 from pathlib import Path
 from urllib.parse import quote, unquote, urljoin
 
@@ -1550,6 +1551,33 @@ ARCHIVE_CHECKSUM_FILE_FIELDS = {
     'sha1': ['sha1']
 }
 
+ARCHIVE_SEARCH_TIMEOUT = 20
+ARCHIVE_ITEM_TIMEOUT = 30
+ARCHIVE_CHECKSUM_RESULT_LIMIT = 20
+ARCHIVE_NAME_RESULT_LIMIT = 10
+ARCHIVE_NAME_COLLECTIONS = ('softwarelibrary', 'retrogames', '')
+ARCHIVE_CHECKSUM_NAME_CROSSCHECK = False
+
+
+def search_archive_items_limited(query: str, limit: int) -> list:
+    """Interroge archive.org avec une vraie limite et un timeout reseau."""
+    return list(islice(
+        internetarchive.search_items(
+            query,
+            request_kwargs={'timeout': ARCHIVE_SEARCH_TIMEOUT}
+        ),
+        limit
+    ))
+
+
+def get_archive_item_files(identifier: str):
+    """Recupere les fichiers d'un item archive.org avec timeout."""
+    item = internetarchive.get_item(
+        identifier,
+        request_kwargs={'timeout': ARCHIVE_ITEM_TIMEOUT}
+    )
+    return item.get_files()
+
 
 def archive_org_result(identifier: str, file_name: str, checksum_type: str, checksum_value: str, source: str) -> dict:
     """Construit une réponse archive.org uniforme."""
@@ -1606,7 +1634,7 @@ def search_archive_org_by_checksum(checksum_value: str, rom_name: str, checksum_
         try:
             query = f'{query_field}:{normalized_checksum}'
             print(f"    -> Recherche: {query}")
-            results = list(internetarchive.search_items(query))[:20]
+            results = search_archive_items_limited(query, ARCHIVE_CHECKSUM_RESULT_LIMIT)
 
             for result in results:
                 identifier = result.get('identifier', '')
@@ -1614,8 +1642,7 @@ def search_archive_org_by_checksum(checksum_value: str, rom_name: str, checksum_
                     continue
 
                 try:
-                    item = internetarchive.get_item(identifier)
-                    files = item.get_files()
+                    files = get_archive_item_files(identifier)
 
                     for file_info in files:
                         file_name = file_info.get('name', '')
@@ -1631,15 +1658,17 @@ def search_archive_org_by_checksum(checksum_value: str, rom_name: str, checksum_
             print(f"    [ERREUR] Recherche {label}: {e}")
             strategies_tried.append(f'{query_field}_error: {e}')
 
-    if rom_name:
-        collections_to_try = ['softwarelibrary', 'retrogames', 'classicgames', 'gameboy', '']
+    # Le fallback par nom est deja gere ensuite dans search_archive_org_for_games.
+    # Le refaire ici pour chaque checksum multiplie inutilement les requetes archive.org.
+    if rom_name and ARCHIVE_CHECKSUM_NAME_CROSSCHECK:
         clean_name = rom_name.split('(')[0].strip()
+        quoted_name = f'"{clean_name}"' if clean_name else ''
 
-        for collection in collections_to_try:
+        for collection in ARCHIVE_NAME_COLLECTIONS:
             try:
-                query = f'{clean_name} AND collection:{collection}' if collection else clean_name
+                query = f'{quoted_name} AND collection:{collection}' if collection else quoted_name
                 print(f"    -> Recherche nom: {query[:50]}...")
-                results = list(internetarchive.search_items(query))[:15]
+                results = search_archive_items_limited(query, ARCHIVE_NAME_RESULT_LIMIT)
 
                 for result in results:
                     identifier = result.get('identifier', '')
@@ -1647,8 +1676,7 @@ def search_archive_org_by_checksum(checksum_value: str, rom_name: str, checksum_
                         continue
 
                     try:
-                        item = internetarchive.get_item(identifier)
-                        files = item.get_files()
+                        files = get_archive_item_files(identifier)
 
                         for file_info in files:
                             file_name = file_info.get('name', '')
@@ -1832,8 +1860,8 @@ def search_archive_org_by_name(rom_name: str, rom_extension: str = '.zip') -> di
 
     try:
         # Search with ROM name and No-Intro collection
-        query = f'{rom_name} AND collection:No-Intro'
-        results = list(internetarchive.search_items(query))[:20]
+        query = f'"{rom_name}" AND collection:No-Intro'
+        results = search_archive_items_limited(query, ARCHIVE_CHECKSUM_RESULT_LIMIT)
 
         for result in results:
             identifier = result.get('identifier', '')
@@ -1841,8 +1869,7 @@ def search_archive_org_by_name(rom_name: str, rom_extension: str = '.zip') -> di
                 continue
 
             try:
-                item = internetarchive.get_item(identifier)
-                files = item.get_files()
+                files = get_archive_item_files(identifier)
 
                 for file_info in files:
                     file_name = file_info.get('name', '')
@@ -1860,8 +1887,8 @@ def search_archive_org_by_name(rom_name: str, rom_extension: str = '.zip') -> di
                 continue
 
         # Try without collection filter
-        query = rom_name
-        results = list(internetarchive.search_items(query))[:10]
+        query = f'"{rom_name}"'
+        results = search_archive_items_limited(query, ARCHIVE_NAME_RESULT_LIMIT)
 
         for result in results:
             identifier = result.get('identifier', '')
@@ -1869,8 +1896,7 @@ def search_archive_org_by_name(rom_name: str, rom_extension: str = '.zip') -> di
                 continue
 
             try:
-                item = internetarchive.get_item(identifier)
-                files = item.get_files()
+                files = get_archive_item_files(identifier)
 
                 for file_info in files:
                     file_name = file_info.get('name', '')
@@ -2938,11 +2964,13 @@ def search_archive_org_for_games(not_available: list) -> tuple:
     """Recherche archive.org avec priorite md5 -> crc -> sha1 -> nom."""
     found_on_archive = []
     still_not_available = []
+    total_games = len(not_available)
 
-    for game_info in not_available:
+    for index, game_info in enumerate(not_available, start=1):
         game_name = game_info['game_name']
         roms = game_info.get('roms', [])
         archive_result = None
+        print(f"  [{index}/{total_games}] Fallback archive.org pour: {game_name}")
 
         checksum_plan = (
             ('md5', search_archive_org_by_md5),
