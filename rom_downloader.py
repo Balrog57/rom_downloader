@@ -3722,8 +3722,7 @@ def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_ru
         print("=" * 60)
         
         # Determine ToSort folder (in parent of rom_folder)
-        parent_folder = os.path.dirname(rom_folder)
-        tosort_folder = os.path.join(parent_folder, "ToSort")
+        tosort_folder = os.path.join(rom_folder, "ToSort")
         
         files_to_move = find_roms_not_in_dat(dat_games, local_roms, local_roms_normalized, rom_folder)
         
@@ -3894,8 +3893,7 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
         print("Recherche des fichiers Ã  dÃ©placer vers ToSort...")
         print("=" * 60)
 
-        parent_folder = os.path.dirname(rom_folder)
-        tosort_folder = os.path.join(parent_folder, "ToSort")
+        tosort_folder = os.path.join(rom_folder, "ToSort")
 
         files_to_move = find_roms_not_in_dat(dat_games, local_roms, local_roms_normalized, rom_folder)
 
@@ -4268,9 +4266,7 @@ def gui_mode():
                     if self.move_to_tosort_var.get():
                         self.log("\n" + "=" * 60)
                         self.log("Recherche des fichiers a deplacer vers ToSort...")
-                        
-                        parent_folder = os.path.dirname(rom_folder)
-                        tosort_folder = os.path.join(parent_folder, "ToSort")
+                        tosort_folder = os.path.join(rom_folder, "ToSort")
                         
                         files_to_move = find_roms_not_in_dat(dat_games, local_roms, local_roms_normalized, rom_folder)
                         
@@ -4609,8 +4605,7 @@ def gui_mode():
                     moved = move_failed = 0
                     if not missing_games:
                         if self.move_to_tosort_var.get():
-                            parent_folder = os.path.dirname(rom_folder)
-                            tosort_folder = os.path.join(parent_folder, "ToSort")
+                            tosort_folder = os.path.join(rom_folder, "ToSort")
                             files_to_move = find_roms_not_in_dat(dat_games, local_roms, local_roms_normalized, rom_folder)
                             if files_to_move:
                                 moved, move_failed = move_files_to_tosort(files_to_move, rom_folder, tosort_folder, False)
@@ -4701,8 +4696,7 @@ def gui_mode():
                             failed += 1
                             failed_items.append(game_info.copy())
                     if self.move_to_tosort_var.get():
-                        parent_folder = os.path.dirname(rom_folder)
-                        tosort_folder = os.path.join(parent_folder, "ToSort")
+                        tosort_folder = os.path.join(rom_folder, "ToSort")
                         files_to_move = find_roms_not_in_dat(dat_games, local_roms, local_roms_normalized, rom_folder)
                         if files_to_move:
                             moved, move_failed = move_files_to_tosort(files_to_move, rom_folder, tosort_folder, False)
