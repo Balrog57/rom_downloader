@@ -4045,8 +4045,8 @@ def gui_mode():
                 self.status_var = tk.StringVar(value="Pret a telecharger les jeux manquants")
                 self.hint_var = tk.StringVar(value="Laisse vide pour utiliser automatiquement la bonne source Minerva selon le DAT.")
                 self.root.title("ROM Downloader")
-                self.root.geometry("1100x900")
-                self.root.minsize(980, 740)
+                self.root.geometry("1100x760")
+                self.root.minsize(980, 620)
                 self.root.configure(bg=UI_COLOR_BG)
                 self.root.columnconfigure(0, weight=1)
                 self.root.rowconfigure(0, weight=1)
@@ -4107,7 +4107,7 @@ def gui_mode():
                 main = tk.Frame(self.root, bg=UI_COLOR_BG)
                 main.grid(row=0, column=0, sticky='nsew')
                 main.columnconfigure(0, weight=1)
-                main.rowconfigure(3, weight=1)
+                main.rowconfigure(3, weight=0)
 
                 header = self.card(main, 0)
                 header.columnconfigure(1, weight=1)
@@ -4156,15 +4156,11 @@ def gui_mode():
                 self.move_to_tosort_var = tk.BooleanVar(value=False)
                 self.toggle(sources, "Deplacer les ROMs hors DAT dans un sous-dossier ToSort", self.move_to_tosort_var).grid(row=3, column=0, sticky='w', pady=(14, 0))
 
-                progress = self.card(main, 3, expand=True)
+                progress = self.card(main, 3)
                 progress.columnconfigure(0, weight=1)
-                progress.rowconfigure(4, weight=1)
-                tk.Label(progress, text="Telechargement et journal", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 13, 'bold')).grid(row=0, column=0, sticky='w')
+                tk.Label(progress, text="Telechargement", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 13, 'bold')).grid(row=0, column=0, sticky='w')
                 ttk.Progressbar(progress, variable=self.progress_var, maximum=100, mode='determinate', style='Balrog.Horizontal.TProgressbar').grid(row=1, column=0, sticky='ew', pady=(10, 8))
-                tk.Label(progress, textvariable=self.status_var, bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, font=(self.font, 10)).grid(row=2, column=0, sticky='w')
-                tk.Label(progress, text="Journal", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, font=(self.font, 9, 'bold')).grid(row=3, column=0, sticky='w', pady=(12, 6))
-                self.log_text = scrolledtext.ScrolledText(progress, height=18, wrap=tk.WORD, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, insertbackground=UI_COLOR_TEXT_MAIN, relief='flat', bd=0, highlightthickness=1, highlightbackground=UI_COLOR_INPUT_BORDER, highlightcolor=UI_COLOR_ACCENT, font=(self.font, 10))
-                self.log_text.grid(row=4, column=0, sticky='nsew')
+                tk.Label(progress, textvariable=self.status_var, bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, font=(self.font, 10), justify='left', wraplength=980).grid(row=2, column=0, sticky='w')
 
                 actions = tk.Frame(main, bg=UI_COLOR_BG)
                 actions.grid(row=4, column=0, sticky='ew', padx=18, pady=(0, 18))
@@ -4237,7 +4233,7 @@ def gui_mode():
                 return prepare_sources_for_profile(sources, self.dat_profile)
 
             def log(self, message):
-                self._ui(lambda: (self.log_text.insert(tk.END, message + "\n"), self.log_text.see(tk.END)))
+                print(message, flush=True)
 
             def start(self):
                 if not self.dat_file.get() or not os.path.exists(self.dat_file.get()):
@@ -4250,7 +4246,6 @@ def gui_mode():
                 self.start_button.configure(state=tk.DISABLED)
                 self.stop_button.configure(state=tk.NORMAL)
                 self.progress_var.set(0)
-                self.log_text.delete(1.0, tk.END)
                 self.status_var.set("Preparation de l'analyse du DAT...")
                 threading.Thread(target=self.run_download, daemon=True).start()
 
