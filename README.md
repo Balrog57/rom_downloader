@@ -57,6 +57,12 @@ La base locale peut elle-meme renvoyer des liens `archive.org`, `1fichier` ou d'
 - `PlanetEmu` : fallback direct
 - `1fichier (Gratuit)` : fallback
 
+Etat de la base locale au 2026-04-03 :
+
+- les anciennes URLs directes `Myrient` ont ete retirees car elles ne servent plus de fichiers telechargeables
+- les entrees `archive.org` ont ete reverifiees par metadata / conteneur
+- les liens `1fichier` morts ont ete purges
+
 Minerva est telecharge en direct via torrent sans sortir de l'application.
 
 ## Rapport de fin
