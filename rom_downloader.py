@@ -162,7 +162,11 @@ ROM_EXTENSIONS = (
 )
 
 MINERVA_BROWSE_BASE = 'https://minerva-archive.org/browse/'
-MINERVA_TORRENT_CDN = 'https://cdn.minerva-archive.org/'
+MINERVA_TORRENT_BASE_CANDIDATES = (
+    'https://minerva-archive.org/assets/Minerva_Myrient_v0.3/',
+    'https://minerva-archive.org/assets/',
+    'https://cdn.minerva-archive.org/'
+)
 NPM_CACHE_DIR = APP_ROOT / '.npm-cache'
 WEBTORRENT_HELPER = APP_ROOT / 'scripts' / 'minerva_torrent_download.js'
 BALROG_TOOLKIT_ROOT = APP_ROOT.parent / 'Balrog Toolkit'
@@ -206,6 +210,7 @@ WINDOWS_NPM_PATHS = (
     r'%AppData%\npm\npm.cmd'
 )
 MINERVA_TORRENT_AVAILABILITY = {}
+MINERVA_TORRENT_URL_CACHE = {}
 
 # ============================================================================
 # Base de données locale des URLs (extrait de RGSX games.zip)
@@ -595,8 +600,8 @@ def build_minerva_directory_url(source: dict, system_name: str | None) -> str:
     return base_url + '/'.join(quote(segment) for segment in segments) + '/'
 
 
-def build_minerva_torrent_url(source: dict, system_name: str | None) -> str:
-    """Construit l'URL du torrent Minerva correspondant au système."""
+def build_minerva_torrent_name(source: dict, system_name: str | None) -> str:
+    """Construit le nom du torrent Minerva correspondant au système."""
     collection = source.get('collection', '').strip()
     if not collection:
         return ''
@@ -612,8 +617,17 @@ def build_minerva_torrent_url(source: dict, system_name: str | None) -> str:
     if not target:
         return ''
 
-    torrent_name = f"Minerva_Myrient - {collection} - {target}.torrent"
-    return urljoin(MINERVA_TORRENT_CDN, quote(torrent_name))
+    return f"Minerva_Myrient - {collection} - {target}.torrent"
+
+
+def build_minerva_torrent_urls(source: dict, system_name: str | None) -> list[str]:
+    """Construit les URLs candidates du torrent Minerva correspondant au système."""
+    torrent_name = build_minerva_torrent_name(source, system_name)
+    if not torrent_name:
+        return []
+
+    quoted_name = quote(torrent_name)
+    return [urljoin(base_url, quoted_name) for base_url in MINERVA_TORRENT_BASE_CANDIDATES]
 
 
 def is_minerva_torrent_available(torrent_url: str, session: requests.Session) -> bool:
@@ -634,6 +648,25 @@ def is_minerva_torrent_available(torrent_url: str, session: requests.Session) ->
 
     MINERVA_TORRENT_AVAILABILITY[torrent_url] = available
     return available
+
+
+def resolve_minerva_torrent_url(source: dict, system_name: str | None, session: requests.Session) -> str:
+    """Résout l'URL réelle du torrent Minerva pour un système donné."""
+    torrent_name = build_minerva_torrent_name(source, system_name)
+    if not torrent_name:
+        return ''
+
+    cached = MINERVA_TORRENT_URL_CACHE.get(torrent_name)
+    if cached is not None:
+        return cached
+
+    for torrent_url in build_minerva_torrent_urls(source, system_name):
+        if is_minerva_torrent_available(torrent_url, session):
+            MINERVA_TORRENT_URL_CACHE[torrent_name] = torrent_url
+            return torrent_url
+
+    MINERVA_TORRENT_URL_CACHE[torrent_name] = ''
+    return ''
 
 
 def normalize_system_name(system_name: str) -> str:
@@ -2910,9 +2943,11 @@ def search_all_sources(
                 base_url = build_minerva_directory_url(source, system_name)
                 minerva_files = collect_minerva_files_from_url(base_url, session, source.get('scan_depth', 0))
                 if minerva_files:
-                    torrent_url = build_minerva_torrent_url(source, system_name)
-                    if not is_minerva_torrent_available(torrent_url, session):
-                        print(f"  Avertissement: torrent Minerva introuvable pour {source['name']} ({torrent_url})")
+                    torrent_url = resolve_minerva_torrent_url(source, system_name, session)
+                    if not torrent_url:
+                        candidates = build_minerva_torrent_urls(source, system_name)
+                        probe_url = candidates[0] if candidates else 'aucune URL candidate'
+                        print(f"  Avertissement: torrent Minerva introuvable pour {source['name']} ({probe_url})")
                         print("  Bascule vers les sources de fallback pour ce systeme.")
                         continue
 
@@ -4119,8 +4154,8 @@ def gui_mode():
                 self.status_var = tk.StringVar(value="Pret a telecharger les jeux manquants")
                 self.hint_var = tk.StringVar(value="Laisse vide pour utiliser automatiquement la bonne source Minerva selon le DAT.")
                 self.root.title("ROM Downloader")
-                self.root.geometry("1100x800")
-                self.root.minsize(980, 660)
+                self.root.geometry("1040x760")
+                self.root.minsize(940, 660)
                 self.root.configure(bg=UI_COLOR_BG)
                 self.root.columnconfigure(0, weight=1)
                 self.root.rowconfigure(0, weight=1)
@@ -4146,6 +4181,7 @@ def gui_mode():
                     self.rom_entry.dnd_bind('<<Drop>>', lambda e: self._drop(self.rom_folder, e))
                 self.url_entry.bind('<Control-v>', lambda _e: self.root.after(10, lambda: self.myrient_url.set(self.myrient_url.get().strip())))
                 self.refresh_profile()
+                self.root.after_idle(self.fit_window_to_content)
 
             def load_photo(self, path, subsample):
                 if not path.exists():
@@ -4155,6 +4191,23 @@ def gui_mode():
                     return image.subsample(subsample, subsample) if subsample > 1 else image
                 except Exception:
                     return None
+
+            def fit_window_to_content(self):
+                """Ajuste la taille initiale de la fenetre au contenu visible."""
+                self.root.update_idletasks()
+
+                extra_width = 48
+                extra_height = 56
+                target_width = max(self.root.winfo_reqwidth() + extra_width, 940)
+                target_height = max(self.root.winfo_reqheight() + extra_height, 660)
+
+                screen_width = self.root.winfo_screenwidth()
+                screen_height = self.root.winfo_screenheight()
+
+                target_width = min(target_width, max(screen_width - 80, 940))
+                target_height = min(target_height, max(screen_height - 80, 660))
+
+                self.root.geometry(f"{target_width}x{target_height}")
 
             def card(self, parent, row, expand=False):
                 outer = tk.Frame(parent, bg=UI_COLOR_CARD_BG, highlightbackground=UI_COLOR_CARD_BORDER, highlightthickness=1)
