@@ -248,10 +248,58 @@ def load_rom_database():
 
 def search_by_md5(md5_hash: str) -> list:
     """
-    Recherche une ROM par son hash MD5.
-    Note : La recherche locale par MD5 est désactivée car md5_lookup.json a été supprimé.
-    Elle sera effectuée via Archive.org (fallback).
+    Recherche une ROM par son hash MD5 dans les shards localement.
     """
+    if not md5_hash:
+        return []
+    
+    md5_hash = md5_hash.lower().strip()
+    shard_char = md5_hash[0]
+    shard_zip = APP_ROOT / 'rom_db_shards' / f"shard_{shard_char}.zip"
+    shard_db_name = f"shard_{shard_char}.db"
+    
+    if not shard_zip.exists():
+        return []
+    
+    try:
+        import sqlite3
+        import zipfile
+        from tempfile import NamedTemporaryFile
+        
+        with zipfile.ZipFile(shard_zip, 'r') as zf:
+            with zf.open(shard_db_name) as db_file:
+                # SQLite needs a real file or bytes. We'll extract to a temp file.
+                with NamedTemporaryFile(delete=False, suffix='.db') as tmp:
+                    tmp.write(db_file.read())
+                    tmp_path = tmp.name
+                
+                try:
+                    conn = sqlite3.connect(tmp_path)
+                    cursor = conn.cursor()
+                    cursor.execute("SELECT urls FROM roms WHERE md5 = ?", (md5_hash,))
+                    row = cursor.fetchone()
+                    if row:
+                        urls = json.loads(row[0])
+                        # Transform to the format expected by the downloader
+                        results = []
+                        for url in urls:
+                            host = 'archive.org'
+                            if 'minerva-archive.org' in url: host = 'minerva-torrent'
+                            elif '1fichier.com' in url: host = '1fichier'
+                            
+                            results.append({
+                                'md5': md5_hash,
+                                'url': url,
+                                'host': host,
+                                'game_name': md5_hash # We don't have the name in shards
+                            })
+                        return results
+                finally:
+                    if 'conn' in locals(): conn.close()
+                    if os.path.exists(tmp_path): os.remove(tmp_path)
+    except Exception as e:
+        print(f"Erreur lors de la recherche MD5 dans le shard {shard_char}: {e}")
+        
     return []
 
 
@@ -3061,10 +3109,39 @@ def search_all_sources(
     mappings = SYSTEM_MAPPINGS.get(system_name, {}) if system_name else {}
 
     # ========================================================================
-    # Ã‰TAPE 1 : Recherche directe sur Minerva / sources HTML
+    # ÉTAPE 1 : Recherche dans la base de données locale (shards + fallback)
     # ========================================================================
     print(f"\n{'=' * 70}")
-    print("Ã‰TAPE 1: Recherche directe sur la source principale (Minerva)")
+    print("ÉTAPE 1: Recherche dans la base de données locale (MD5 shards + fallback)")
+    print(f"{'=' * 70}")
+
+    not_in_db = []
+    for game_info in still_missing:
+        game_name = game_info['game_name']
+        db_results, search_hint = search_database_for_game(game_info)
+
+        best_result = select_database_result(db_results)
+        if best_result:
+            game_info['download_filename'] = database_result_filename(best_result, game_name)
+            game_info['download_url'] = best_result.get('url')
+            game_info['source'] = 'database'
+            game_info['database_host'] = best_result.get('host')
+            found_in_db.append(game_info)
+            print(f"  [DB] {game_name} -> {best_result.get('host')}{f' ({search_hint})' if search_hint else ''}")
+        else:
+            not_in_db.append(game_info)
+
+    all_found.extend(found_in_db)
+    still_missing = not_in_db
+
+    print(f"\n  TrouvÃ© dans la base: {len(found_in_db)} jeux")
+    print(f"  Non trouvÃ© dans la base: {len(still_missing)} jeux")
+
+    # ========================================================================
+    # ÉTAPE 2 : Recherche directe sur Minerva / sources HTML
+    # ========================================================================
+    print(f"\n{'=' * 70}")
+    print("ÉTAPE 2: Recherche directe sur la source principale (Minerva)")
     print(f"{'=' * 70}")
 
     direct_sources = [
@@ -3113,36 +3190,7 @@ def search_all_sources(
     print(f"  Restants aprÃ¨s Minerva: {len(still_missing)} jeux")
 
     # ========================================================================
-    # Ã‰TAPE 2 : Recherche dans la base de donnÃ©es locale (fallback)
-    # ========================================================================
-    print(f"\n{'=' * 70}")
-    print("Ã‰TAPE 2: Recherche dans la base de donnÃ©es locale (fallback)")
-    print(f"{'=' * 70}")
-
-    not_in_db = []
-    for game_info in still_missing:
-        game_name = game_info['game_name']
-        db_results, search_hint = search_database_for_game(game_info)
-
-        best_result = select_database_result(db_results)
-        if best_result:
-            game_info['download_filename'] = database_result_filename(best_result, game_name)
-            game_info['download_url'] = best_result.get('url')
-            game_info['source'] = 'database'
-            game_info['database_host'] = best_result.get('host')
-            found_in_db.append(game_info)
-            print(f"  [DB] {game_name} -> {best_result.get('host')}{f' ({search_hint})' if search_hint else ''}")
-        else:
-            not_in_db.append(game_info)
-
-    all_found.extend(found_in_db)
-    still_missing = not_in_db
-
-    print(f"\n  TrouvÃ© dans la base: {len(found_in_db)} jeux")
-    print(f"  Non trouvÃ© dans la base: {len(still_missing)} jeux")
-
-    # ========================================================================
-    # Ã‰TAPE 3 : Recherche via scrapers secondaires
+    # ÉTAPE 3 : Recherche via scrapers secondaires
     # ========================================================================
     if still_missing and system_name:
         for source in sources:

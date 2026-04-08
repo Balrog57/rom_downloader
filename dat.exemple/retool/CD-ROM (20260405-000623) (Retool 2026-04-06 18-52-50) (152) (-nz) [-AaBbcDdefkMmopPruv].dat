@@ -1,0 +1,938 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<name>CD-ROM (Retool)</name>
+		<description>CD-ROM (152) (-nz) [-AaBbcDdefkMmopPruv] (20260405-000623) (Retool)</description>
+		<version>20260405-000623</version>
+		<date>2026-04-06 18-52-50</date>
+		<author>Aringon, bikerspade, Deterous, HeroponRIkiBestest, Hiccup, Intothisworld, MrPepka, NovaAurora, SonGoku, UnlockerPT, xuom2</author>
+		<homepage>http://www.github.com/unexpectedpanda/retool</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"></clrmamepro>
+		<retool>Created by Retool 2.4.8</retool>
+	</header>
+	<game name="1000 of the World's Greatest Sound Effects (USA)" id="0001">
+		<category>Games</category>
+		<description>DOS/Win(x86), Mac(m68k,PowerPC) - Creative Resources, Multimedia</description>
+		<rom name="1000 of the World's Greatest Sound Effects (USA).bin" size="773878560" crc="e41f10ed" md5="aa0cf264df932c55989221c9b541af98" sha1="d93a466ed2ab7dfe621710c3a964dea3191c8c43"/>
+		<rom name="1000 of the World's Greatest Sound Effects (USA).cue" size="152" crc="f29b6efd" sha1="ce420cacf8ae7cd8cafbc8e9e3f7f0abca436787"/>
+	</game>
+	<game name="5000 Plus - Special Effects &amp; Image Library (USA)" id="0367">
+		<category>Games</category>
+		<description>Mac(m68k) - Creative Resources, Multimedia</description>
+		<rom name="5000 Plus - Special Effects &amp; Image Library (USA).bin" size="353507952" crc="1182a0b2" md5="e8dadd65411ccd3ca75741f631fa70af" sha1="ee8bdc288e7ac71f63b55e7b7839031453f7043b"/>
+		<rom name="5000 Plus - Special Effects &amp; Image Library (USA).cue" size="138" crc="5b76c25b" sha1="408c83847582911ebd2a82d50ba6369d39a3dc35"/>
+	</game>
+	<game name="A4Tech SmartX7 (Europe)" id="0499">
+		<category>Games</category>
+		<description>A4Tech SmartX7 (Europe)</description>
+		<rom name="A4Tech SmartX7 (Europe).bin" size="38405808" crc="3b53c109" md5="236b475fded8644ed32e29a640d8db7c" sha1="248d1ebd775755e9e14f3e48ca5a451645d5983a"/>
+		<rom name="A4Tech SmartX7 (Europe).cue" size="87" crc="47929383" sha1="8fa557125503727e03b1b2cdcaf8268a00021f63"/>
+	</game>
+	<game name="AMR Plus Technology Mainboard (USA)" id="0451">
+		<category>Games</category>
+		<description>Windows (IBM PC) - Drivers, Utilities</description>
+		<rom name="AMR Plus Technology Mainboard (USA).bin" size="675684912" crc="95c9d7a4" md5="2bf160a83388d85e84e54500ede10654" sha1="a1cd546c7cab34df650466c6aed8bbd18c9629d6" sha256="5409b22001e70c6b4c08b2f5b8e13dfe8ab40c0f0cf4e62614444c3b4b670c3c"/>
+		<rom name="AMR Plus Technology Mainboard (USA).cue" size="101" crc="d6e83111" sha1="5f09e3a829d9c005bf40e3a55f56c2eb7d385ad9"/>
+	</game>
+	<game name="AOL Titanium - Version 5.0 (USA)" id="0294">
+		<category>Games</category>
+		<description>Apple Macintosh, IBM PC Compatible - Applications, Promotional - Internet Service</description>
+		<rom name="AOL Titanium - Version 5.0 (USA).bin" size="140917728" crc="a356488e" md5="9ac70fe52a601b360192a79b045e55da" sha1="2726d341957c7fa2a3c311cf174a5474c1489466"/>
+		<rom name="AOL Titanium - Version 5.0 (USA).cue" size="96" crc="cd038e24" sha1="84a3f6cc7c9835660954c917b267dda52582a3a3"/>
+	</game>
+	<game name="ASUS - Superb Software Library (World)" id="0124">
+		<category>Games</category>
+		<description>Win(x86) - Applications, Utilities</description>
+		<rom name="ASUS - Superb Software Library (World).bin" size="626850336" crc="2b35aad6" md5="427bba0d0496e8c9fe7f29e1a46b3f43" sha1="4f36249d28be850e7ae4f8c20c482b0afa09cf2b"/>
+		<rom name="ASUS - Superb Software Library (World).cue" size="104" crc="78c92519" sha1="9ab080c302e90bcaf92b142c08e96c2311782b39"/>
+	</game>
+	<game name="ASUS - VIA Chipset Series - Support CD (USA)" id="0449">
+		<category>Games</category>
+		<description>Windows (IBM PC) - Drivers, Utilities</description>
+		<rom name="ASUS - VIA Chipset Series - Support CD (USA).bin" size="238135296" crc="ebddf2ce" md5="045445b76de81633cec7e30dfb843b75" sha1="682acafe68c0c963de44874df6ffd484e4ab162e" sha256="6690331ad49d6e15ea8a14a8264688b92f81ff8ac372fa0788d4f5f3bfbbba25"/>
+		<rom name="ASUS - VIA Chipset Series - Support CD (USA).cue" size="110" crc="8e6c57c0" sha1="30d81fb4ff4ff9ecac7ff26fe67d28025d312017"/>
+	</game>
+	<game name="ASUS Wireless - Quick Start Guide &amp; Software (USA) (USB-BT400 - Bluetooth 4.0 Adapter)" id="0126">
+		<category>Games</category>
+		<description>Win(x86) - Drivers, Utilities</description>
+		<rom name="ASUS Wireless - Quick Start Guide &amp; Software (USA) (USB-BT400 - Bluetooth 4.0 Adapter).bin" size="659404368" crc="1564372e" md5="c9cb675f64a5820f03dd27ed6fe5b2b0" sha1="cfb98c4f408c484fe68441ca93c22fd3e249cf67"/>
+		<rom name="ASUS Wireless - Quick Start Guide &amp; Software (USA) (USB-BT400 - Bluetooth 4.0 Adapter).cue" size="152" crc="5a7e0a84" sha1="b5d7646f837549fcf0d52f8dd32a416675704622"/>
+	</game>
+	<game name="ASUS Wireless - User's Manual Support Utility (World) (RT-N56U)" id="0128">
+		<category>Games</category>
+		<description>Win(x86) - Drivers, Utilities</description>
+		<rom name="ASUS Wireless - User's Manual Support Utility (World) (RT-N56U).bin" size="355417776" crc="c739cbe4" md5="90ac57865bfac978d4a781b0a972df4e" sha1="633eb1de511e2540c8a79ab9a030306b687302d2"/>
+		<rom name="ASUS Wireless - User's Manual Support Utility (World) (RT-N56U).cue" size="129" crc="8619c694" sha1="ad0aedda2608fe5764b0cd5f4b662c8025778a8b"/>
+	</game>
+	<game name="Abbyy FineReader OCR (Europe)" id="0506">
+		<category>Games</category>
+		<description>Abbyy FineReader OCR (Europe)</description>
+		<rom name="Abbyy FineReader OCR (Europe).bin" size="150236352" crc="4f7a70fa" md5="67d5c2f19d0518381193b6f03d47ec4f" sha1="7780dfa393139bb7f31861f2bb0d26876ced5a32"/>
+		<rom name="Abbyy FineReader OCR (Europe).cue" size="93" crc="bdfae076" sha1="8d362569ff19fc4ffc46788b3196f1a6c3e5e3b5"/>
+	</game>
+	<game name="Acer Monitor H223HQ (World)" id="0120">
+		<category>Games</category>
+		<description>Win(x86) - Applications, Drivers, Utilities</description>
+		<rom name="Acer Monitor H223HQ (World).bin" size="493517808" crc="11cb1e39" md5="a8dca972755324c64f68eca9e6e77e20" sha1="10d1384ff26beea24359884238454047fcaf5909"/>
+		<rom name="Acer Monitor H223HQ (World).cue" size="93" crc="5fb65565" sha1="c909b0be571e8694966003e380b5e3f76ca83e0e"/>
+	</game>
+	<game name="Adaptec ATA RAID 1200A (USA)" id="0453">
+		<category>Games</category>
+		<description>Windows (IBM PC) - Drivers, Utilities</description>
+		<rom name="Adaptec ATA RAID 1200A (USA).bin" size="16402848" crc="a4925ccc" md5="9f9d28d332c9f86251f9ff1adf41ae78" sha1="963ae56a999f9a4697c158775f060411852a7776" sha256="e04c7e52f65b52466957080387cdb04937f97a7a56403b336bd662bc27c187e4"/>
+		<rom name="Adaptec ATA RAID 1200A (USA).cue" size="94" crc="3e9cda4b" sha1="408fa6989a78c01e48063748a29ea13fdfed1d28"/>
+	</game>
+	<game name="Adobe Creative Suite 2 Premium - Education (USA) (Installer 1)" id="0297">
+		<category>Games</category>
+		<description>Mac() - Applications, Creative Resources, Multimedia</description>
+		<rom name="Adobe Creative Suite 2 Premium - Education (USA) (Installer 1).bin" size="491139936" crc="016ef702" md5="1bb438f860553cfe2a3723814ee1eb92" sha1="1a080910f64be4db16abaac9b529b416854ac08c"/>
+		<rom name="Adobe Creative Suite 2 Premium - Education (USA) (Installer 1).cue" size="128" crc="b77655d8" sha1="f1380a94d169108bb5aab636542818aed3c3ab86"/>
+	</game>
+	<game name="Adobe Creative Suite 2 Premium - Education (USA) (Installer 2)" id="0298">
+		<category>Games</category>
+		<description>Mac() - Applications, Creative Resources, Multimedia</description>
+		<rom name="Adobe Creative Suite 2 Premium - Education (USA) (Installer 2).bin" size="602389536" crc="3868dbb5" md5="31b36b3f1d9616dbe09e0e30f4ec6cfa" sha1="d515d62cd027c1262166d79a56d796abccad8755"/>
+		<rom name="Adobe Creative Suite 2 Premium - Education (USA) (Installer 2).cue" size="128" crc="b62b7309" sha1="90fd6d4634f7e3124d3a40d92bd443fde8ab1e59"/>
+	</game>
+	<game name="Adobe Creative Suite 2 Premium - Education (USA) (Installer 3)" id="0299">
+		<category>Games</category>
+		<description>Mac() - Applications, Creative Resources, Multimedia</description>
+		<rom name="Adobe Creative Suite 2 Premium - Education (USA) (Installer 3).bin" size="507284064" crc="32fc3e30" md5="8dd4fab69dcb0bc90eabf96c96dff91e" sha1="3181977950668fd32fe25af0fc1cdd6a12833173"/>
+		<rom name="Adobe Creative Suite 2 Premium - Education (USA) (Installer 3).cue" size="128" crc="00309379" sha1="d9cbf0c1fb9804cdb8ec21024be3665deaca1cfa"/>
+	</game>
+	<game name="Adobe Creative Suite 2 Premium - Education (USA) (Installer 4)" id="0300">
+		<category>Games</category>
+		<description>Mac() - Applications, Creative Resources, Multimedia</description>
+		<rom name="Adobe Creative Suite 2 Premium - Education (USA) (Installer 4).bin" size="498205344" crc="e52f27cf" md5="aab0adf5e24ddd8970e7c104cbe918f0" sha1="84a02913c34c8dbc3689e39d0e0bc108e5e4d35b"/>
+		<rom name="Adobe Creative Suite 2 Premium - Education (USA) (Installer 4).cue" size="128" crc="b4913eab" sha1="6f01a2ec28b4782518f9c40fc62406a1f6e6aea1"/>
+	</game>
+	<game name="Adobe Creative Suite 2 Premium - Education (USA) (Resources and extras - Disk 2)" id="0302">
+		<category>Games</category>
+		<description>Mac() - Applications, Creative Resources, Multimedia</description>
+		<rom name="Adobe Creative Suite 2 Premium - Education (USA) (Resources and extras - Disk 2).bin" size="44405760" crc="64dc46d8" md5="a73cf2e88b2d787727b0903411fae264" sha1="bb7393c0b6181af5d74f0ca98ff3497078c55452"/>
+		<rom name="Adobe Creative Suite 2 Premium - Education (USA) (Resources and extras - Disk 2).cue" size="146" crc="2b450a70" sha1="1f5a6eab2e80165a53bcaa76b4c043c218db1eda"/>
+	</game>
+	<game name="Adobe Creative Suite 2 Premium - Education (USA) (Resources and extras)" id="0301">
+		<category>Games</category>
+		<description>Mac() - Applications, Creative Resources, Multimedia</description>
+		<rom name="Adobe Creative Suite 2 Premium - Education (USA) (Resources and extras).bin" size="283693536" crc="8fb8ce73" md5="7ad2423e1836b77528315550e90eb6c1" sha1="2cc4f68499dfe00e8d5b685f971a3c51595fc9ba"/>
+		<rom name="Adobe Creative Suite 2 Premium - Education (USA) (Resources and extras).cue" size="137" crc="81efa0b4" sha1="1df10864be24fa6868ccaa92396edbd11380ada9"/>
+	</game>
+	<game name="Adobe PhotoDeluxe (USA) (OEM) (Casio)" id="0512">
+		<category>Games</category>
+		<description>Macintosh, Windows - Applications, Creative Resources, Multimedia</description>
+		<rom name="Adobe PhotoDeluxe (USA) (OEM) (Casio).bin" size="611933952" crc="0488904b" md5="b2be1aa0b09433b556a956f04f2c75a1" sha1="1d1f9db7b8f4e5586d659f8e4a9af35d0b1d91d5"/>
+		<rom name="Adobe PhotoDeluxe (USA) (OEM) (Casio).cue" size="126" crc="636bfd7e" sha1="fef8db91102123a9ac46827fbf622c58706d54d0"/>
+	</game>
+	<game name="AirLink 101 - 5.25 in. Storage Enclosure - Drivers &amp; Utilities (USA)" id="0121">
+		<category>Games</category>
+		<description>Mac(PowerPC), Win(x86) - Drivers, Utilities</description>
+		<rom name="AirLink 101 - 5.25 in. Storage Enclosure - Drivers &amp; Utilities (USA).bin" size="74588976" crc="51c383bc" md5="e22b947c14a53ef00370c46f4bc96303" sha1="bb9f7611f5f1a07a067e7f3a5663b511e1978c3f"/>
+		<rom name="AirLink 101 - 5.25 in. Storage Enclosure - Drivers &amp; Utilities (USA).cue" size="134" crc="c65a6f19" sha1="b5ac133379c11b87b8714e3c53fdf4a2ec689b1b"/>
+	</game>
+	<game name="Amazing Animation (USA) (Claris)" id="0313">
+		<category>Games</category>
+		<description>Apple Macintosh - Applications, Educational, Multimedia</description>
+		<rom name="Amazing Animation (USA) (Claris).bin" size="771733536" crc="ef5038ab" md5="8528e9820a234e9a997477110247e36f" sha1="931448cafa7a274df84c0ff7be44a7170e0457fb"/>
+		<rom name="Amazing Animation (USA) (Claris).cue" size="121" crc="111140d1" sha1="a43ac5feb2742e32bc9bd5f153afa08ed1b9e3c8"/>
+	</game>
+	<game name="Amazing Animation (USA) (Vividus)" id="0314">
+		<category>Games</category>
+		<description>Apple Macintosh - Applications, Multimedia</description>
+		<rom name="Amazing Animation (USA) (Vividus).bin" size="27226752" crc="e82e9e06" md5="8d18103577bd09e315acf135146872f3" sha1="42861711ce60fd7d24f9042df9e71c22cbf48eb6"/>
+		<rom name="Amazing Animation (USA) (Vividus).cue" size="99" crc="34b4dc64" sha1="391fe9bcf87bb327021258949121120edf99e0b7"/>
+	</game>
+	<game name="America Online Gold - Version 4.0 (USA)" id="0291">
+		<category>Games</category>
+		<description>Apple Macintosh, IBM PC Compatible - Applications, Promotional - Internet Service</description>
+		<rom name="America Online Gold - Version 4.0 (USA).bin" size="119977872" crc="d0d08ff0" md5="1a412760a3ab61f30deab35fd1ed4653" sha1="6c0a032cba01edad697828cc01c0854dfbba89b5"/>
+		<rom name="America Online Gold - Version 4.0 (USA).cue" size="105" crc="41b2c0e0" sha1="0354cbf1e2d2796945af0fcfd14be0cb362fcf88"/>
+	</game>
+	<game name="Apple CD-ROM Titles Sampler (USA)" id="0349">
+		<category>Games</category>
+		<description>Apple Macintosh - Applications, Promotional - Products - Media</description>
+		<rom name="Apple CD-ROM Titles Sampler (USA).bin" size="361620000" crc="751ae539" md5="c36a50f69f63db289d09f270081f2af5" sha1="9aca83c5acfb8eeaea342cc624a99127225c2f82"/>
+		<rom name="Apple CD-ROM Titles Sampler (USA).cue" size="99" crc="4aac04e8" sha1="785f14d5ae90f820cccfa7d45eafa55c8076817d"/>
+	</game>
+	<game name="Apple Macintosh CD - Macintosh LC 575 (USA)" id="0388">
+		<category>Games</category>
+		<description>Mac(m68k) - Operating Systems</description>
+		<rom name="Apple Macintosh CD - Macintosh LC 575 (USA).bin" size="120775200" crc="b8e792e4" md5="6b46a40a89b88f0d58fdbbd7065fc9b7" sha1="1c50141008b378d48b60d92e6577188ad6f40245"/>
+		<rom name="Apple Macintosh CD - Macintosh LC 575 (USA).cue" size="147" crc="d550056b" sha1="5b7f896ecd3296c8829165253bd104ae250cf297"/>
+	</game>
+	<game name="Apple Macintosh CD - Power Macintosh - 6100 series, 7100 series, 8100 series (USA)" id="0391">
+		<category>Games</category>
+		<description>Mac(PowerPC) - Operating Systems</description>
+		<rom name="Apple Macintosh CD - Power Macintosh - 6100 series, 7100 series, 8100 series (USA).bin" size="722887200" crc="14d703bf" md5="48f3ef6fb542e2a5685b8e3995c9a796" sha1="e87aff494fc4a4d4fb7172598491bff8131cda77"/>
+		<rom name="Apple Macintosh CD - Power Macintosh - 6100 series, 7100 series, 8100 series (USA).cue" size="171" crc="5b88ec09" sha1="4fb7f73a04576fac6037f84ce38e70f61d4acfcf"/>
+	</game>
+	<game name="Apple Macintosh CD - Power Macintosh - 7200, 7500, 7600, 8500 and 9500 series (USA)" id="0393">
+		<category>Games</category>
+		<description>Mac(PowerPC) - Operating Systems</description>
+		<rom name="Apple Macintosh CD - Power Macintosh - 7200, 7500, 7600, 8500 and 9500 series (USA).bin" size="307787424" crc="4d5f4580" md5="160362abc65cfe6dc589ec77a0c47f2d" sha1="6a07c9b024eb979b25babcd2564a0d8e7e9a7cd3"/>
+		<rom name="Apple Macintosh CD - Power Macintosh - 7200, 7500, 7600, 8500 and 9500 series (USA).cue" size="164" crc="9bbd12c9" sha1="c3ef2dbeed5dfdd03459f4ac9bbbe01d780eec3c"/>
+	</game>
+	<game name="Apple Macintosh CD - Power Macintosh 5200-75 (USA)" id="0389">
+		<category>Games</category>
+		<description>Mac(PowerPC) - Operating Systems</description>
+		<rom name="Apple Macintosh CD - Power Macintosh 5200-75 (USA).bin" size="206724336" crc="ef2bc74e" md5="524b097f8d4181979c552f48eff201c8" sha1="ba298129654bd96ea0db371af20f878862a03a78"/>
+		<rom name="Apple Macintosh CD - Power Macintosh 5200-75 (USA).cue" size="116" crc="5af42807" sha1="a8c9850c023577bf2fb703041550acf53f5b1578"/>
+	</game>
+	<game name="Apple Macintosh CD - Power Macintosh G3 (USA)" id="0392">
+		<category>Games</category>
+		<description>Mac(PowerPC) - Operating Systems</description>
+		<rom name="Apple Macintosh CD - Power Macintosh G3 (USA).bin" size="398104224" crc="60d58ce3" md5="d6075b8c2abd8786fec17e86bc5568b6" sha1="464b3e910eda2f646bf7bdfd077de6eac00fae2f"/>
+		<rom name="Apple Macintosh CD - Power Macintosh G3 (USA).cue" size="134" crc="f342fb03" sha1="88e9fd952e8bfa66d874c65252d3255292e20788"/>
+	</game>
+	<game name="Apple Printer Software Collection, The - For the Color StyleWriter 6500 (USA) (OEM)" id="0345">
+		<category>Games</category>
+		<description>Mac() - Applications, Creative Resources, Drivers, Multimedia</description>
+		<rom name="Apple Printer Software Collection, The - For the Color StyleWriter 6500 (USA) (OEM).bin" size="462840672" crc="80a16aaa" md5="9d26ea38fa3f1131feabc36d05c73d5f" sha1="11a9dcdd2da294dcf72792d530a2aac92916f5ad"/>
+		<rom name="Apple Printer Software Collection, The - For the Color StyleWriter 6500 (USA) (OEM).cue" size="149" crc="d9b19ee5" sha1="c32c2e237832b8d5b98dfdba2c2dd87e30bd45ed"/>
+	</game>
+	<game name="AppleWorks 6 (USA)" id="0317">
+		<category>Games</category>
+		<description>Mac(PowerPC) - Applications, Creative Resources, Multimedia</description>
+		<rom name="AppleWorks 6 (USA).bin" size="421859424" crc="d56e8cef" md5="a66636e250a6e91f03f949ad2b545784" sha1="d6b8cea28e337984052f6093c448c98ec50d8edf"/>
+		<rom name="AppleWorks 6 (USA).cue" size="84" crc="96790cd4" sha1="986c24827d4d573e4a8acb493bbc8677035b6761"/>
+	</game>
+	<game name="Asus RT-G32 Wireless Router (Europe)" id="0500">
+		<category>Games</category>
+		<description>Asus RT-G32 Wireless Router (Europe)</description>
+		<rom name="Asus RT-G32 Wireless Router (Europe).bin" size="439668768" crc="6f1c4eb1" md5="da6fd9b9b6ae94b3ef25c55862ae45e8" sha1="a8458bf43c93e7df343fd363de296e2cca41b3a5"/>
+		<rom name="Asus RT-G32 Wireless Router (Europe).cue" size="100" crc="734d16a6" sha1="5c1121c6059b2c17b97ee47149343c8097ea6a93"/>
+	</game>
+	<game name="Aviation English (World) (Impression 1) (Book Bundle)" id="0522">
+		<category>Games</category>
+		<description>Mac(unk), Win(x86) - Applications, Educational, Multimedia</description>
+		<rom name="Aviation English (World) (Impression 1) (Book Bundle).bin" size="736949808" crc="5f628452" md5="5c8bdb6108411b0af3aec8ff37c53503" sha1="019a11ba7a79c3dcafd53eeb5b031a601986f269"/>
+		<rom name="Aviation English (World) (Impression 1) (Book Bundle).cue" size="116" crc="9fc1e6c9" sha1="984d08010f8785416826074b6ebf1960976f7657"/>
+		<rom name="Aviation English (World) (Impression 1) (Book Bundle).mds" size="25584" crc="239c4d27" md5="20fb51ec1145101b793b831dfe3899ac" sha1="21ca9b156680cf5345e4a4deea400b2830c8fa3c"/>
+	</game>
+	<game name="BenQ - LCD Monitor User's Manual (World)" id="0129">
+		<category>Games</category>
+		<description>Win(x86) - Applications, Drivers, Utilities</description>
+		<rom name="BenQ - LCD Monitor User's Manual (World).bin" size="223809264" crc="b6108854" md5="48953b79e05bcc4673ebce5c0fa38c04" sha1="578c38b79534412da1367dc69546b11817666cdb"/>
+		<rom name="BenQ - LCD Monitor User's Manual (World).cue" size="106" crc="0b1c32a5" sha1="65fdf34157f010cb9572014117a39096b96bae01"/>
+	</game>
+	<game name="CD Contains Your User's Guide DPC EPC3208 (Europe)" id="0505">
+		<category>Games</category>
+		<description>CD Contains Your User's Guide DPC EPC3208 (Europe)</description>
+		<rom name="CD Contains Your User's Guide DPC EPC3208 (Europe).bin" size="14652960" crc="825bda10" md5="4cc82ec4be8748733f95544b55c4ffe5" sha1="7713c91eda29eeb800f4a7a9529f114daed6e2f7"/>
+		<rom name="CD Contains Your User's Guide DPC EPC3208 (Europe).cue" size="114" crc="e50b19ad" sha1="eb733760b97eeeb389f7e46e64f79ead5b6c84a6"/>
+	</game>
+	<game name="Canon - CanoScan 4400F - Setup CD-ROM (USA)" id="0130">
+		<category>Games</category>
+		<description>Win(x86) - Applications, Drivers, Utilities</description>
+		<rom name="Canon - CanoScan 4400F - Setup CD-ROM (USA).bin" size="476625744" crc="b7b04b52" md5="03b9a7a4459ac8b8597ac5aa2d409eab" sha1="c2ed8a2ea700308bc6f4443ec9a78e30f2351376"/>
+		<rom name="Canon - CanoScan 4400F - Setup CD-ROM (USA).cue" size="109" crc="de898642" sha1="9e9b2555918123fd3f303f7730623543abf55336"/>
+	</game>
+	<game name="Canon - CanoScan 5600F - Setup CD-ROM (World)" id="0131">
+		<category>Games</category>
+		<description>Win(x86) - Applications, Drivers, Utilities</description>
+		<rom name="Canon - CanoScan 5600F - Setup CD-ROM (World).bin" size="415457280" crc="3e3affa4" md5="44f5419c818103910805914f5267af84" sha1="246085ac9d04e902dc572ac25fcedbe7a584cf3e"/>
+		<rom name="Canon - CanoScan 5600F - Setup CD-ROM (World).cue" size="111" crc="d5274eec" sha1="9dccb2ce58dd5badf21f40cafd2c8b009ea489a9"/>
+	</game>
+	<game name="Cartes du Ciel (Europe)" id="0510">
+		<category>Games</category>
+		<description>Cartes du Ciel (Europe)</description>
+		<rom name="Cartes du Ciel (Europe).bin" size="65747808" crc="d637974c" md5="f0578340cf7076afbc3ab421ac88e1ee" sha1="96b54482dff695197d0190fa8c1da76aee3acdf0"/>
+		<rom name="Cartes du Ciel (Europe).cue" size="87" crc="59114a96" sha1="60f4e9913afa021ab5822df5b3db4c34d4177bef"/>
+	</game>
+	<game name="D-Link - DI-704P 4-Port Ethernet Broadband Router (USA)" id="0455">
+		<category>Games</category>
+		<description>Win(x86) - Drivers, Utilities</description>
+		<rom name="D-Link - DI-704P 4-Port Ethernet Broadband Router (USA).bin" size="31472112" crc="db906aa8" md5="901f06a07f72a581e479faaee20fb1e1" sha1="247b7112beb4680cc79c17d519cbeb5ce53a0534" sha256="5f755cbb3b7a534c1a492d2bcc5163385e564f2970d2f5e39ca2e2c0e126df2a"/>
+		<rom name="D-Link - DI-704P 4-Port Ethernet Broadband Router (USA).cue" size="121" crc="5a052cb5" sha1="c97fa580594f019b7c67d95ef7fd7f5098c33147"/>
+	</game>
+	<game name="D-Link - DWL-G122 AirPlus G Wireless USB Adapter (World) (v3.00)" id="0134">
+		<category>Games</category>
+		<description>Win(x86) - Drivers, Utilities</description>
+		<rom name="D-Link - DWL-G122 AirPlus G Wireless USB Adapter (World) (v3.00).bin" size="58536576" crc="5447ad2a" md5="37318b0cb791b8f137c2a11b6dd7b1ab" sha1="d26eb98ad2287388ba4619d25c1ff4021824053a"/>
+		<rom name="D-Link - DWL-G122 AirPlus G Wireless USB Adapter (World) (v3.00).cue" size="130" crc="9a4c98d9" sha1="4ba001efd441ab4fe7be6c7400c5ccbb87403c4d"/>
+	</game>
+	<game name="DK Multimedia - Sampler Disc (USA)" id="0089">
+		<category>Games</category>
+		<description>Mac(m68k,PowerPC), Win(x86) - Applications, Multimedia, Promotional</description>
+		<rom name="DK Multimedia - Sampler Disc (USA).bin" size="340614288" crc="577c899f" md5="2e35d780ea260d6a550397b4a63e92a7" sha1="7ac66fdce28b82ef07f7d525a497dcaf28475e72"/>
+		<rom name="DK Multimedia - Sampler Disc (USA).cue" size="123" crc="e927ec13" sha1="e6cc9bf8596b1dc995a2aa758af33e033f3ffd07"/>
+	</game>
+	<game name="Dell U2713HM - Drivers and Documentation (World)" id="0135">
+		<category>Games</category>
+		<description>Win(x86) - Drivers, Utilities</description>
+		<rom name="Dell U2713HM - Drivers and Documentation (World).bin" size="114624720" crc="ec1d4795" md5="48db4a06739d107b1d436d98b34b826e" sha1="270da4e9518a5753e72e789921fb680dce1aaa7a"/>
+		<rom name="Dell U2713HM - Drivers and Documentation (World).cue" size="114" crc="375a6180" sha1="383ff8d57385f7177665325c348d46c8e2145d97"/>
+	</game>
+	<game name="Discover English and Wonders of the World (Canada)" id="0254">
+		<category>Games</category>
+		<description>Apple Macintosh, IBM PC Compatible - Windows, OS/2 - Applications, Educational, Multimedia</description>
+		<rom name="Discover English and Wonders of the World (Canada).bin" size="255264912" crc="4bc717b9" md5="ffbcfef5cff4e45997101f29edd7eccf" sha1="c53f193416872e217ef8a00f0161a92c627cc745"/>
+		<rom name="Discover English and Wonders of the World (Canada).cue" size="139" crc="8df8b583" sha1="d09b7eabf8b89e8791d47f3fd8dd8ec4c295e3cc"/>
+	</game>
+	<game name="Discover Geography and Wonders of the World (Canada)" id="0255">
+		<category>Games</category>
+		<description>Apple Macintosh, IBM PC Compatible - Windows, OS/2 - Applications, Educational, Multimedia</description>
+		<rom name="Discover Geography and Wonders of the World (Canada).bin" size="258618864" crc="fd10fa0c" md5="e1d365bf173b22a5f929b0d24c504331" sha1="a603d0ffb862a856f0b82f2563671f278d44e92a"/>
+		<rom name="Discover Geography and Wonders of the World (Canada).cue" size="141" crc="25269f05" sha1="2d44e9700ff6bae07bfd5e644e155dad6b5b56d9"/>
+	</game>
+	<game name="Discover Science and Wonders of the World (Canada)" id="0256">
+		<category>Games</category>
+		<description>Apple Macintosh, IBM PC Compatible - Windows, OS/2 - Applications, Educational, Multimedia</description>
+		<rom name="Discover Science and Wonders of the World (Canada).bin" size="76176576" crc="099e16e9" md5="512636baeb137b5757c0d5c7e6295bfe" sha1="75a4a9c95e867e674df5b08217758048cf704640"/>
+		<rom name="Discover Science and Wonders of the World (Canada).cue" size="139" crc="4f9ee0e9" sha1="3525689b06cf85afca9f9d8a5ec0781556efc027"/>
+	</game>
+	<game name="DreamWorks Madagascar - HP-Madagascar Activity CD (USA)" id="0179">
+		<category>Games</category>
+		<description>Windows (IBM PC) - Applications, Multimedia</description>
+		<rom name="DreamWorks Madagascar - HP-Madagascar Activity CD (USA).bin" size="426582240" crc="6790946d" md5="a8177b5616d342157a62063bec13a984" sha1="e8ad3aedc2083ac765d42a968b05e188f8b76285"/>
+		<rom name="DreamWorks Madagascar - HP-Madagascar Activity CD (USA).cue" size="121" crc="37e80443" sha1="9bbbcfecfb7820296f5666bd55f3d0d214a1a4b2"/>
+	</game>
+	<game name="Drivers and Utilities CD for Intel Chipset Mainboard (World) (vRI5.01B)" id="0136">
+		<category>Games</category>
+		<description>Windows (IBM PC) - Applications, Drivers, Utilities</description>
+		<rom name="Drivers and Utilities CD for Intel Chipset Mainboard (World) (vRI5.01B).bin" size="719864880" crc="bc220652" md5="704143bf4a9e5f175f731de9fdb835c3" sha1="6ce9f00da94ddbc9ccc648e810a2b5f6ef7bb092"/>
+		<rom name="Drivers and Utilities CD for Intel Chipset Mainboard (World) (vRI5.01B).cue" size="137" crc="96662d0a" sha1="627fa0f00a62055dcceaf6dfcbf744e911d2aa42"/>
+	</game>
+	<game name="Drivers and Utilities CD for VIA-AMD Chipset Mainboard (USA)" id="0448">
+		<category>Games</category>
+		<description>Windows (IBM PC) - Drivers, Utilities</description>
+		<rom name="Drivers and Utilities CD for VIA-AMD Chipset Mainboard (USA).bin" size="683688768" crc="ccd99555" md5="698e901aa7e02c6a693b96ab19bf0790" sha1="d292c4173794b13137e16c5bab09bb735fdbceb5" sha256="b06299be5519fdda981ab189d460d6f249401bc2a6055fb3fded899a53010a79"/>
+		<rom name="Drivers and Utilities CD for VIA-AMD Chipset Mainboard (USA).cue" size="126" crc="3c9e1c14" sha1="95bd9fbfba00cbdbdf6af564fba38d941612a35f"/>
+	</game>
+	<game name="Easy CD Creator 4 (USA)" id="0461">
+		<category>Games</category>
+		<description>Win(x86) - Applications</description>
+		<rom name="Easy CD Creator 4 (USA).bin" size="647265696" crc="52ffecef" md5="2bcb3487ccbe46e1cd0848a1b8b26b51" sha1="8a5ac00ee6fdb449e73cda8623370130cda0096d" sha256="c7a531171f6f0d96e48e84eb0dee2462a12467a25a5f16e9b5be1411afc5f6cc"/>
+		<rom name="Easy CD Creator 4 (USA).cue" size="89" crc="97cfa385" sha1="811e3aeb7de15eb1474ee15821dcc2f22fbef49d"/>
+	</game>
+	<game name="Encuentros en Espanol - An Educational Mystery Adventure (USA) (v1.0.1)" id="0258">
+		<category>Games</category>
+		<description>Apple Macintosh, IBM PC Compatible - Applications, Educational - Language, Multimedia</description>
+		<rom name="Encuentros en Espanol - An Educational Mystery Adventure (USA) (v1.0.1).bin" size="709132704" crc="6e91004b" md5="829d96ab645ea53a2364004fa6b8556c" sha1="b83c1e05b43b3592b27818da38b39d37914db7fa" sha256="1369c162d64dd2136af6de848f69a2b45304197130361817596037b8f756e595"/>
+		<rom name="Encuentros en Espanol - An Educational Mystery Adventure (USA) (v1.0.1).cue" size="137" crc="a549e789" sha1="dae260b971cdc0c088675887e0e10e081c0d53a9"/>
+	</game>
+	<game name="Epson Perfection V600 Photo Software (World)" id="0168">
+		<category>Games</category>
+		<description>Win(x86) - Applications, Drivers, Utilities</description>
+		<rom name="Epson Perfection V600 Photo Software (World).bin" size="655570608" crc="a06d75f7" md5="8b10a3b632a352707005c98b0192537f" sha1="daa2a3f4cc124cd18199dc1d2a3553a04191bb2c"/>
+		<rom name="Epson Perfection V600 Photo Software (World).cue" size="110" crc="ebd5b392" sha1="b1f92a1dbc0d3ae664d7a99cb82a34faf9cfecc3"/>
+	</game>
+	<game name="FWB Software - Hard Disk ToolKit PE (USA)" id="0320">
+		<category>Games</category>
+		<description>Apple Macintosh - Applications, Utilities</description>
+		<rom name="FWB Software - Hard Disk ToolKit PE (USA).bin" size="80772384" crc="c7972bf4" md5="75b4ef1ebc8852b145383d7dcc20963f" sha1="b17c72fb9eaa93fba96e69e369489401e0a6fb8d"/>
+		<rom name="FWB Software - Hard Disk ToolKit PE (USA).cue" size="107" crc="7825cf0b" sha1="9983d259f3a321f007aa8ec132e815d50932013a"/>
+	</game>
+	<game name="Forbidden Knowledge (Canada)" id="0097">
+		<category>Games</category>
+		<description>Win(x86) - Applications</description>
+		<rom name="Forbidden Knowledge (Canada).bin" size="77488992" crc="a0d28ad3" md5="43fdbaa7b43448795a6002a038eff2ee" sha1="918abd6671f8463e4294970f5c3e8b8409cd7dbb"/>
+		<rom name="Forbidden Knowledge (Canada).cue" size="117" crc="d150c032" sha1="80bf9adf72d860e37a40a57ebc83c6d5a4b21f71"/>
+	</game>
+	<game name="Gainward Utility Disc (Europe)" id="0502">
+		<category>Games</category>
+		<description>Gainward Utility Disc (Europe)</description>
+		<rom name="Gainward Utility Disc (Europe).bin" size="670945632" crc="90457fcd" md5="9223ee8528163e2990e520ade5f19c81" sha1="ca74fe6771dc4ebf7a22b7b465299dbf809a6d1f"/>
+		<rom name="Gainward Utility Disc (Europe).cue" size="94" crc="ac1aa1df" sha1="94ebd44173485c748a8462649781e6591aece4ce"/>
+	</game>
+	<game name="Getting Started with Mac OS X version 10.2 (USA)" id="0402">
+		<category>Games</category>
+		<description>Mac(PowerPC) - Educational, Operating Systems</description>
+		<rom name="Getting Started with Mac OS X version 10.2 (USA).bin" size="154105392" crc="44b03f81" md5="c0c3d981c7ff2b64044c5a9e0e2806bc" sha1="db1ce137e2a97462872d679f79fa4a6906122cb6"/>
+		<rom name="Getting Started with Mac OS X version 10.2 (USA).cue" size="114" crc="8ca708bb" sha1="6f12e36f4010dc9d000b1238a07171a56986d1c3"/>
+	</game>
+	<game name="Gigabyte 6-Quad + S-Series Motherboards (Europe)" id="0503">
+		<category>Games</category>
+		<description>Gigabyte 6-Quad + S-Series Motherboards (Europe)</description>
+		<rom name="Gigabyte 6-Quad + S-Series Motherboards (Europe).bin" size="637373184" crc="6942252e" md5="297fb7fce4bb44db54138d7fdd79b34b" sha1="5f7d887a16cbf57feb9bcaedcfa0404d30d85766"/>
+		<rom name="Gigabyte 6-Quad + S-Series Motherboards (Europe).cue" size="112" crc="234c8fee" sha1="80805bc699b04d25d6a2728c549a126d083e745e"/>
+	</game>
+	<game name="Gigabyte S Series Motherboards (Europe)" id="0504">
+		<category>Games</category>
+		<description>Gigabyte S Series Motherboards (Europe)</description>
+		<rom name="Gigabyte S Series Motherboards (Europe).bin" size="600204528" crc="eab410bf" md5="300150fcb60cf9f9be170a7eb188d6e7" sha1="cbc5f48cd7ae70780f9b569df384633bea615a2b"/>
+		<rom name="Gigabyte S Series Motherboards (Europe).cue" size="103" crc="8e61fe08" sha1="1e2c100c46929ab97c69ad0b11c0e7373f0cb201"/>
+	</game>
+	<game name="Glasklar Interactive - Human Body (USA) (CD 1 - Installation-CD)" id="0261">
+		<category>Games</category>
+		<description>IBM PC Compatible - Applications, Educational, Multimedia</description>
+		<rom name="Glasklar Interactive - Human Body (USA) (CD 1 - Installation-CD).bin" size="829204656" crc="8e870a8e" md5="242979bf0e45c372edde0395313b6a5b" sha1="89a8cdddb2de5c1db1ee1a39d6b2140d070955c4"/>
+		<rom name="Glasklar Interactive - Human Body (USA) (CD 1 - Installation-CD).cue" size="130" crc="7cbf60ed" sha1="4b9ba52d2fa6bacb80a4e9e613fd088751a4e24f"/>
+	</game>
+	<game name="Glasklar Interactive - Human Body (USA) (CD 2 - Media-CD)" id="0262">
+		<category>Games</category>
+		<description>IBM PC Compatible - Applications, Educational, Multimedia</description>
+		<rom name="Glasklar Interactive - Human Body (USA) (CD 2 - Media-CD).bin" size="794413872" crc="57173e9d" md5="024f593d118b1b7b537e66cf1468a831" sha1="2e5128b2920b55cba23446baec4b796f56d96750"/>
+		<rom name="Glasklar Interactive - Human Body (USA) (CD 2 - Media-CD).cue" size="123" crc="f088ebbd" sha1="d8d6636f92df68b14f9bc853a835e6dd8efa87ab"/>
+	</game>
+	<game name="HP Deskjet 3630 All-in-One series (Europe)" id="0509">
+		<category>Games</category>
+		<description>HP Deskjet 3630 All-in-One series (Europe)</description>
+		<rom name="HP Deskjet 3630 All-in-One series (Europe).bin" size="558534144" crc="4b09bf27" md5="dea84434a59464b313ca9e355cd22405" sha1="9371b863b539961a9012644e78fb3badebf25565"/>
+		<rom name="HP Deskjet 3630 All-in-One series (Europe).cue" size="106" crc="3d40a1c3" sha1="9ac9e9a14a47adf7fcf8dff532bdf20dc10280e8"/>
+	</game>
+	<game name="HP Deskjet 5550 (USA)" id="0456">
+		<category>Games</category>
+		<description>Mac(PowerPC,x86), Win(x86) - Drivers, Utilities</description>
+		<rom name="HP Deskjet 5550 (USA).bin" size="475621440" crc="4929ce1a" md5="2bba8fa46dbf38cd191798e93edb4595" sha1="cbcf886c5ecbd4d2f8a266db6c4ce18c34e57d3a" sha256="1753d02df1abe7c97a8822f39083257d21d742caebef3f3d90925c50b76a9d73"/>
+		<rom name="HP Deskjet 5550 (USA).cue" size="87" crc="6404984c" sha1="89032eb9323d10c6fd63951fd3773db1e8522e53"/>
+	</game>
+	<game name="HP Deskjet F4400 series (USA)" id="0137">
+		<category>Games</category>
+		<description>Mac(PowerPC,x86), Win(x86) - Drivers, Utilities</description>
+		<rom name="HP Deskjet F4400 series (USA).bin" size="591384528" crc="e45ef1dd" md5="88f4c490dd7ac405766ba9ecee4fdffa" sha1="bfe56d6763028c080a3f767474b654b37bf96db2"/>
+		<rom name="HP Deskjet F4400 series (USA).cue" size="95" crc="1546a2c4" sha1="dab233f6b9e035fab576b19069d216f3cc66cc54"/>
+	</game>
+	<game name="HP Pavilion Supplemental Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA)" id="0497">
+		<category>Games</category>
+		<description>Win(x86) - Operating Systems</description>
+		<rom name="HP Pavilion Supplemental Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA).bin" size="215584320" crc="eeca3fb6" md5="c30fdce80c59b0a74900fb6d0467ef92" sha1="25d8250b9b6f3b0a34f88eaa91d376ac0517559c"/>
+		<rom name="HP Pavilion Supplemental Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA).cue" size="156" crc="b7ef1239" sha1="ffef52498952d35aa67510a7d88cfa202339419c"/>
+	</game>
+	<game name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 01)" id="0484">
+		<category>Games</category>
+		<description>Win(x86) - Operating Systems</description>
+		<rom name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 01).bin" size="798092400" crc="4cdb1701" md5="7a6a908d7318b4af964200ad89d4930c" sha1="5b487713102e93709303bc18ac1c9e804a51f47b"/>
+		<rom name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 01).cue" size="160" crc="f27cec89" sha1="074ff9c2c2a8261a0186def1475103071c563162"/>
+	</game>
+	<game name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 02)" id="0485">
+		<category>Games</category>
+		<description>Win(x86) - Operating Systems</description>
+		<rom name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 02).bin" size="842601648" crc="3553c992" md5="8fddf81391f52f108f851596679bd3b7" sha1="ef5ca0106400ecf7ff2e58e82258136579cc7e4c"/>
+		<rom name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 02).cue" size="160" crc="f321ca58" sha1="e3a74cee6bbb699b151ff4f14c4c8c1ba3efd1fb"/>
+	</game>
+	<game name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 03)" id="0486">
+		<category>Games</category>
+		<description>Win(x86) - Operating Systems</description>
+		<rom name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 03).bin" size="843641232" crc="993b97ba" md5="2859598f64c794e1329370f789d62632" sha1="0885c8384bbd33f3291f4fcc16c56ba899c64124"/>
+		<rom name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 03).cue" size="160" crc="453a2a28" sha1="365a0b2ab78dffb896d97ce77d5da145a2314451"/>
+	</game>
+	<game name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 04)" id="0487">
+		<category>Games</category>
+		<description>Win(x86) - Operating Systems</description>
+		<rom name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 04).bin" size="842618112" crc="2046e012" md5="188f4f8e6256680be42c1b9efd468df3" sha1="6fb22df4ce1bab220423fd75849dc65ae247cda7"/>
+		<rom name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 04).cue" size="160" crc="f19b87fa" sha1="f56d36a969c5116333123508cd103d136c7432ba"/>
+	</game>
+	<game name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 05)" id="0488">
+		<category>Games</category>
+		<description>Win(x86) - Operating Systems</description>
+		<rom name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 05).bin" size="842681616" crc="5dd1cc67" md5="45859e4db2b73a6dc66e6a4b41d0d05b" sha1="fc6344d91827df8c91b40eb08d94b32e18a9e42f"/>
+		<rom name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 05).cue" size="160" crc="4780678a" sha1="33a32aba83db2ba4dcca388ec657a11360cd95a5"/>
+	</game>
+	<game name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 06)" id="0489">
+		<category>Games</category>
+		<description>Win(x86) - Operating Systems</description>
+		<rom name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 06).bin" size="842606352" crc="79f2546d" md5="ec646a917eb238ef3eb7b20e0d8039d3" sha1="861737044b17076ecb72e5e0cb9eb63438d7f0cf"/>
+		<rom name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 06).cue" size="160" crc="46dd415b" sha1="8ba6e3f15a9e736cea84ddf2efef8bee1e2dcccc"/>
+	</game>
+	<game name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 07)" id="0490">
+		<category>Games</category>
+		<description>Win(x86) - Operating Systems</description>
+		<rom name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 07).bin" size="842601648" crc="afc7a822" md5="6bb8c5280465e3df9db821019e4bde3e" sha1="957771b341ddcfb11d52910dcd9fbd03f4714e0e"/>
+		<rom name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 07).cue" size="160" crc="f0c6a12b" sha1="e469871e578b9b115d54bafb38425dbb7981eaad"/>
+	</game>
+	<game name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 08)" id="0491">
+		<category>Games</category>
+		<description>Win(x86) - Operating Systems</description>
+		<rom name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 08).bin" size="842956800" crc="d8fe3f74" md5="d429b914306c0f823f4ec946d1e44567" sha1="4c732356851978abf7a817ea90c04ef94d70785e"/>
+		<rom name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 08).cue" size="160" crc="f4ef1cbe" sha1="7f50c8e74047f232fed5cf03abc5caa27a21bc4a"/>
+	</game>
+	<game name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 09)" id="0492">
+		<category>Games</category>
+		<description>Win(x86) - Operating Systems</description>
+		<rom name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 09).bin" size="842606352" crc="70e88b3b" md5="d206078895f1c1792b9c555cdd801abb" sha1="64c1c6aad166d16d488d09da62af913f0a1bb1e6"/>
+		<rom name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 09).cue" size="160" crc="42f4fcce" sha1="50020cb4f92c2be821efe510ef8dc03694f7feb5"/>
+	</game>
+	<game name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 10)" id="0493">
+		<category>Games</category>
+		<description>Win(x86) - Operating Systems</description>
+		<rom name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 10).bin" size="842606352" crc="f4b634ab" md5="7f9edb8922dd9dcfb96763e57d2f67aa" sha1="16ec656188aea26f7c6f8b1680f7fecedca40305"/>
+		<rom name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 10).cue" size="160" crc="14d46625" sha1="9cf84c49bba82a459ed62118f74f0818eee56197"/>
+	</game>
+	<game name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 11)" id="0494">
+		<category>Games</category>
+		<description>Win(x86) - Operating Systems</description>
+		<rom name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 11).bin" size="842721600" crc="b6ae2680" md5="33828d85cfd1de09f050d4fd903f75ea" sha1="c5ad759cc1790af31e0aa3c50e2e4b9d1d24ac04"/>
+		<rom name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 11).cue" size="160" crc="a2cf8655" sha1="3d4e8d7bad71b206c357d3acc39382ec8c72b045"/>
+	</game>
+	<game name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 12)" id="0495">
+		<category>Games</category>
+		<description>Win(x86) - Operating Systems</description>
+		<rom name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 12).bin" size="842949744" crc="bee636d6" md5="5f9db5ce00b9d17e0f653fd9d93f4cd7" sha1="58e2efc8e8badadfb6f83ef37b6273f2298d5c88"/>
+		<rom name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 12).cue" size="160" crc="a392a084" sha1="0bf90457f44fec24ce1dd16d49a6a19d4b69d1e2"/>
+	</game>
+	<game name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 13)" id="0496">
+		<category>Games</category>
+		<description>Win(x86) - Operating Systems</description>
+		<rom name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 13).bin" size="528553200" crc="45a78e50" md5="a563e8bd8b235d58aeaf238296512647" sha1="15df4a7238e23bf9bd3665d330917c9c54a8e672"/>
+		<rom name="HP Pavilion System Recovery - Microsoft Windows XP Home Edition Service Pack 2 (USA) (Disc 13).cue" size="160" crc="158940f4" sha1="84daec26e2d4b9431d78d44bdc44fcd5b1db2e2f"/>
+	</game>
+	<game name="HP PrecisionScan Pro (USA)" id="0457">
+		<category>Games</category>
+		<description>Windows (IBM PC) - Drivers, Utilities</description>
+		<rom name="HP PrecisionScan Pro (USA).bin" size="111705888" crc="34d6b71a" md5="bad5a7e173213ca1a8deaf62b0a5306b" sha1="09a16c92bd392cf6ff541984df6f3b61c078b8ad" sha256="f6ce91c2f467e035802bd33b2dda6739ecf2a88f501343d2db3afe2f78290ab7"/>
+		<rom name="HP PrecisionScan Pro (USA).cue" size="92" crc="05e7d762" sha1="64ae85ebac8275dbaf4ebfd5e802a10f6c22798f"/>
+	</game>
+	<game name="I Love the U.S.A.! (USA)" id="0263">
+		<category>Games</category>
+		<description>Apple Macintosh, IBM PC Compatible - Applications, Educational, Multimedia</description>
+		<rom name="I Love the U.S.A.! (USA).bin" size="621835872" crc="8c49ace2" md5="aeddb278854cad37f1861fe7aa6439d7" sha1="28d3594eaea36bda13e648787339fd03ef1d1723"/>
+		<rom name="I Love the U.S.A.! (USA).cue" size="90" crc="648884ff" sha1="883528dcec77618a366880d3dbe8dd3f0eb493a4"/>
+	</game>
+	<game name="Inno3D Graphics GeForce Driver CD (World) (v10.9)" id="0140">
+		<category>Games</category>
+		<description>Windows (IBM PC) - Drivers, Utilities</description>
+		<rom name="Inno3D Graphics GeForce Driver CD (World) (v10.9).bin" size="400206912" crc="b69799e7" md5="383d95901297484eb10dc7623c92f4a8" sha1="b1c9ab771ec2691431b8ce34f75fb118537b00af"/>
+		<rom name="Inno3D Graphics GeForce Driver CD (World) (v10.9).cue" size="115" crc="0f35f427" sha1="b59ba7939ca8100297e2b30942e3bd1ecf4a6f68"/>
+	</game>
+	<game name="Jacaranda Interactive Atlas of Australia (Australia) (v1.0a)" id="0100">
+		<category>Games</category>
+		<description>Mac(PowerPC), Win(x86) - Applications, Educational, Multimedia</description>
+		<rom name="Jacaranda Interactive Atlas of Australia (Australia) (v1.0a).bin" size="572427408" crc="aae49b15" md5="a485a45e14f0a416799a8cadfbd6a7a4" sha1="9a2879819339cfcae4bcd14a07a0adb51fe6e644"/>
+		<rom name="Jacaranda Interactive Atlas of Australia (Australia) (v1.0a).cue" size="149" crc="a826f915" sha1="59204581cd0bf63b1c76e6c9c51e00663b5a7e61"/>
+	</game>
+	<game name="JuniorNet (USA) (v1.1)" id="0524">
+		<category>Games</category>
+		<description>JuniorNet (USA) (v1.1)</description>
+		<rom name="JuniorNet (USA) (v1.1).bin" size="348578160" crc="d13e6009" md5="3a6907b25eaa4c5d6d2be46d3db5e39c" sha1="9381a64ae77ca9cdd563cdf3e3e7be1fd3cb2f44" sha256="e9a0699d6febd190eac302213c19055412a3ed27783f513780fd88f46d8b5b63"/>
+		<rom name="JuniorNet (USA) (v1.1).cue" size="88" crc="1b6eaa4c" sha1="47f258495414e3b875731a0529156e799174751b"/>
+	</game>
+	<game name="Just Java 2 (USA)" id="0454">
+		<category>Games</category>
+		<description>Win(x86) - Computing, Educational</description>
+		<rom name="Just Java 2 (USA).bin" size="705341280" crc="9b2ebad8" md5="88d10adaefdfb2bbd352a5a7e8a947f8" sha1="dfa04b947b2e2f4a2d95aeaa3de398ee68eb3507" sha256="ea7f6f7658e637d11f533286f4a36f89145dd401908645e0205e8b826e5dca50"/>
+		<rom name="Just Java 2 (USA).cue" size="83" crc="29f6658e" sha1="257b19af5aa678e60d5f87747306e57fdff46be7"/>
+	</game>
+	<game name="LG DVD Writer Solution (Europe)" id="0501">
+		<category>Games</category>
+		<description>LG DVD Writer Solution (Europe)</description>
+		<rom name="LG DVD Writer Solution (Europe).bin" size="766839024" crc="740f3545" md5="9cca3c168b8e780d9f4c384fbb733877" sha1="1284ca29cec5325fc7fe26e029652908abe3f567"/>
+		<rom name="LG DVD Writer Solution (Europe).cue" size="95" crc="30ef5321" sha1="d2289c1b3c9b5bf8087e876e10179185a836f75e"/>
+	</game>
+	<game name="Linksys - Wireless-G Broadband Router - Setup Wizard (USA) (v5.2) (WRT54G - 2.4 GHz 802.11g)" id="0143">
+		<category>Games</category>
+		<description>Windows (IBM PC) - Drivers, Utilities</description>
+		<rom name="Linksys - Wireless-G Broadband Router - Setup Wizard (USA) (v5.2) (WRT54G - 2.4 GHz 802.11g).bin" size="261629424" crc="7f344995" md5="fccaec6077f0751f962d47151b8e47bb" sha1="26a916040e6aebdf6c17cbf794e278a44c256b37"/>
+		<rom name="Linksys - Wireless-G Broadband Router - Setup Wizard (USA) (v5.2) (WRT54G - 2.4 GHz 802.11g).cue" size="158" crc="07b5fef7" sha1="bc9ecbef82c81d33fae2e68fa9bb75b6b0264d06"/>
+	</game>
+	<game name="MGI PhotoSuite 4 (USA)" id="0459">
+		<category>Games</category>
+		<description>Win(x86) - Applications, Creative Resources</description>
+		<rom name="MGI PhotoSuite 4 (USA).bin" size="617414112" crc="f059e52f" md5="840accc7ee47b7c47a4e45ad6a195187" sha1="9cf18f88d14c780ae2ef0c412523ff7d7b52eaac" sha256="b94de899af80ac45b7d7714ad59abdec31b0f81d7af1dd98e4168b96ceb3d71c"/>
+		<rom name="MGI PhotoSuite 4 (USA).cue" size="88" crc="42d77802" sha1="c52601518449c1ac3b5d7a4170bf064750855915"/>
+	</game>
+	<game name="MGI PhotoSuite V8.1 &amp; PhotoSuite SE V1.1 &amp; VideoWave SE+ (USA)" id="0446">
+		<category>Games</category>
+		<description>Win(x86) - Applications, Creative Resources</description>
+		<rom name="MGI PhotoSuite V8.1 &amp; PhotoSuite SE V1.1 &amp; VideoWave SE+ (USA).bin" size="475092240" crc="73c4e9b5" md5="d92960f059676700fbcd6e658bc38600" sha1="0ec81deadabd68ee107b5005db214f98d0290ef5" sha256="aa470177f38426c1c235225c067b3d290215847bc0f92f777c10a14cbc5ed75a"/>
+		<rom name="MGI PhotoSuite V8.1 &amp; PhotoSuite SE V1.1 &amp; VideoWave SE+ (USA).cue" size="151" crc="5410e7e3" sha1="142ae5ad24009ad20c9846b135c60222960cd07c"/>
+	</game>
+	<game name="MSN Internet Access - Version 5.0 (USA)" id="0185">
+		<category>Games</category>
+		<description>IBM PC Compatible - Promotional - Products - ISPs</description>
+		<rom name="MSN Internet Access - Version 5.0 (USA).bin" size="73523520" crc="7f24b9ff" md5="135ea30fdb02d4e88c885dfc885dc87b" sha1="afee6290f62332043402321bfb9b63a59390d7c3"/>
+		<rom name="MSN Internet Access - Version 5.0 (USA).cue" size="105" crc="b40960c9" sha1="30f58378d29366323a9504e07986017599522bcf"/>
+	</game>
+	<game name="Mac OS 8 (USA) (v8.1)" id="0410">
+		<category>Games</category>
+		<description>Mac(PowerPC) - Operating Systems</description>
+		<rom name="Mac OS 8 (USA) (v8.1).bin" size="482613936" crc="66c932b9" md5="ef8bc23fd46f00774d5779ebdebdef6a" sha1="2e952373b97e70e9248522151fc273c9d78baf6d"/>
+		<rom name="Mac OS 8 (USA) (v8.1).cue" size="87" crc="a9218654" sha1="a48cfaafd315b63bbf3c57dfe1f8ad7765512773"/>
+	</game>
+	<game name="Mac OS 9 - Featuring Sherlock 2 (USA) (v9.0)" id="0413">
+		<category>Games</category>
+		<description>Mac(PowerPC) - Operating Systems</description>
+		<rom name="Mac OS 9 - Featuring Sherlock 2 (USA) (v9.0).bin" size="771651216" crc="4c4d73fc" md5="54ab0bf7dc401dafa8798cbe54cfd7dc" sha1="7c991f48bf69da3dccef4d24c750dcd652a2b0c8"/>
+		<rom name="Mac OS 9 - Featuring Sherlock 2 (USA) (v9.0).cue" size="110" crc="810323f4" sha1="9b0416736e50bff2a07d5fc68249e0d0b05297fa"/>
+	</game>
+	<game name="Mac OS 9 - Featuring Sherlock 2 (USA) (v9.2.1) (Update CD)" id="0411">
+		<category>Games</category>
+		<description>Mac(PowerPC) - Operating Systems</description>
+		<rom name="Mac OS 9 - Featuring Sherlock 2 (USA) (v9.2.1) (Update CD).bin" size="778283856" crc="975e2aec" md5="fe81865b877c7e36d4279fafbc31690f" sha1="6f510e9a81d7807bca51b93ddd95571caced5664"/>
+		<rom name="Mac OS 9 - Featuring Sherlock 2 (USA) (v9.2.1) (Update CD).cue" size="124" crc="4b2a5ae2" sha1="db1b6dd516e1b6a32f9e2d4a33dcad6bc1030266"/>
+	</game>
+	<game name="Mac OS X (USA) (v10.1) (Upgrade CD)" id="0416">
+		<category>Games</category>
+		<description>Mac(PowerPC) - Operating Systems</description>
+		<rom name="Mac OS X (USA) (v10.1) (Upgrade CD).bin" size="772387392" crc="32e96070" md5="51b6201c1b37b5e85778c1962adc06c8" sha1="0da192c407b93cc3d4cbd80ca35a55a596862997"/>
+		<rom name="Mac OS X (USA) (v10.1) (Upgrade CD).cue" size="101" crc="39e1feb5" sha1="0e027af14a5296c31fac9ca5e0fc3f5c9cc4fbbb"/>
+	</game>
+	<game name="Mac OS X (USA) (v10.2) (Install Disc 1)" id="0414">
+		<category>Games</category>
+		<description>Mac(PowerPC) - Operating Systems</description>
+		<rom name="Mac OS X (USA) (v10.2) (Install Disc 1).bin" size="752644704" crc="828e19e5" md5="c63c067a1448aea1e115e165ce433db1" sha1="b472d3c7bec004b46f4cd555e62856c4ea289a61"/>
+		<rom name="Mac OS X (USA) (v10.2) (Install Disc 1).cue" size="105" crc="0b6a791c" sha1="d957dc1d54b2b49e55b0429634eecfc7081a70ea"/>
+	</game>
+	<game name="Mac OS X (USA) (v10.2) (Install Disc 2)" id="0415">
+		<category>Games</category>
+		<description>Mac(PowerPC) - Operating Systems</description>
+		<rom name="Mac OS X (USA) (v10.2) (Install Disc 2).bin" size="419714400" crc="824a7083" md5="a6e00fac611eb5e8eb93e5626ad66e23" sha1="809713c4206db6ac4843ade350f4c7d10211b6e0"/>
+		<rom name="Mac OS X (USA) (v10.2) (Install Disc 2).cue" size="105" crc="0a375fcd" sha1="e5f6b8e2109d2957b7dc01bdae4c29df11f9c4a5"/>
+	</game>
+	<game name="Mac OS X Panther (USA) (v10.3) (Install Disc 2)" id="0418">
+		<category>Games</category>
+		<description>Mac(PowerPC) - Operating Systems</description>
+		<rom name="Mac OS X Panther (USA) (v10.3) (Install Disc 2).bin" size="779838528" crc="9c2c0e9c" md5="1c452f6d1372dcced7e39e65642b3a10" sha1="aa1e4b46238fcc4174ad8c2903e37e0362eee93f"/>
+		<rom name="Mac OS X Panther (USA) (v10.3) (Install Disc 2).cue" size="113" crc="3f623f59" sha1="6dbda03fea16741ab0d1634ace17bdb1cbfc2328"/>
+	</game>
+	<game name="Mac OS X Panther (USA) (v10.3) (Install Disc 3)" id="0419">
+		<category>Games</category>
+		<description>Mac(PowerPC) - Operating Systems</description>
+		<rom name="Mac OS X Panther (USA) (v10.3) (Install Disc 3).bin" size="779838528" crc="0aa32373" md5="cd752e6d3e4cadbbc485b52f97f6c495" sha1="b925fba902db5ac99314faf776bc071fb97b4979"/>
+		<rom name="Mac OS X Panther (USA) (v10.3) (Install Disc 3).cue" size="113" crc="8979df29" sha1="80648ed11f11eea2f34674bebeefdb07e086e5f9"/>
+	</game>
+	<game name="Mac OS X Server (USA) (v10.4) (Admin Tools)" id="0424">
+		<category>Games</category>
+		<description>Mac() - Operating Systems</description>
+		<rom name="Mac OS X Server (USA) (v10.4) (Admin Tools).bin" size="138570432" crc="27580db3" md5="eff01208148a3e3da9577a391aeb8f90" sha1="bf56b897bec7ed8c03b03b7f835cf3b6b50cb5b2"/>
+		<rom name="Mac OS X Server (USA) (v10.4) (Admin Tools).cue" size="109" crc="51e43bd0" sha1="799baf09b3754d3ffce55a8be1bb5370d13e0d11"/>
+	</game>
+	<game name="Mac OS X Server (USA) (v10.4) (Install Disc 1)" id="0425">
+		<category>Games</category>
+		<description>Mac() - Operating Systems</description>
+		<rom name="Mac OS X Server (USA) (v10.4) (Install Disc 1).bin" size="782223456" crc="4830c838" md5="25a4b1b9241da7e348c4057e4a9fbf25" sha1="5c06b402e2991675ef0e96ca1efe1b3c5348e302"/>
+		<rom name="Mac OS X Server (USA) (v10.4) (Install Disc 1).cue" size="112" crc="96bb5887" sha1="e09dad62259ba9d328fa2d88590055821d3ddd68"/>
+	</game>
+	<game name="Mac OS X Server (USA) (v10.4) (Install Disc 2)" id="0426">
+		<category>Games</category>
+		<description>Mac() - Operating Systems</description>
+		<rom name="Mac OS X Server (USA) (v10.4) (Install Disc 2).bin" size="782279904" crc="00d1776b" md5="32e443ede7fd0af5532a5dfca1579c6c" sha1="ece13fee910490123714fc34dfb067cf687a3f17"/>
+		<rom name="Mac OS X Server (USA) (v10.4) (Install Disc 2).cue" size="112" crc="97e67e56" sha1="7f0f135cf0631d79ff5c201e5db060729126651c"/>
+	</game>
+	<game name="Mac OS X Server (USA) (v10.4) (Install Disc 3)" id="0427">
+		<category>Games</category>
+		<description>Mac() - Operating Systems</description>
+		<rom name="Mac OS X Server (USA) (v10.4) (Install Disc 3).bin" size="781917696" crc="e086f3ed" md5="1da3eaaedd4344d9a453558ce1d2f5b1" sha1="a14cb9acdeae63592f45f3e264446f7e84873a04"/>
+		<rom name="Mac OS X Server (USA) (v10.4) (Install Disc 3).cue" size="112" crc="21fd9e26" sha1="bd3442ee79bc93940bba1aead997ea22bee10ba7"/>
+	</game>
+	<game name="MacAdvocate - Spring 1997 (USA)" id="0350">
+		<category>Games</category>
+		<description>Mac(), Win(x86) - Applications, Educational, Multimedia, Promotional</description>
+		<rom name="MacAdvocate - Spring 1997 (USA).bin" size="764872752" crc="c301154c" md5="c33a37365433e8e7ac52bd60cfc76e55" sha1="0fa7df81cfab9296ec816dc9b6a807746272e997"/>
+		<rom name="MacAdvocate - Spring 1997 (USA).cue" size="120" crc="d8eae9cc" sha1="49e82890e008c1bf1544b2f12c1d78139f5784e2"/>
+	</game>
+	<game name="MediaClips - Tropical Rainforest (USA)" id="0002">
+		<category>Games</category>
+		<description>DOS/Win(x86), Mac(m68k) - Creative Resources, Multimedia</description>
+		<rom name="MediaClips - Tropical Rainforest (USA).bin" size="746830560" crc="89da191d" md5="7d5ef8dec80a04efbcb95fc9e918652c" sha1="3e1382aa63494b4528b7d3bbdb28782d63975be7"/>
+		<rom name="MediaClips - Tropical Rainforest (USA).cue" size="127" crc="2cf173f9" sha1="a48d0b1bf1048c8aeb1bf83f5264f2d0e1717364"/>
+	</game>
+	<game name="Microsoft Office 97 Professional with Bookshelf Basics - Service Release 2 (USA)" id="0445">
+		<category>Games</category>
+		<description>Win(x86) - Applications, Creative Resources</description>
+		<rom name="Microsoft Office 97 Professional with Bookshelf Basics - Service Release 2 (USA).bin" size="778907136" crc="6e1bfcd9" md5="26fb7acb9fc5ad163cbfc98b085821c1" sha1="4283bc51255537dbbd1667980a05f37a2f2a0a18" sha256="e2460196d49b5812be67d5d7916434b3f006e5bdaeb0a0b4b43b348ae50ccab0"/>
+		<rom name="Microsoft Office 97 Professional with Bookshelf Basics - Service Release 2 (USA).cue" size="146" crc="852134f9" sha1="c60ac9fbddd34df0a99cda208bf62f5999431fe9"/>
+	</game>
+	<game name="Microsoft Office 97, Standard Edition (USA)" id="0099">
+		<category>Games</category>
+		<description>Win(x86) - Applications, Creative Resources</description>
+		<rom name="Microsoft Office 97, Standard Edition (USA).bin" size="401916816" crc="4778db5a" md5="e1200e99e96cbbae1734abffbf2f3e5a" sha1="2e64b623bb5c8b3a5ecb0b9e4bf94bda2b892b24"/>
+		<rom name="Microsoft Office 97, Standard Edition (USA).cue" size="109" crc="fc9540e4" sha1="d2c2f2ddd147f84b69bdf23565455567c055df7b"/>
+	</game>
+	<game name="Microsoft Windows 2000 Professional (USA)" id="0443">
+		<category>Games</category>
+		<description>IBM PC Compatible - Operating Systems</description>
+		<rom name="Microsoft Windows 2000 Professional (USA).bin" size="454721568" crc="1f9ddac7" md5="bb4e35da470e7e4ef03ba6d8985368d3" sha1="6b7be93003d81539d40e8b1a5d2c5b69055f7f63" sha256="71dc774609ddcbd2e25151802d8a867f26c912a48c9a2d9567d3fbb12770ab4a"/>
+		<rom name="Microsoft Windows 2000 Professional (USA).cue" size="107" crc="dd87f98b" sha1="1720357bd8c6931c2a53e893f21417d8f027798d"/>
+	</game>
+	<game name="Microsoft Windows 98 (USA)" id="0441">
+		<category>Games</category>
+		<description>IBM PC Compatible - Operating Systems</description>
+		<rom name="Microsoft Windows 98 (USA).bin" size="748820352" crc="c8baa7c2" md5="e03edd5c6b07004ff35142a328e6f8d4" sha1="b4b471dca9971ad3d1f020c6e6350a123f446c2b" sha256="e8220819044315c71e29de53d3ed6f7f1cce1c16cc11b391896368100abd7ab2"/>
+		<rom name="Microsoft Windows 98 (USA).cue" size="92" crc="10d43a19" sha1="38e87a6e12ecf59f1c44b1739b73c71f71b4828d"/>
+	</game>
+	<game name="Microsoft Windows NT Server 4.0 - Enterprise Edition (USA) (Disc 1)" id="0462">
+		<category>Games</category>
+		<description>IBM PC Compatible - Operating Systems</description>
+		<rom name="Microsoft Windows NT Server 4.0 - Enterprise Edition (USA) (Disc 1).bin" size="578728416" crc="bd77e248" md5="3aadd678e76b3a1d4ada79f0f50b98ea" sha1="c6b665d3545fe41e4b5c8c79de4a1856dbfe04b7" sha256="d0678e1dad16a3ca365ef7f19a9f522200613c0cab0d393dda44c1d9a017d917"/>
+		<rom name="Microsoft Windows NT Server 4.0 - Enterprise Edition (USA) (Disc 1).cue" size="133" crc="d0c3fa9c" sha1="4ae634212f9a48675acad7873fd9ee4d046ee3c1"/>
+	</game>
+	<game name="Microsoft Windows NT Server 4.0 - Enterprise Edition (USA) (Disc 2)" id="0463">
+		<category>Games</category>
+		<description>IBM PC Compatible - Operating Systems</description>
+		<rom name="Microsoft Windows NT Server 4.0 - Enterprise Edition (USA) (Disc 2).bin" size="656327952" crc="c0c59ed2" md5="0a1dcb12325948e464890f2a24b7ddc0" sha1="9919b32876df9449165d9a764353867557fe365f" sha256="16d63921f19777f9209bdd932552238281fcbba294639dd03b0f9c76613c9128"/>
+		<rom name="Microsoft Windows NT Server 4.0 - Enterprise Edition (USA) (Disc 2).cue" size="133" crc="d19edc4d" sha1="316ae7128cd38ecbe31a7f45319b74d516159648"/>
+	</game>
+	<game name="Microsoft Windows NT Workstation 4.0 (USA)" id="0442">
+		<category>Games</category>
+		<description>IBM PC Compatible - Operating Systems</description>
+		<rom name="Microsoft Windows NT Workstation 4.0 (USA).bin" size="696114384" crc="e9682887" md5="57ab999d0794cc4c75624d0ef516f6b2" sha1="9da8ec5235d47137ee5b83bcb0915b76e0476d9a" sha256="aca322578e2c964530ab8c6c164b03bbe0ad28159ddbfa6410976a66c49320f3"/>
+		<rom name="Microsoft Windows NT Workstation 4.0 (USA).cue" size="108" crc="007f1064" sha1="65d6e6def1876604a594d3f7e6cb1ce0913503f6"/>
+	</game>
+	<game name="Microsoft Windows Server 2003 - Standard Edition (USA) (Diagnostic Tools)" id="0296">
+		<category>Games</category>
+		<description>Win(x86) - Operating Systems, Utilities</description>
+		<rom name="Microsoft Windows Server 2003 - Standard Edition (USA) (Diagnostic Tools).bin" size="699134352" crc="5949cf5d" md5="7d85329bab6fd3f9aacd38ea7d769caa" sha1="a10f416f4dfb77034564bcfa18db2927d80cb97d"/>
+		<rom name="Microsoft Windows Server 2003 - Standard Edition (USA) (Diagnostic Tools).cue" size="139" crc="6cc09c9a" sha1="063de549502a2aa633c78a12a69238841d4aacaa"/>
+	</game>
+	<game name="Microsoft Windows XP - OEM Preinstallation Kit (Australia)" id="0116">
+		<category>Games</category>
+		<description>Win(x86) - Operating Systems</description>
+		<rom name="Microsoft Windows XP - OEM Preinstallation Kit (Australia).bin" size="416572128" crc="5cbb6a86" md5="28e2f10eea2ef76cc7959f8c5ec132c1" sha1="599b0fce7edc34cf18cc109a7a3379c5f4d765d7"/>
+		<rom name="Microsoft Windows XP - OEM Preinstallation Kit (Australia).cue" size="124" crc="84673e85" sha1="996445c82a23dc6166470a4730df15f9fe26d90a"/>
+	</game>
+	<game name="Microsoft Windows XP - experience Microsoft here! (World)" id="0432">
+		<category>Games</category>
+		<description>Win(x86) - Applications, CD-ROM XA, Multimedia, Operating Systems, Promotional</description>
+		<rom name="Microsoft Windows XP - experience Microsoft here! (World).bin" size="806481984" crc="c87ed8d2" md5="39c451792cfcfaffb954ad690c96dd49" sha1="381b1a8bdc0423b7448443546453ec8324185bc1"/>
+		<rom name="Microsoft Windows XP - experience Microsoft here! (World).cue" size="123" crc="5dae5a90" sha1="33f3343888093eaea82229845f15afdd4b9100cf"/>
+	</game>
+	<game name="Microsoft Windows XP Professional (USA)" id="0431">
+		<category>Games</category>
+		<description>IBM PC Compatible - Operating Systems</description>
+		<rom name="Microsoft Windows XP Professional (USA).bin" size="588745584" crc="592c928d" md5="f11f7d49b3a84626661ebd318b8c57f8" sha1="36592fe53dc4508adb25d5663c110c1f6ec2130d"/>
+		<rom name="Microsoft Windows XP Professional (USA).cue" size="105" crc="ab9e2053" sha1="f121af5aae6098cca03369db229e1ed46832a6ef"/>
+	</game>
+	<game name="Mindscape U.S. Atlas &amp; Almanac - Version 6 (USA)" id="0363">
+		<category>Games</category>
+		<description>Mac() - Applications, Educational, Multimedia</description>
+		<rom name="Mindscape U.S. Atlas &amp; Almanac - Version 6 (USA).bin" size="776261136" crc="9218a7c5" md5="978552453e45ad77f156b7c616351494" sha1="aad82cb482d784fe00088485aee07218f1eb8023"/>
+		<rom name="Mindscape U.S. Atlas &amp; Almanac - Version 6 (USA).cue" size="137" crc="63aaf8f3" sha1="8709aed39faad3df54795360c4de9d9643b5a690"/>
+	</game>
+	<game name="Motherboard - Support CD (Australia) (v3.2I)" id="0145">
+		<category>Games</category>
+		<description>Windows (IBM PC) - Drivers, Utilities</description>
+		<rom name="Motherboard - Support CD (Australia) (v3.2I).bin" size="780087840" crc="7cd80285" md5="643bc9eeb8c6a90af68e8d314b92c727" sha1="4eec7d952e120013e65d1a25f97da72eb91abd16"/>
+		<rom name="Motherboard - Support CD (Australia) (v3.2I).cue" size="110" crc="bf4e9ad0" sha1="1e592c6bd7f8550de407b5637d3193172c3070c0"/>
+	</game>
+	<game name="Motorola - SB5100 Series SURFboard Cable Modem - Installation CD-ROM (Australia)" id="0146">
+		<category>Games</category>
+		<description>Windows (IBM PC) - Drivers, Utilities</description>
+		<rom name="Motorola - SB5100 Series SURFboard Cable Modem - Installation CD-ROM (Australia).bin" size="78034656" crc="f8255275" md5="c775373b0b090d05368b80291e7adfda" sha1="7e0b51a235fdd2a169c72ef0a05018a65380da8e"/>
+		<rom name="Motorola - SB5100 Series SURFboard Cable Modem - Installation CD-ROM (Australia).cue" size="146" crc="1ff1d5cf" sha1="2244782e547c1e0585cffb67b562542d64fbdaff"/>
+	</game>
+	<game name="NEC DSX System CD (USA)" id="0471">
+		<category>Games</category>
+		<description>Win(x86) - Utilities</description>
+		<rom name="NEC DSX System CD (USA).bin" size="471225552" crc="373bc4c0" md5="101a7144428bcfe4ccbba3e2f2e47c75" sha1="7b498ef7de1882355707b6aa21554e788a020406" sha256="eb914188d056a6db13058db1e2ae64d4937d15aba89b037b12c6be7450df0ff1"/>
+		<rom name="NEC DSX System CD (USA).cue" size="89" crc="8c40a706" sha1="75b6877448ddfe3941bf88233d5daa220c3f99f3"/>
+	</game>
+	<game name="Nero 7 Essentials (Australia) (OEM Version)" id="0149">
+		<category>Games</category>
+		<description>Windows (IBM PC) - Applications, Drivers, Utilities</description>
+		<rom name="Nero 7 Essentials (Australia) (OEM Version).bin" size="748267632" crc="cc2eef30" md5="be8bc1d3115f93477e52cef77f39c6a8" sha1="d1078058e389c3ec3e7b71da2130cfef905a8fde"/>
+		<rom name="Nero 7 Essentials (Australia) (OEM Version).cue" size="109" crc="27d7cdbe" sha1="7e49b11d2244e2656f462622ea522b87cb955e6d"/>
+	</game>
+	<game name="NetManage ViewNow (USA)" id="0458">
+		<category>Games</category>
+		<description>Win(x86) - Applications, Computing</description>
+		<rom name="NetManage ViewNow (USA).bin" size="150212832" crc="cbe993b3" md5="4fb5b754508cf3067985aec7d571ade9" sha1="a2847643505c8ce911442be136f2e4e7fa78812a" sha256="8f15ac774764119d61caeb1b2980e158db3d7376e4fcf4b9e3b2629b89587a2e"/>
+		<rom name="NetManage ViewNow (USA).cue" size="112" crc="62d3651b" sha1="be40873740158e277c4ffc93244020a2ead7d98a"/>
+	</game>
+	<game name="NetZero 2.0 (USA)" id="0188">
+		<category>Games</category>
+		<description>IBM PC Compatible - Promotional - Products - ISPs</description>
+		<rom name="NetZero 2.0 (USA).bin" size="97511568" crc="1708f685" md5="e2a7a907e3417bf5cf66e5206a54487b" sha1="9dce8ec8fa2c945f43f641ceb58becee5c25f254"/>
+		<rom name="NetZero 2.0 (USA).cue" size="83" crc="87ddb5d7" sha1="0db322267c31c5093c87290db7ae25de8cd1710f"/>
+	</game>
+	<game name="Netgear - Resource CD (Australia) (v1.4) (A6100 WiFi USB Mini Adapter - AC600 Dual Band)" id="0150">
+		<category>Games</category>
+		<description>Windows (IBM PC) - Drivers, Utilities</description>
+		<rom name="Netgear - Resource CD (Australia) (v1.4) (A6100 WiFi USB Mini Adapter - AC600 Dual Band).bin" size="241635072" crc="73723ac2" md5="c6f032886f89dd097305e5bea196bf70" sha1="6ae9184da5f6805dddfd5cdbd182017adda9f31e"/>
+		<rom name="Netgear - Resource CD (Australia) (v1.4) (A6100 WiFi USB Mini Adapter - AC600 Dual Band).cue" size="154" crc="7fd08b80" sha1="5514673ebc754d1adf00f601b5b468f6727a1f70"/>
+	</game>
+	<game name="Nokia 6280 - Product CD-ROM (Australia)" id="0152">
+		<category>Games</category>
+		<description>Windows (IBM PC) - Applications, Drivers, Utilities</description>
+		<rom name="Nokia 6280 - Product CD-ROM (Australia).bin" size="536046672" crc="c1717612" md5="02fe7c571b9701931c9d39805c05fbe5" sha1="00c6ebbf7362d02cc76a21bafcd00c0227a2b2a5"/>
+		<rom name="Nokia 6280 - Product CD-ROM (Australia).cue" size="105" crc="1c3e4b59" sha1="08b23140113bcd1d0a92a3cac72520f20a31b050"/>
+	</game>
+	<game name="Norton SystemWorks - Basic Edition 12.0 (USA)" id="0190">
+		<category>Games</category>
+		<description>IBM PC Compatible - Applications, Multimedia</description>
+		<rom name="Norton SystemWorks - Basic Edition 12.0 (USA).bin" size="146757744" crc="f66a076f" md5="15196a4afd77fe1f1fd425eeec9b77ed" sha1="4e6454746b13ef1013d54e20bf8768e01c02ccda"/>
+		<rom name="Norton SystemWorks - Basic Edition 12.0 (USA).cue" size="111" crc="b308295f" sha1="b3159ac570a3ba4ccd2988bf80fd6d982be06aeb"/>
+	</game>
+	<game name="PeoplePC Online Service (USA)" id="0191">
+		<category>Games</category>
+		<description>IBM PC Compatible - Promotional - Products - ISPs</description>
+		<rom name="PeoplePC Online Service (USA).bin" size="84627312" crc="73c9d0a1" md5="0dae032d81ab7c31a90dba6958efa9ba" sha1="3591567a444bc06b7396507b1bab80b74bc76360"/>
+		<rom name="PeoplePC Online Service (USA).cue" size="110" crc="778ef114" sha1="a40d184fc8e2db3b2b86d8fa7f1f077b59dde010"/>
+	</game>
+	<game name="Planning the Play of a Bridge Hand - Interactive CD-ROM Edition (Canada)" id="0192">
+		<category>Games</category>
+		<description>Mac(x86), Win(x86) - Applications, Educational, Multimedia</description>
+		<rom name="Planning the Play of a Bridge Hand - Interactive CD-ROM Edition (Canada).bin" size="4271232" crc="ae4a9dbe" md5="a9ce22394c5e181f5ca831473b3b79e5" sha1="c7bcbf75d95b567fda05ac15ce1ba9116816f936"/>
+		<rom name="Planning the Play of a Bridge Hand - Interactive CD-ROM Edition (Canada).cue" size="138" crc="e394e8a7" sha1="c70ff32eb6f6c9e6710d918116bf061b470608e6"/>
+	</game>
+	<game name="Plextor - Roxio Toast Lite Software (World) (v2.00)" id="0348">
+		<category>Games</category>
+		<description>Apple Macintosh - Applications, Drivers, Multimedia</description>
+		<rom name="Plextor - Roxio Toast Lite Software (World) (v2.00).bin" size="93522576" crc="da3db0c6" md5="8d7f97b6ea22661493a81e21992cf59b" sha1="d3432b885869dcea70920d00c6ad96600d008d36"/>
+		<rom name="Plextor - Roxio Toast Lite Software (World) (v2.00).cue" size="114" crc="49de355b" sha1="9718480c31f36c6254d2a46148f5e89f14c65ad5"/>
+	</game>
+	<game name="Radeon Family - ATI Installation CD-ROM (USA)" id="0153">
+		<category>Games</category>
+		<description>Win(x86) - Drivers, Utilities</description>
+		<rom name="Radeon Family - ATI Installation CD-ROM (USA) (Track 01).bin" size="78227520" crc="40d89e8c" md5="237e1fdc3205627e54a709d881116228" sha1="bc8a7f5fcb5b2e0413534a61b97683d35aefb53f"/>
+		<rom name="Radeon Family - ATI Installation CD-ROM (USA) (Track 02).bin" size="30004464" crc="14231b7c" md5="d1e5dcbda12e46f680a47c0dfdccc43a" sha1="650ec8b550e22e4582d55193cc44015d16f2ced5"/>
+		<rom name="Radeon Family - ATI Installation CD-ROM (USA) (Track 03).bin" size="30270240" crc="a12136d0" md5="f33c97e773545409e1c81ff9cc2ce097" sha1="72ee67fa111fffcd90fcfacbcbe2e2fda2ee65e3"/>
+		<rom name="Radeon Family - ATI Installation CD-ROM (USA) (Track 04).bin" size="30129120" crc="6fe38cab" md5="0a567131c09ba32ca38a7e77713580e8" sha1="f80da879153babf5870db19b9de4f3e2c7c4c08b"/>
+		<rom name="Radeon Family - ATI Installation CD-ROM (USA) (Track 05).bin" size="30590112" crc="a7dc5576" md5="df04a26269393138f05bd8ae2cd76010" sha1="4c460d8a8a96170bb08f1f5fe12e19d6d25f54bd"/>
+		<rom name="Radeon Family - ATI Installation CD-ROM (USA) (Track 06).bin" size="30213792" crc="54c63ab9" md5="8e45b70200fff4b555c57f1e4aec108e" sha1="9ca6594a11db5b65b113721f06144a4f814f0a52"/>
+		<rom name="Radeon Family - ATI Installation CD-ROM (USA) (Track 07).bin" size="32133024" crc="26e28680" md5="b6b9c97f605d9eda15701e3856318020" sha1="142d8726d42a9fc3eff914260e7728107813a2aa"/>
+		<rom name="Radeon Family - ATI Installation CD-ROM (USA) (Track 08).bin" size="30999360" crc="aed12095" md5="50230ddabdcbbc432b68be1c614450db" sha1="7bd8b00727a0285d2466f7462fa65ae44832c676"/>
+		<rom name="Radeon Family - ATI Installation CD-ROM (USA) (Track 09).bin" size="32389392" crc="c440d347" md5="250112df1510cd1366ed14b44305fe1a" sha1="f0387c8a2748c68a8ca1f98f7101469031d53986"/>
+		<rom name="Radeon Family - ATI Installation CD-ROM (USA) (Track 10).bin" size="30561888" crc="81e59bd5" md5="4edac4f047df2dde90820550e085488c" sha1="3d82fe708a90f7ed470d1dfafcdc1300eb8a0714"/>
+		<rom name="Radeon Family - ATI Installation CD-ROM (USA) (Track 11).bin" size="37392096" crc="5f6e5a6a" md5="0d0b6300d3fb66606f5fd7e32cda831f" sha1="ca00bbfe01c79c54d9babd5babc580166dfc910a"/>
+		<rom name="Radeon Family - ATI Installation CD-ROM (USA) (Track 12).bin" size="31592064" crc="b95940b2" md5="647867a2cf4f209022b032efd5393062" sha1="0ab269bc7db31b6771df05d877a9c9fb271e2792"/>
+		<rom name="Radeon Family - ATI Installation CD-ROM (USA).cue" size="1717" crc="c515eee7" sha1="f130bf0d7d483635be6b10525870a24891db89e0"/>
+	</game>
+	<game name="Really Wild Animals - Swinging Safari - Explore and Print (USA)" id="0196">
+		<category>Games</category>
+		<description>Apple Macintosh, IBM PC Compatible - Applications, Educational, Multimedia</description>
+		<rom name="Really Wild Animals - Swinging Safari - Explore and Print (USA).bin" size="677797008" crc="832af4b1" md5="1e90febfe1595f8c50a234fd4d5b5cfb" sha1="92e4eda00d1dbfe267271bac5e268e5f46a20566"/>
+		<rom name="Really Wild Animals - Swinging Safari - Explore and Print (USA).cue" size="129" crc="6381d122" sha1="9995602b6c35fd79e4059c7f1374e9c712193e9d"/>
+	</game>
+	<game name="Riverdeep - Bonus Pack Resource Disc (USA)" id="0276">
+		<category>Games</category>
+		<description>Apple Macintosh, IBM PC Compatible - Educational - Reference - Occupation</description>
+		<rom name="Riverdeep - Bonus Pack Resource Disc (USA).bin" size="161721168" crc="e87e996d" md5="b02e98870d166a67df883393f347a502" sha1="9398b8980c059675b3a8eed86976dd410082335a"/>
+		<rom name="Riverdeep - Bonus Pack Resource Disc (USA).cue" size="108" crc="64e59181" sha1="04b7202f52a2e561f32ab3b4d53d09c598b3acc1"/>
+	</game>
+	<game name="SSU PCIe Card Drivers (World) (v1.3)" id="0159">
+		<category>Games</category>
+		<description>Windows (IBM PC) - Drivers, Utilities</description>
+		<rom name="SSU PCIe Card Drivers (World) (v1.3).bin" size="240670752" crc="19cd2029" md5="a524eeb504511c7920a9709ba8fb22a1" sha1="8a2e530e6429bb53921b6d021e18436482a2a44c"/>
+		<rom name="SSU PCIe Card Drivers (World) (v1.3).cue" size="102" crc="86559088" sha1="607900f966f82539fb88b81dcd715c89637f51c7"/>
+	</game>
+	<game name="Salsa Story (USA)" id="0197">
+		<category>Games</category>
+		<description>IBM PC Compatible - Applications, Multimedia - Electronic Literature</description>
+		<rom name="Salsa Story (USA).bin" size="333906384" crc="8c0a2f0f" md5="e77f36edee724bb369bdf17ea3454d15" sha1="066202a922fb4905d741a302202b97c479655a63"/>
+		<rom name="Salsa Story (USA).cue" size="106" crc="33631d1f" sha1="a017f505cdbafeab8a04ce208f6dc1ef9e167c44"/>
+	</game>
+	<game name="Samsung Solid State Drive - One-stop Install Navigator - Manual &amp; Software (World) (LA81-01026A)" id="0155">
+		<category>Games</category>
+		<description>Windows (IBM PC) - Drivers, Utilities</description>
+		<rom name="Samsung Solid State Drive - One-stop Install Navigator - Manual &amp; Software (World) (LA81-01026A).bin" size="60267648" crc="e3dd454e" md5="a9c814d161a3a421ae6114534d92a0d2" sha1="7ba0e897cb38a42b3e3e70d86b0f35681e3e19f2"/>
+		<rom name="Samsung Solid State Drive - One-stop Install Navigator - Manual &amp; Software (World) (LA81-01026A).cue" size="162" crc="f1b82c9f" sha1="d72131043db2cf518e2d3a455eebd1f4b2998165"/>
+	</game>
+	<game name="Shedd Educational Adventures (SEA) Explorer's Guide (USA)" id="0279">
+		<category>Games</category>
+		<description>Apple Macintosh, IBM PC Compatible - Educational, Multimedia</description>
+		<rom name="Shedd Educational Adventures (SEA) Explorer's Guide (USA).bin" size="295234800" crc="dc8ef1ee" md5="aa1bd161dfc921a06d5f21f12c3e787e" sha1="3bbc9374fe618a9871dc9dab349399cccf0df677"/>
+		<rom name="Shedd Educational Adventures (SEA) Explorer's Guide (USA).cue" size="146" crc="6cabf12e" sha1="877cd6e9b3fb56ab669b96ee1349552adcf88baf"/>
+	</game>
+	<game name="Sherlock Holmes on disc! (USA)" id="0198">
+		<category>Games</category>
+		<description>DOS/Windows(x86) - Applications, eBooks, Literature, Educational, Multimedia</description>
+		<rom name="Sherlock Holmes on disc! (USA).bin" size="86475984" crc="e46ac844" md5="6cccf6cbdf7a4f115d6db675f7c0e149" sha1="dd9a2c7c3246a67e52a31663239e7440e8bba06f"/>
+		<rom name="Sherlock Holmes on disc! (USA).cue" size="96" crc="a893eff4" sha1="8d7cc33f7c9336e49c35be2cfe675c04ece03e93"/>
+	</game>
+	<game name="Snap 'n Share - Software Installation Disk (Australia)" id="0156">
+		<category>Games</category>
+		<description>Windows (IBM PC) - Drivers, Utilities</description>
+		<rom name="Snap 'n Share - Software Installation Disk (Australia).bin" size="112482048" crc="30641cbd" md5="17754bdadb9b83e8aad59afe4cdec17b" sha1="aeab495fad3a3c1eed703830d1ec43fcb96f1903"/>
+		<rom name="Snap 'n Share - Software Installation Disk (Australia).cue" size="120" crc="ccdbfe80" sha1="65f5b8d5afd54e299961d9c15427936013ba9e2e"/>
+	</game>
+	<game name="Sony - Handycam (Australia) (v5.2)" id="0157">
+		<category>Games</category>
+		<description>Windows (IBM PC) - Applications, Drivers, Utilities</description>
+		<rom name="Sony - Handycam (Australia) (v5.2).bin" size="456342096" crc="a11d8c13" md5="316466fbef2ef78938f8febbd41fb337" sha1="d2b4084604ab69163717c59f688b19b4877077f5"/>
+		<rom name="Sony - Handycam (Australia) (v5.2).cue" size="100" crc="3c955c20" sha1="07467f5f9de17b150abeb78cb62b6bef006bc8ab"/>
+	</game>
+	<game name="Sony Ericsson - Z610 - PC Suite (Australia)" id="0158">
+		<category>Games</category>
+		<description>Windows (IBM PC) - Applications, Drivers, Utilities</description>
+		<rom name="Sony Ericsson - Z610 - PC Suite (Australia).bin" size="522386256" crc="c790778c" md5="c69125958d01fd3ea1a01436a6f3539e" sha1="bbf30ae467084748ced19f25baea2242ed1a1728"/>
+		<rom name="Sony Ericsson - Z610 - PC Suite (Australia).cue" size="107" crc="ff6fe20d" sha1="ed4c3ee857a7386e3b010913624d90a3c67479ac"/>
+	</game>
+	<game name="Stealth II S220 - Installation CD-ROM (USA)" id="0447">
+		<category>Games</category>
+		<description>Windows (IBM PC) - Drivers, Utilities</description>
+		<rom name="Stealth II S220 - Installation CD-ROM (USA).bin" size="250271616" crc="62e52687" md5="eef06951e60b7c2d01fe10f6db3f3cf8" sha1="ae31b3493e5a7c309226d4871ff67f071a12a33d" sha256="3fba6cd18152599ca54a7c17fcfcaa932cf786f9f425dc29b7ea536989d23f81"/>
+		<rom name="Stealth II S220 - Installation CD-ROM (USA).cue" size="109" crc="80cea681" sha1="f2b1baa6eede5488357da91b9f817614baa4ff0a"/>
+	</game>
+	<game name="SuperVoice International (USA)" id="0452">
+		<category>Games</category>
+		<description>Windows (IBM PC) - Drivers, Utilities</description>
+		<rom name="SuperVoice International (USA).bin" size="406126896" crc="f6561619" md5="c37609f65662b16fc1bac3a5a132b157" sha1="fad1bd8a063ab44fb68faa02db0fde475a05f211" sha256="c51c23ea1f38f8530221298dc751acd4604dcf9be8cae6c83e706feba167975e"/>
+		<rom name="SuperVoice International (USA).cue" size="96" crc="4d88ec9d" sha1="06b600e8ffcdf208e156be702d0644b40980f573"/>
+	</game>
+	<game name="TP-Link - Resource CD (World) (CD214A1)" id="0161">
+		<category>Games</category>
+		<description>Windows (IBM PC) - Drivers, Utilities</description>
+		<rom name="TP-Link - Resource CD (World) (CD214A1).bin" size="113157072" crc="17db280a" md5="48e5f10d637f0dab398c65add68b3677" sha1="c04e1f057980536726f6ba277fcc2d34ead8d6cc"/>
+		<rom name="TP-Link - Resource CD (World) (CD214A1).cue" size="105" crc="30b2f838" sha1="20da3a9145f56787d8704dad7fbe5d57d4e18974"/>
+	</game>
+	<game name="TP-Link - Resource CD (World) (CD229A2)" id="0162">
+		<category>Games</category>
+		<description>Windows (IBM PC) - Drivers, Utilities</description>
+		<rom name="TP-Link - Resource CD (World) (CD229A2).bin" size="7084224" crc="fd38ef68" md5="1fd62d3592b9430ee7d340b6b78dce55" sha1="7987ebe83f764b0382eafd7a0b5eaaa185961ead"/>
+		<rom name="TP-Link - Resource CD (World) (CD229A2).cue" size="105" crc="175dc7ae" sha1="db1c91db6ad0dab36ea2542803f8d2439a985330"/>
+	</game>
+	<game name="Tenda - Wireless-N Broadband Router - Setup Wizard &amp; User Guide (USA) (v1.1) (W268R)" id="0160">
+		<category>Games</category>
+		<description>Windows (IBM PC) - Drivers, Utilities</description>
+		<rom name="Tenda - Wireless-N Broadband Router - Setup Wizard &amp; User Guide (USA) (v1.1) (W268R).bin" size="78674400" crc="5e1120e0" md5="22dc300a3eebe156a3bd56e8c02a08a7" sha1="d6c8be33e2bfe2d2d6e4ebd767a08665020d4a51"/>
+		<rom name="Tenda - Wireless-N Broadband Router - Setup Wizard &amp; User Guide (USA) (v1.1) (W268R).cue" size="150" crc="656312cf" sha1="92e58f91c6c0ae0930fce81558344b5d4e8516dc"/>
+	</game>
+	<game name="UGREEN - AX1000M (USA) (v2.0)" id="0165">
+		<category>Games</category>
+		<description>Windows (IBM PC) - Drivers, Utilities</description>
+		<rom name="UGREEN - AX1000M (USA) (v2.0).bin" size="55196736" crc="4a6bfad8" md5="d4b996a483bdf4b14bdf5c4768c60899" sha1="e92896602b84bd0d7cacb6d50bf5351dd30fb924"/>
+		<rom name="UGREEN - AX1000M (USA) (v2.0).cue" size="95" crc="68024e81" sha1="cf2e1ecb48e819c8bc131268ec95b5d363895275"/>
+	</game>
+	<game name="ViewSonic Wizard - User Guide and Installation Software - N3735w LCD TV (USA)" id="0166">
+		<category>Games</category>
+		<description>Windows (IBM PC) - Drivers, Utilities</description>
+		<rom name="ViewSonic Wizard - User Guide and Installation Software - N3735w LCD TV (USA).bin" size="343142688" crc="6f1b3d5a" md5="4c1130aa1555e06000775fa731eb4888" sha1="8414157a11353a546ea321c1e245a5057b06d497"/>
+		<rom name="ViewSonic Wizard - User Guide and Installation Software - N3735w LCD TV (USA).cue" size="143" crc="c45fa5d2" sha1="7ebdc9a94db90c2e80b194dd548e3c1db8721dc6"/>
+	</game>
+	<game name="Visio Technical 5.0 (USA)" id="0460">
+		<category>Games</category>
+		<description>Win(x86) - Applications, Creative Resources</description>
+		<rom name="Visio Technical 5.0 (USA).bin" size="116762688" crc="30410ca3" md5="869e0face37a4a8c8b64ce8fb20a04bc" sha1="769fd886f23677d1b65805df5ad4ab327ca43059" sha256="de114d82dfa4b51755cf1e4dc74410304a9563f7a48a9f0fef87f1e75cada787"/>
+		<rom name="Visio Technical 5.0 (USA).cue" size="91" crc="39bb57df" sha1="91995b839eaf199feb2d1ef8d20846f993705c8b"/>
+	</game>
+	<game name="Voodoo3 (USA)" id="0450">
+		<category>Games</category>
+		<description>Windows (IBM PC) - Drivers, Utilities</description>
+		<rom name="Voodoo3 (USA).bin" size="565037424" crc="d52e10b4" md5="4268978d054f672463554d132b449604" sha1="d5bf50419b0af5b455f2c713ee881669df0a1571" sha256="70f2c7e254252fd8862b85dc3588cb184bb5404b739e86dd2c0d57732408e119"/>
+		<rom name="Voodoo3 (USA).cue" size="79" crc="80be9b08" sha1="c8a9e100dfb8005594bfda12e23a59ff2522f835"/>
+	</game>
+	<game name="Voyager - Museums of the World for Kids! - Volume 1 - The Louvre Museum (USA)" id="0271">
+		<category>Games</category>
+		<description>Apple Macintosh, IBM PC Compatible - Applications, Educational, Multimedia</description>
+		<rom name="Voyager - Museums of the World for Kids! - Volume 1 - The Louvre Museum (USA).bin" size="634404960" crc="49be0aaf" md5="4160b82c94d693770e712663566cd4a3" sha1="ae3add106b262e7dc244b89d4a30b1f27cd38af6"/>
+		<rom name="Voyager - Museums of the World for Kids! - Volume 1 - The Louvre Museum (USA).cue" size="143" crc="34ec22b2" sha1="958cb451d099461f254d7e8a0717d0c9a70a0fd3"/>
+	</game>
+	<game name="Word Problem Square Off - Level B (USA)" id="0287">
+		<category>Games</category>
+		<description>Apple Macintosh, IBM PC Compatible - Applications, Educational, Multimedia</description>
+		<rom name="Word Problem Square Off - Level B (USA).bin" size="35635152" crc="5c9a6006" md5="50716e9ae1ff4b0286cceb67a119627f" sha1="50bef703702bdc5abe9e63a2c2ed82077e86f60c"/>
+		<rom name="Word Problem Square Off - Level B (USA).cue" size="105" crc="fa38ad45" sha1="75e38d52f4b4a54364eb678f65b3cf0b19956625"/>
+	</game>
+	<game name="Word Problem Square Off - Level C (USA)" id="0288">
+		<category>Games</category>
+		<description>Apple Macintosh, IBM PC Compatible - Applications, Educational, Multimedia</description>
+		<rom name="Word Problem Square Off - Level C (USA).bin" size="35578704" crc="36262e8a" md5="7d6d099c3f893e58b2c832af4c2c99e2" sha1="9c0be493abeb2b2c8c185c4d2b603e62aa24071a"/>
+		<rom name="Word Problem Square Off - Level C (USA).cue" size="105" crc="7779491d" sha1="e70ac369d55be28f1ea763865f33f2e9657b2348"/>
+	</game>
+	<game name="Xpand Xpo - The Virtual Macintosh Trade Show (USA)" id="0341">
+		<category>Games</category>
+		<description>Apple Macintosh - Applications, Promotional - Products - Media</description>
+		<rom name="Xpand Xpo - The Virtual Macintosh Trade Show (USA).bin" size="359211552" crc="af2ab81e" md5="57f8f3fd0ea3ec53d054a684cef05c88" sha1="2594ecb62e9966eb73d460dfd33ba4ca4b246dcf" sha256="e96287e5b69b233db9cfb987f343b39cb48e200ed4ce7dc1c2ac823b533ba485"/>
+		<rom name="Xpand Xpo - The Virtual Macintosh Trade Show (USA).cue" size="116" crc="9c5c94f2" sha1="cf22c46d76a47d3d642fd6085d74fdd3c0a9b84e"/>
+	</game>
+	<game name="Zillion Sounds, A (USA)" id="0005">
+		<category>Games</category>
+		<description>Mac(), Win(x86) - Creative Resources, Multimedia</description>
+		<rom name="Zillion Sounds, A (USA).bin" size="517143648" crc="eb31e67e" md5="a7bbc8e478d3ac167d7fb1463affbd68" sha1="59349ced457fef5869d02c8340fe1d4057edd1d2"/>
+		<rom name="Zillion Sounds, A (USA).cue" size="112" crc="c361ec4b" sha1="b4fb28537e90a2151e36612b0746e8c6d55f7d94"/>
+	</game>
+	<game name="eMac - Software Restore (USA) (2 of 3)" id="0400">
+		<category>Games</category>
+		<description>Mac(PowerPC) - Applications, Operating Systems</description>
+		<rom name="eMac - Software Restore (USA) (2 of 3).bin" size="722532048" crc="f27c25c9" md5="1f4dbe6554ee2a4674eca3fe829adeef" sha1="3f5712ae03596eaf19b65c7370b2a1759cc911fb"/>
+		<rom name="eMac - Software Restore (USA) (2 of 3).cue" size="104" crc="b18e9278" sha1="1b4a83ca96d49edd0b42e25f4cd565df1c62f0f9"/>
+	</game>
+	<game name="iRiver - Windows Media Player 10 (Australia) (H10 Series)" id="0141">
+		<category>Games</category>
+		<description>Windows (IBM PC) - Applications, Drivers, Utilities</description>
+		<rom name="iRiver - Windows Media Player 10 (Australia) (H10 Series).bin" size="15426768" crc="dd99c97e" md5="514e12db9dc0bb874309fdd97ac7969d" sha1="bba4cf0117fb4635bd0e3b90f8390ab2095c36fd"/>
+		<rom name="iRiver - Windows Media Player 10 (Australia) (H10 Series).cue" size="123" crc="f809e7b2" sha1="8033e75e85f47a91a39845370ed35a1d375f486d"/>
+	</game>
+</datafile>

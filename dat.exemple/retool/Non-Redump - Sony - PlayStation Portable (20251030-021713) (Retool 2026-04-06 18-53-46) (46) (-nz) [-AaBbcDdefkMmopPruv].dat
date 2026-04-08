@@ -1,0 +1,244 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<name>Non-Redump - Sony - PlayStation Portable (Retool)</name>
+		<description>Non-Redump - Sony - PlayStation Portable (46) (-nz) [-AaBbcDdefkMmopPruv] (20251030-021713) (Retool)</description>
+		<version>20251030-021713</version>
+		<date>2026-04-06 18-53-46</date>
+		<author>bikerspade, buckwheat, C. V. Reynolds, chillerecke, Deterous, diego-rbb, DirkDagger, einstein95, Gefflon, Gintoki, Hiccup, hking0036, jimmsu, MeguCocoa, norkmetnoil577, NovaAurora, rarenight, RetroGamer, Rifu, Seventy7, SonGoku, xuom2</author>
+		<homepage>http://www.github.com/unexpectedpanda/retool</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"></clrmamepro>
+		<retool>Created by Retool 2.4.8</retool>
+	</header>
+	<game name="007 - From Russia with Love (Asia) (En)" id="3024">
+		<category>Games</category>
+		<description>007 - From Russia with Love (Asia) (En)</description>
+		<rom name="007 - From Russia with Love (Asia) (En).iso" size="733806592" crc="1b3b8e14" md5="aab5edb6c87819ed6740b9f685981c82" sha1="2663d782e7efea9d3977ba82f8d958259ab4c7f0"/>
+	</game>
+	<game name="Bubble Bobble - Evolution (USA) (v1.01)" id="0836">
+		<category>Games</category>
+		<description>Bubble Bobble - Evolution (USA) (v1.01)</description>
+		<rom name="Bubble Bobble - Evolution (USA) (v1.01).iso" size="624885760" crc="e4854651" md5="a15c3d04d1e7d87f715e0eae4eb3fd68" sha1="f70f2cee1edb347d89a61fd817a50873664cc504"/>
+	</game>
+	<game name="Cars (Korea) (En,Ko)" id="2499">
+		<category>Games</category>
+		<description>Cars (Korea) (En,Ko)</description>
+		<rom name="Cars (Korea) (En,Ko).iso" size="906362880" crc="254f1a7d" md5="e0afcf07e5cc44ed82dbe0bdc4aafd71" sha1="50297ed563e682d3d5195c11b0bcbcd376d38bbb"/>
+	</game>
+	<game name="Coded Gun - Contagion (Korea) (En) (v1.02)" id="1292">
+		<category>Games</category>
+		<description>Coded Gun - Contagion (Korea) (En) (v1.02)</description>
+		<rom name="Coded Gun - Contagion (Korea) (En) (v1.02).iso" size="597098496" crc="5c0e7762" md5="1f625a8cecd65c3187f1be935f209be6" sha1="0ccadd4db39731ee7ceee57f85970ed3de2dc914"/>
+	</game>
+	<game name="Crimsongem Saga (Asia) (En) (v1.05)" id="1620">
+		<category>Games</category>
+		<description>Crimsongem Saga (Asia) (En) (v1.05)</description>
+		<rom name="Crimsongem Saga (Asia) (En) (v1.05).iso" size="872644608" crc="064c8fa9" md5="818e6e2911c7d4d824e2a19edf7e3d6b" sha1="ffe9f0851a175dbfc3a6df8299e98aa6fb25fc8e"/>
+	</game>
+	<game name="Crisis Core - Final Fantasy VII (Asia) (En)" id="1398">
+		<category>Games</category>
+		<description>Crisis Core - Final Fantasy VII (Asia) (En)</description>
+		<rom name="Crisis Core - Final Fantasy VII (Asia) (En).iso" size="1716715520" crc="ce3803e6" md5="600e128107606f784bc50ea45c4f5d91" sha1="a376aa0b0f62baba8ecbdceb9b60fdc38566d847"/>
+	</game>
+	<game name="DJ Max Emotional Sense P 2 - Limited Edition (Korea) (En,Ja,Ko)" id="0962">
+		<category>Games</category>
+		<description>DJ Max Emotional Sense P 2 - Limited Edition (Korea) (En,Ja,Ko)</description>
+		<rom name="DJ Max Emotional Sense P 2 - Limited Edition (Korea) (En,Ja,Ko).iso" size="1756639232" crc="c35439dd" md5="330ad9b32a6723fe2198f7a58377f4ad" sha1="76fe3400be4f4edf690681e00a4a3b39540d80b7"/>
+	</game>
+	<game name="DJ Max Portable (Korea) (En) (v1.02) (International)" id="0851">
+		<category>Games</category>
+		<description>DJ Max Portable (Korea) (En) (v1.02) (International)</description>
+		<rom name="DJ Max Portable (Korea) (En) (v1.02) (International).iso" size="1530527744" crc="b56adb82" md5="3ba46690f5de82a4d77e01f5fe9fad91" sha1="5caf35709bf7c475abef23cf058667722a46272c"/>
+	</game>
+	<game name="Dead Head Fred (Europe) (En,Fr,De,Es,It)" id="1446">
+		<category>Games</category>
+		<description>Dead Head Fred (Europe) (En,Fr,De,Es,It)</description>
+		<rom name="Dead Head Fred (Europe) (En,Fr,De,Es,It).iso" size="1771124736" crc="2a8d2ee9" md5="a541ac349b138968ba28dad741332992" sha1="f040c6100c19498cd447425fac8df2a0b304d7ec"/>
+	</game>
+	<game name="Everybody's Tennis (Asia) (En,Zh) (v1.01)" id="2261">
+		<category>Games</category>
+		<description>Everybody's Tennis (Asia) (En,Zh) (v1.01)</description>
+		<rom name="Everybody's Tennis (Asia) (En,Zh) (v1.01).iso" size="1278509056" crc="bb8d132c" md5="b0045b9be7ea8e1f76ec6aa7563d005f" sha1="f3ac42043b1640997bdd08f4ae521e00fc51a553"/>
+	</game>
+	<game name="FIFA 10 (Asia) (En)" id="3029">
+		<category>Games</category>
+		<description>FIFA 10 (Asia) (En)</description>
+		<rom name="FIFA 10 (Asia) (En).iso" size="1381236736" crc="88ed97ef" md5="cc845b0ffa8786f3a4fa0d9645b5f272" sha1="6b1695b15a130db28d498a9eed7a72da77d58703"/>
+	</game>
+	<game name="FIFA 13 (Europe) (En,Es)" id="2995">
+		<category>Games</category>
+		<description>FIFA 13 (Europe) (En,Es)</description>
+		<rom name="FIFA 13 (Europe) (En,Es).iso" size="1242413056" crc="9c1385f5" md5="459199805958d1657fab2862558d8852" sha1="295b52356a5e431e94bb6dc99d4c2a867b6adb8c"/>
+	</game>
+	<game name="FIFA World Cup - Germany 2006 (Asia) (En)" id="3025">
+		<category>Games</category>
+		<description>FIFA World Cup - Germany 2006 (Asia) (En)</description>
+		<rom name="FIFA World Cup - Germany 2006 (Asia) (En).iso" size="1291124736" crc="a9973fc6" md5="be2c83c010cbb3add9d75cea29334908" sha1="68108b3257c7b2d25e5887dc596bfca96262bb5b"/>
+	</game>
+	<game name="Ford Racing - Off Road (Asia) (En)" id="3030">
+		<category>Games</category>
+		<description>Ford Racing - Off Road (Asia) (En)</description>
+		<rom name="Ford Racing - Off Road (Asia) (En).iso" size="734003200" crc="01908082" md5="455fcc65e7ebca627b461ba56512666d" sha1="e45351fa0a91b28c971b1254bc66b79f416dbca5"/>
+	</game>
+	<game name="Ghost In the Shell - Stand Alone Complex (Asia) (En)" id="0129">
+		<category>Games</category>
+		<description>Ghost In the Shell - Stand Alone Complex (Asia) (En)</description>
+		<rom name="Ghost In the Shell - Stand Alone Complex (Asia) (En).iso" size="760152064" crc="5dd8420d" md5="462019d14347c9bef5a659a306200d70" sha1="b19a3afdcd5f81b0df43cb4e511b7bdab1900244"/>
+	</game>
+	<game name="Hellboy - The Science of Evil (Asia) (En)" id="1493">
+		<category>Games</category>
+		<description>Hellboy - The Science of Evil (Asia) (En)</description>
+		<rom name="Hellboy - The Science of Evil (Asia) (En).iso" size="906330112" crc="26a4384a" md5="abc7d0bb9e7cc9c575730ecaaad963de" sha1="ec88a33a33dfb88b876a9c62a6f8ca67396d573b"/>
+	</game>
+	<game name="Hilton Garden Inn - Ultimate Team Play (USA) (Memory Stick)" id="3321">
+		<category>Games</category>
+		<description>Hilton Garden Inn - Ultimate Team Play (USA) (Memory Stick)</description>
+		<rom name="Hilton Garden Inn - Ultimate Team Play (USA) (Memory Stick).img" size="1007157248" crc="0457fc57" md5="1873432a03dab33e31ad6b113437e304" sha1="a5d5259cd91c407955b66eb073eb230d1935f496" sha256="efd30f150cb08aa63b529314b3d0bc6c2ce8eecf55be21627976d45b6587b28d"/>
+	</game>
+	<game name="I.Q Mania (Asia) (En,Zh) (v1.01)" id="0591">
+		<category>Games</category>
+		<description>I.Q Mania (Asia) (En,Zh) (v1.01)</description>
+		<rom name="I.Q Mania (Asia) (En,Zh) (v1.01).iso" size="435781632" crc="c3e2270b" md5="dc8ce1ef0ed030f7c26bf69228eb48c3" sha1="8a04d9176c1ab4ebcf1c9e6d80cb69ab0c9048cc"/>
+	</game>
+	<game name="Innocent Life - Sin Mokjang Iyagi (Korea) (En)" id="1749">
+		<category>Games</category>
+		<description>Innocent Life - Sin Mokjang Iyagi (Korea) (En)</description>
+		<rom name="Innocent Life - Sin Mokjang Iyagi (Korea) (En).iso" size="358842368" crc="d2eff0ea" md5="2863d651c21077c06c8e4976310f5618" sha1="80464377415b439ddb89addd45fd47bee63c1575"/>
+	</game>
+	<game name="Invizimals (Asia) (En,Zh)" id="2017">
+		<category>Games</category>
+		<description>Invizimals (Asia) (En,Zh)</description>
+		<rom name="Invizimals (Asia) (En,Zh).iso" size="1502117888" crc="3ce43751" md5="2f8abdf820884bff91ad1fb851922d90" sha1="87977a15fc3bd1110d3376605bb8471d8cc26c37"/>
+	</game>
+	<game name="King of Fighters Collection, The - The Orochi Saga (Asia) (En)" id="2829">
+		<category>Games</category>
+		<description>King of Fighters Collection, The - The Orochi Saga (Asia) (En)</description>
+		<rom name="King of Fighters Collection, The - The Orochi Saga (Asia) (En).iso" size="1532887040" crc="8db38df2" md5="68026056fc6ff82bad8b927debd4e2c5" sha1="99eda687d2b08ba8d6ef04e9fc088b07787075fe"/>
+	</game>
+	<game name="LocoRoco (Asia) (En,Zh)" id="0480">
+		<category>Games</category>
+		<description>LocoRoco (Asia) (En,Zh)</description>
+		<rom name="LocoRoco (Asia) (En,Zh).iso" size="569737216" crc="da9e34c5" md5="1d1bb4958c2966cc9b9da1a81c96760e" sha1="83dbaec2c22ae377a3251283ae2ef18f414eb2a6"/>
+	</game>
+	<game name="Lost Regnum - The Emperor of Theives (Asia) (En,Zh-Hant,Zh-Hans) (v1.01)" id="0920">
+		<category>Games</category>
+		<description>Lost Regnum - The Emperor of Theives (Asia) (En,Zh-Hant,Zh-Hans) (v1.01)</description>
+		<rom name="Lost Regnum - The Emperor of Theives (Asia) (En,Zh-Hant,Zh-Hans) (v1.01).iso" size="1183744000" crc="94074231" md5="18250b364cc0115f4b1223942b76d6dd" sha1="3cacb0f9b278ce8ffa8a66a6f11befd61865bce0"/>
+	</game>
+	<game name="M.A.C.H. - Modified Air Combat Heroes (USA) (v1.01)" id="0907">
+		<category>Games</category>
+		<description>M.A.C.H. - Modified Air Combat Heroes (USA) (v1.01)</description>
+		<rom name="M.A.C.H. - Modified Air Combat Heroes (USA) (v1.01).iso" size="830046208" crc="608f9c6c" md5="018534b6980617fb87cd7e06eb66c511" sha1="9c1a25058db3661c987e4dfa1b313ed24aeb16b7"/>
+	</game>
+	<game name="Major League Baseball 2K10 (Japan) (En) (v1.01)" id="3143">
+		<category>Games</category>
+		<description>Major League Baseball 2K10 (Japan) (En) (v1.01)</description>
+		<rom name="Major League Baseball 2K10 (Japan) (En) (v1.01).iso" size="1647640576" crc="bc0bb740" md5="031b900f678391ce141a7c62c91c4f27" sha1="d944e5eb99b8ce61dd4ddc3782121caf1108af92"/>
+	</game>
+	<game name="Metal Slug XX (Asia) (En)" id="2049">
+		<category>Games</category>
+		<description>Metal Slug XX (Asia) (En)</description>
+		<rom name="Metal Slug XX (Asia) (En).iso" size="463732736" crc="c512d3f3" md5="8fff4829e4618f24d24332b429e5ba81" sha1="4af38e78b8bc16cc61a8ac8c2f3e4edbc068d6a2"/>
+	</game>
+	<game name="Monster Hunter Portable (Korea) (En)" id="0938">
+		<category>Games</category>
+		<description>Monster Hunter Portable (Korea) (En)</description>
+		<rom name="Monster Hunter Portable (Korea) (En).iso" size="899055616" crc="3d7d35ba" md5="71442eacc3cd5cf123579e13204ed9f1" sha1="7ffa813f9e79b49a7cf4c7c9271fc3863fe380a0"/>
+	</game>
+	<game name="MotorStorm - Arctic Edge (Asia) (En,Ko)" id="2806">
+		<category>Games</category>
+		<description>MotorStorm - Arctic Edge (Asia) (En,Ko)</description>
+		<rom name="MotorStorm - Arctic Edge (Asia) (En,Ko).iso" size="870842368" crc="215af83a" md5="ae6321edf618648f12e41230d95d74bb" sha1="0817f0768e69b855a1420f4ebdb503327bbce89d"/>
+	</game>
+	<game name="NBA 2K12 (Asia) (En)" id="3032">
+		<category>Games</category>
+		<description>NBA 2K12 (Asia) (En)</description>
+		<rom name="NBA 2K12 (Asia) (En).iso" size="1506607104" crc="2ffea054" md5="3b0af67f4f6efd014ca482d39d1eec4d" sha1="17f6c09dc9d86145c28f60f1258ee08171f59f99"/>
+	</game>
+	<game name="Namco Museum - Battle Collection (Europe) (En,Fr,De,Es,It)" id="0151">
+		<category>Games</category>
+		<description>Namco Museum - Battle Collection (Europe) (En,Fr,De,Es,It)</description>
+		<rom name="Namco Museum - Battle Collection (Europe) (En,Fr,De,Es,It).iso" size="559251456" crc="e3ee5264" md5="00baa334738c920cd53abc47e6cdc995" sha1="e2aee9bc2ccadbbadbb6b119167079de0ed8b7e5"/>
+	</game>
+	<game name="Patapon 2 (USA) (En,Fr,Es) (PSN &amp; Store)" id="1789">
+		<category>Games</category>
+		<description>Patapon 2 (USA) (En,Fr,Es) (PSN &amp; Store)</description>
+		<rom name="Patapon 2 (USA) (En,Fr,Es) (PSN &amp; Store).iso" size="586711040" crc="03423f64" md5="cf4793f2aa26e94a75c54986f84a3012" sha1="f5b69eb023253bab11637a0df5d6a3996346c306"/>
+	</game>
+	<game name="Patapon 3 (Asia) (En,Zh,Ko)" id="2586">
+		<category>Games</category>
+		<description>Patapon 3 (Asia) (En,Zh,Ko)</description>
+		<rom name="Patapon 3 (Asia) (En,Zh,Ko).iso" size="549453824" crc="de96172d" md5="757fbd7fc8280c2b8e897af7e7d30e41" sha1="65d3c9e654add4d0dd11e9eb84314b96c5cfe11d"/>
+	</game>
+	<game name="Prince of Persia - The Forgotten Sands (Asia) (En) (v1.01)" id="3033">
+		<category>Games</category>
+		<description>Prince of Persia - The Forgotten Sands (Asia) (En) (v1.01)</description>
+		<rom name="Prince of Persia - The Forgotten Sands (Asia) (En) (v1.01).iso" size="691437568" crc="f1b843bf" md5="039b64a5ea48b25acd38ae6b5f7852ea" sha1="6c548ad42bf833e196e6c1b5c6a8dcb0c14d6761"/>
+	</game>
+	<game name="Rain Wonder Trip (Japan) (En,Ja,Ko) (v1.03) (Genteiban)" id="0540">
+		<category>Games</category>
+		<description>Rain Wonder Trip (Japan) (En,Ja,Ko) (v1.03) (Genteiban)</description>
+		<rom name="Rain Wonder Trip (Japan) (En,Ja,Ko) (v1.03) (Genteiban).iso" size="1687060480" crc="d1a516cc" md5="2e74971aa2b3a330736840d409cb28ca" sha1="1d846e38d98306d382a31f95a6e7ea0792799cf6"/>
+	</game>
+	<game name="Resistance - Retribution (Asia) (En,Ja,Fr,Es)" id="2074">
+		<category>Games</category>
+		<description>Resistance - Retribution (Asia) (En,Ja,Fr,Es)</description>
+		<rom name="Resistance - Retribution (Asia) (En,Ja,Fr,Es).iso" size="1669726208" crc="125a466c" md5="4fad79985bd701354f66039d25579da8" sha1="a8462515adb23d2ed34707097a529e1efcfb58de"/>
+	</game>
+	<game name="Samurai Shodown Anthology (Asia) (En) (v1.02)" id="1668">
+		<category>Games</category>
+		<description>Samurai Shodown Anthology (Asia) (En) (v1.02)</description>
+		<rom name="Samurai Shodown Anthology (Asia) (En) (v1.02).iso" size="1331822592" crc="e3ae1418" md5="e6f69bf16384c51e924a8f010e05543e" sha1="75b8aad30936ef8aab12f743902f3e5ce281e50a"/>
+	</game>
+	<game name="Silent Hill - Origins (Asia) (En,Fr,De,Es,It)" id="1230">
+		<category>Games</category>
+		<description>Silent Hill - Origins (Asia) (En,Fr,De,Es,It)</description>
+		<rom name="Silent Hill - Origins (Asia) (En,Fr,De,Es,It).iso" size="804683776" crc="2712b11e" md5="ba0477902fe7ee77f8fd29164f205b5d" sha1="21e736ff4b68399e534f5e238f85ae0b7826ea34"/>
+	</game>
+	<game name="Star Trek - Tactical Assault (USA) (v1.01)" id="0678">
+		<category>Games</category>
+		<description>Star Trek - Tactical Assault (USA) (v1.01)</description>
+		<rom name="Star Trek - Tactical Assault (USA) (v1.01).iso" size="255197184" crc="83a8e9e4" md5="543a17413de631871dc8e856ca9e573a" sha1="57c2aff9a940efaa09585ec48608de525fafad83"/>
+	</game>
+	<game name="Strikers 1945 Plus (Korea) (En) (v1.07)" id="1701">
+		<category>Games</category>
+		<description>Strikers 1945 Plus (Korea) (En) (v1.07)</description>
+		<rom name="Strikers 1945 Plus (Korea) (En) (v1.07).iso" size="225935360" crc="0fe0f3d1" md5="51b4bd8c1896a509f2de763b386f42db" sha1="3779260413dae55f1310edce92f10efdf45cdbfa"/>
+	</game>
+	<game name="TalkMan (Asia) (En,Ja,Zh,Ko) (v1.03)" id="0995">
+		<category>Games</category>
+		<description>TalkMan (Asia) (En,Ja,Zh,Ko) (v1.03)</description>
+		<rom name="TalkMan (Asia) (En,Ja,Zh,Ko) (v1.03).iso" size="1228374016" crc="167392a5" md5="1c8f23265b0d4926a1d41289a9a625de" sha1="26f29f10224f97af9f31ef37055c6e5150685cfa"/>
+	</game>
+	<game name="TalkMan Euro (Asia) (En,Fr,De,Es,It,Zh) (v1.03) (Software Doukonban)" id="1042">
+		<category>Games</category>
+		<description>TalkMan Euro (Asia) (En,Fr,De,Es,It,Zh) (v1.03) (Software Doukonban)</description>
+		<rom name="TalkMan Euro (Asia) (En,Fr,De,Es,It,Zh) (v1.03) (Software Doukonban).iso" size="1801093120" crc="6e778078" md5="1b4cd3d94dd5f64c5628bfea247d9624" sha1="7ed3df8e698c9bb72a24bcb248cabf9432743d47"/>
+	</game>
+	<game name="Tekken - Dark Resurrection (Asia) (En) (v1.02)" id="1236">
+		<category>Games</category>
+		<description>Tekken - Dark Resurrection (Asia) (En) (v1.02)</description>
+		<rom name="Tekken - Dark Resurrection (Asia) (En) (v1.02).iso" size="1750237184" crc="e30f361f" md5="245446d366746ad07fd1f2a4cc4c9220" sha1="79c59414116b60de687e3b5dda766d7a254c446d"/>
+	</game>
+	<game name="Ultimate Ghosts 'n Goblins (Asia) (En)" id="1385">
+		<category>Games</category>
+		<description>Ultimate Ghosts 'n Goblins (Asia) (En)</description>
+		<rom name="Ultimate Ghosts 'n Goblins (Asia) (En).iso" size="431947776" crc="a7151ac4" md5="bfb0e8aebff7da7ba0487f6e58adcb8f" sha1="f16d23bde086930c8b971bc1e00d5b72f4e39e83"/>
+	</game>
+	<game name="Winning Eleven - Pro Evolution Soccer 2007 (USA) (En,Es) (v1.01)" id="0880">
+		<category>Games</category>
+		<description>Winning Eleven - Pro Evolution Soccer 2007 (USA) (En,Es) (v1.01)</description>
+		<rom name="Winning Eleven - Pro Evolution Soccer 2007 (USA) (En,Es) (v1.01).iso" size="1156186112" crc="f74fb7d5" md5="099fc98e66ba8e35ff412bfb38de24a1" sha1="bdb612aabc640bf1e36ce947a63df46713692a63"/>
+	</game>
+	<game name="World Championship Poker featuring Howard Lederer - All In (USA) (v1.01)" id="0579">
+		<category>Games</category>
+		<description>World Championship Poker featuring Howard Lederer - All In (USA) (v1.01)</description>
+		<rom name="World Championship Poker featuring Howard Lederer - All In (USA) (v1.01).iso" size="1812692992" crc="2a33bd99" md5="0b4328b8e4730c9cce994997fb065e85" sha1="90f3941ee03aa47434dcda7252b44f5f28e12bc3"/>
+	</game>
+	<game name="Yu-Gi-Oh! GX - Tag Force 2 (Europe) (En,Fr,De,Es,It) (v1.01)" id="1280">
+		<category>Games</category>
+		<description>Yu-Gi-Oh! GX - Tag Force 2 (Europe) (En,Fr,De,Es,It) (v1.01)</description>
+		<rom name="Yu-Gi-Oh! GX - Tag Force 2 (Europe) (En,Fr,De,Es,It) (v1.01).iso" size="1754347520" crc="665b0ee4" md5="e49569baa900a74dbd365d983cfb74e6" sha1="9a67ac15f8b56b3442f7e307e35b4519590d8fe2"/>
+	</game>
+</datafile>

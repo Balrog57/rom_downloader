@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<name>Nintendo - New Nintendo 3DS (Encrypted) (Retool)</name>
+		<description>Nintendo - New Nintendo 3DS (Encrypted) (4) (-nz) [-AaBbcDdefkMmopPruv] (20251121-060655) (Retool)</description>
+		<version>20251121-060655</version>
+		<date>2026-04-06 18-53-17</date>
+		<author>aci68, Arctic Circle System, b2071988, DeadSkullzJr, Densetsu, einstein95, Hiccup, jimmsu, kaos, nnssxx, PPLToast, psykopat, rarenight, SonGoku, xprism</author>
+		<homepage>http://www.github.com/unexpectedpanda/retool</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"></clrmamepro>
+		<retool>Created by Retool 2.4.8</retool>
+	</header>
+	<game name="Fire Emblem Warriors (Europe) (En,Fr,De,Es,It)" id="0008">
+		<category>Games</category>
+		<description>Fire Emblem Warriors (Europe) (En,Fr,De,Es,It)</description>
+		<game_id>000400000F70CD00</game_id>
+		<rom name="Fire Emblem Warriors (Europe) (En,Fr,De,Es,It).3ds" size="2147483648" crc="372a3ba3" md5="59a7191e4b5b4e4d0b2349ee7a931062" sha1="575e165013c6e65200f190615cbf2df12e2e6307"/>
+	</game>
+	<game name="Minecraft - New Nintendo 3DS Edition (USA) (En,Ja,Fr,De,Es,It,Nl,Pt,Zh-Hant,Zh-Hans,Ko,Ru)" id="0010">
+		<category>Games</category>
+		<description>Minecraft - New Nintendo 3DS Edition (USA) (En,Ja,Fr,De,Es,It,Nl,Pt,Zh-Hant,Zh-Hans,Ko,Ru)</description>
+		<game_id>00040000001B8700</game_id>
+		<rom name="Minecraft - New Nintendo 3DS Edition (USA) (En,Ja,Fr,De,Es,It,Nl,Pt,Zh-Hant,Zh-Hans,Ko,Ru).3ds" size="1073741824" crc="dfa829b2" md5="06c5021262b80830bdde0df4fe37bb05" sha1="6987148022dd6fc3a60d467f45a2348b70818a27" sha256="06e473af139ee89867a4aefd8607d79054edb32ea88cc76777d7261bb6c2cd83"/>
+	</game>
+	<game name="Runbow Pocket Deluxe Edition (USA)" id="0006">
+		<category>Games</category>
+		<description>Runbow Pocket Deluxe Edition (USA)</description>
+		<game_id>000400000F708700</game_id>
+		<rom name="Runbow Pocket Deluxe Edition (USA).3ds" size="536870912" crc="186039e7" md5="b6a9d1b1f38fb3f594f3660d055c3017" sha1="9bb78892c919c4651196a2bd6864a47786166337" sha256="85ec3e7b8e24c28e309ece5d10fee76829c3bc0139a7fc25cc1137fb8629e4a4"/>
+	</game>
+	<game name="Xenoblade Chronicles 3D (Europe) (En,Fr,De,Es,It) (Rev 1)" id="0004">
+		<category>Games</category>
+		<description>Xenoblade Chronicles 3D (Europe) (En,Fr,De,Es,It) (Rev 1)</description>
+		<game_id>000400000F700200</game_id>
+		<rom name="Xenoblade Chronicles 3D (Europe) (En,Fr,De,Es,It) (Rev 1).3ds" size="4294967296" crc="d393b012" md5="7b497975721ec31cfed6737d7fedf32e" sha1="5e7a8f086db246a66ce705ae74c21923c59d07c8"/>
+	</game>
+</datafile>

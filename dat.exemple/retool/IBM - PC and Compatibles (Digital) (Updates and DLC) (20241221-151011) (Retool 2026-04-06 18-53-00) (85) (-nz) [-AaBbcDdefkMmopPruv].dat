@@ -1,0 +1,439 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<name>IBM - PC and Compatibles (Digital) (Updates and DLC) (Retool)</name>
+		<description>IBM - PC and Compatibles (Digital) (Updates and DLC) (85) (-nz) [-AaBbcDdefkMmopPruv] (20241221-151011) (Retool)</description>
+		<version>20241221-151011</version>
+		<date>2026-04-06 18-53-00</date>
+		<author>FakeShemp, MeguCocoa, niemand, norkmetnoil577, SonGoku, UnlockerPT</author>
+		<homepage>http://www.github.com/unexpectedpanda/retool</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"></clrmamepro>
+		<retool>Created by Retool 2.4.8</retool>
+	</header>
+	<game name="Aku Yome! Akuma na Yome ni Shiborareru (Unknown) (Patch)" id="0075">
+		<category>Games</category>
+		<description>Aku Yome! Akuma na Yome ni Shiborareru (Unknown) (Patch)</description>
+		<rom name="akuyome_patch_2.zip" size="8722438" crc="5d9bb887" md5="6e7e9e929b93957820e3f859257de85c" sha1="fd6e26fb56e23ffb024f8047cdc7adb36a610c1b"/>
+	</game>
+	<game name="Amakano (Unknown) (v1.3) (Patch)" id="0124">
+		<category>Games</category>
+		<description>Amakano (Unknown) (v1.3) (Patch)</description>
+		<rom name="amakano_Ver1.3_update.exe" size="141613056" crc="aec6fbea" md5="4f2eaad310214d11b46fbd463528a5b5" sha1="6889899eacd4e4deb138e52aa48e8685a2e00fac"/>
+	</game>
+	<game name="Ane o Tasukeru Tame Nokosareta Shimai o Yogosu Haitoku no Hibi (Unknown) (Patch)" id="0074">
+		<category>Games</category>
+		<description>Ane o Tasukeru Tame Nokosareta Shimai o Yogosu Haitoku no Hibi (Unknown) (Patch)</description>
+		<rom name="ANEWO_revision_patch.exe" size="4899022" crc="b227864a" md5="428c965fc0395634476935774c347c3c" sha1="a70d491d98bf33c4b314b829b8772dd60c793f11"/>
+	</game>
+	<game name="Angenehm Platz - Kleiner Garten Sie Erstellen (Unknown) (v1.01) (Update)" id="0094">
+		<category>Games</category>
+		<description>Angenehm Platz - Kleiner Garten Sie Erstellen (Unknown) (v1.01) (Update)</description>
+		<rom name="angene_rio_update101.zip" size="268524" crc="5b3cdf52" md5="51c6d556ad102edba1fb6e9007b5f9b1" sha1="cb88ea787eacae1ce2e376c77675ec02ffef073d"/>
+	</game>
+	<game name="Aokana - Four Rhythms Across the Blue - Perfect Edition (World) (En,Ja) (Uncensor Patch)" id="0071">
+		<category>Games</category>
+		<description>Aokana - Four Rhythms Across the Blue - Perfect Edition (World) (En,Ja) (Uncensor Patch)</description>
+		<rom name="Aokana_PerfectEdition+R18_Patch.zip" size="259267609" crc="83068fd8" md5="8dd2e674ef1e735e740e2ca98428ba99" sha1="826ace22cba855883d42dd299e923872f5d05a25"/>
+	</game>
+	<game name="Aokana - Four Rhythms Across the Blue - Perfect Edition (World) (En,Ja) (v1.21) (Patch)" id="0072">
+		<category>Games</category>
+		<description>Aokana - Four Rhythms Across the Blue - Perfect Edition (World) (En,Ja) (v1.21) (Patch)</description>
+		<rom name="AokanaUpdate1.21PE_march.zip" size="119371148" crc="0426db16" md5="7c753a666bb8d18aff3b22ad328dc9e1" sha1="cd4536516b052e259641d78f60bec02e458163e8"/>
+	</game>
+	<game name="Aokana - Four Rhythms Across the Blue Extra 1 (World) (En,Ja) (Uncensor Patch)" id="0073">
+		<category>Games</category>
+		<description>Aokana - Four Rhythms Across the Blue Extra 1 (World) (En,Ja) (Uncensor Patch)</description>
+		<rom name="Aokana_EXTRA1_18+_Patch.7z" size="122142405" crc="3060c808" md5="0d3e12b7288779d8252de971e50e863a" sha1="2ce057d1d1398634bbdc7bb954097d7a26ca6949"/>
+	</game>
+	<game name="Beach Bounce (World) (Uncensor Patch)" id="0125">
+		<category>Games</category>
+		<description>Beach Bounce (World) (Uncensor Patch)</description>
+		<rom name="bbr-patch.zip" size="185" crc="d5b16477" md5="dc6a43635be10d349004f52f51f42347" sha1="471707c65dbde1a49afa3840cf72085c17b7c039"/>
+	</game>
+	<game name="Beauty Bounce (World) (Uncensor Patch)" id="0126">
+		<category>Games</category>
+		<description>Beauty Bounce (World) (Uncensor Patch)</description>
+		<rom name="adultpatch-beautybounce.zip" size="29033885" crc="55915276" md5="1ed5297fd100273c5f69ae48d7afe0a1" sha1="501ad6fe16c7f9a9cd447476beeb7ec77e00e75f"/>
+	</game>
+	<game name="Bully - Scholarship Edition (USA, Europe) (v1.200) (Patch)" id="0129">
+		<category>Games</category>
+		<description>Bully - Scholarship Edition (USA, Europe) (v1.200) (Patch)</description>
+		<rom name="BullyPC_EFIGS_PatchTo_v1200.exe" size="16071789" crc="c20b1385" md5="ab95d013d1b540141609c4705eff15d7" sha1="53849eb875e22976dc7972a682c9c7bb4f743094" sha256="431b6b611334943d85fc2f2f523b54ac50a3a39f081daec6be30ef56ea2d6b35"/>
+	</game>
+	<game name="Bunny Bounce (World) (Uncensor Patch)" id="0127">
+		<category>Games</category>
+		<description>Bunny Bounce (World) (Uncensor Patch)</description>
+		<rom name="bunnybounceadult.zip" size="24284273" crc="d2f9c331" md5="de17744362bf19a90d18ddce48a6f608" sha1="d88ee834b742dfe7e5f7a64cb305ae7f9392fdd2"/>
+	</game>
+	<game name="Chu x Chu Idol (World) (Patch)" id="0128">
+		<category>Games</category>
+		<description>Chu x Chu Idol (World) (Patch)</description>
+		<rom name="patch20070328.zip" size="441163" crc="a7009de5" md5="30276596497d3e5f9c61b422233507df" sha1="c984124206fb30c0847e969a32a00113716bfa08"/>
+	</game>
+	<game name="Club Life (World) (Uncensor Patch)" id="0105">
+		<category>Games</category>
+		<description>Club Life (World) (Uncensor Patch)</description>
+		<rom name="clublife-patch.zip" size="949" crc="2038c669" md5="0884b2de6889a6bdec98556ffc4139d7" sha1="7619c52126803dc1e8e43faa645454a2a0eb2a41"/>
+	</game>
+	<game name="Daytona Championship USA (World) (171206) (Update)" id="0095">
+		<category>Games</category>
+		<description>Daytona Championship USA (World) (171206) (Update)</description>
+		<rom name="SEGA_DAYTONA_UPDATE_171206.exe" size="4070621133" crc="ebbbdf84" md5="720a3b661e911902f19497e99c45dcfd" sha1="ad50bfe409b714f99d6f9d2ec107c7f81b561849"/>
+	</game>
+	<game name="Do S na Onee-san wa Suki Desu ka (World) (v1.01) (Update)" id="0096">
+		<category>Games</category>
+		<description>Do S na Onee-san wa Suki Desu ka (World) (v1.01) (Update)</description>
+		<rom name="dos_update101.zip" size="4682228" crc="d50ca0c9" md5="69ed0b4b02db3b75059b0495459f01c4" sha1="0a2c6a3ab04ce12fa5b5e1890789dc63cc63e07e"/>
+	</game>
+	<game name="Drascula - The Vampire Strikes Back (World) (Patch)" id="0123">
+		<category>Games</category>
+		<description>Drascula - The Vampire Strikes Back (World) (Patch)</description>
+		<rom name="drascula-audio-flac-2.0.zip" size="262592278" crc="2ce5b51a" md5="ca13eba7d0d1441631bd4c42a5714e32" sha1="840bdf1b54db562111a69fbb46ef3a0f612042fb"/>
+	</game>
+	<game name="Elder Scrolls III, The - Morrowind (France) (v1.2.0813) (Patch)" id="0018">
+		<category>Games</category>
+		<description>Elder Scrolls III, The - Morrowind (France) (v1.2.0813) (Patch)</description>
+		<rom name="Morrowind_French_Patch2.exe" size="2111530" crc="bf32584b" md5="f3c3e6a30dbf67c4f0703c8988545067" sha1="7e7bde78aa825b5c594842a95a9a9cc54047db57"/>
+	</game>
+	<game name="Elder Scrolls III, The - Morrowind - Bloodmoon (Europe) (v1.6.1820) (Patch)" id="0014">
+		<category>Games</category>
+		<description>Elder Scrolls III, The - Morrowind - Bloodmoon (Europe) (v1.6.1820) (Patch)</description>
+		<rom name="Bloodmoon_v1.6.1820_European.exe" size="435229" crc="6904a90b" md5="d64caa91c2a5b08ace9cd6aacfa421c9" sha1="f5c58b0b8e40c3bb0161c13327fe686caf501f2a"/>
+	</game>
+	<game name="Elder Scrolls III, The - Morrowind - Tribunal (USA, Europe) (v1.4.1313) (Patch)" id="0016">
+		<category>Games</category>
+		<description>Elder Scrolls III, The - Morrowind - Tribunal (USA, Europe) (v1.4.1313) (Patch)</description>
+		<rom name="tribunal_v1.4.1313.exe" size="529871" crc="7726609d" md5="ecee1db7b11c0974dbc3c100a7aac31d" sha1="b19bb1d6e8d7d34fc47a1ec9b33585c2d5449bdd"/>
+	</game>
+	<game name="Elder Scrolls IV, The - Oblivion (France) (v1.2.0416) (Patch)" id="0027">
+		<category>Games</category>
+		<description>Elder Scrolls IV, The - Oblivion (France) (v1.2.0416) (Patch)</description>
+		<rom name="Oblivion_v1.2.0416French.exe" size="5033795" crc="0995be59" md5="3d8eba842a02a94d5e1d21b200a4c0e6" sha1="085292ea3538e77809eac0b4f1154847cef81f21"/>
+	</game>
+	<game name="Elder Scrolls IV, The - Oblivion - Construction Set (World) (v1.2) (Patch)" id="0020">
+		<category>Games</category>
+		<description>Elder Scrolls IV, The - Oblivion - Construction Set (World) (v1.2) (Patch)</description>
+		<rom name="patch_tes_construction_set_v1.2.404.exe" size="3324849" crc="75e26ba7" md5="0716fdfefe27b367f00c7bcde8075a39" sha1="acdb2aa01b60deed0737e72372fec85e09b07122"/>
+	</game>
+	<game name="Elder Scrolls IV, The - Oblivion - Shivering Isles (France) (v1.2.0416) (Patch)" id="0021">
+		<category>Games</category>
+		<description>Elder Scrolls IV, The - Oblivion - Shivering Isles (France) (v1.2.0416) (Patch)</description>
+		<rom name="ShiveringIslesFrench_v1.2.0416.exe" size="842802" crc="4f0cd507" md5="a8da6e3b1e06439ad0f311df7816cc97" sha1="5c57fb70825afaebc8fda38f0be9e2b955d10572"/>
+	</game>
+	<game name="Enemy Territory - Quake Wars (World) (v1.4) (Patch)" id="0032">
+		<category>Games</category>
+		<description>Enemy Territory - Quake Wars (World) (v1.4) (Patch)</description>
+		<rom name="ETQW-server-1.4-hotfix.r1.zip" size="5186561" crc="6044d048" md5="20cd770bed61b95be66c7844b9b9f6a3" sha1="66306ef5c8afa7c3736d3fb75f156e0889cc458a"/>
+	</game>
+	<game name="Escape from Monkey Island (Unknown) (Update)" id="0090">
+		<category>Games</category>
+		<description>Escape from Monkey Island (Unknown) (Update)</description>
+		<rom name="MonkeyUpdate.exe" size="1176115" crc="be6120b9" md5="7c7dbd2349d49e382a2dea40bed448e0" sha1="b22810ccbda7c9ac03b37d2ac8749e8b7fccfc34"/>
+	</game>
+	<game name="Fallout 3 (France) (v1.7) (Patch)" id="0034">
+		<category>Games</category>
+		<description>Fallout 3 (France) (v1.7) (Patch)</description>
+		<rom name="Fallout3_1.7_French.exe" size="54196528" crc="df3180b4" md5="5c31902183be16889a9f0647919b633a" sha1="934cf1ceb937aea5ce9302302baa10b6c7d8c6bb"/>
+	</game>
+	<game name="Fallout 3 - Garden of Eden Creation Kit (World) (v1.5) (Update)" id="0097">
+		<category>Games</category>
+		<description>Fallout 3 - Garden of Eden Creation Kit (World) (v1.5) (Update)</description>
+		<rom name="Fallout3_GECK_1.5_Update.exe" size="1318466" crc="7c6ea33b" md5="9d9a9b60d1129b5d91711f4ff447fe97" sha1="12ac29c5b15565860cd5f93c3ffb7083a47e0ee4"/>
+	</game>
+	<game name="Grand Theft Auto 2 (World) (v1.03) (Update)" id="0059">
+		<category>Games</category>
+		<description>Grand Theft Auto 2 (World) (v1.03) (Update)</description>
+		<rom name="patch.zip" size="4007799" crc="56f8fd0d" md5="1b8fbc90cbe6bc94dcedbca8474e1c40" sha1="f736b84e6d02dd4eebdf6edc093380453dfc4027"/>
+	</game>
+	<game name="Grand Theft Auto Episodes from Liberty City (Patch 3) (Unknown)" id="0060">
+		<category>Games</category>
+		<description>Grand Theft Auto Episodes from Liberty City (Patch 3) (Unknown)</description>
+		<rom name="EFLC_PATCH_3.exe" size="146730747" crc="4db90aee" md5="19490262107beb6c3ec3227f2d9333f6" sha1="7f5f03110af3f5fa46c9ffb2be10cd6607dee558"/>
+	</game>
+	<game name="Grand Theft Auto III (Unknown) (v1.1) (Update)" id="0061">
+		<category>Games</category>
+		<description>Grand Theft Auto III (Unknown) (v1.1) (Update)</description>
+		<rom name="GTA3patch1.1.zip" size="1102865" crc="19b45ca1" md5="29b46cc9f80705c779c018d5bc33e6a6" sha1="03772493fb8689e2050d6b364c3b59c5a1301281"/>
+	</game>
+	<game name="Grand Theft Auto IV (Patch 8) (Unknown)" id="0062">
+		<category>Games</category>
+		<description>Grand Theft Auto IV (Patch 8) (Unknown)</description>
+		<rom name="GTA_IV_EFIGS_PATCH_8.exe" size="132317817" crc="4ddf1713" md5="1e705e348a0f10e2de919c3c9d785309" sha1="724fcaba57cf22cdd5b29ce872e825402e1c789d"/>
+	</game>
+	<game name="Grand Theft Auto Vice City (Unknown) (v1.1) (Update)" id="0063">
+		<category>Games</category>
+		<description>Grand Theft Auto Vice City (Unknown) (v1.1) (Update)</description>
+		<rom name="vice11.zip" size="1971009" crc="0ad23c37" md5="55817618c7fa869329571bd281e90d81" sha1="550aa613850774a57337cbe06b2cb787dd17f072"/>
+	</game>
+	<game name="Grim Fandango (Unknown) (v1.01) (Update)" id="0091">
+		<category>Games</category>
+		<description>Grim Fandango (Unknown) (v1.01) (Update)</description>
+		<rom name="gfupd101.exe" size="2272959" crc="bcffcf41" md5="bc57c4db2ab814f3bb115ec5702b62f4" sha1="c947fa95f1a32905e14202e0ad2de6bd907abb37"/>
+	</game>
+	<game name="Guitar Hero III - Legends of Rock (World) (v1.3) (Patch) (Mac)" id="0136">
+		<category>Games</category>
+		<description>Guitar Hero III - Legends of Rock (World) (v1.3) (Patch) (Mac)</description>
+		<rom name="GH3_Mac_1.3_Patch.dmg" size="310450019" crc="a4833e58" md5="63a6f5bb5f0a6934069fb3aa12caa869" sha1="c540b93ff3f294ae14880f4f6271e6a6ecc48f52" sha256="9bd013f0363beca4b8b730b67506c0d80a19ff9dbd4c5fef36045fc7f77ba4a7"/>
+	</game>
+	<game name="Guitar Hero III - Legends of Rock (World) (v1.31) (Patch)" id="0134">
+		<category>Games</category>
+		<description>Guitar Hero III - Legends of Rock (World) (v1.31) (Patch)</description>
+		<rom name="GH3_1.31_Patch.exe" size="30909636" crc="4f5f9834" md5="23b970511f64d05f3063872ef82c4838" sha1="3acd81a2d5f513bb37adf3a23334455490122199" sha256="a201832958e9c12d766ea5c9502a9fbb781d7a6f7f28a6bf4cfd2cfae4b9c126"/>
+	</game>
+	<game name="Halo (Unknown) (v1.0.10) (Patch)" id="0137">
+		<category>Games</category>
+		<description>Halo (Unknown) (v1.0.10) (Patch)</description>
+		<rom name="halopc-patch-1.0.10.exe" size="3180472" crc="426aabd7" md5="adeed5e8d33172ec387cb11a89f1b294" sha1="ef9c88123c637af91d9e0d5780d6141c4bee10d3"/>
+	</game>
+	<game name="Halo (World) (v1.0.10) (Update)" id="0057">
+		<category>Games</category>
+		<description>Halo (World) (v1.0.10) (Update)</description>
+		<rom name="halopc-patch-1.0.10.exe" size="3180472" crc="426aabd7" md5="adeed5e8d33172ec387cb11a89f1b294" sha1="ef9c88123c637af91d9e0d5780d6141c4bee10d3"/>
+	</game>
+	<game name="Hello, Goodbye (World) (Patch)" id="0122">
+		<category>Games</category>
+		<description>Hello, Goodbye (World) (Patch)</description>
+		<rom name="hgb_r18_patch.zip" size="233946454" crc="a68a4475" md5="85de1143624ad0e9488361964db2b546" sha1="4a6d7f298f76c83399af940742e6528609e6a9ac"/>
+	</game>
+	<game name="Heretic II (2024) (Update 1) (Amiga) (Unknown)" id="0138">
+		<category>Games</category>
+		<description>Heretic II (2024) (Update 1) (Amiga) (Unknown)</description>
+		<rom name="H2_68K_Update1.lha" size="54461292" crc="d4f8e666" md5="d4be3c0920ec4cae34f4c154ac2da5c7" sha1="4eca32b745cc0bbb4afba9e7d58378b09823f74f"/>
+	</game>
+	<game name="Heretic II (2024) (Update 2) (Amiga) (Unknown)" id="0139">
+		<category>Games</category>
+		<description>Heretic II (2024) (Update 2) (Amiga) (Unknown)</description>
+		<rom name="H2_OS4_Update2.lha" size="51131619" crc="6a660183" md5="233fd68ceee71b74e66cc6bc641f782e" sha1="08b0593577bd546278141e9cec6ea26cc6536690"/>
+	</game>
+	<game name="Isekai Lovers! - Kyonyuu no Yuusha wa Choroin (Unknown) (Patch)" id="0121">
+		<category>Games</category>
+		<description>Isekai Lovers! - Kyonyuu no Yuusha wa Choroin (Unknown) (Patch)</description>
+		<rom name="isekailovers_0101_patch.zip" size="2943907" crc="89886111" md5="663c4da9f61f1c6e3efc38f38febd5ef" sha1="6b7082c022e1003c9d5c368f12dbda6f134ad290"/>
+	</game>
+	<game name="Maji Suki Marginal Skip (World) (Update)" id="0098">
+		<category>Games</category>
+		<description>Maji Suki Marginal Skip (World) (Update)</description>
+		<rom name="Majisuki_Trial_UpDate.zip" size="1480720" crc="46e8bfc9" md5="a234a415a79f1f8671ee538a958a012b" sha1="ebda793485210a285eafc280fcab295199267a32"/>
+	</game>
+	<game name="Negligee (World) (Uncensor Patch)" id="0120">
+		<category>Games</category>
+		<description>Negligee (World) (Uncensor Patch)</description>
+		<rom name="Negligee-Patch.zip" size="145147246" crc="980cd441" md5="cc3cef1b2c6c9a3cb267f28f46621a66" sha1="e3f98b5af9ebbb78fed49f49a14a88c31ee27660"/>
+	</game>
+	<game name="No One Lives Forever (v1.003) (Unknown) (Update)" id="0013">
+		<category>Games</category>
+		<description>No One Lives Forever (v1.003) (Unknown) (Update)</description>
+		<rom name="NOLFUpdate003.exe" size="13734604" crc="9378cd5a" md5="aa8fb85b3d0cd7a1f4d4bcadc8b18275" sha1="07cc43c4f199ef220c2d9d7a005b27e0c4d53449"/>
+	</game>
+	<game name="Penumbra Black Plague (Mac) (Unknown) (v1.1) (Update)" id="0082">
+		<category>Games</category>
+		<description>Penumbra Black Plague (Mac) (Unknown) (v1.1) (Update)</description>
+		<rom name="PenumbraBlackPlaguePatch-1.1.dmg" size="13310449" crc="61ee0fc9" md5="5632c3d25d62ce6339e2966f71cc099f" sha1="2c52564848aade46fef542d388e4e99eb55aba60"/>
+	</game>
+	<game name="Penumbra Black Plague (Unknown) (v1.1) (Update) (Linux)" id="0083">
+		<category>Games</category>
+		<description>Penumbra Black Plague (Unknown) (v1.1) (Update) (Linux)</description>
+		<rom name="PenumbraBlackPlagueUpgrade-1.1.sh" size="5442087" crc="b74560ba" md5="e8d7681ac9afa70637459ccfac7e8d06" sha1="9ccc4d261f32e616cab1f4b21c2d8f13292720b7"/>
+	</game>
+	<game name="Penumbra Black Plague (v1.1u) (Unknown) (Update) (Windows)" id="0078">
+		<category>Games</category>
+		<description>Penumbra Black Plague (v1.1u) (Unknown) (Update) (Windows)</description>
+		<rom name="penumbra_black_plague_1.1u.exe" size="4379456" crc="97e82285" md5="17e546ac406a1da2905386c09f6e6d66" sha1="e4a2d1036414eae0cba2c4f73db29f76950b2727"/>
+	</game>
+	<game name="Penumbra Collection (Mac) (Unknown) (v1.1) (Update)" id="0084">
+		<category>Games</category>
+		<description>Penumbra Collection (Mac) (Unknown) (v1.1) (Update)</description>
+		<rom name="PenumbraCollectionPatch-1.1.dmg" size="33188165" crc="358625a2" md5="a82c9ca302885131c7e926eef66b8990" sha1="a02623b8f08832ffd9f9548f47c4240ab6bd87d3"/>
+	</game>
+	<game name="Penumbra Collection (Unknown) (v1.1) (Update) (Linux)" id="0085">
+		<category>Games</category>
+		<description>Penumbra Collection (Unknown) (v1.1) (Update) (Linux)</description>
+		<rom name="PenumbraCollectionUpgrade-1.1.sh" size="11146933" crc="e0bef620" md5="d480e3b6da9c87c06f0d3ef078138529" sha1="7af14c12990e0c3158e8c11be5681087250acc33"/>
+	</game>
+	<game name="Penumbra Collection (v1.1u) (Unknown) (Update) (Windows)" id="0079">
+		<category>Games</category>
+		<description>Penumbra Collection (v1.1u) (Unknown) (Update) (Windows)</description>
+		<rom name="penumbra_collection_1.1u.exe" size="2994896" crc="3af80628" md5="4bbc81854f11dd8ef99c9723bffcb9fe" sha1="0fa051a00f9f3abaa939452c05bd335db5e1749a"/>
+	</game>
+	<game name="Penumbra Overture (Mac) (Unknown) (v1.1) (Update)" id="0086">
+		<category>Games</category>
+		<description>Penumbra Overture (Mac) (Unknown) (v1.1) (Update)</description>
+		<rom name="PenumbraOverturePatch-1.1.dmg" size="14008935" crc="f01d6b0f" md5="6ef1d5824bb2c72c3a2233f8484ad460" sha1="81cf704d358492f57749f35022e366a4c0e5ac8e"/>
+	</game>
+	<game name="Penumbra Overture (Unknown) (v1.1) (Update) (Linux)" id="0087">
+		<category>Games</category>
+		<description>Penumbra Overture (Unknown) (v1.1) (Update) (Linux)</description>
+		<rom name="PenumbraOvertureUpgrade-1.1.sh" size="7686055" crc="a5e5c550" md5="83b051bfe228d917a05f0e45783ab84c" sha1="a6edf26b50f735fe81544fabb04f5349bd7b2e42"/>
+	</game>
+	<game name="Penumbra Overture (v1.1u) (Unknown) (Update) (Windows)" id="0080">
+		<category>Games</category>
+		<description>Penumbra Overture (v1.1u) (Unknown) (Update) (Windows)</description>
+		<rom name="penumbra_overture_1.1u.exe" size="8376512" crc="3e4a8578" md5="fb22a86ace40184486360e2f1e976363" sha1="5c29480cf86934e26dfd7c7f03bf90ea447840f5"/>
+	</game>
+	<game name="Penumbra Requiem (Mac) (Unknown) (v1.1) (Update)" id="0088">
+		<category>Games</category>
+		<description>Penumbra Requiem (Mac) (Unknown) (v1.1) (Update)</description>
+		<rom name="PenumbraRequiemPatch-1.1.dmg" size="13334964" crc="22f3e248" md5="587e65a4c620d68cc6ca84cd34c36796" sha1="28ae358124603e231523c44a9817fb571e6eed6f"/>
+	</game>
+	<game name="Penumbra Requiem (Unknown) (v1.1) (Update) (Linux)" id="0089">
+		<category>Games</category>
+		<description>Penumbra Requiem (Unknown) (v1.1) (Update) (Linux)</description>
+		<rom name="PenumbraRequiemUpgrade-1.1.sh" size="3367984" crc="32d4dcf0" md5="37b0f9db1020dc10fe50dd90a7ec959f" sha1="abd179c6aabd2e8aaf25a3951487e25bd60e4fcd"/>
+	</game>
+	<game name="Penumbra Requiem (v1.1u) (Unknown) (Update) (Windows)" id="0081">
+		<category>Games</category>
+		<description>Penumbra Requiem (v1.1u) (Unknown) (Update) (Windows)</description>
+		<rom name="penumbra_requiem_1.1u.exe" size="9302344" crc="19025a90" md5="dea184854ae5742f176820eebfcf2419" sha1="c3f47738e37739c058b44f8f93128e34bcc953c2"/>
+	</game>
+	<game name="Postal III (World) (No-DRM Patch)" id="0065">
+		<category>Games</category>
+		<description>Postal III (World) (No-DRM Patch)</description>
+		<rom name="p3_nodrm.zip" size="5675316" crc="e6f516bc" md5="8925731685d6196931b06b74363bb354" sha1="ae058d390b67bbcd8e1796e693ffd6ceeafa2270"/>
+	</game>
+	<game name="Postal III (World) (v1.12) (Update)" id="0068">
+		<category>Games</category>
+		<description>Postal III (World) (v1.12) (Update)</description>
+		<rom name="p3_patch_1.12_full.exe" size="459906243" crc="b21f1040" md5="c9172b340ef2b11e39e744f48a11c8f3" sha1="f99e589816b6e3e1be523b0e1bfc799a4c841a83"/>
+	</game>
+	<game name="Quake 4 (World) (v1.3 to v1.4.2) (Update) (Linux) (32-bit)" id="0058">
+		<category>Games</category>
+		<description>Quake 4 (World) (v1.3 to v1.4.2) (Update) (Linux) (32-bit)</description>
+		<rom name="quake4-linux-update-1.3-to-1.4.2.x86.run" size="76600572" crc="be823628" md5="1b9031e831035f40aaf624cd4851c984" sha1="d49f10820a4419d98b4b621c0c32c21a7ac4a658"/>
+	</game>
+	<game name="Remedy (World) (Update)" id="0069">
+		<category>Games</category>
+		<description>Remedy (World) (Update)</description>
+		<rom name="MDNA_patch.MSI" size="564736" crc="3fa35e4a" md5="e7305b056fe30226e9bf2b9878a392d3" sha1="e03c6a2667a205592f9011005b138551278af015"/>
+	</game>
+	<game name="RollerCoaster Tycoon (USA) (v1.08.187) (Patch)" id="0043">
+		<category>Games</category>
+		<description>RollerCoaster Tycoon (USA) (v1.08.187) (Patch)</description>
+		<rom name="RCT-US.exe" size="629760" crc="7e02bc16" md5="9b40749b76d8e431046ceb082c62111f" sha1="f7217516852682d53783c49489ddd03269237d92"/>
+	</game>
+	<game name="RollerCoaster Tycoon - Corkscrew Follies (USA) (v1.10.026) (Patch)" id="0040">
+		<category>Games</category>
+		<description>RollerCoaster Tycoon - Corkscrew Follies (USA) (v1.10.026) (Patch)</description>
+		<rom name="RCTCF-US.exe" size="811008" crc="bd63dddb" md5="4693f08389f1b2f332fea0e5ba5eaba7" sha1="159280915d5b0552cec044adf5639ef21d4bc097"/>
+	</game>
+	<game name="RollerCoaster Tycoon - Loopy Landscapes (USA) (v1.20.013) (Patch)" id="0041">
+		<category>Games</category>
+		<description>RollerCoaster Tycoon - Loopy Landscapes (USA) (v1.20.013) (Patch)</description>
+		<rom name="RCTLL-US.exe" size="152064" crc="7ce3a41f" md5="25bfc8c200eb7c93fae29992a0ae5bd8" sha1="1dad858756f5a26c5a8c3f7f150b8d428445b2e4"/>
+	</game>
+	<game name="RollerCoaster Tycoon - Scenario Progress Recovery Patch (USA) (Patch)" id="0042">
+		<category>Games</category>
+		<description>RollerCoaster Tycoon - Scenario Progress Recovery Patch (USA) (Patch)</description>
+		<rom name="rctrec1.exe" size="2311680" crc="0d690652" md5="50aec5ca9539b57936e50ccce8862fe3" sha1="4e991d30b65e8ad22a24acd8f956d924caf7ff99"/>
+	</game>
+	<game name="RollerCoaster Tycoon 2 (USA) (v2.8) (Patch)" id="0046">
+		<category>Games</category>
+		<description>RollerCoaster Tycoon 2 (USA) (v2.8) (Patch)</description>
+		<rom name="v28_rct2.exe" size="1521392" crc="2c2b86c2" md5="378d8503b8e476934e60e8653c6d72ad" sha1="143cfd772c6809babd7a44d7f170bd21a3eaecd8"/>
+	</game>
+	<game name="RollerCoaster Tycoon 2 - Official SecuROM Patch (USA) (Patch)" id="0044">
+		<category>Games</category>
+		<description>RollerCoaster Tycoon 2 - Official SecuROM Patch (USA) (Patch)</description>
+		<rom name="rct2_update.exe" size="1508707" crc="534573ee" md5="0c25de847a75eb741c9bc7d9e5c389ef" sha1="899e24290eb35169143621c4bb363f8719a10e15"/>
+	</game>
+	<game name="RollerCoaster Tycoon 2 - Wacky Worlds (USA) (Patch)" id="0045">
+		<category>Games</category>
+		<description>RollerCoaster Tycoon 2 - Wacky Worlds (USA) (Patch)</description>
+		<rom name="RCT2WW_PATCH1.EXE" size="2270868" crc="2ead9d71" md5="2c7f0f4e4075e219d05ad6ccb322f52c" sha1="9710f76f3594d7d83cad8b72b5b839cb5cb46579"/>
+	</game>
+	<game name="Senren Banka (World) (Patch)" id="0118">
+		<category>Games</category>
+		<description>Senren Banka (World) (Patch)</description>
+		<rom name="SenrenBanka_R18Patch.7z" size="1044461194" crc="4bdb3a63" md5="7512c6ce495bc2f588b7675b506720fd" sha1="3c0f6d72fd30d2daee806af947df5b58d0a1d5c5"/>
+	</game>
+	<game name="Shogo - Mobile Armor Division (Amiga) (Unknown) (Update)" id="0144">
+		<category>Games</category>
+		<description>Shogo - Mobile Armor Division (Amiga) (Unknown) (Update)</description>
+		<rom name="ShogoMAD_OS3_LauncherUpd.lha" size="34959" crc="2d70d067" md5="9970bfd2ee57b9b999d21bb9636a95c6" sha1="03e26b8697965ebf5dd24cb7e1a829212b10ff7c"/>
+	</game>
+	<game name="Soushisouai Lolita (World) (v1.0.1) (Patch)" id="0117">
+		<category>Games</category>
+		<description>Soushisouai Lolita (World) (v1.0.1) (Patch)</description>
+		<rom name="lol_v1.0.1_patch.zip" size="178038" crc="402e747c" md5="1cf56b3d7b3ff048235e0a518b69f1ab" sha1="6f4be256d559f2f399a1c5ecf7fcb8b51444d643"/>
+	</game>
+	<game name="Suki Suki Daisuki Chou Kanri Shite Ageru (World) (v1.0.2) (Patch)" id="0115">
+		<category>Games</category>
+		<description>Suki Suki Daisuki Chou Kanri Shite Ageru (World) (v1.0.2) (Patch)</description>
+		<rom name="skskdsk_dl_patch_v1.0.2.zip" size="606239" crc="6733a0b7" md5="bdef67d949c1425641742724a217ae0f" sha1="4e9839a8c28f98ceb135d32c00c8fd23a11dd50b"/>
+	</game>
+	<game name="Summer Fling (World) (Uncensor Patch)" id="0114">
+		<category>Games</category>
+		<description>Summer Fling (World) (Uncensor Patch)</description>
+		<rom name="summerfling-adultpatch.zip" size="301" crc="5400da47" md5="cfc347a41be64adabc8d2c8234bae471" sha1="678671138de64d46afc41836e1d45f9129ed2944"/>
+	</game>
+	<game name="Sunrider - Mask of Arcadius (World) (Uncensor Patch)" id="0113">
+		<category>Games</category>
+		<description>Sunrider - Mask of Arcadius (World) (Uncensor Patch)</description>
+		<rom name="Decensor-Patch.zip" size="1333840" crc="ff5d63ce" md5="14928c99dbc241ae3472a99cd8111550" sha1="ac99e10e6c0a0a451ab36b6a41ec095d90cd5339"/>
+	</game>
+	<game name="Sunrider Academy (World) (Uncensor Patch)" id="0112">
+		<category>Games</category>
+		<description>Sunrider Academy (World) (Uncensor Patch)</description>
+		<rom name="SA_Restoration_Mod.zip" size="114746914" crc="0889e210" md5="565612fbf9f4e0bd78c6378c70f47dd7" sha1="c3109923770af6019f082c9f405b043a4a65963c"/>
+	</game>
+	<game name="Sunrider Liberation Day (World) (Patch)" id="0111">
+		<category>Games</category>
+		<description>Sunrider Liberation Day (World) (Patch)</description>
+		<rom name="SunriderLDCaptEditionDecensorMod.zip" size="28236271" crc="9efedb21" md5="3738e2821b4eb24f91f26e13d2240976" sha1="9692c43720a760498dad6caed452e9f75d2e9823"/>
+	</game>
+	<game name="Sweet Volley High (World) (Patch)" id="0110">
+		<category>Games</category>
+		<description>Sweet Volley High (World) (Patch)</description>
+		<rom name="Sweet_Volley_High-1.0-Patch.zip" size="279976875" crc="cfccb15b" md5="7592816716f789ca5c7c23de115b28ac" sha1="25d6f324386eb9d299ec8848f42081b9ce99c91c"/>
+	</game>
+	<game name="Tales of Tamar (v0.58) (Unknown) (Update) (Linux)" id="0145">
+		<category>Games</category>
+		<description>Tales of Tamar (v0.58) (Unknown) (Update) (Linux)</description>
+		<rom name="ToT_Linux_v0.58R1.tar.gz" size="147527911" crc="1fe6932d" md5="31ccafcaf75d589c6e055efb44f288a9" sha1="329a128a32ea01a87c5961d369d5842d676aa909"/>
+	</game>
+	<game name="Tales of Tamar (v0.59) (Amiga) (Unknown) (Update)" id="0146">
+		<category>Games</category>
+		<description>Tales of Tamar (v0.59) (Amiga) (Unknown) (Update)</description>
+		<rom name="ToT_Amiga_V0.59_R5.lha" size="8807499" crc="b8721ee0" md5="63f08d914e45b4bc0e7ef68e94d2643e" sha1="f4166e5e691c69f6ffd6eb9b77b5f64ff5f5d853"/>
+	</game>
+	<game name="Tales of Tamar (v0.59) (Unknown) (Update) (Windows)" id="0147">
+		<category>Games</category>
+		<description>Tales of Tamar (v0.59) (Unknown) (Update) (Windows)</description>
+		<rom name="ToT_PC_V0.59_R5.exe" size="9812409" crc="6e4ba81a" md5="c96b6eae7acb759732ce4f47efd05bc3" sha1="1f6d1d25c2362a108e709d7e9362d35f0d1d262f"/>
+	</game>
+	<game name="Tales of Tamar - Animations (Amiga) (Unknown)" id="0148">
+		<category>Games</category>
+		<description>Tales of Tamar - Animations (Amiga) (Unknown)</description>
+		<rom name="ToT_Anims_Amiga.lha" size="42437748" crc="81b5fa06" md5="ea6bc2596413f86264260352a3a54e89" sha1="5f8d23325e2f1f9eb20a28b266fcd90fa32381fd"/>
+	</game>
+	<game name="Tales of Tamar - Animations (Unknown) (Windows)" id="0149">
+		<category>Games</category>
+		<description>Tales of Tamar - Animations (Unknown) (Windows)</description>
+		<rom name="ToT_Anims_Windows.zip" size="42065613" crc="e564b583" md5="da2103d9ca90bfdb43829470fb59bc4a" sha1="cc991c35634be06ea17b7e8dc701d6d86f841eb2"/>
+	</game>
+	<game name="Tales of Tamar - Map Editor (v0.50) (Unknown) (Update)" id="0150">
+		<category>Games</category>
+		<description>Tales of Tamar - Map Editor (v0.50) (Unknown) (Update)</description>
+		<rom name="ToTMapEditorV0.50R5.zip" size="1007348" crc="ac9079fd" md5="65ec649cd13df20bb480a8f6c4218bc4" sha1="ee94be5df0a41268fd708d6007dba6a697a9fbe3"/>
+	</game>
+	<game name="Tonari no Puu-san (Unknown) (Patch)" id="0108">
+		<category>Games</category>
+		<description>Tonari no Puu-san (Unknown) (Patch)</description>
+		<rom name="pusan_101.zip" size="4431419" crc="abc9467d" md5="79b5e2ee9c600594927c0f36413b8ffb" sha1="9ac3e6f731ba160d3f56a0bbfa5070fe36227ef8"/>
+	</game>
+	<game name="Trouble Days (World) (En,Ja) (Uncensor Patch)" id="0107">
+		<category>Games</category>
+		<description>Trouble Days (World) (En,Ja) (Uncensor Patch)</description>
+		<rom name="patch.zip" size="365769952" crc="86b85861" md5="a2800b3e7b81ddf666256274ea94edf9" sha1="da8bc79f1758f30828c92c1a6d368f8f5c0e4ded" sha256="84383d42d82e8a013d5948931e8b671209b005beefb911e9e59b5351cb5c3862"/>
+	</game>
+	<game name="Wagamama Milk DE Shite Ageru Ecchi na Oneesan-tachi to no Dopyudopyu Home Share Seikatsu (World) (Update)" id="0101">
+		<category>Games</category>
+		<description>Wagamama Milk DE Shite Ageru Ecchi na Oneesan-tachi to no Dopyudopyu Home Share Seikatsu (World) (Update)</description>
+		<rom name="WAGAMAMA_MILK_up01.zip" size="136595" crc="c18a9998" md5="593c2e96bcf7a7f448f354164bb82398" sha1="b03bbc1058fabd711617170c0e5d7c596a435d9b"/>
+	</game>
+	<game name="Yubikiri Kon'yaku Lolita (World) (v1.0.1) (Patch)" id="0106">
+		<category>Games</category>
+		<description>Yubikiri Kon'yaku Lolita (World) (v1.0.1) (Patch)</description>
+		<rom name="lol2_patch_v1.0.1.zip" size="83585" crc="6b589566" md5="c66b9baa7babc6822bf279bd001c8330" sha1="3ec26bc2df283068dfcd1ca0cf352bad5dabf5cd"/>
+	</game>
+</datafile>

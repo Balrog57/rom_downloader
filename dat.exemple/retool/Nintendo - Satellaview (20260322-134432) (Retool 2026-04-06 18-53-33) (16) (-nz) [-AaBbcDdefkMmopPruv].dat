@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<name>Nintendo - Satellaview (Retool)</name>
+		<description>Nintendo - Satellaview (16) (-nz) [-AaBbcDdefkMmopPruv] (20260322-134432) (Retool)</description>
+		<version>20260322-134432</version>
+		<date>2026-04-06 18-53-33</date>
+		<author>Arctic Circle System, BigFred, Blank, C. V. Reynolds, dead_screem, Gefflon, Hiccup, kazumi213, leekindo, Money_114, NovaAurora, omonim2007, rarenight, relax, Rifu, SonGoku, Tauwasser, xuom2</author>
+		<homepage>http://www.github.com/unexpectedpanda/retool</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"></clrmamepro>
+		<retool>Created by Retool 2.4.8</retool>
+	</header>
+	<game name="Arkanoid - Doh It Again (Japan) (En) (4-10)" id="3969">
+		<category>Games</category>
+		<description>Arkanoid - Doh It Again (Japan) (En) (4-10)</description>
+		<rom name="Arkanoid - Doh It Again (Japan) (En) (4-10).bs" size="1048576" crc="47921f29" md5="18ef6df6a2048149c17727f337c81c8e" sha1="0dab1bac53ea5b0d6cf5f5eee391dbe50cc145f0" sha256="94c8d1286c9e04228250c9d0fad37a3966f2c688beaca610118bf78ffa551425"/>
+	</game>
+	<game name="Darius Force (Japan) (En) (3-3)" id="3959">
+		<category>Games</category>
+		<description>Darius Force (Japan) (En) (3-3)</description>
+		<rom name="Darius Force (Japan) (En) (3-3).bs" size="1048576" crc="7df6d760" md5="4e7e618fc4b8dff76b49c37bc7a4b52b" sha1="7901392a2f6516fbf53487be6d7a1dddd51fe8a1" sha256="f0dd4cd042e46ea65bd4230f8722ed8d92373e2757a0065b480564a72faf1dc1"/>
+	</game>
+	<game name="Dezaemon BSX Version - BS-X Shooting (Japan) (En) (7-26)" id="3754">
+		<category>Games</category>
+		<description>Dezaemon BSX Version - BS-X Shooting (Japan) (En) (7-26)</description>
+		<rom name="Dezaemon BSX Version - BS-X Shooting (Japan) (En) (7-26).bs" size="1048576" crc="592da4c3" md5="7aa01ad1f142f18f446d921567b99a76" sha1="e0de9533b3b9577bd7ce7eca5064ca6fa53913d8" sha256="42e5ddc17795f6c6e303aab4077700fec128620002bdc33ef19fd8fd7ddeff72"/>
+	</game>
+	<game name="Dezaemon BSX Version - Sugoi STG - Jintai (Japan) (En)" id="3715">
+		<category>Games</category>
+		<description>Dezaemon BSX Version - Sugoi STG - Jintai (Japan) (En)</description>
+		<rom name="Dezaemon BSX Version - Sugoi STG - Jintai (Japan) (En).bs" size="1048576" crc="62b6016d" md5="15ccc1ff74b8a737f92f3f3b406d8068" sha1="f65f5b5090ea8ec1bbf6660186b4050f2472ed67" sha256="5324cdd64868d9ad8c4a04c315dc3e3c6026c5f76ba5223f979c0d0b86323806"/>
+	</game>
+	<game name="Dezaemon BSX Version - Sugoi STG 2 - Crystal Guardian (Japan) (En) (12-19)" id="3855">
+		<category>Games</category>
+		<description>Dezaemon BSX Version - Sugoi STG 2 - Crystal Guardian (Japan) (En) (12-19)</description>
+		<rom name="Dezaemon BSX Version - Sugoi STG 2 - Crystal Guardian (Japan) (En) (12-19).bs" size="1048576" crc="4c2f09e3" md5="6dae9c7fdbd49d9e1fc1c8770dade30b" sha1="a6ad57a82bcba09463390a22609cfdd13dcd7070" sha256="3a40d2bd97a573e09777667aea5fd3ea89bff2c4229d8dda8f300e96194faa13"/>
+	</game>
+	<game name="Dr. Mario BS (Japan) (En) (6-29)" id="3897">
+		<category>Games</category>
+		<description>Dr. Mario BS (Japan) (En) (6-29)</description>
+		<rom name="Dr. Mario BS (Japan) (En) (6-29).bs" size="1048576" crc="5866b551" md5="500fc89e1a7bacbdfe0c14f1f7f795da" sha1="4c1a2d2e7818697dedcecc4aecca30233dc70ea3" sha256="11dd332830f7a7874e7375754deee507429de90583a703302c7fb8166f932a04"/>
+	</game>
+	<game name="Lemmings (Japan) (En)" id="3486">
+		<category>Games</category>
+		<description>Lemmings (Japan) (En)</description>
+		<rom name="Lemmings (Japan) (En).bs" size="1048576" crc="25e19b04" md5="644c8fd1471b348c05deff0db4e0aa7e" sha1="16d31b379d3aa212b9b0d2235b41e85c35aad7bc" sha256="de7f783e2041ba8beb4e28bacd56dc9240b1fd865aaaecd937e1bf1c727e91f2"/>
+	</game>
+	<game name="Special Tee Shot (Japan) (En) (12-30)" id="2447">
+		<category>Games</category>
+		<description>Special Tee Shot (Japan) (En) (12-30)</description>
+		<rom name="Special Tee Shot (Japan) (En) (12-30).bs" size="1048576" crc="841c8eb9" md5="05ab2908f7e96fb6681727ddc129b4e1" sha1="793ed0b1c9f72535749501d7b0de396a10e67a44" sha256="6de66471398b91ac2dc4dae3d656f9913346d317ebd8bf3fc8778ed8035412ad"/>
+	</game>
+	<game name="Star Soldier - 2 Minute Mode (Japan) (En)" id="3591">
+		<category>Games</category>
+		<description>Star Soldier - 2 Minute Mode (Japan) (En)</description>
+		<rom name="Star Soldier - 2 Minute Mode (Japan) (En).bs" size="131072" crc="23c688e9" md5="972c865f8c3db09137cb4b526855b305" sha1="8136cdfe7bc5c003ba2bf4e72688fcfeedc3d1d6" sha256="d1e8576d0b14dc015efcb65204f3f4ff7fb7dd4b7a21dfee10ddeeb5e3e22ca0"/>
+	</game>
+	<game name="Super Bomberman (Japan) (En) (5-3)" id="3474">
+		<category>Games</category>
+		<description>Super Bomberman (Japan) (En) (5-3)</description>
+		<rom name="Super Bomberman (Japan) (En) (5-3).bs" size="1048576" crc="9ea79162" md5="98dbe4302ec7a782aa657c5e1b0234cf" sha1="1dcea52ea7e358c9d8b628b6f7f352c8e96daa61" sha256="373b1c16007bd83cb3606b11c832169b46142fd6dc85ecaf9e606d49069bc97b"/>
+	</game>
+	<game name="Super Bomberman 2 (Japan) (En) (8-17)" id="3459">
+		<category>Games</category>
+		<description>Super Bomberman 2 (Japan) (En) (8-17)</description>
+		<rom name="Super Bomberman 2 (Japan) (En) (8-17).bs" size="1048576" crc="095f2969" md5="791bd8bf2645d7c0b95cb541949810aa" sha1="9fc6d3df4c35f1a1ee1e1c825ad76e07126c383a" sha256="0da574f1d9f75c627efe1c4778ea64a306b6472e35c93078a46330a85f6a8f8b"/>
+	</game>
+	<game name="Super Bowling (Japan) (En) (10-10)" id="3892">
+		<category>Games</category>
+		<description>Super Bowling (Japan) (En) (10-10)</description>
+		<rom name="Super Bowling (Japan) (En) (10-10).bs" size="1048576" crc="0966aac3" md5="52385971dff5026f9264f2bb081c62d5" sha1="872e931eb23b58bdeb889d8b1330f862441d721f" sha256="1c4c65452ae3c4207f09ebbac54cde2f95cbb6ff28c256fb66196c732ec3e969"/>
+	</game>
+	<game name="Super Pinball - Behind the Mask (Japan) (En)" id="3890">
+		<category>Games</category>
+		<description>Super Pinball - Behind the Mask (Japan) (En)</description>
+		<rom name="Super Pinball - Behind the Mask (Japan) (En).bs" size="1048576" crc="5c58d49b" md5="1a94f6e6dc7e76f1c8307eadeec0e784" sha1="19f4a069cfa375f241dfaed30bfa57bce1176393" sha256="214738087f346fdddfe8475b27310a2ff62cc309e467078103fca9057b1fb9d1"/>
+	</game>
+	<game name="Takahashi Meijin no Daibouken-jima (Japan) (En)" id="3784">
+		<category>Games</category>
+		<description>Takahashi Meijin no Daibouken-jima (Japan) (En)</description>
+		<rom name="Takahashi Meijin no Daibouken-jima (Japan) (En).bs" size="1048576" crc="54a2041e" md5="0c222b3b6c804eec04eacb51eec4fc1e" sha1="a4dfaa99d49c0298d1820ad9d697361b630b64ba" sha256="a4e7e8522ac185d35c3e3749cbab1129c8a2b537ab1f8be12813b323ad8bb7ce"/>
+	</game>
+	<game name="Top Racer 2 (Japan) (En)" id="3785">
+		<category>Games</category>
+		<description>Top Racer 2 (Japan) (En)</description>
+		<rom name="Top Racer 2 (Japan) (En).bs" size="1048576" crc="c8d54976" md5="0210c2628d721b5e212e21b679334258" sha1="7d6a70b68a7d9fb7cf48a889b96934d276ab2383" sha256="cd8c0a4e78145b33df8b9e291954d400b98a838a79b58380d10053216eb60fca"/>
+	</game>
+	<game name="Yoshi no Panepon - BS Ban (Japan) (En,Ja) (12-29)" id="3942">
+		<category>Games</category>
+		<description>Yoshi no Panepon - BS Ban (Japan) (En,Ja) (12-29)</description>
+		<rom name="Yoshi no Panepon - BS Ban (Japan) (En,Ja) (12-29).bs" size="1048576" crc="7925e2ff" md5="d4aef849ab7d6e5d69b3d9f0820362a2" sha1="7b96ee719491a03345ede682b7a4e8d48bbe6310" sha256="6c91efd01a4ce4b4015ed6cb98fdbded99c594b9ba0cb4bdef20754f5784fb9a"/>
+	</game>
+</datafile>
