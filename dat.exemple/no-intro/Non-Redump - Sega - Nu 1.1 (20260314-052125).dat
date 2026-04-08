@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<id>430</id>
+		<name>Non-Redump - Sega - Nu 1.1</name>
+		<description>Non-Redump - Sega - Nu 1.1</description>
+		<subset>Non-Redump</subset>
+		<version>20260314-052125</version>
+		<author>Gefflon, NovaAurora</author>
+		<homepage>No-Intro</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"/>
+	</header>
+	<game name="Chunithm (Japan) (v1.05.00) (0003B)" id="0004">
+		<description>Chunithm (Japan) (v1.05.00) (0003B)</description>
+		<rom name="Chunithm (Japan) (v1.05.00) (0003B).iso" size="3037845504" crc="096c6690" md5="f3c41804703f99a32f2080d0a012b2a5" sha1="a6a078f7dc60359fe99c2c793bfc395514ce137a"/>
+	</game>
+	<game name="Chunithm (Japan) (v1.00.02) (0003)" id="0011">
+		<description>Chunithm (Japan) (v1.00.02) (0003)</description>
+		<rom name="Chunithm (Japan) (v1.00.02) (0003).iso" size="2092554240" crc="2e31ab19" md5="5ed783eb6a95887bfbe883693d371c31" sha1="58f80ce0b8796723d5973c8c91186d29df7d98a8"/>
+	</game>
+	<game name="Chunithm Air Plus (Japan) (v1.15.00) (0003E)" id="0005">
+		<description>Chunithm Air Plus (Japan) (v1.15.00) (0003E)</description>
+		<rom name="Chunithm Air Plus (Japan) (v1.15.00) (0003E).iso" size="3791247360" crc="ecef9564" md5="f9021401acb7a587aabece23a6b3522e" sha1="e74823a86398409c1faafe0abe4386e28a1c5b07"/>
+	</game>
+	<game name="Chunithm Amazon (Japan) (v1.30.00) (0003H)" id="0007">
+		<description>Chunithm Amazon (Japan) (v1.30.00) (0003H)</description>
+		<rom name="Chunithm Amazon (Japan) (v1.30.00) (0003H).iso" size="5448794112" crc="17c50ced" md5="82fabfebe45500b6ae95872bc4ca28dc" sha1="e88e9f344bc1772d7effa7647205240a8fb66c8d" mia="yes"/>
+	</game>
+	<game name="Chunithm Amazon Plus (Japan) (v1.35.00) (0003J)" id="0008">
+		<description>Chunithm Amazon Plus (Japan) (v1.35.00) (0003J)</description>
+		<rom name="Chunithm Amazon Plus (Japan) (v1.35.00) (0003J).iso" size="6042288128" crc="948ed96d" md5="ce94be660a4147cf9bf25807e5fb8309" sha1="e2141874e2d9e3b008ea62a64b0a3ada315a200b" mia="yes"/>
+	</game>
+	<game name="Chunithm Crystal (Japan) (v1.40.00) (0003K)" id="0009">
+		<description>Chunithm Crystal (Japan) (v1.40.00) (0003K)</description>
+		<rom name="Chunithm Crystal (Japan) (v1.40.00) (0003K).iso" size="6700007424" crc="e9c9f7ea" md5="7b57c3e11d6ce78cdbff8429f5c410cf" sha1="eae40e7c36f12ef9a1823cfc09b8e846e0a43724" status="verified"/>
+	</game>
+	<game name="Chunithm Paradise (Japan) (v1.50.00) (0003N)" id="0010">
+		<description>Chunithm Paradise (Japan) (v1.50.00) (0003N)</description>
+		<rom name="Chunithm Paradise (Japan) (v1.50.00) (0003N).iso" size="7988183040" crc="7380a865" md5="02dc4f24f143da1c27b523cb0ab800b5" sha1="341acb1e0d8f72b4731a10305ba1275bab6e78bb"/>
+	</game>
+	<game name="Chunithm Star (Japan) (v1.20.00) (0003F)" id="0006">
+		<description>Chunithm Star (Japan) (v1.20.00) (0003F)</description>
+		<rom name="Chunithm Star (Japan) (v1.20.00) (0003F).iso" size="4372158464" crc="b4fa62ee" md5="3f8bcaebfe4489d8771961d95743ab21" sha1="05d9ddedde5b3c7e75498ca201d4852af092288f" status="verified"/>
+	</game>
+	<game name="KanColle Arcade (Japan) (v3.40.00) (Disc 1) (0004AE)" id="0001">
+		<category>Games</category>
+		<description>KanColle Arcade (Japan) (v3.40.00) (Disc 1) (0004AE)</description>
+		<rom name="KanColle Arcade (Japan) (v3.40.00) (Disc 1) (0004AE).iso" size="8386936832" crc="b697284c" md5="f148373b9122131c61433026e9ccc76d" sha1="09072f961f6e69808eed2c4832ee04d0863b9655" sha256="36a621e73f09e27157ba0495e13ef527302056ed2754f5c046dea2c848b39d76" serial="CDN-0004AE-1D"/>
+	</game>
+	<game name="KanColle Arcade (Japan) (v6.00.00) (Disc 2) (0004BM)" id="0002">
+		<category>Games</category>
+		<description>KanColle Arcade (Japan) (v6.00.00) (Disc 2) (0004BM)</description>
+		<rom name="KanColle Arcade (Japan) (v6.00.00) (Disc 2) (0004BM).iso" size="8387166208" crc="c56c8fb5" md5="e5ee6ad2932ee3d8f81158dbcdfc95d8" sha1="788505781579dc88ecf6eab6092b374bd42de19c" sha256="49db2da9153b845d0aae0649fc8d6160bd978318f8711fe39073b251a946729e" serial="CDN-0004BM-2D"/>
+	</game>
+	<game name="KanColle Arcade (Japan) (v6.00.00) (Disc 3) (0004BM)" id="0003">
+		<category>Games</category>
+		<description>KanColle Arcade (Japan) (v6.00.00) (Disc 3) (0004BM)</description>
+		<rom name="KanColle Arcade (Japan) (v6.00.00) (Disc 3) (0004BM).iso" size="1345454080" crc="7701d8b9" md5="d229476583481ca015eae327f6cf1f5f" sha1="7d3272a6897fdc3d9f64d9ed29fdf314a36c25e9" sha256="c50c5f63ad75949517f01021decb7f75a91218ef288d7ad6e0b9b9b4302d5654" serial="CDN-0004BM-3"/>
+	</game>
+</datafile>

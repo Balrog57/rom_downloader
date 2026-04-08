@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<!DOCTYPE datafile PUBLIC "-//Logiqx//DTD ROM Management Datafile//EN" "https://raw.githubusercontent.com/unexpectedpanda/retool-clonelists-metadata/main/datafile.dtd">
+<datafile>
+	<header>
+		<name>Arcade - Konami - System 573 (Retool)</name>
+		<description>Arcade - Konami - System 573 (5) (-nz) [-AaBbcDdefkMmopPruv] (2024-04-22 19-05-57) (Retool)</description>
+		<version>2024-04-22 19-05-57</version>
+		<date>2026-04-06 18-56-45</date>
+		<author>redump.org</author>
+		<homepage>http://www.github.com/unexpectedpanda/retool</homepage>
+		<url>http://redump.org/</url>
+		<retool>Created by Retool 2.4.8</retool>
+	</header>
+	<game name="Dance Dance Revolution 3rd Mix (Asia)">
+		<category>Games</category>
+		<description>Dance Dance Revolution 3rd Mix (Asia)</description>
+		<rom name="Dance Dance Revolution 3rd Mix (Asia).bin" size="174207936" crc="1302c366" md5="391783e24a954ed86337d486015c07a6" sha1="b8072f5b55b4aa438dbd89bf3b1d59f7cde90612"/>
+		<rom name="Dance Dance Revolution 3rd Mix (Asia).cue" size="103" crc="9c7f5d05" md5="2c79f87ccd0271e2f8070a3c68ca2906" sha1="b815619b71c6d903318078ff7685945ccdc33e33"/>
+	</game>
+	<game name="Fisherman's Bait - A Bass Challenge (USA) (UAB)">
+		<category>Games</category>
+		<description>Fisherman's Bait - A Bass Challenge (USA) (UAB)</description>
+		<rom name="Fisherman's Bait - A Bass Challenge (USA) (UAB) (Track 1).bin" size="56041104" crc="7ac40ad8" md5="9181c06bb5554209c67f79a64b766224" sha1="208391656feaab43a4f29e84dccade2b99a31d0b"/>
+		<rom name="Fisherman's Bait - A Bass Challenge (USA) (UAB) (Track 2).bin" size="1688736" crc="1c8f2b81" md5="b832cd66518a33c7d58b534e886e7345" sha1="1c7f004bbb645bc4849b91e8243e3f3fb12e2f37"/>
+		<rom name="Fisherman's Bait - A Bass Challenge (USA) (UAB).cue" size="264" crc="d505fca4" md5="01307808e8fbc528dc415638359e08a4" sha1="0bcc24842ef4941c6dac9ddb1e3b94a620c325a0"/>
+	</game>
+	<game name="Fisherman's Bait - Marlin Challenge (World)">
+		<category>Games</category>
+		<description>Fisherman's Bait - Marlin Challenge (World)</description>
+		<rom name="Fisherman's Bait - Marlin Challenge (World) (Track 1).bin" size="12839568" crc="97064c1a" md5="4204f7bf14aec9ec7c925ec6aad4d8c3" sha1="ed67cc03dd488451d2e577bd0e89699fae4f692b"/>
+		<rom name="Fisherman's Bait - Marlin Challenge (World) (Track 2).bin" size="3224592" crc="66147944" md5="ee6d1f1022f74927ddcda14447fef27a" sha1="78e54003a9f7ff11962ced0a7ab8b3adcbc94389"/>
+		<rom name="Fisherman's Bait - Marlin Challenge (World) (Track 3).bin" size="1373568" crc="388b85d1" md5="dcc3caec94f0dbdf7f7a6e6c9832343f" sha1="88cb2b89bacbfe382b97d509fbf773e73592d8db"/>
+		<rom name="Fisherman's Bait - Marlin Challenge (World).cue" size="370" crc="14d64005" md5="cb4ddf43fcb9bb0f5536d2ae458d9fe6" sha1="e98d6e5d4bf651a6869f09827be95e164220b7cf"/>
+	</game>
+	<game name="GuitarFreaks (World)">
+		<category>Games</category>
+		<description>GuitarFreaks (World)</description>
+		<rom name="GuitarFreaks (World) (Track 01).bin" size="78657936" crc="a5af31d2" md5="6a93aacf6035735723b27a81d908b6a0" sha1="2e8ae54239cfc1a1d0dfc54c93c15e5947302639"/>
+		<rom name="GuitarFreaks (World) (Track 02).bin" size="3114048" crc="7afb4191" md5="2529acda5781c6290851179273fda6e6" sha1="977e2d139d54f06feb2e648a1452bd3a61273b3b"/>
+		<rom name="GuitarFreaks (World) (Track 03).bin" size="13594560" crc="73733490" md5="0d5c9f3b1fe3f9c9368ea8d884d2493d" sha1="f0e36b736239ab017dfcd88972505fb12784addb"/>
+		<rom name="GuitarFreaks (World) (Track 04).bin" size="8961120" crc="f4c3fb1e" md5="7ddbcc3bee2544297b9f15bc495b2303" sha1="9bc3076ff748a68a084615e9253f3dd0ab7ff371"/>
+		<rom name="GuitarFreaks (World) (Track 05).bin" size="4593456" crc="7819a632" md5="d4debbde68aa4f951e65f6066254bbb2" sha1="c1e7988f272c26e442d533eacd4bd6f3a68af437"/>
+		<rom name="GuitarFreaks (World) (Track 06).bin" size="4605216" crc="9f89158f" md5="049540e6c1fffd3b448022f111132c11" sha1="7e56e514e2ed0caa7f9130bc4253097fb967092e"/>
+		<rom name="GuitarFreaks (World) (Track 07).bin" size="4595808" crc="c87b545c" md5="6c599be49f8dc1eac0d292b22bd6affc" sha1="cb95a5e20a18ce4f3442c6c0dbe673f19506318a"/>
+		<rom name="GuitarFreaks (World) (Track 08).bin" size="4621680" crc="a8a221e1" md5="152b00c60d5cd0157c85cb7b8b7303f6" sha1="c3fffe5f7d3310d5702d5bc11997fbbe48553467"/>
+		<rom name="GuitarFreaks (World) (Track 09).bin" size="4687536" crc="8feb92b9" md5="c303efd2b9fd35c736bb654a5bfb1b0d" sha1="5bd7870ef2e14232dae8f38175ddb627426f42b5"/>
+		<rom name="GuitarFreaks (World) (Track 10).bin" size="4586400" crc="c0aa1c0d" md5="feebb7a7acefd28bd47f6f1f9fdd394a" sha1="5f14271bab0f125d73a45e9a4426a203b57e7284"/>
+		<rom name="GuitarFreaks (World) (Track 11).bin" size="4612272" crc="248e94ef" md5="f5b77d5503c09128a0701b3952df0d12" sha1="772c7f4537e1567021c37a0ccb8c3e62123963eb"/>
+		<rom name="GuitarFreaks (World) (Track 12).bin" size="4243008" crc="2a001be5" md5="58d560933e4696fa63f879cb7223f4d9" sha1="d5b744d72acfe20cb1cdfc922e927d1a74aa7510"/>
+		<rom name="GuitarFreaks (World) (Track 13).bin" size="4605216" crc="cba78ce8" md5="b32e08630973f50b9c4cd56949a803ad" sha1="b6e0f6b25c77ad3256d828c512c875803f33e35b"/>
+		<rom name="GuitarFreaks (World) (Track 14).bin" size="4231248" crc="e145662b" md5="7180aa8c9a7ee23aeb6aa5b898ce3107" sha1="9030d68060133f40ebd8f12d338f91398a0656c3"/>
+		<rom name="GuitarFreaks (World) (Track 15).bin" size="4609920" crc="60bb9253" md5="755348498384bbbcfe361c446489ec83" sha1="5f1dc380753505dacdc0fa503fdc6f9e1dc56dc6"/>
+		<rom name="GuitarFreaks (World) (Track 16).bin" size="4600512" crc="ff981d7d" md5="13da41d4c4425ccf6a280c7084d19829" sha1="817f02f8fd495d6e2772c4356c0481c969aab77e"/>
+		<rom name="GuitarFreaks (World) (Track 17).bin" size="16329936" crc="63f4853a" md5="099614d84cc8db7d751ca0fee1e566a2" sha1="f35b13b5c7925f600b71d5978183880ebd42f738"/>
+		<rom name="GuitarFreaks (World) (Track 18).bin" size="16329936" crc="b57f4e14" md5="ecdce9c762b62aadad609bb8fca379b2" sha1="d81329ef86aee9fcfc9200721eb9aac5ba3b127c"/>
+		<rom name="GuitarFreaks (World) (Track 19).bin" size="17094336" crc="676986d4" md5="49a2ba063a0858c77a58dfd131a77a21" sha1="c7b147c9d50e47f059ba96304a47df40adffff40"/>
+		<rom name="GuitarFreaks (World) (Track 20).bin" size="17094336" crc="2924efb1" md5="ae91038239d900ca9e6aebccf34c0df8" sha1="a7092c9c8e3b62566ed19f37994a756a18d95477"/>
+		<rom name="GuitarFreaks (World) (Track 21).bin" size="17066112" crc="d12684f6" md5="806c7862d308a284cee509a8f6887fbe" sha1="af84ba803c6db68b2abe36da935d277a754c55c4"/>
+		<rom name="GuitarFreaks (World) (Track 22).bin" size="17066112" crc="d53edf16" md5="52feb96430093d92738774849dfd8fb6" sha1="5891194711c5bde8fbf622f438a62656efb6eed2"/>
+		<rom name="GuitarFreaks (World) (Track 23).bin" size="14916384" crc="c31b519f" md5="f8ebe245207f528023a961606d89257a" sha1="9905b8d570acfb5e23fd6732b41313fbd97304d5"/>
+		<rom name="GuitarFreaks (World) (Track 24).bin" size="14916384" crc="98fde6ce" md5="9f56a9f0124fcaf9a6d72e8782aff686" sha1="c71fb18645363fc4be9efe597ab1f7281ce6b25a"/>
+		<rom name="GuitarFreaks (World) (Track 25).bin" size="14822304" crc="20927620" md5="a11e0963b971c76a222d2735731173a2" sha1="c398340c128cead5f1a9e572ca42a5aa0f08eca7"/>
+		<rom name="GuitarFreaks (World) (Track 26).bin" size="14822304" crc="4eb94e9d" md5="dcf742a4067e8b38da9e15e378437fdb" sha1="c3d05fba5bb75cb0e7ab7134a509ba0c434fe2e9"/>
+		<rom name="GuitarFreaks (World) (Track 27).bin" size="16652160" crc="71b98476" md5="af8ccf0b748381829de6980943c0e468" sha1="0863f65e648c650567e2d2ed6e879046384769d9"/>
+		<rom name="GuitarFreaks (World) (Track 28).bin" size="16652160" crc="3d61d6af" md5="10283f1e85e8c97a3148ef3646f657cd" sha1="105ef1876942b6c471234b05329c2c4f18815728"/>
+		<rom name="GuitarFreaks (World) (Track 29).bin" size="15417360" crc="14bee0a0" md5="869cf1ee361e8ed3795ede6b7ecdd738" sha1="c064ca5085d20e65e21f25bb5a40cb2cd6f06b3a"/>
+		<rom name="GuitarFreaks (World) (Track 30).bin" size="15417360" crc="b53b1fea" md5="f4b5a2b7b64a4ada8d1cf823b526b0e8" sha1="61f63a4333460a3d0b93c4e149d18f93acefc5a2"/>
+		<rom name="GuitarFreaks (World) (Track 31).bin" size="14100240" crc="2110ff14" md5="69baa2d932fdc3fba0c4948c47402d3d" sha1="aa251a4188e4b526017dc74ff0f7ebab3f298041"/>
+		<rom name="GuitarFreaks (World) (Track 32).bin" size="14100240" crc="0133d26d" md5="45584ff3a46b38ccd0a8ecaf229e6845" sha1="51e960a5685f822f64d9a8adcf722645d0cf8892"/>
+		<rom name="GuitarFreaks (World) (Track 33).bin" size="15770160" crc="3574f261" md5="7199b68ea406418d6bfbe557061b402a" sha1="904a376b0bd9b74cfa162ff4480f783b2ec149f3"/>
+		<rom name="GuitarFreaks (World) (Track 34).bin" size="15770160" crc="fee6084e" md5="f88d1234bf4be97830cbaba4b5dd49e9" sha1="d9994eb947db54e68e9a7a8d168f1bc33e81d5c9"/>
+		<rom name="GuitarFreaks (World) (Track 35).bin" size="16221744" crc="ebd766da" md5="264ecc1a9c1b29fc467d64ca1f717b7d" sha1="528e267fc46ed6cf635b517a948c02c9e86025d2"/>
+		<rom name="GuitarFreaks (World) (Track 36).bin" size="16221744" crc="914986d3" md5="82485d76455ce092952412220f9d41f3" sha1="220488d0cd446b693e710cb9e3b76ee6b4389ea8"/>
+		<rom name="GuitarFreaks (World) (Track 37).bin" size="17113152" crc="91a56877" md5="8268d3c2092a7fbf8f40853477cf8cca" sha1="00cde831e7cedf578f02ad7185f8f74996f73fd5"/>
+		<rom name="GuitarFreaks (World) (Track 38).bin" size="17113152" crc="aa9a6375" md5="65ef40d3f3778fba3814f03ef4106e1d" sha1="9da8495becf98106410d1dcf51f9fb9f6b0ae05d"/>
+		<rom name="GuitarFreaks (World) (Track 39).bin" size="16170000" crc="29ca6580" md5="8d9f70392fef71c057018162b4eba894" sha1="0f92f6757e15dd378703a6ca7151986fd3a35acb"/>
+		<rom name="GuitarFreaks (World) (Track 40).bin" size="16170000" crc="d094aa58" md5="1ee0ff11e4064181b0001d05c79324d0" sha1="30251a7f14082aa1988b2ce900f0715726890640"/>
+		<rom name="GuitarFreaks (World) (Track 41).bin" size="2140320" crc="860ccb91" md5="b5bbe1970e0d832f1ed482d1e6c2edef" sha1="6800606daa812ea85782825b4e40b6acaebe7dae"/>
+		<rom name="GuitarFreaks (World) (Track 42).bin" size="1411200" crc="444de87e" md5="274ab26e6922f3bb33c6d5fd09afb70f" sha1="28397dc5dc4a1159cbe9e7e1f4fe8b8978e2ade8"/>
+		<rom name="GuitarFreaks (World) (Track 43).bin" size="2262624" crc="b79c58c8" md5="3839766858b20026a14ca126a8d8a9dd" sha1="5038c98c03a0e237ad31cd065d70755ffbb51a27"/>
+		<rom name="GuitarFreaks (World) (Track 44).bin" size="1411200" crc="444de87e" md5="274ab26e6922f3bb33c6d5fd09afb70f" sha1="28397dc5dc4a1159cbe9e7e1f4fe8b8978e2ade8"/>
+		<rom name="GuitarFreaks (World) (Track 45).bin" size="2319072" crc="647f4775" md5="af2a0120e8d0ad96915cb8677e9f04d1" sha1="25d7a88fea874605a838be8e8173969698aef5a2"/>
+		<rom name="GuitarFreaks (World) (Track 46).bin" size="1411200" crc="444de87e" md5="274ab26e6922f3bb33c6d5fd09afb70f" sha1="28397dc5dc4a1159cbe9e7e1f4fe8b8978e2ade8"/>
+		<rom name="GuitarFreaks (World) (Track 47).bin" size="2189712" crc="e03215e4" md5="443afc1c170dfb13f0337de1a57197e6" sha1="5d280efd0823f772a9ca68680558c17da084b3b3"/>
+		<rom name="GuitarFreaks (World) (Track 48).bin" size="6350400" crc="a8fd3874" md5="cbdef0767b3f25a38f827b86adb01e6c" sha1="d21a70e3e0fc3f8fb963026c62eb7cfcc4a76502"/>
+		<rom name="GuitarFreaks (World) (Track 49).bin" size="16485168" crc="2c01936b" md5="d98a27baf0ecc55cc2ca4895f60dc655" sha1="7df276ab6cd6a6228cf0eabc9e35af87465a980e"/>
+		<rom name="GuitarFreaks (World) (Track 50).bin" size="1058400" crc="0fe25ec2" md5="b70b9d39146630296603f30cc67df6a9" sha1="e283be33b5033f5d6dd7a168dd1d18fc8fb7ca48"/>
+		<rom name="GuitarFreaks (World) (Track 51).bin" size="1058400" crc="dcebfb99" md5="c973c09f726979fa26169e59a0378d9f" sha1="4478f823098de91addcb07cf00de93aa9dcf02f2"/>
+		<rom name="GuitarFreaks (World) (Track 52).bin" size="8518944" crc="f5d8dbbd" md5="a1118643d0d0ee863cc3a61dc5e014f8" sha1="08a32ec8153d202b6d3a00a1e7711a778103a8db"/>
+		<rom name="GuitarFreaks (World) (Track 53).bin" size="8518944" crc="342cdc10" md5="657bdfac6173be4149f0ea36a83278ae" sha1="9bafc39dc1c58f9503ef7b600f8c3bb033ca47a4"/>
+		<rom name="GuitarFreaks (World) (Track 54).bin" size="7763952" crc="3c225141" md5="2284e852df82e19d06abe647fe350233" sha1="b490b1492d143214855039516cedb378aaf2fd95"/>
+		<rom name="GuitarFreaks (World) (Track 55).bin" size="7763952" crc="fe941b2d" md5="2fd529d32094b15ec24795e9231b13a9" sha1="216b90b4b7b7df55917f7b593260ba621d737089"/>
+		<rom name="GuitarFreaks (World) (Track 56).bin" size="8678880" crc="04314fd2" md5="0cb9f52bf33920be049dce81538899db" sha1="3ba27c48a6ffbe2a68eab5e3e1b25b588065ea81"/>
+		<rom name="GuitarFreaks (World) (Track 57).bin" size="8678880" crc="976e63b9" md5="c56ec82457a962198c52863d78fba999" sha1="fa153f62f313cdaef6a5a1c2fb0c9e23c1094ac4"/>
+		<rom name="GuitarFreaks (World) (Track 58).bin" size="8062656" crc="a76fe6b1" md5="00e5de46f8ee74f6d84150dd66c0b686" sha1="8a10a7820b969903842b6a0f19c6f73f14130007"/>
+		<rom name="GuitarFreaks (World) (Track 59).bin" size="8062656" crc="43c93c1a" md5="978ebf44fda41a94e8faf6670a758047" sha1="4500eb19135fd63a5dec6ff8bbeb53d05f6eaeaa"/>
+		<rom name="GuitarFreaks (World) (Track 60).bin" size="7404096" crc="d76d3f66" md5="458c1a889d57b0fef2d6701292b19820" sha1="69d959c6c80a513466187c91668f9f8c9ae2eccd"/>
+		<rom name="GuitarFreaks (World) (Track 61).bin" size="7404096" crc="3d8cddf6" md5="84b575451bfe1cf746a12737fdf4884b" sha1="d3e2c4c076b2b772fcc145a6d3bfcfacf9a60175"/>
+		<rom name="GuitarFreaks (World) (Track 62).bin" size="8909376" crc="e98124c6" md5="caab37a132398e5046d8e78b8ec36a08" sha1="4f3845f92d88e8caef210b37a08cbe931defd09c"/>
+		<rom name="GuitarFreaks (World) (Track 63).bin" size="8909376" crc="273b0d14" md5="5f70b87c27c351989953a5a6c502245e" sha1="4352c2543dd9d04d7793ad4465e3f479dadfd5c1"/>
+		<rom name="GuitarFreaks (World) (Track 64).bin" size="4607568" crc="b0ef7829" md5="6ea841df290bf4a0f232db5df44a984a" sha1="b333a34b3748548b58bdbce214e073f5e7486cdb"/>
+		<rom name="GuitarFreaks (World) (Track 65).bin" size="4588752" crc="df062f6c" md5="1871418c3b2f6b347e4ee41b2826c1c4" sha1="83e4dfeff00f7a50af0b96e4969ac3381c094c44"/>
+		<rom name="GuitarFreaks (World) (Track 66).bin" size="4078368" crc="a155bcc7" md5="2037e1a309ab5bba52c18ccfa23716f6" sha1="445374bbaa27a7ab0066a77a9a5522fdb7369aa2"/>
+		<rom name="GuitarFreaks (World) (Track 67).bin" size="4591104" crc="68515108" md5="448edf816b74d96bdbf5b9704aa707ef" sha1="d720941175dc49d1f800fbab4167acacb21c0308"/>
+		<rom name="GuitarFreaks (World) (Track 68).bin" size="4593456" crc="8e4f748a" md5="559d81ebe78563ebfa690cd92709db39" sha1="81d437f947e0669bc977b9597eb43b2b404209aa"/>
+		<rom name="GuitarFreaks (World) (Track 69).bin" size="4664016" crc="c943cf6b" md5="e4ff4238ea18fad018f2cd88519fe31a" sha1="d26b8f3654f9164d7e964e20b3f0c4850f190b76"/>
+		<rom name="GuitarFreaks (World).cue" size="7917" crc="b4b98093" md5="b5eb8cda785ebbd458b9c733a9078fce" sha1="cef3017c2377a8d2e69f700850eff97f6b1d0278"/>
+	</game>
+	<game name="Hyper Bishi Bashi Champ (World)">
+		<category>Games</category>
+		<description>Hyper Bishi Bashi Champ (World)</description>
+		<rom name="Hyper Bishi Bashi Champ (World).bin" size="39231360" crc="29b3cabb" md5="b6179987bebf24c322d30707590dcffc" sha1="e32f7b036a4ce771d49ad8e460e4b288b627812b"/>
+		<rom name="Hyper Bishi Bashi Champ (World).cue" size="97" crc="b9cfbd89" md5="03233b334552de8440ea9fb25a4da4eb" sha1="6db06b7033c94c375cc6f42aad4665a9c086d7f5"/>
+	</game>
+</datafile>

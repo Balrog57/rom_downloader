@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<name>Nintendo - Wii (Development Kit Hard Drives) (Retool)</name>
+		<description>Nintendo - Wii (Development Kit Hard Drives) (2) (-nz) [-AaBbcDdefkMmopPruv] (20250827-140352) (Retool)</description>
+		<version>20250827-140352</version>
+		<date>2026-04-06 18-53-36</date>
+		<author>Hiccup, NovaAurora, rarenight, relax</author>
+		<homepage>http://www.github.com/unexpectedpanda/retool</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"></clrmamepro>
+		<retool>Created by Retool 2.4.8</retool>
+	</header>
+	<game name="Cooking Mama - Cook Off (USA) (Debug Signed)" id="0117">
+		<category>Games</category>
+		<description>Cooking Mama - Cook Off (USA) (Debug Signed)</description>
+		<rom name="Cooking Mama - Cook Off (USA) (Debug Signed).iso" size="4699979776" crc="24f8a46d" md5="e1c4f0b325f33b669e05798038791408" sha1="2e9be4abbe4400a238d3df750a5f33e04843cd55"/>
+	</game>
+	<game name="Disney Bolt (USA) (En,Fr,Es) (Debug Signed)" id="0104">
+		<category>Games</category>
+		<description>Disney Bolt (USA) (En,Fr,Es) (Debug Signed)</description>
+		<rom name="Disney Bolt (USA) (En,Fr,Es) (Debug Signed).iso" size="4707319808" crc="8405d931" md5="54247381af00f5e4c1faaeccec908cd2" sha1="2d3d63e1823d5b7c86909b71c9e866430e995d45" sha256="26e8fcbcf4c5bd0e9b4063b4ad669f5486635245028cb41d4aab4d02f027d302"/>
+	</game>
+</datafile>

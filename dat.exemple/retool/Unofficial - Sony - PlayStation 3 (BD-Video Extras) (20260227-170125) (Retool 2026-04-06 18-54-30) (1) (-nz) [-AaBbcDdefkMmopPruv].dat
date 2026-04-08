@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<name>Unofficial - Sony - PlayStation 3 (BD-Video Extras) (Retool)</name>
+		<description>Unofficial - Sony - PlayStation 3 (BD-Video Extras) (1) (-nz) [-AaBbcDdefkMmopPruv] (20260227-170125) (Retool)</description>
+		<version>20260227-170125</version>
+		<date>2026-04-06 18-54-30</date>
+		<author>Deterous</author>
+		<homepage>http://www.github.com/unexpectedpanda/retool</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"></clrmamepro>
+		<retool>Created by Retool 2.4.8</retool>
+	</header>
+	<game name="Battle - Los Angeles (Australia)" id="0001">
+		<category>Miscellaneous</category>
+		<description>Battle - Los Angeles (Australia)</description>
+		<rom name="BATTLE_LA\PS3_CONTENT\THEMEDIR\D000\DATA000.P3T" size="2142432" crc="98dd9551" md5="f519b749da892adddb9a5190778bcbb7" sha1="109f1806d2d034e163ca8609d354c146844db14d"/>
+		<rom name="BATTLE_LA\PS3_CONTENT\THEMEDIR\PARAM.SFO" size="376" crc="c70cd65d" md5="493ee99d6e917dcddd02302cc32b01dd" sha1="7a330f3829d9763b27366bb7caa5d9b4319cbf67"/>
+		<rom name="BATTLE_LA\PS3_DISC.SFB" size="1536" crc="d4da6bc2" md5="b3c8225d61aa2d67e3a69b697ad2bb62" sha1="787b520ec561419bbc999f22ac79a6d6d958ffac"/>
+		<rom name="BATTLE_LA\PS3_UPDATE\PS3UPDAT.PUP" size="177696774" crc="acc5fc18" md5="0215e26d1dadeb950471a9c3397a140a" sha1="b819861f75d50882142cbec8af54b00012bc049d"/>
+		<rom name="BATTLE_LA\PS3_UPDATE\PS3UPDAT.SHA" size="64" crc="bd9328db" md5="1b20981065493dd686191ad4a0787a8d" sha1="3995983f9491f3a5c7e6b42fdbb7757a3d139353"/>
+		<rom name="BATTLE_LA\PS3_VPRM\PARAM.SFO" size="88" crc="8f304b1e" md5="40c70fc59396032bf6075be0e35d38bb" sha1="009181bac8a7876543c1705fac563dd8010d8311"/>
+	</game>
+</datafile>

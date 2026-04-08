@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<name>Tiger - Gizmondo (Retool)</name>
+		<description>Tiger - Gizmondo (4) (-nz) [-AaBbcDdefkMmopPruv] (20070531-125518) (Retool)</description>
+		<version>20070531-125518</version>
+		<date>2026-04-06 18-54-22</date>
+		<author>SolidSnake</author>
+		<homepage>http://www.github.com/unexpectedpanda/retool</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"></clrmamepro>
+		<retool>Created by Retool 2.4.8</retool>
+	</header>
+	<game name="Gizmondo Motocross 2005 (Europe) (Cracked by SHiZMO)" id="0014">
+		<category>Games</category>
+		<description>Gizmondo Motocross 2005 (Europe) (Cracked by SHiZMO)</description>
+		<rom name="autorun.exe" size="99984" crc="48a21e91" md5="5632cab4a6669d284dca12df7eb21878" sha1="81f84ebfc04f8d27238004f9e31fc81fc3d9d867"/>
+		<rom name="gizmondo motocross 2005.bmp" size="24662" crc="c4d9bf8f" md5="e5376cab259ca3d2b8ae7adc45841fde" sha1="a4a7bf665c9b3d743c062235b65ba579f3844298"/>
+		<rom name="gizmondo motocross 2005.exe" size="936592" crc="28b40222" md5="89c0af1ea3e9f6da148bfa613ed47b42" sha1="913054a1fb4de6e7934da84a2131df651c5a2492"/>
+		<rom name="gzga200030\data.cfl" size="1871327" crc="514e3291" md5="d83ad9a8289de3ddb4cf1d94358372f6" sha1="296ec3da7eed60ea79d5211dc4dda20bacf1157a"/>
+		<rom name="gzga200030\gzga200030" size="4" crc="b9f4cb2c" md5="1d7ed791e424b89a0d2e21a0effd64d9" sha1="9fa7856ada64b2e7746d7fb0278094fc036c788c"/>
+		<rom name="gzga200030\level_1.dam" size="4266" crc="1e733ace" md5="178b6132b5244ad071b3c6f49786e3dd" sha1="7b2787143261b9855edbaf370ffd9ce36492b26f"/>
+		<rom name="gzga200030\level_1.dat" size="185008" crc="269d1e24" md5="329f1efd7ac07485269cd2ebe5aa4ba6" sha1="7cf4b35e6883ea3939d4892d4ede515da0b04076"/>
+		<rom name="gzga200030\level_1_bg.dab" size="1635594" crc="e62814be" md5="9f91b2319e06e0c5cf1031fb18f811e9" sha1="809467ffea1ebf9a04467b6dc309cd7cd9554426"/>
+		<rom name="gzga200030\level_2.dam" size="8240" crc="930227d1" md5="883c1c7fc46574e65ef21e879e506083" sha1="3323b66b4e1237160f6c819ccc750f5b4124d47c"/>
+		<rom name="gzga200030\level_2.dat" size="327501" crc="1227c3e0" md5="be667cbcdb5d77935dd31e8470f044d1" sha1="7d4f5c4f85578662a20eba0eda430e657abe8c4d"/>
+		<rom name="gzga200030\level_2_bg.dab" size="1684310" crc="a03b33a6" md5="a6a119ef98d81fd67233428557fd6a0d" sha1="229222e4f51664df276dc6237db3bb8f2f5c9783"/>
+		<rom name="gzga200030\level_3.dam" size="7494" crc="d9b08b97" md5="c311a9c6ea1d772435b7f1af38a1ebbc" sha1="b2d77d1b8806647ba0af7c1321e49f96057ffcb3"/>
+		<rom name="gzga200030\level_3.dat" size="379865" crc="a725b673" md5="eee8f7f671b027d126584fbdca7daef6" sha1="7a2f6f76b1d1abeff1a509432d7406dd6b24f88f"/>
+		<rom name="gzga200030\level_3_bg.dab" size="1764366" crc="f6120eaa" md5="56f385c25ef882f46a980cbefb964744" sha1="9042567429385d9d142adbbc5d4bbfb21d81ed60"/>
+		<rom name="gzga200030\level_4.dam" size="10418" crc="1458f31d" md5="3aabbf947eb933d67a4cb9d21a1c9c6c" sha1="e64033b4e296aef75692f6772f43b77fed875a38"/>
+		<rom name="gzga200030\level_4.dat" size="318058" crc="c67231a2" md5="1e2c4049a1ac2d8dd1d0c71ba82bbc39" sha1="8708a90aa1bc3dabc03d3cefcdc25bb05ecb91cd"/>
+		<rom name="gzga200030\level_4_bg.dab" size="1698794" crc="1e315929" md5="bcd0303020fb47b5f6ef556431caa1ac" sha1="ca66729b0f5adae3bbee8013525b750dffa0dfaa"/>
+		<rom name="gzga200030\level_5.dam" size="8159" crc="4309bc15" md5="e654f0c8a6d6c8eced002c03dadd544d" sha1="37a555ed6f409e1cd795b88b59b6af573916ae53"/>
+		<rom name="gzga200030\level_5.dat" size="338530" crc="80d52514" md5="771c7638e84bac81372b72f148158cfe" sha1="02fcf35d08bd4e79e54bf377ea6a623f21df54d7"/>
+		<rom name="gzga200030\level_5_bg.dab" size="1719426" crc="efd1c2df" md5="22801196118c68ef8afe744d3fbf4e98" sha1="f83fe74a8c48df22badc2ddad69b571f396d2183"/>
+		<rom name="gzga200030\level_6.dam" size="9336" crc="b63ddf03" md5="e8098fe75f7edf166c0e06f2e0d9d821" sha1="6fa5bccf4eafdd5745f4731a7378f55c445ef2fb"/>
+		<rom name="gzga200030\level_6.dat" size="276725" crc="36f1d7c3" md5="5d5fc21cc27770e069944ff20454ecba" sha1="3a1a8726cd89e93b0d94de5e92c04b2efa70ae44"/>
+		<rom name="gzga200030\level_6_bg.dab" size="1567649" crc="aedd1a1c" md5="532c9d9513abf8e71a40bf8271e7d068" sha1="044232c79630ce7bce21abeea783c56fcac9a20f"/>
+		<rom name="gzga200030\level_7.dam" size="7990" crc="c649d115" md5="422f8ecf491773e6d408770838fcfdd6" sha1="0f921df2d822f8a4251146412885e729dee56370"/>
+		<rom name="gzga200030\level_7.dat" size="274600" crc="1cb681da" md5="7e3cd0ab7cb3cbaa3eddb46b5cb2de52" sha1="a804799d7da2cb2ecdc48e5914a8dd806dc6ff08"/>
+		<rom name="gzga200030\level_7_bg.dab" size="1703836" crc="79cec891" md5="fcb0e7efb83555f002996d55205a51b1" sha1="9bafb2fad123d63f9e270db7801e333f1503b13d"/>
+		<rom name="gzga200030\level_8.dam" size="10106" crc="ee81c6e5" md5="15d6cfa096fd3653ec10840a99626be8" sha1="d78d7b0fc37e00bb528ad4785fee86d899c713df"/>
+		<rom name="gzga200030\level_8.dat" size="302688" crc="87761ae6" md5="5f77ffa194701bd12f1298ef0913968b" sha1="242ae31cf187d5ca858b4a7dca10d4dce9f2d146"/>
+		<rom name="gzga200030\level_8_bg.dab" size="1676221" crc="93c68c9e" md5="c90465e51a8b44ed4945ec29ba62ac89" sha1="92571ac63db55de09b3d4f6932a46aeca2504a49"/>
+	</game>
+	<game name="Hockey Rage 2005 (Europe) (Cracked by SHiZMO)" id="0017">
+		<category>Games</category>
+		<description>Hockey Rage 2005 (Europe) (Cracked by SHiZMO)</description>
+		<rom name="autorun.exe" size="99984" crc="48a21e91" md5="5632cab4a6669d284dca12df7eb21878" sha1="81f84ebfc04f8d27238004f9e31fc81fc3d9d867"/>
+		<rom name="gzga200047\1.mp3" size="2631889" crc="57ee16dd" md5="794e6c72868b1e70573f80c87af6569d" sha1="4d7f657d6cb78ea52cbc89b8b0d4bd69255a5bd6"/>
+		<rom name="gzga200047\2.mp3" size="3716493" crc="c52d7688" md5="0f962be9453610392e6343fafeb8c620" sha1="da296944097aae41959e3048ed6d5effef317e39"/>
+		<rom name="gzga200047\3.mp3" size="2778174" crc="5fe65164" md5="ecf515806d1024f37214e95c4aca7bf4" sha1="5ffd8ebb1db70767ff3b352e2c52008b32884210"/>
+		<rom name="gzga200047\4.mp3" size="5939516" crc="5f41b031" md5="22c240106ba86b8d51ed2752f15a8209" sha1="694cc2493f2f71c7bbf181f5f5038e693b58efd6"/>
+		<rom name="gzga200047\audio.cfl" size="3685065" crc="3a9940a8" md5="9b6d8188d17c929fe502a4696ec8da58" sha1="48dbb7b5e31b43a0389a883c0bb0ddc594d4cf48"/>
+		<rom name="gzga200047\data.cfl" size="3253644" crc="4acfe851" md5="a089f3d737c9d513b5ca67653055187f" sha1="fc6d50651c65ac863dc36de2e113ba37148aca1c"/>
+		<rom name="gzga200047\gzga200047" size="4" crc="b9f4cb2c" md5="1d7ed791e424b89a0d2e21a0effd64d9" sha1="9fa7856ada64b2e7746d7fb0278094fc036c788c"/>
+		<rom name="hockey rage 2005.bmp" size="24662" crc="9258702e" md5="8202dbcda1c8c0d5c3f320dd34cdff24" sha1="04c9884d5ff09f80bc62bd77e71607dfafbad636"/>
+		<rom name="hockey rage 2005.exe" size="766608" crc="a114509b" md5="094bcd9016700aef06ca3817d002a3e6" sha1="7f9decdfef63af9f848f6a9851a253a941856465"/>
+	</game>
+	<game name="Pocket Ping Pong 2005 (Europe) (Cracked by SHiZMO)" id="0020">
+		<category>Games</category>
+		<description>Pocket Ping Pong 2005 (Europe) (Cracked by SHiZMO)</description>
+		<rom name="autorun.exe" size="99984" crc="48a21e91" md5="5632cab4a6669d284dca12df7eb21878" sha1="81f84ebfc04f8d27238004f9e31fc81fc3d9d867"/>
+		<rom name="gzga200044\0.mp3" size="771033" crc="0b730027" md5="de5dfaf6ea2fbb595a942316193324ca" sha1="c1a12f667f9ef80c52c87606be05cd4c7672d2e5"/>
+		<rom name="gzga200044\1.mp3" size="6724481" crc="8df174f2" md5="758239a733aea32c5e056ae72b8a5416" sha1="2e2a984cd1c035ee00b0244a6a7019824d7f4a20"/>
+		<rom name="gzga200044\2.mp3" size="4446364" crc="16a115d9" md5="9c0356b8d20027c8953d5c56a33eb5c5" sha1="91b07d6fad9a1e656a47fcf7575dddc8c2905dbb"/>
+		<rom name="gzga200044\3.mp3" size="3678699" crc="12e4502e" md5="abc0d9d27c1e0df6129ee5097221e588" sha1="d7bfc9d48e20c8ea788644709bf2357fc3f7fa76"/>
+		<rom name="gzga200044\4.mp3" size="3567305" crc="b6779957" md5="76d3ef9dc54117556faca409504c0549" sha1="db5e21a8319229bfd552273396847e56ab068fe2"/>
+		<rom name="gzga200044\data_320.cfl" size="11618369" crc="1fdcfd27" md5="448a4185092f049a37506dd97e92caf6" sha1="014383da01a5d2001719c05652d1cd738304b9f3"/>
+		<rom name="gzga200044\gzga200044" size="4" crc="b9f4cb2c" md5="1d7ed791e424b89a0d2e21a0effd64d9" sha1="9fa7856ada64b2e7746d7fb0278094fc036c788c"/>
+		<rom name="gzga200044\pianoscreens.cfl" size="202377" crc="676e4664" md5="cd6495511a70702640e3c3f8b1e40322" sha1="6163f3cb813239a541e9a0fce685a666f0918eda"/>
+		<rom name="pocket ping pong 2005.bmp" size="24662" crc="93008d40" md5="2bbb1d64ad2cdce8661ad53faaf20e35" sha1="3e2f3b6aee73b4ddb6e8beb4c31050c0dfd0215c"/>
+		<rom name="pocket ping pong 2005.exe" size="776848" crc="e29fa5ee" md5="7c127515747f5a3905607fd4bef515b5" sha1="849f20323942e4c270b5be0cfa86f29ba619d704"/>
+	</game>
+	<game name="Toy Golf (Europe) (Cracked by SHiZMO)" id="0026">
+		<category>Games</category>
+		<description>Toy Golf (Europe) (Cracked by SHiZMO)</description>
+		<rom name="autorun.exe" size="99984" crc="48a21e91" md5="5632cab4a6669d284dca12df7eb21878" sha1="81f84ebfc04f8d27238004f9e31fc81fc3d9d867"/>
+		<rom name="gzga200046\gzga200046" size="4" crc="b9f4cb2c" md5="1d7ed791e424b89a0d2e21a0effd64d9" sha1="9fa7856ada64b2e7746d7fb0278094fc036c788c"/>
+		<rom name="gzga200046\minigolf_gizmondo.cfl" size="4798218" crc="67cc5be0" md5="f26030500e71adcc7b9d351d3117d02a" sha1="4d6d3affc3f631bbe97c9b8f872e1dcc82a0edd3"/>
+		<rom name="toy golf.bmp" size="24662" crc="fc668a2c" md5="38aa9fefaeb0014a26476158474844d4" sha1="eab6899cdd2e646d24c440b64955653e29f70c2e"/>
+		<rom name="toy golf.exe" size="938128" crc="08150300" md5="d180b63b840a717dbc973d95fcf96a62" sha1="b1405b5be013f56e86e9aa3430049d3eabf49fa1"/>
+	</game>
+</datafile>

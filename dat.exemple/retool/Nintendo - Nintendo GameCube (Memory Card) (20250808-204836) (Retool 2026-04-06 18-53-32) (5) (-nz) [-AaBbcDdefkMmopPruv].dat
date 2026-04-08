@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<name>Nintendo - Nintendo GameCube (Memory Card) (Retool)</name>
+		<description>Nintendo - Nintendo GameCube (Memory Card) (5) (-nz) [-AaBbcDdefkMmopPruv] (20250808-204836) (Retool)</description>
+		<version>20250808-204836</version>
+		<date>2026-04-06 18-53-32</date>
+		<author>Eastward2559, Gefflon, NovaAurora, xprism</author>
+		<homepage>http://www.github.com/unexpectedpanda/retool</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"></clrmamepro>
+		<retool>Created by Retool 2.4.8</retool>
+	</header>
+	<game name="Action Replay Memory Card (USA) (v1.14)" id="0024">
+		<category>Games</category>
+		<description>Action Replay Memory Card (USA) (v1.14)</description>
+		<rom name="Action Replay Memory Card (USA) (v1.14).raw" size="524288" crc="9a52d3c2" md5="e7d4ab02ebef8f77a76f27ba3f5089c5" sha1="2e9de9e8552e691bd34346738818af9a9302fcd4" sha256="ba46444a447337be9c41068edf6c31c57a68c1d626bcf0c21480919564b683ca"/>
+	</game>
+	<game name="Animal Crossing - Special Present (USA)" id="0002">
+		<category>Games</category>
+		<description>Animal Crossing - Special Present (USA)</description>
+		<rom name="Animal Crossing - Special Present (USA).raw" size="524288" crc="89d09e18" md5="e5ccc73e1a38a7efb9e042b20a7f8fb4" sha1="3ffdf0bcf019b7a6f639b6f7d0d7066d36beebec" sha256="e9248c92ea5fba064879b23e935a248c362c57ab473cafa9b35046b67aa371e8"/>
+	</game>
+	<game name="Factory Memory Card - RVL Diag - 012E &amp; 126J (Japan, USA)" id="0005">
+		<category>Games</category>
+		<description>Factory Memory Card - RVL Diag - 012E &amp; 126J (Japan, USA)</description>
+		<rom name="Factory Memory Card - RVL Diag - 012E &amp; 126J (Japan, USA).raw" size="2097152" crc="f2f1f410" md5="567e50a9c1473aa0afbbc014e1977c9b" sha1="ce3dc42208ee5336e4441cbbc34461a3e1cce451"/>
+	</game>
+	<game name="Factory Memory Card - RVL Diag - 124P (Europe)" id="0016">
+		<category>Games</category>
+		<description>Factory Memory Card - RVL Diag - 124P (Europe)</description>
+		<rom name="Factory Memory Card - RVL Diag - 124P (Europe).raw" size="2097152" crc="345e80ba" md5="a550185f91371ed5453f3ed910dc40b4" sha1="8c77753564648f65a2696023480e8f1f0c1ee944"/>
+	</game>
+	<game name="Factory Memory Card - RVL Uji Diag - 121J (USA)" id="0023">
+		<category>Games</category>
+		<description>Factory Memory Card - RVL Uji Diag - 121J (USA)</description>
+		<rom name="Factory Memory Card - RVL Uji Diag - 121J (USA).raw" size="2097152" crc="ec7efb81" md5="fce37f3fb9ca853def9edebc2679078b" sha1="c6fb929ec15df1ce4a296ec54e2a768859ba99a5"/>
+	</game>
+</datafile>

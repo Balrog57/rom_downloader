@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<id>462</id>
+		<name>Nintendo - Nintendo GameCube (Memory Card)</name>
+		<description>Nintendo - Nintendo GameCube (Memory Card)</description>
+		<version>20250808-204836</version>
+		<author>Eastward2559, Gefflon, NovaAurora, xprism</author>
+		<homepage>No-Intro</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"/>
+	</header>
+	<game name="Action Replay Memory Card (USA) (v1.14)" id="0024">
+		<description>Action Replay Memory Card (USA) (v1.14)</description>
+		<rom name="Action Replay Memory Card (USA) (v1.14).raw" size="524288" crc="9a52d3c2" md5="e7d4ab02ebef8f77a76f27ba3f5089c5" sha1="2e9de9e8552e691bd34346738818af9a9302fcd4" sha256="ba46444a447337be9c41068edf6c31c57a68c1d626bcf0c21480919564b683ca"/>
+	</game>
+	<game name="Animal Crossing - Special Present (USA)" id="0002">
+		<description>Animal Crossing - Special Present (USA)</description>
+		<rom name="Animal Crossing - Special Present (USA).raw" size="524288" crc="89d09e18" md5="e5ccc73e1a38a7efb9e042b20a7f8fb4" sha1="3ffdf0bcf019b7a6f639b6f7d0d7066d36beebec" sha256="e9248c92ea5fba064879b23e935a248c362c57ab473cafa9b35046b67aa371e8"/>
+	</game>
+	<game name="Doubutsu no Mori+ - Omake Data (Japan)" id="0003">
+		<description>Doubutsu no Mori+ - Omake Data (Japan)</description>
+		<rom name="Doubutsu no Mori+ - Omake Data (Japan).raw" size="524288" crc="b8f717bf" md5="00dab17923517695546a6821a918075b" sha1="97c212e68f7be1edc38fe535d2315cb6e745ebe7" sha256="0ab7f0227e034544472becfc7a19d9baf854050d6c2e2469b39f60c1e4557a43"/>
+	</game>
+	<game name="Factory Memory Card - RVL Diag - 012E &amp; 126J (Japan, USA)" id="0005">
+		<description>Factory Memory Card - RVL Diag - 012E &amp; 126J (Japan, USA)</description>
+		<rom name="Factory Memory Card - RVL Diag - 012E &amp; 126J (Japan, USA).raw" size="2097152" crc="f2f1f410" md5="567e50a9c1473aa0afbbc014e1977c9b" sha1="ce3dc42208ee5336e4441cbbc34461a3e1cce451"/>
+	</game>
+	<game name="Factory Memory Card - RVL Diag - 012E &amp; 126J (Japan, USA) (Alt)" id="0006">
+		<description>Factory Memory Card - RVL Diag - 012E &amp; 126J (Japan, USA) (Alt)</description>
+		<rom name="Factory Memory Card - RVL Diag - 012E &amp; 126J (Japan, USA) (Alt).raw" size="2097152" crc="2564b9b0" md5="adfc0059e7d4272aec406c41a0c54752" sha1="47a84d748b4cf42d2b3703645fa901467b7c59dd"/>
+	</game>
+	<game name="Factory Memory Card - RVL Diag - 012E &amp; 126J (Japan, USA) (Alt 2)" id="0007">
+		<description>Factory Memory Card - RVL Diag - 012E &amp; 126J (Japan, USA) (Alt 2)</description>
+		<rom name="Factory Memory Card - RVL Diag - 012E &amp; 126J (Japan, USA) (Alt 2).raw" size="2097152" crc="6bfdb1c9" md5="0cb454023fa3cbc9f843a22d63178a06" sha1="596aee19253dc9bc429f96e31a94105cff24c45a"/>
+	</game>
+	<game name="Factory Memory Card - RVL Diag - 012E &amp; 126J (Japan, USA) (Alt 3)" id="0008">
+		<description>Factory Memory Card - RVL Diag - 012E &amp; 126J (Japan, USA) (Alt 3)</description>
+		<rom name="Factory Memory Card - RVL Diag - 012E &amp; 126J (Japan, USA) (Alt 3).raw" size="2097152" crc="000b1575" md5="d8650a9e00862ad49ccbce84421dc205" sha1="2da4b018936d9e78ad1e71a0168d15df8422c70b"/>
+	</game>
+	<game name="Factory Memory Card - RVL Diag - 100J (Japan) (Alt 5)" id="0014">
+		<description>Factory Memory Card - RVL Diag - 100J (Japan) (Alt 5)</description>
+		<rom name="Factory Memory Card - RVL Diag - 100J (Japan) (Alt 5).raw" size="2097152" crc="82a556ca" md5="0f494ca8882efbec97560bc8a144ede0" sha1="05fe4b25588ab50318573c40bbb5ce61b8a15817"/>
+	</game>
+	<game name="Factory Memory Card - RVL Diag - 100J (Japan) (Alt 6)" id="0015">
+		<description>Factory Memory Card - RVL Diag - 100J (Japan) (Alt 6)</description>
+		<rom name="Factory Memory Card - RVL Diag - 100J (Japan) (Alt 6).raw" size="2097152" crc="4fb13a0f" md5="3fad990eaa0302b22a7a21f14ea94af6" sha1="60be94649fe032fee4175ad84390037f6c1c35a4"/>
+	</game>
+	<game name="Factory Memory Card - RVL Diag - 100J (Japan) (Alt 4)" id="0013">
+		<description>Factory Memory Card - RVL Diag - 100J (Japan) (Alt 4)</description>
+		<rom name="Factory Memory Card - RVL Diag - 100J (Japan) (Alt 4).raw" size="2097152" crc="03ec6952" md5="669ed8872c6e3b65c66ca9b340992733" sha1="dd0fd1c81d85f5bd3de7a35772f9e44800bd86b5"/>
+	</game>
+	<game name="Factory Memory Card - RVL Diag - 100J (Japan) (Alt 3)" id="0012">
+		<description>Factory Memory Card - RVL Diag - 100J (Japan) (Alt 3)</description>
+		<rom name="Factory Memory Card - RVL Diag - 100J (Japan) (Alt 3).raw" size="2097152" crc="613be945" md5="752d5a9ce1654407bfd34905d84787da" sha1="3ddcb56a9de9b902de110f2003257daaceca38b0"/>
+	</game>
+	<game name="Factory Memory Card - RVL Diag - 100J (Japan) (Alt 2)" id="0011">
+		<description>Factory Memory Card - RVL Diag - 100J (Japan) (Alt 2)</description>
+		<rom name="Factory Memory Card - RVL Diag - 100J (Japan) (Alt 2).raw" size="2097152" crc="5227a64f" md5="c72ac3babcdaac615111c91c92d4939b" sha1="17c69cc9deace8cdcc82447820274705f94ae865"/>
+	</game>
+	<game name="Factory Memory Card - RVL Diag - 100J (Japan) (Alt)" id="0010">
+		<description>Factory Memory Card - RVL Diag - 100J (Japan) (Alt)</description>
+		<rom name="Factory Memory Card - RVL Diag - 100J (Japan) (Alt).raw" size="2097152" crc="15f298ce" md5="6259c4c146fe4027f098f47a245839a0" sha1="b944a00066585f0cfe1bfe8895867fe475f901c4"/>
+	</game>
+	<game name="Factory Memory Card - RVL Diag - 100J (Japan)" id="0009">
+		<description>Factory Memory Card - RVL Diag - 100J (Japan)</description>
+		<rom name="Factory Memory Card - RVL Diag - 100J (Japan).raw" size="2097152" crc="cf04ec92" md5="40085f45ff205f78ad4f1f216d3dabeb" sha1="57c29ffda7f45713129435a518927e109fe92ede"/>
+	</game>
+	<game name="Factory Memory Card - RVL Diag - 124P (Europe)" id="0016">
+		<description>Factory Memory Card - RVL Diag - 124P (Europe)</description>
+		<rom name="Factory Memory Card - RVL Diag - 124P (Europe).raw" size="2097152" crc="345e80ba" md5="a550185f91371ed5453f3ed910dc40b4" sha1="8c77753564648f65a2696023480e8f1f0c1ee944"/>
+	</game>
+	<game name="Factory Memory Card - RVL Uji Diag - 121J (Japan)" id="0017">
+		<description>Factory Memory Card - RVL Uji Diag - 121J (Japan)</description>
+		<rom name="Factory Memory Card - RVL Uji Diag - 121J (Japan).raw" size="2097152" crc="c4541ac9" md5="3120977d64ef8d80953f4c95ed80e9ea" sha1="188c6c9ffd881fa852409107ab9752085aadde60"/>
+	</game>
+	<game name="Factory Memory Card - RVL Uji Diag - 121J (Japan) (Alt)" id="0018">
+		<description>Factory Memory Card - RVL Uji Diag - 121J (Japan) (Alt)</description>
+		<rom name="Factory Memory Card - RVL Uji Diag - 121J (Japan) (Alt).raw" size="2097152" crc="8dfb6a74" md5="633692c9bcb216de4e0185979deaa908" sha1="2b9646aae56225287b8aee8964bb9edb980b9d4e"/>
+	</game>
+	<game name="Factory Memory Card - RVL Uji Diag - 121J (Japan) (Alt 2)" id="0019">
+		<description>Factory Memory Card - RVL Uji Diag - 121J (Japan) (Alt 2)</description>
+		<rom name="Factory Memory Card - RVL Uji Diag - 121J (Japan) (Alt 2).raw" size="2097152" crc="7c14395e" md5="4da507de02e1d977d025877b3da51eae" sha1="3cdc06387115b84d7261986fa478f92db5b73f00"/>
+	</game>
+	<game name="Factory Memory Card - RVL Uji Diag - 121J (Japan) (Alt 3)" id="0020">
+		<description>Factory Memory Card - RVL Uji Diag - 121J (Japan) (Alt 3)</description>
+		<rom name="Factory Memory Card - RVL Uji Diag - 121J (Japan) (Alt 3).raw" size="2097152" crc="45ce61d7" md5="9bda689bec484490024a85234b5c181a" sha1="b75ef4ba704c4d09d5b72ba878fbf1980d247de7"/>
+	</game>
+	<game name="Factory Memory Card - RVL Uji Diag - 121J (Japan) (Alt 4)" id="0021">
+		<description>Factory Memory Card - RVL Uji Diag - 121J (Japan) (Alt 4)</description>
+		<rom name="Factory Memory Card - RVL Uji Diag - 121J (Japan) (Alt 4).raw" size="2097152" crc="6b83be1a" md5="e2a4c56ba135c9649b7f3a4cef177afb" sha1="8849f6df0334049bfd87a895a1afc6bc9240698f"/>
+	</game>
+	<game name="Factory Memory Card - RVL Uji Diag - 121J (Taiwan)" id="0022">
+		<description>Factory Memory Card - RVL Uji Diag - 121J (Taiwan)</description>
+		<rom name="Factory Memory Card - RVL Uji Diag - 121J (Taiwan).raw" size="2097152" crc="691eeee0" md5="292f07c396cb13033c433c5581b01b64" sha1="99d36f7d13a0bab401f2811b695510183488eff4"/>
+	</game>
+	<game name="Factory Memory Card - RVL Uji Diag - 121J (USA)" id="0023">
+		<description>Factory Memory Card - RVL Uji Diag - 121J (USA)</description>
+		<rom name="Factory Memory Card - RVL Uji Diag - 121J (USA).raw" size="2097152" crc="ec7efb81" md5="fce37f3fb9ca853def9edebc2679078b" sha1="c6fb929ec15df1ce4a296ec54e2a768859ba99a5"/>
+	</game>
+	<game name="Factory Memory Card - Ukeire Kensa - 050J &amp; 065J (Japan)" id="0001">
+		<description>Factory Memory Card - Ukeire Kensa - 050J &amp; 065J (Japan)</description>
+		<rom name="Factory Memory Card - Ukeire Kensa - 050J &amp; 065J (Japan).raw" size="2097152" crc="225780fe" md5="72836453fe33c4d847221f7b56c7370e" sha1="086455adaefd5193336f448a6279274d8331322c" sha256="fb3a9a06273d6c9ca0eb9a1a22705393c1c22021abfa84f2d1325e2f289c7dbb"/>
+	</game>
+</datafile>

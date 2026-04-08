@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<!DOCTYPE datafile PUBLIC "-//Logiqx//DTD ROM Management Datafile//EN" "https://raw.githubusercontent.com/unexpectedpanda/retool-clonelists-metadata/main/datafile.dtd">
+<datafile>
+	<header>
+		<name>VTech - V.Flash &amp; V.Smile Pro (Retool)</name>
+		<description>VTech - V.Flash &amp; V.Smile Pro (11) (-nz) [-AaBbcDdefkMmopPruv] (2026-03-14 01-23-03) (Retool)</description>
+		<version>2026-03-14 01-23-03</version>
+		<date>2026-04-06 18-57-25</date>
+		<author>redump.org</author>
+		<homepage>http://www.github.com/unexpectedpanda/retool</homepage>
+		<url>http://redump.org/</url>
+		<retool>Created by Retool 2.4.8</retool>
+	</header>
+	<game name="Bob L'eponge - Une Idee Spongieuse (France)">
+		<category>Games</category>
+		<description>Bob L'eponge - Une Idee Spongieuse (France)</description>
+		<rom name="Bob L'eponge - Une Idee Spongieuse (France).bin" size="480530064" crc="bcc5ad55" md5="70f51298f0579a0cc0fe51bc015fa0b7" sha1="f9070dfece0929b0fd48f89a6ef74b174078f4e6"/>
+		<rom name="Bob L'eponge - Une Idee Spongieuse (France).cue" size="109" crc="03cee924" md5="669956bd2af02a9f67c33ef3f8b02aa3" sha1="ce82e86e2d54398f4335edf8a7eeab1416c5ea95"/>
+	</game>
+	<game name="Bratz Fashion Pixiez - Le Collier Magique (France)">
+		<category>Games</category>
+		<description>Bratz Fashion Pixiez - Le Collier Magique (France)</description>
+		<rom name="Bratz Fashion Pixiez - Le Collier Magique (France).bin" size="557708592" crc="98126810" md5="6c16106a01564f4696611c634bc14d3d" sha1="70b6d483ddece3d4101456c6ae4188992e548c2a"/>
+		<rom name="Bratz Fashion Pixiez - Le Collier Magique (France).cue" size="116" crc="7d05a304" md5="928873942921a4ed9eae296aae17defa" sha1="d4f4a2cfc463ebf104a26efe644c32c0a6ff8cc6"/>
+	</game>
+	<game name="Defis Sports (France)">
+		<category>Games</category>
+		<description>Defis Sports (France)</description>
+		<rom name="Defis Sports (France).bin" size="299847072" crc="3d43a73d" md5="1903d7075e0b42a5f2256019130cae94" sha1="55dcab6f8d69ff60bbf6315dcda5428e5fb4c675"/>
+		<rom name="Defis Sports (France).cue" size="87" crc="1f9f4d4a" md5="d868745306f94b0509278403e2e43815" sha1="6f54f4258937ed1611f9e7f337a7b8f3c9f1270e"/>
+	</game>
+	<game name="Dingo Rallye - Fou ! Fou ! Fou ! (France)">
+		<category>Games</category>
+		<description>Dingo Rallye - Fou ! Fou ! Fou ! (France)</description>
+		<rom name="Dingo Rallye - Fou ! Fou ! Fou ! (France).bin" size="456299760" crc="6a6d0266" md5="d23d0e8da66a6e1fbce5bd229f4e792b" sha1="c5876be45e2f562292dd1a3d8441cb3b7a238a36"/>
+		<rom name="Dingo Rallye - Fou ! Fou ! Fou ! (France).cue" size="107" crc="391e3ed5" md5="3eee52891346aaa3c56f86dc8fa746a4" sha1="6f7e170bf37b7793f44ee893bd519e8aafb29162"/>
+	</game>
+	<game name="Disney Princesses - L'Aventure Enchantee (France)">
+		<category>Games</category>
+		<description>Disney Princesses - L'Aventure Enchantee (France)</description>
+		<rom name="Disney Princesses - L'Aventure Enchantee (France).bin" size="442258320" crc="ea9b231f" md5="a4e013176afc971b0d64c43965622533" sha1="101ce8075ead19d9c9c07aecb3035e65e5306abb"/>
+		<rom name="Disney Princesses - L'Aventure Enchantee (France).cue" size="115" crc="2a265e55" md5="8a035bbbb0e1d0c878881338ffab68fa" sha1="25b9bcb866f9c731d3150117eb0f03b505f2138c"/>
+	</game>
+	<game name="Disney · Pixar Cars - À Fond la Caisse ! (France)">
+		<category>Games</category>
+		<description>Disney-Pixar Cars - A Fond la Caisse ! (France)</description>
+		<rom name="Disney-Pixar Cars - A Fond la Caisse ! (France).bin" size="558378912" crc="29245761" md5="9f6c659eed48b4018c83b766ba936cd9" sha1="bfa19b92096f70afd931f56f3232e43c71bfb05c"/>
+		<rom name="Disney-Pixar Cars - A Fond la Caisse ! (France).cue" size="113" crc="bf949016" md5="9885db14d02cc5370d593bdea344c35f" sha1="b2afc03a1ca948ac7024dcf0291521ea88d6c128"/>
+	</game>
+	<game name="Disney-Pixar Cars - In the Fast Lane (USA) (Rev 3)">
+		<category>Games</category>
+		<description>Disney-Pixar Cars - In the Fast Lane (USA) (Rev 3)</description>
+		<rom name="Disney-Pixar Cars - In the Fast Lane (USA) (Rev 3).bin" size="505884624" crc="27f1e33f" md5="bff9c53e5d77eeae9b2217819129a4ea" sha1="73676fed26539ad7d770cb7950de80ed9467b3e4"/>
+		<rom name="Disney-Pixar Cars - In the Fast Lane (USA) (Rev 3).cue" size="116" crc="36a7ee5d" md5="77a4ed3df4e94c1ff2d293332159e059" sha1="01fe58289c733b30be3b95e7c0296115f5d64b7a"/>
+	</game>
+	<game name="Indestructibles, Les - Les Indestructibles a la Rescousse (France)">
+		<category>Games</category>
+		<description>Indestructibles, Les - Les Indestructibles a la Rescousse (France)</description>
+		<rom name="Indestructibles, Les - Les Indestructibles a la Rescousse (France).bin" size="327779424" crc="10816c60" md5="8c2906dee58982a1bf64d6c2228b4bfb" sha1="8df26727f89a386417d2addb6c6ff7ccbeb1843e"/>
+		<rom name="Indestructibles, Les - Les Indestructibles a la Rescousse (France).cue" size="132" crc="6099db5d" md5="14e3581b1c0a0353cef457858539d6a0" sha1="8adc9ef5595e976ef7289d8816c7edf0693068bf"/>
+	</game>
+	<game name="Scooby-Doo! Les Civilisations Perdues (France)">
+		<category>Games</category>
+		<description>Scooby-Doo! Les Civilisations Perdues (France)</description>
+		<rom name="Scooby-Doo! Les Civilisations Perdues (France).bin" size="692257104" crc="6038f2eb" md5="6dad47d5a52c0f54f109e76548aa3913" sha1="ea358a2e4cea0e8892f8e141c3c005f43daa8109"/>
+		<rom name="Scooby-Doo! Les Civilisations Perdues (France).cue" size="112" crc="3cb31061" md5="1b5089aee901ea7cf1e54196b16c0a64" sha1="5f409783e237ea7c0ef187bf5c7a345d97b8b350"/>
+	</game>
+	<game name="Shrek Le Troisieme - En quete d'Artur (France)">
+		<category>Games</category>
+		<description>Shrek Le Troisieme - En quete d'Artur (France)</description>
+		<rom name="Shrek Le Troisieme - En quete d'Artur (France).bin" size="613705008" crc="029ddfb7" md5="4a156c9963b9ac9c0381e5473c09fa6e" sha1="cad4c048d56b4853a07055c2896211675c810c7f"/>
+		<rom name="Shrek Le Troisieme - En quete d'Artur (France).cue" size="112" crc="7dd6dde9" md5="a78e19b6a06e4887b066f60e2848c8ac" sha1="e7c59022f8b2d49642538c4cbaff167ac417e162"/>
+	</game>
+	<game name="Spider-Man Course-Poursuite a Manhattan (France)">
+		<category>Games</category>
+		<description>Spider-Man Course-Poursuite a Manhattan (France)</description>
+		<rom name="Spider-Man Course-Poursuite a Manhattan (France).bin" size="371766528" crc="4bb8afec" md5="7ae1c3c854fe625ebe7b9a566e140e3e" sha1="03eb17eb561cb579b9e1aaf416e3d86612c1057a"/>
+		<rom name="Spider-Man Course-Poursuite a Manhattan (France).cue" size="114" crc="acc02ac1" md5="4d1269fa6ba2aab2144e60b6c2fd020f" sha1="97cef5ed422747738356f35fdcc55725c7f6d291"/>
+	</game>
+</datafile>

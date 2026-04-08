@@ -1,0 +1,244 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<name>Unofficial - Sony - PlayStation Portable (UMD Music) (Retool)</name>
+		<description>Unofficial - Sony - PlayStation Portable (UMD Music) (46) (-nz) [-AaBbcDdefkMmopPruv] (20231230-080356) (Retool)</description>
+		<version>20231230-080356</version>
+		<date>2026-04-06 18-54-36</date>
+		<author>einstein95, Gefflon, Hiccup, jimmsu, norkmetnoil577, SonGoku, UnlockerPT, xuom2</author>
+		<homepage>http://www.github.com/unexpectedpanda/retool</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"></clrmamepro>
+		<retool>Created by Retool 2.4.8</retool>
+	</header>
+	<game name="50 Cent - The Massacre (Special Edition) (World)" id="0039">
+		<category>Games</category>
+		<description>50 Cent - The Massacre (Special Edition) (World)</description>
+		<rom name="50 Cent - The Massacre (Special Edition) (World).iso" size="1681391616" crc="4c6162ea" md5="d6806b4f0b0ee66e239988257cea731f" sha1="a5bbd8ad1df53e6ded59c953cfd4a2c4a7e669d0"/>
+	</game>
+	<game name="Audioslave - Live in Cuba (World)" id="0040">
+		<category>Games</category>
+		<description>Audioslave - Live in Cuba (World)</description>
+		<rom name="Audioslave - Live in Cuba (World).iso" size="1558839296" crc="25f4237a" md5="f218b1f471d0251cf417649a92e5c7cb" sha1="6ec93693900626974c2b105ddf1b5e4d5d393009"/>
+	</game>
+	<game name="Big Snoop Dog's Puff Puff Pass Tour (World)" id="0002">
+		<category>Games</category>
+		<description>Big Snoop Dog's Puff Puff Pass Tour (World)</description>
+		<rom name="Big Snoop Dog's Puff Puff Pass Tour (World).iso" size="1666842624" crc="3b3d97a4" md5="215541c8b69d100b9cfc6b6cc9d1a72c" sha1="9c2e056762e83aa54d632dce58ccca3d92ee841e"/>
+	</game>
+	<game name="Blink-182 - Greatest Hits (World)" id="0027">
+		<category>Games</category>
+		<description>Blink-182 - Greatest Hits (World)</description>
+		<rom name="Blink-182 - Greatest Hits (World).iso" size="1251475456" crc="aa578240" md5="71a3a5eaf260b23c6066307b06f64c94" sha1="091a5e4cc73c6664d187f40b5497b45c20d9ac08"/>
+	</game>
+	<game name="Bob Marley - The Legend Live (World)" id="0054">
+		<category>Games</category>
+		<description>Bob Marley - The Legend Live (World)</description>
+		<rom name="Bob Marley - The Legend Live (World).iso" size="1504870400" crc="aa4b4c68" md5="ff680d6494f1826496520a95045cf2ca" sha1="b3e79781c715e607fe5b8fd7e9b17f1e3768c19c"/>
+	</game>
+	<game name="Busta Rhymes - Everything Remains Raw (World)" id="0004">
+		<category>Games</category>
+		<description>Busta Rhymes - Everything Remains Raw (World)</description>
+		<rom name="Busta Rhymes - Everything Remains Raw (World).iso" size="1535279104" crc="aca1e243" md5="1741fbd894fcf0bdfab031f1d2ffa5bf" sha1="ff9aebf61197d2eb5c06181362012ca651c26da8"/>
+	</game>
+	<game name="Coheed and Cambria - Live at the Starland Ballroom (World)" id="0047">
+		<category>Games</category>
+		<description>Coheed and Cambria - Live at the Starland Ballroom (World)</description>
+		<rom name="Coheed and Cambria - Live at the Starland Ballroom (World).iso" size="1761705984" crc="8f7e65f8" md5="905b40fe85d29d649c4e9d1a02441c3a" sha1="9b120bf13e7b6fda145744944eb2fe5406451636"/>
+	</game>
+	<game name="Coldplay - Live 2003 (World)" id="0048">
+		<category>Games</category>
+		<description>Coldplay - Live 2003 (World)</description>
+		<rom name="Coldplay - Live 2003 (World).iso" size="1760657408" crc="ca97a7d8" md5="0c3bd1cf717ccbe228512ed80b316f1a" sha1="6dbe791a0ac877ef5bc42ed752a399c07e7c13ef"/>
+	</game>
+	<game name="Daft Punk &amp; Leiji Matsumoto's - Interstella 5555 - The 5tory of the 5ecret 5tar 5ystem (World) (En,Fr)" id="0030">
+		<category>Games</category>
+		<description>Daft Punk &amp; Leiji Matsumoto's - Interstella 5555 - The 5tory of the 5ecret 5tar 5ystem (World) (En,Fr)</description>
+		<rom name="Daft Punk &amp; Leiji Matsumoto's - Interstella 5555 - The 5tory of the 5ecret 5tar 5ystem (World) (En,Fr).iso" size="1364492288" crc="6bd11847" md5="fe08ce5859f792f005023230f46ff90f" sha1="7ec05a398f40be6d134d96809c916a3c680f3ebe"/>
+	</game>
+	<game name="Depeche Mode - 101 (Japan, Europe) (En,Ja,Fr,De,Es,It,Pt)" id="0032">
+		<category>Games</category>
+		<description>Depeche Mode - 101 (Japan, Europe) (En,Ja,Fr,De,Es,It,Pt)</description>
+		<rom name="Depeche Mode - 101 (Japan, Europe) (En,Ja,Fr,De,Es,It,Pt).iso" size="1546092544" crc="365e565f" md5="8d2f672b23ce20dca9c05c64f58234db" sha1="2419135ce1412d340ec243e7f62f2cd3e0dfb4cf"/>
+	</game>
+	<game name="Depeche Mode - Devotional (Japan, Europe) (En)" id="0034">
+		<category>Games</category>
+		<description>Depeche Mode - Devotional (Japan, Europe) (En)</description>
+		<rom name="Depeche Mode - Devotional (Japan, Europe) (En).iso" size="1430388736" crc="f6887715" md5="4adaf1c515db4af957bf969ad6cbd4d0" sha1="87964746b90199a0c9b9ac15c22434c7f7f9d26a"/>
+	</game>
+	<game name="Depeche Mode - One Night in Paris - The Exciter Tour 2001 (Europe)" id="0033">
+		<category>Games</category>
+		<description>Depeche Mode - One Night in Paris - The Exciter Tour 2001 (Europe)</description>
+		<rom name="Depeche Mode - One Night in Paris - The Exciter Tour 2001 (Europe).iso" size="1689059328" crc="e628b5c3" md5="3dbf1d00259313b7a969ddc07395b7c0" sha1="2a9eed479619ada0e1789e71dae8b30cb0147219"/>
+	</game>
+	<game name="Depeche Mode - Playing the Angel (Europe)" id="0053">
+		<category>Games</category>
+		<description>Depeche Mode - Playing the Angel (Europe)</description>
+		<rom name="Depeche Mode - Playing the Angel (Europe).iso" size="1006600192" crc="52076ac9" md5="f843262cabcdb88e6e8ce99b43ec269e" sha1="f74be87e63dfb98d45caf5c64fb158a28d2e0b9c"/>
+	</game>
+	<game name="Fatboy Slim - The Greatest Hits - Why Make Videos (Europe)" id="0058">
+		<category>Games</category>
+		<description>Fatboy Slim - The Greatest Hits - Why Make Videos (Europe)</description>
+		<rom name="Fatboy Slim - The Greatest Hits - Why Make Videos (Europe).iso" size="1503985664" crc="44ce8d6e" md5="ff69bbc65946b4a06d3d3ddfc8d9f9d1" sha1="54f50bd6d54aa2b914e82c94a7b41d383e407d94"/>
+	</game>
+	<game name="Goldfrapp - Supernature (World)" id="0041">
+		<category>Games</category>
+		<description>Goldfrapp - Supernature (World)</description>
+		<rom name="Goldfrapp - Supernature (World).iso" size="660045824" crc="7509e173" md5="d51a417541f470cf98eb9763257ca99a" sha1="55d0c98a41709ecae87b2097a1e9c31d23a2e4dd"/>
+	</game>
+	<game name="Goldfrapp - Wonderful Electric - Live in London (World)" id="0031">
+		<category>Games</category>
+		<description>Goldfrapp - Wonderful Electric - Live in London (World)</description>
+		<rom name="Goldfrapp - Wonderful Electric - Live in London (World).iso" size="1596653568" crc="36c68303" md5="257625fcadba8288f25c80d0752ebaf1" sha1="febb11e9e9b75ffde501d4f402c9d2d2a3688939"/>
+	</game>
+	<game name="Green Day - Bullet in a Bible (Europe) (En,Ja,Fr,De,Es,It,Nl,Pt)" id="0029">
+		<category>Games</category>
+		<description>Green Day - Bullet in a Bible (Europe) (En,Ja,Fr,De,Es,It,Nl,Pt)</description>
+		<rom name="Green Day - Bullet in a Bible (Europe) (En,Ja,Fr,De,Es,It,Nl,Pt).iso" size="1351122944" crc="5d526b8b" md5="92c0c84116fe2ae73c5063018d11d26b" sha1="fd9ffee91b9ad68fe0ad30c00db5d18a4a2c40eb"/>
+	</game>
+	<game name="INXS - Live Baby Live (Europe)" id="0049">
+		<category>Games</category>
+		<description>INXS - Live Baby Live (Europe)</description>
+		<rom name="INXS - Live Baby Live (Europe).iso" size="1669136384" crc="65a4be80" md5="c020a2a92c79db8f6ef086c833877a2e" sha1="6dc6f14eb255aac7121521c3e927f1b3ca090922"/>
+	</game>
+	<game name="Iron Maiden - Rock in Rio (Europe)" id="0050">
+		<category>Games</category>
+		<description>Iron Maiden - Rock in Rio (Europe)</description>
+		<rom name="Iron Maiden - Rock in Rio (Europe).iso" size="1621622784" crc="608822e2" md5="be53e6a722f4c5104322e8b10c1a2d16" sha1="7a30116fb4b7174bea04c4c5684e78e26b04e530"/>
+	</game>
+	<game name="Iron Maiden - The Number of the Beast (World) (En,Fr,De,Es,It,Nl,Pt) (Classic Albums)" id="0005">
+		<category>Games</category>
+		<description>Iron Maiden - The Number of the Beast (World) (En,Fr,De,Es,It,Nl,Pt) (Classic Albums)</description>
+		<rom name="Iron Maiden - The Number of the Beast (World) (En,Fr,De,Es,It,Nl,Pt) (Classic Albums).iso" size="1628995584" crc="322d4cb0" md5="0b17e1f93cfa5ac4298cb559016be2f7" sha1="bb0d404f350fef1a759fc778bfad121903845ca0"/>
+	</game>
+	<game name="Jack Johnson Live in Japan (World)" id="0051">
+		<category>Games</category>
+		<description>Jack Johnson Live in Japan (World)</description>
+		<rom name="Jack Johnson Live in Japan (World).iso" size="899547136" crc="e0476d0b" md5="6a893cfdbe79cf5e6cc5a832f96649cb" sha1="7e244f8b85ef1046aa3f49f3098d5ea354c06509"/>
+	</game>
+	<game name="Jack Johnson and Friends - A Weekend at the Greek (World)" id="0042">
+		<category>Games</category>
+		<description>Jack Johnson and Friends - A Weekend at the Greek (World)</description>
+		<rom name="Jack Johnson and Friends - A Weekend at the Greek (World).iso" size="1634172928" crc="8198a05b" md5="2ef9cf4e5d93f7d722ded70f5aea9688" sha1="908b67e6fd58fe4602d8aef27ccbaeb6dbb98908"/>
+	</game>
+	<game name="Kylie Minogue - Showgirl (World)" id="0043">
+		<category>Games</category>
+		<description>Kylie Minogue - Showgirl (World)</description>
+		<rom name="Kylie Minogue - Showgirl (World).iso" size="1706655744" crc="39e08255" md5="cc82082549f1ed31cb9567b0a9fe3e7b" sha1="b7bae0a08e7f24c7ec108bd7852e214b26afa1a5"/>
+	</game>
+	<game name="Marilyn Manson - Guns, God and Government World Tour (World)" id="0006">
+		<category>Games</category>
+		<description>Marilyn Manson - Guns, God and Government World Tour (World)</description>
+		<rom name="Marilyn Manson - Guns, God and Government World Tour (World).iso" size="1585774592" crc="ff1802dd" md5="a257048e52d9c5e317226248c96690ab" sha1="716d1bd55b4e3f99677d270c05337593806b534e"/>
+	</game>
+	<game name="Metallica - Metallica (World) (En,Fr,De,Es,It,Nl,Pt) (Classic Albums)" id="0007">
+		<category>Games</category>
+		<description>Metallica - Metallica (World) (En,Fr,De,Es,It,Nl,Pt) (Classic Albums)</description>
+		<rom name="Metallica - Metallica (World) (En,Fr,De,Es,It,Nl,Pt) (Classic Albums).iso" size="1624932352" crc="5457ecba" md5="e86a8d82d2e8664f762e98d534e1a2b8" sha1="b2cffacd4983a4a8d94a3882a6124c842ee92b69"/>
+	</game>
+	<game name="Michael Jackson - Number Ones (World)" id="0061">
+		<category>Games</category>
+		<description>Michael Jackson - Number Ones (World)</description>
+		<rom name="Michael Jackson - Number Ones (World).iso" size="1481015296" crc="abeac698" md5="66b762d6bd2c38ae4030cfabd0c5ad42" sha1="ffaa56b70fb7e891dee3a8f37001d7283645a186"/>
+	</game>
+	<game name="Morrissey - Who Put The 'M' in Manchester (World)" id="0052">
+		<category>Games</category>
+		<description>Morrissey - Who Put The 'M' in Manchester (World)</description>
+		<rom name="Morrissey - Who Put The 'M' in Manchester (World).iso" size="1757216768" crc="3cf92182" md5="252d3e9a81c3ab19d20bb28f95d96115" sha1="346933c6640385bf077d7c009103392bc6592f4d"/>
+	</game>
+	<game name="Nirvana - Nevermind (World) (En,Fr,De,Es,It,Nl,Pt) (Classic Albums)" id="0008">
+		<category>Games</category>
+		<description>Nirvana - Nevermind (World) (En,Fr,De,Es,It,Nl,Pt) (Classic Albums)</description>
+		<rom name="Nirvana - Nevermind (World) (En,Fr,De,Es,It,Nl,Pt) (Classic Albums).iso" size="1656946688" crc="339a463d" md5="44f80716ef7865c9c4957f1b8a7968a6" sha1="b563d37d60881c4f19b1663f2acdd295609cc11c"/>
+	</game>
+	<game name="Nirvana - Nevermind (World) (En,Fr,De,Es,It,Nl,Pt) (USA Version) (Classic Albums)" id="0035">
+		<category>Games</category>
+		<description>Nirvana - Nevermind (World) (En,Fr,De,Es,It,Nl,Pt) (USA Version) (Classic Albums)</description>
+		<rom name="Nirvana - Nevermind (World) (En,Fr,De,Es,It,Nl,Pt) (USA Version) (Classic Albums).iso" size="1656473600" crc="c9ec10a1" md5="025d4905a28553db08d013f2d250c42c" sha1="51e5166e309fe7d29d54a1fe66450f6c18d6841f"/>
+	</game>
+	<game name="Now 2006 - That's What I Call Music! (World)" id="0067">
+		<category>Games</category>
+		<description>Now 2006 - That's What I Call Music! (World)</description>
+		<rom name="Now 2006 - That's What I Call Music! (World).iso" size="1581711360" crc="b0960f78" md5="30c9274c019cb7af5693818acb8a46f3" sha1="751a0d6abf6523fdeaf287a9505c6fde5c94fabf" sha256="5d0dc69d34954eb269d2aa1a241a00778faf30260e280b1d52d6dc87d222618b"/>
+	</game>
+	<game name="Outkast - The Videos (World)" id="0011">
+		<category>Games</category>
+		<description>Outkast - The Videos (World)</description>
+		<rom name="Outkast - The Videos (World).iso" size="1435336704" crc="e14c22a3" md5="d6d9f3a9eddbf471faf54c9811866f56" sha1="f8a57744036cf0cff50a123f876d952a986f93bc"/>
+	</game>
+	<game name="Pink - Limited Edition (World)" id="0013">
+		<category>Games</category>
+		<description>Pink - Limited Edition (World)</description>
+		<rom name="Pink - Limited Edition (World).iso" size="1095401472" crc="2ea25eb9" md5="80571046de0669f443506506d9376940" sha1="26e1c30e36e401e5a7660e747457c09ee14a2b76"/>
+	</game>
+	<game name="Pink Floyd - The Making of The Dark Side of the Moon (World) (Fr,De,Es,It,Nl,Pt) (Classic Albums)" id="0012">
+		<category>Games</category>
+		<description>Pink Floyd - The Making of The Dark Side of the Moon (World) (Fr,De,Es,It,Nl,Pt) (Classic Albums)</description>
+		<rom name="Pink Floyd - The Making of The Dark Side of the Moon (World) (Fr,De,Es,It,Nl,Pt) (Classic Albums).iso" size="1633550336" crc="3ec6a2b6" md5="2d587c250f26402b7fb598155a6a7aec" sha1="f5960c9a302213616dbfc4733714043196189141"/>
+	</game>
+	<game name="Placebo - Soulmates Never Die - Live in Paris 2003 (World) (En,Fr,De,Es,It)" id="0014">
+		<category>Games</category>
+		<description>Placebo - Soulmates Never Die - Live in Paris 2003 (World) (En,Fr,De,Es,It)</description>
+		<rom name="Placebo - Soulmates Never Die - Live in Paris 2003 (World) (En,Fr,De,Es,It).iso" size="1638039552" crc="2925aa74" md5="50dcd0f7c9cdc77f2e12d9af1758fa91" sha1="7d8e12617b6b26a578b0d97a08f551dae037bb48"/>
+	</game>
+	<game name="Puddle of Mudd - Striking That Familiar Chord (World)" id="0015">
+		<category>Games</category>
+		<description>Puddle of Mudd - Striking That Familiar Chord (World)</description>
+		<rom name="Puddle of Mudd - Striking That Familiar Chord (World).iso" size="1688010752" crc="23294449" md5="ade3f6d476a498867346a4f445fa8fa2" sha1="691c0e846e07f79bd5ce1438da17c07bccc44898"/>
+	</game>
+	<game name="Queen - The Making of A Night at the Opera (World) (En,Fr,De,Es,It,Nl,Pt) (Classic Albums)" id="0016">
+		<category>Games</category>
+		<description>Queen - The Making of A Night at the Opera (World) (En,Fr,De,Es,It,Nl,Pt) (Classic Albums)</description>
+		<rom name="Queen - The Making of A Night at the Opera (World) (En,Fr,De,Es,It,Nl,Pt) (Classic Albums).iso" size="1454473216" crc="43ab1e94" md5="91f6930a1dcc58b4010c8b7dd8f073df" sha1="05e857bcdef85aa4879ce20ef9f5fb8677ca53b1"/>
+	</game>
+	<game name="Red Hot Chili Peppers - Live at Slane Castle (World)" id="0045">
+		<category>Games</category>
+		<description>Red Hot Chili Peppers - Live at Slane Castle (World)</description>
+		<rom name="Red Hot Chili Peppers - Live at Slane Castle (World).iso" size="1474985984" crc="553b183e" md5="e6a28c972dc9b9c0a7d1d50a26cbd9cc" sha1="c9f3386fc670c1d9d4b4e8c274a1c4236552be00"/>
+	</game>
+	<game name="Rob Zombie - Hellbilly Deluxe (World)" id="0046">
+		<category>Games</category>
+		<description>Rob Zombie - Hellbilly Deluxe (World)</description>
+		<rom name="Rob Zombie - Hellbilly Deluxe (World).iso" size="822673408" crc="a50d2542" md5="144cb211f5cd173bd738f437e69bcb66" sha1="ab5993320554032efe069d47bac21658acf737de"/>
+	</game>
+	<game name="Scissor Sisters - We Are Scissor Sisters and So Are You (World)" id="0017">
+		<category>Games</category>
+		<description>Scissor Sisters - We Are Scissor Sisters and So Are You (World)</description>
+		<rom name="Scissor Sisters - We Are Scissor Sisters and So Are You (World).iso" size="1682571264" crc="a960bd45" md5="49c630340bbb7a069e81066bd59a8719" sha1="af76152a06d6bc828c956746dbefd980a2c7796e"/>
+	</game>
+	<game name="Tiesto in Concert (World)" id="0028">
+		<category>Games</category>
+		<description>Tiesto in Concert (World)</description>
+		<rom name="Tiesto in Concert (World).iso" size="1696169984" crc="8d037f32" md5="66d8a711ab7e59e0f2441727787168a9" sha1="5f82be2a0e5d489745d5adf1a79e26d5ad8c0129"/>
+	</game>
+	<game name="Tupac - Live at the House of Blues (World)" id="0020">
+		<category>Games</category>
+		<description>Tupac - Live at the House of Blues (World)</description>
+		<rom name="Tupac - Live at the House of Blues (World).iso" size="1679097856" crc="f88847ce" md5="95afd8f35fe22837c0c7dcb566778b3d" sha1="70831d2df3adc8d86e26c2204cbdf04bdc8af403"/>
+	</game>
+	<game name="Up in Smoke Tour, The (World)" id="0019">
+		<category>Games</category>
+		<description>Up in Smoke Tour, The (World)</description>
+		<rom name="Up in Smoke Tour, The (World).iso" size="1659699200" crc="1f1162e7" md5="916d16bbdc75d79f46fee3f0e86bbd71" sha1="967971fc215a037b7adaef0ce741785c1039bf93"/>
+	</game>
+	<game name="Up in Smoke Tour, The (World) (USA Version)" id="0036">
+		<category>Games</category>
+		<description>Up in Smoke Tour, The (World) (USA Version)</description>
+		<rom name="Up in Smoke Tour, The (World) (USA Version).iso" size="1659699200" crc="afcab1d0" md5="69014e56d04cdf419dedeb63c0168467" sha1="24e011edf3393e5c9dc0622b3f77f197dd4c4aee"/>
+	</game>
+	<game name="Usher - Rhythm City Volume One - Caught Up (World)" id="0063">
+		<category>Games</category>
+		<description>Usher - Rhythm City Volume One - Caught Up (World)</description>
+		<rom name="Usher - Rhythm City Volume One - Caught Up (World).iso" size="1352826880" crc="b31cd91d" md5="71603356cbb6085417afd9d136d468bc" sha1="1d6c6749f7e730013a35c0f0533cabc5891615de"/>
+	</game>
+	<game name="Who, The - The Kids are Alright (World)" id="0055">
+		<category>Games</category>
+		<description>Who, The - The Kids are Alright (World)</description>
+		<rom name="Who, The - The Kids are Alright (World).iso" size="1776222208" crc="1eba64cc" md5="dfed0fcc4068c009ab441f521cc94b8b" sha1="6681e5c8fc42aabbf66f1ecdcdbf05ababce5a43"/>
+	</game>
+	<game name="Zakk Wylde's Black Label Society - Boozed, Boozed &amp; Broken-Boned - Live with the Detroit Chapter (World)" id="0003">
+		<category>Games</category>
+		<description>Zakk Wylde's Black Label Society - Boozed, Boozed &amp; Broken-Boned - Live with the Detroit Chapter (World)</description>
+		<rom name="Zakk Wylde's Black Label Society - Boozed, Boozed &amp; Broken-Boned - Live with the Detroit Chapter (World).iso" size="1569751040" crc="6b09d16e" md5="944ec7808c13697a039301e893189ece" sha1="5a1a026042ebd13344e9c673b6437c66c6365ecd"/>
+	</game>
+</datafile>

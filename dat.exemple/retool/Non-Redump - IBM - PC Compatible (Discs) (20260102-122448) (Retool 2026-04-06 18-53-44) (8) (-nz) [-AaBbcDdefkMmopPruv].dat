@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<name>Non-Redump - IBM - PC Compatible (Discs) (Retool)</name>
+		<description>Non-Redump - IBM - PC Compatible (Discs) (8) (-nz) [-AaBbcDdefkMmopPruv] (20260102-122448) (Retool)</description>
+		<version>20260102-122448</version>
+		<date>2026-04-06 18-53-44</date>
+		<author>Aringon, bikerspade, Hiccup, MeguCocoa, NovaAurora, rarenight, SonGoku, xuom2</author>
+		<homepage>http://www.github.com/unexpectedpanda/retool</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"></clrmamepro>
+		<retool>Created by Retool 2.4.8</retool>
+	</header>
+	<game name="Computer BattleTech (World)" id="0300">
+		<category>Games</category>
+		<description>Computer BattleTech (World)</description>
+		<rom name="Computer BattleTech (World).bin" size="114032016" crc="d3479291" md5="4b174c5d5f5e48017a7202fd633aa689" sha1="d5e29e1d28ba213279ac53e7b31488f3bc4ad5ef" sha256="7752debf8fc1379227d4776f33f3a8e984810f3a8efd980a9cf5bafc9efd6469"/>
+		<rom name="Computer BattleTech (World).cue" size="87" crc="d78ef598" md5="7e151b44a802eb52ae9e542c10fdddaa" sha1="63c2d860b7820540313a22570a7922f5ed2975df" sha256="b8e2717054c37aec2280fe382ed365a516d88d0fb766aed796e174e534ec8bf5"/>
+	</game>
+	<game name="Devo Presents Adventures of the Smart Patrol (USA)" id="0404">
+		<category>Games</category>
+		<description>Devo Presents Adventures of the Smart Patrol (USA)</description>
+		<rom name="Devo Presents Adventures of the Smart Patrol (USA).bin" size="769231008" crc="1204248a" md5="be09085f37c7f02ecc8b998536143245" sha1="d633ee6461e16bcb4e71417c0477fd5136d1750b" sha256="0eae1aa5ca89df2e40b60ca562efbff1c6810d43a8916e548036084e8b62a21c"/>
+		<rom name="Devo Presents Adventures of the Smart Patrol (USA).cue" size="139" crc="c5e81784" sha1="7adba7ec6da0f539de738333553fefa233c9e15a"/>
+	</game>
+	<game name="F1 Internacional (Argentina) (En) (Alt)" id="0407">
+		<category>Games</category>
+		<description>F1 Internacional (Argentina) (En) (Alt)</description>
+		<rom name="GP98 (Track 1)" size="289462992" crc="d11e6949" md5="93d1002786bdadf8a1b5d807a28e7680" sha1="e85b47dae8dd64d6bb49af3e8774155c80b82228"/>
+		<rom name="GP98 (Track 2)" size="70766976" crc="2cedb3ac" md5="9ea09fb0fb17623caee7b0ff9a6f88fe" sha1="331bcffd2cc3530102e71ad614e5847fa71b38f1"/>
+		<rom name="GP98 (Track 3)" size="2377872" crc="520abf03" md5="669f80d8630a49309663358663b22cbe" sha1="cbeececf7f7a01c8ff0acd75ad8e5c7067bf4fc8"/>
+		<rom name="GP98 (Track 4)" size="75703824" crc="ac792c68" md5="4edbaea03fef3217ffc10721a3801b26" sha1="369b5118b3c4e36a0653481c7b6afac46ed673f4"/>
+		<rom name="GP98 (Track 5)" size="69301680" crc="e2733922" md5="2f5e7eacc20ad607d7d9c81b52d85cd6" sha1="9af002f2e26c939b4c9839d12613adf03f936f1d"/>
+		<rom name="GP98 (Track 6)" size="2377872" crc="ee45036b" md5="9f5acda18646c6ba8fbcfaa5da85fe03" sha1="23b77a78a2d520f414a4b3314a09df7dff05fb73"/>
+	</game>
+	<game name="Lara Croft Tomb Raider - The Angel of Darkness (Unknown) (Disc 1)" id="0409">
+		<category>Games</category>
+		<description>Lara Croft Tomb Raider - The Angel of Darkness (Unknown) (Disc 1)</description>
+		<rom name="Lara Croft Tomb Raider - The Angel of Darkness (Unknown) (Disc 1).bin" size="840534240" crc="b507f3af" md5="4719f26e2634bbc69b54e4da96d261e8" sha1="267c4c22235a2d0c989c7f7d779680dc645ef600"/>
+		<rom name="Lara Croft Tomb Raider - The Angel of Darkness (Unknown) (Disc 1).cue" size="131" crc="98225b07" sha1="87dcf4639be2590d5c8b2b751014c990b17b2498"/>
+	</game>
+	<game name="Lara Croft Tomb Raider - The Angel of Darkness (Unknown) (Disc 2)" id="0410">
+		<category>Games</category>
+		<description>Lara Croft Tomb Raider - The Angel of Darkness (Unknown) (Disc 2)</description>
+		<rom name="Lara Croft Tomb Raider - The Angel of Darkness (Unknown) (Disc 2).bin" size="819744912" crc="28da7b5d" md5="c1822a133e9390aa17cc7edab5c4ee9d" sha1="fe3699074ad232b559f9cd120caac80cfaa9ce5a"/>
+		<rom name="Lara Croft Tomb Raider - The Angel of Darkness (Unknown) (Disc 2).cue" size="131" crc="997f7dd6" sha1="47ef779acbcbed835e9528b015a88cd554f7fad5"/>
+	</game>
+	<game name="Man (USA)" id="0408">
+		<category>Games</category>
+		<description>Man (USA)</description>
+		<rom name="Man (USA).bin" size="61330752" crc="40759efe" md5="2774840e48a3eeaa3f44617f06cfb86a" sha1="6ad2016152544d0028f11af1fa010c0bc725e6f3" sha256="0781347e6c5eccc088da363420468a71f2e62b234d34376c2686f8ef58cccc45"/>
+		<rom name="Man (USA).cue" size="75" crc="d1eb4793" sha1="8f416bc0d868670b37edff2f0191a94aeba075d4"/>
+	</game>
+	<game name="SimMusik (France)" id="0396">
+		<category>Games</category>
+		<description>SimMusik (France)</description>
+		<rom name="SimMusik (France).ccd" size="769" crc="7fe0f3c2" md5="a13eb2727b6cf8220cced2cf992aafdb" sha1="bfc3ab701acd06ed8319233f7deb5f4294c59b80" sha256="7f9f5bbdff53c7c27c99545dec281453c23d69b9ded24d0a2f14672ee23e6604"/>
+		<rom name="SimMusik (France).cue" size="76" crc="eaa94d56" md5="6b6c475a79ae2edd52f6ec97c9779b32" sha1="b7bff9f41e0976da2622db076c51c1d9ae70d8c8" sha256="e25c89c3e8afe66874234370e8e1372b3c19a0e9c2f76893426c70c9b1ee3eb1"/>
+		<rom name="SimMusik (France).img" size="94204656" crc="781be9f3" md5="c1ee74a2839db509c5571475788529c4" sha1="8d6569e934f3954099cf938f23959cf216294e91" sha256="8e5529ffebc987eff45198eb716d2880d04d84d21c34d9fcb299cef48ce0d4a2"/>
+		<rom name="SimMusik (France).sub" size="3845088" crc="9ff6a52d" md5="e51e947d3934cbcd267a61f857fddbe2" sha1="dbd0ef5d0d72542ea7d228146c90f89de9193a48" sha256="48eb3fa4369e1d00c12dacfb65a7b31495d11f2b7a49a1b5856a38b7086cf137"/>
+	</game>
+	<game name="Superbike Racing (Argentina) (En)" id="0403">
+		<category>Games</category>
+		<description>Superbike Racing (Argentina) (En)</description>
+		<rom name="Superbike (Track 1).bin" size="297081120" crc="1dd9c8a0" md5="4573d339f243f2726f59af887246f5f9" sha1="ac84ba35608ca1f7a4de5387863280a3c3675388"/>
+		<rom name="Superbike (Track 2).bin" size="60585168" crc="5a47b2b2" md5="421659f8918c262c607cb257d8008419" sha1="4c57039d2e1420bb764c48ec2a8b1b398e91ae15"/>
+		<rom name="Superbike (Track 3).bin" size="2848272" crc="dfc873d5" md5="f6c2ea6444ea3762bd9cc1aaff28c777" sha1="c0c363e790f0ffe4f5ed1b68c015f1fabc85b0aa"/>
+		<rom name="Superbike (Track 4).bin" size="55180272" crc="db0e798c" md5="9d6c313e6755c037f4a46517d166efa3" sha1="6cc32b2c15ec251c3e109163447d1e503b46535c"/>
+		<rom name="Superbike (Track 5).bin" size="45965136" crc="fe3f0f7e" md5="ce8ccf572e48ce698fe1904364971ff5" sha1="f0d9c45caaf90df3b26fb81774a1530b4ac6fbf8"/>
+		<rom name="Superbike (Track 6).bin" size="4685184" crc="b66cb8b4" md5="cde2c451d82137d06f7692367cbc92d8" sha1="89157596fda28c11b2bbf6f5a2bcbf35fff1898e"/>
+	</game>
+</datafile>
