@@ -166,6 +166,9 @@ MINERVA_TORRENT_BASE_CANDIDATES = (
     'https://cdn.minerva-archive.org/'
 )
 LOLROMS_BASE = 'https://lolroms.com/'
+CDROMANCE_BASE = 'https://cdromance.org/'
+VIMM_BASE = 'https://vimm.net/'
+RETRO_GAME_SETS_BASE = 'https://retrogamesets.fr/'
 NPM_CACHE_DIR = APP_ROOT / '.npm-cache'
 WEBTORRENT_HELPER = APP_ROOT / 'scripts' / 'minerva_torrent_download.js'
 BALROG_ASSETS_DIR = APP_ROOT / 'assets'
@@ -518,6 +521,30 @@ def get_default_sources():
             'priority': 3
         },
         {
+            'name': 'CDRomance',
+            'base_url': CDROMANCE_BASE,
+            'type': 'cdromance',
+            'enabled': True,
+            'description': 'Source majeure pour les jeux CD et traductions',
+            'priority': 3
+        },
+        {
+            'name': 'Vimm\'s Lair',
+            'base_url': VIMM_BASE,
+            'type': 'vimm',
+            'enabled': True,
+            'description': 'The Vault - Source de reference historique',
+            'priority': 3
+        },
+        {
+            'name': 'RetroGameSets',
+            'base_url': RETRO_GAME_SETS_BASE,
+            'type': 'retrogamesets',
+            'enabled': True,
+            'description': 'Base de donnees communautaire (1fichier)',
+            'priority': 2
+        },
+        {
             'name': '1fichier (Gratuit)',
             'base_url': config.get('1fichier_free', ''),
             'type': 'free_host',
@@ -531,88 +558,128 @@ SYSTEM_MAPPINGS = {
     'Nintendo - Game Boy': {
         'edgeemu': 'nintendo-gameboy',
         'planetemu': 'nintendo-game-boy',
-        'lolroms': 'Nintendo - Game Boy'
+        'lolroms': 'Nintendo - Game Boy',
+        'vimm': 'GB',
+        'retrogamesets': 'Game Boy (Archive)'
     },
     'Nintendo - Game Boy Color': {
         'edgeemu': 'nintendo-gameboycolor',
         'planetemu': 'nintendo-game-boy-color',
-        'lolroms': 'Nintendo - Game Boy Color'
+        'lolroms': 'Nintendo - Game Boy Color',
+        'vimm': 'GBC',
+        'retrogamesets': 'Game Boy Color (Archive)'
     },
     'Nintendo - Game Boy Advance': {
         'edgeemu': 'nintendo-gba',
         'planetemu': 'nintendo-game-boy-advance',
-        'lolroms': 'Nintendo - Game Boy Advance'
+        'lolroms': 'Nintendo - Game Boy Advance',
+        'vimm': 'GBA',
+        'retrogamesets': 'Game Boy Advance (Archive)'
     },
     'Nintendo - Nintendo Entertainment System': {
         'edgeemu': 'nintendo-nes',
         'planetemu': 'nintendo-entertainment-system',
-        'lolroms': 'Nintendo - Famicom/Headerless'
+        'lolroms': 'Nintendo - Famicom/Headerless',
+        'vimm': 'NES',
+        'retrogamesets': 'NES (Archive)'
     },
     'Nintendo - Nintendo Entertainment System (Headered)': {
         'edgeemu': 'nintendo-nes',
         'planetemu': 'nintendo-entertainment-system',
-        'lolroms': 'Nintendo - Famicom/Headered'
+        'lolroms': 'Nintendo - Famicom/Headered',
+        'vimm': 'NES',
+        'retrogamesets': 'NES (Archive)'
     },
     'Nintendo - Super Nintendo Entertainment System': {
         'edgeemu': 'nintendo-snes',
         'planetemu': 'nintendo-super-nintendo-entertainment-system',
-        'lolroms': 'Nintendo - Super Famicom'
+        'lolroms': 'Nintendo - Super Famicom',
+        'vimm': 'SNES',
+        'retrogamesets': 'SNES (Archive)'
     },
     'Nintendo - Nintendo 64': {
         'edgeemu': 'nintendo-n64',
         'planetemu': 'nintendo-64',
-        'lolroms': 'Nintendo - 64'
+        'lolroms': 'Nintendo - 64',
+        'vimm': 'N64',
+        'retrogamesets': 'Nintendo 64 (Archive)'
     },
     'Sega - Mega Drive - Genesis': {
         'edgeemu': 'sega-genesis',
         'planetemu': 'sega-mega-drive',
-        'lolroms': 'SEGA/Mega Drive'
+        'lolroms': 'SEGA/Mega Drive',
+        'vimm': 'Genesis',
+        'retrogamesets': 'Mega Drive (Archive)'
     },
     'Sega - Master System - Mark III': {
         'edgeemu': 'sega-mastersystem',
         'planetemu': 'sega-master-system',
-        'lolroms': 'SEGA/Master System'
+        'lolroms': 'SEGA/Master System',
+        'vimm': 'SMS',
+        'retrogamesets': 'Master System (Archive)'
     },
     'Sega - Game Gear': {
         'edgeemu': 'sega-gamegear',
         'planetemu': 'sega-game-gear',
-        'lolroms': 'SEGA/Game Gear'
+        'lolroms': 'SEGA/Game Gear',
+        'vimm': 'GameGear',
+        'retrogamesets': 'Game Gear (Archive)'
     },
     'NEC - PC Engine - TurboGrafx 16': {
         'edgeemu': 'nec-pcengine',
-        'planetemu': 'nec-pc-engine-turbografx-16-entertainment-super-system'
+        'planetemu': 'nec-pc-engine-turbografx-16-entertainment-super-system',
+        'vimm': 'Engine',
+        'retrogamesets': 'PC Engine (Archive)'
     },
     'SNK - Neo Geo Pocket Color': {
         'edgeemu': 'snk-neogeopocketcolor',
         'planetemu': 'snk-neo-geo-pocket-color',
-        'lolroms': 'SNK/NeoGeo Pocket Color'
+        'lolroms': 'SNK/NeoGeo Pocket Color',
+        'retrogamesets': 'Neo-Geo Pocket Color (Archive)'
     },
     'Sony - PlayStation': {
-        'lolroms': 'SONY/PlayStation'
+        'lolroms': 'SONY/PlayStation',
+        'vimm': 'PS1',
+        'retrogamesets': 'PlayStation (Archive)'
     },
     'Sony - PlayStation Portable': {
-        'lolroms': 'SONY/PlayStation Portable'
+        'lolroms': 'SONY/PlayStation Portable',
+        'vimm': 'PSP',
+        'retrogamesets': 'PlayStation Portable (Archive)'
     },
     'Nintendo - DS': {
-        'lolroms': 'Nintendo - DS'
+        'lolroms': 'Nintendo - DS',
+        'vimm': 'DS',
+        'retrogamesets': 'Nintendo DS (LolRoms)'
     },
     'Nintendo - 3DS': {
-        'lolroms': 'Nintendo - 3DS'
+        'lolroms': 'Nintendo - 3DS',
+        'vimm': '3DS',
+        'retrogamesets': '3DS (Archive)'
     },
     'Nintendo - GameCube': {
-        'lolroms': 'Nintendo - GameCube'
+        'lolroms': 'Nintendo - GameCube',
+        'vimm': 'GameCube',
+        'retrogamesets': 'Game Cube (Archive)'
     },
     'Nintendo - Wii': {
-        'lolroms': 'Nintendo - Wii'
+        'lolroms': 'Nintendo - Wii',
+        'vimm': 'Wii',
+        'retrogamesets': 'Wii (Archive)'
     },
     'Nintendo - Wii U': {
-        'lolroms': 'Nintendo - Wii U'
+        'lolroms': 'Nintendo - Wii U',
+        'vimm': 'WiiU',
+        'retrogamesets': 'Wii U (EU) (1Fichier)'
     },
     'Nintendo - Virtual Boy': {
-        'lolroms': 'Nintendo - Virtual Boy'
+        'lolroms': 'Nintendo - Virtual Boy',
+        'vimm': 'VirtualBoy',
+        'retrogamesets': 'Virtual Boy (Archive)'
     },
     'Nintendo - Pokémon Mini': {
-        'lolroms': 'Nintendo - Pokémon Mini'
+        'lolroms': 'Nintendo - Pokémon Mini',
+        'retrogamesets': 'Pokemon Mini (Archive)'
     }
 }
 
@@ -1617,7 +1684,7 @@ def print_sources_info():
     
     print("\n--- Sources Secondaires ---")
     for i, source in enumerate(get_default_sources(), 1):
-        if source['type'] not in ('archive_org', 'edgeemu', 'planetemu', 'lolroms', 'free_host'):
+        if source['type'] not in ('archive_org', 'edgeemu', 'planetemu', 'lolroms', 'cdromance', 'vimm', 'retrogamesets', 'free_host'):
             continue
         print(f"\n{i}. {source['name']}")
         print(f"   Type: {source['type']}")
@@ -2566,6 +2633,23 @@ def get_lolroms_session():
     return LOLROMS_SESSION
 
 
+def get_cdromance_session():
+    """Retourne une session Cloudflare-compatible pour CDRomance."""
+    return get_lolroms_session() # On réutilise la même logique scraper
+
+
+def get_vimm_session():
+    """Retourne une session avec les bons headers pour Vimm's Lair."""
+    session = cloudscraper.create_scraper(
+        browser={'browser': 'chrome', 'platform': 'windows', 'mobile': False}
+    )
+    session.headers.update({
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Referer': VIMM_BASE
+    })
+    return session
+
+
 def build_lolroms_url(path: str) -> str:
     """Construit une URL LoLROMs depuis un chemin logique avec slashs."""
     segments = [quote(segment) for segment in str(path or '').split('/') if segment]
@@ -2757,7 +2841,10 @@ def list_planetemu_directory(system_slug: str, session: requests.Session) -> dic
         return {}
         
     config = ROM_DATABASE.get('config_urls', {})
-    url = f"{config.get('planetemu_roms', '')}{system_slug}"
+    base = config.get('planetemu_roms', '')
+    if not base:
+        base = 'https://www.planetemu.net/roms/'
+    url = f"{base}{system_slug}"
     print(f"Scraping PlanetEmu: {url}")
     
     mapping = {}
@@ -2802,6 +2889,9 @@ def download_planetemu(page_url: str, dest_path: str, session: requests.Session,
         # Étape 2 : Envoyer le POST pour générer le token
         config = ROM_DATABASE.get('config_urls', {})
         download_api = config.get('planetemu_download_api', '')
+        if not download_api:
+             download_api = 'https://www.planetemu.net/php/roms/download.php'
+             
         data = {'id': rom_id, 'download': 'T\u00e9l\u00e9charger'}
         
         # On ne suit pas les redirects automatiquement pour voir le Location
@@ -2811,9 +2901,15 @@ def download_planetemu(page_url: str, dest_path: str, session: requests.Session,
         if resp.status_code == 302:
             token_url = resp.headers.get('Location')
             if token_url:
-                from urllib.parse import urljoin
                 token_url = urljoin(download_api, token_url)
         
+        if not token_url:
+            # Essayer de trouver le token dans le HTML si pas de redirect 302
+            soup = BeautifulSoup(resp.text, 'html.parser')
+            a_token = soup.find('a', href=True)
+            if a_token and 'token=' in a_token['href']:
+                token_url = urljoin(download_api, a_token['href'])
+
         if not token_url:
             print("  [PlanetEmu] Échec de génération du token")
             return False
@@ -2824,6 +2920,265 @@ def download_planetemu(page_url: str, dest_path: str, session: requests.Session,
     except Exception as e:
         print(f"  [PlanetEmu] Erreur: {e}")
         return False
+
+def resolve_cdromance_game(game_info: dict, session: requests.Session) -> dict | None:
+    """Recherche un jeu sur CDRomance via leur moteur de recherche."""
+    for candidate_name in iter_game_candidate_names(game_info):
+        search_url = f"{CDROMANCE_BASE}?s={quote(candidate_name)}"
+        try:
+            resp = session.get(search_url, timeout=30)
+            if resp.status_code != 200: continue
+            
+            soup = BeautifulSoup(resp.text, 'html.parser')
+            # Les résultats de recherche sont dans des <a> avec la classe 'thumbnail-link' ou similaire
+            # On cherche le premier résultat qui ressemble au nom du jeu
+            for link in soup.find_all('a', href=True):
+                if CDROMANCE_BASE in link['href'] and any(x in link['href'] for x in ['-iso', '-rom', '-roms']):
+                    title = link.get('title', '').lower() or link.get_text().strip().lower()
+                    # Normalisation basique pour comparaison
+                    clean_title = re.sub(r'[^a-z0-9]', '', title)
+                    clean_candidate = re.sub(r'[^a-z0-9]', '', candidate_name.lower())
+                    
+                    if clean_candidate in clean_title or clean_title in clean_candidate:
+                        return {
+                            'full_name': candidate_name,
+                            'page_url': link['href'],
+                            'source': 'CDRomance'
+                        }
+        except Exception as e:
+            print(f"  [CDRomance] Erreur recherche: {e}")
+            continue
+    return None
+
+def download_cdromance(page_url: str, dest_path: str, session: requests.Session, progress_callback=None) -> bool:
+    """Télécharge un jeu depuis CDRomance en gérant le système de tickets."""
+    try:
+        # Étape 1 : Récupérer la page du jeu
+        resp = session.get(page_url, timeout=30)
+        soup = BeautifulSoup(resp.text, 'html.parser')
+        
+        # Le ticket est souvent dans un input ou un span avec l'ID cdr_ticket
+        ticket = None
+        ticket_el = soup.find('input', {'id': 'cdr_ticket_input'}) or soup.find('span', {'id': 'cdr_ticket'})
+        if ticket_el:
+            ticket = ticket_el.get('value') or ticket_el.get_text().strip()
+            
+        if not ticket:
+            # Essayer de trouver dans le JS si pas trouvé en HTML
+            match = re.search(r'cdr_ticket\s*=\s*["\']([^"\']+)["\']', resp.text)
+            if match: ticket = match.group(1)
+
+        if not ticket:
+            print("  [CDRomance] Ticket introuvable")
+            return False
+            
+        # Étape 2 : Envoyer le ticket pour obtenir les liens
+        # CDRomance utilise souvent un POST vers .org/
+        post_data = {'cdrTicketInput': ticket}
+        resp = session.post(CDROMANCE_BASE, data=post_data, timeout=30)
+        soup = BeautifulSoup(resp.text, 'html.parser')
+        
+        # Chercher les liens de téléchargement
+        dl_links = []
+        for a in soup.find_all('a', href=True):
+            if 'download.php' in a['href']:
+                dl_links.append(urljoin(CDROMANCE_BASE, a['href']))
+        
+        if not dl_links:
+            print("  [CDRomance] Aucun lien de téléchargement trouvé après validation du ticket")
+            return False
+            
+        # Prendre le premier lien
+        download_url = dl_links[0]
+        return download_file(download_url, dest_path, session, progress_callback)
+        
+    except Exception as e:
+        print(f"  [CDRomance] Erreur téléchargement: {e}")
+        return False
+
+def resolve_vimm_game(game_info: dict, system_slug: str, session: requests.Session) -> dict | None:
+    """Recherche un jeu sur Vimm's Lair."""
+    if not system_slug: return None
+    
+    for candidate_name in iter_game_candidate_names(game_info):
+        search_url = f"{VIMM_BASE}vault/?p=list&system={system_slug}&q={quote(candidate_name)}"
+        try:
+            resp = session.get(search_url, timeout=30)
+            if resp.status_code != 200: continue
+            
+            soup = BeautifulSoup(resp.text, 'html.parser')
+            # Les résultats sont dans des <a> à l'intérieur d'un tableau
+            for a in soup.find_all('a', href=True):
+                if '/vault/' in a['href']:
+                    title = a.get_text().strip().lower()
+                    if candidate_name.lower() in title or title in candidate_name.lower():
+                        return {
+                            'full_name': title,
+                            'page_url': urljoin(VIMM_BASE, a['href']),
+                            'source': 'Vimm\'s Lair'
+                        }
+        except Exception as e:
+            print(f"  [Vimm] Erreur recherche: {e}")
+            continue
+    return None
+
+def download_vimm(page_url: str, dest_path: str, session: requests.Session, progress_callback=None) -> bool:
+    """Télécharge un jeu depuis Vimm's Lair en simulant le formulaire POST."""
+    try:
+        # Étape 1 : Aller sur la page du jeu pour avoir les cookies et le mediaId
+        session.headers.update({'Referer': VIMM_BASE})
+        resp = session.get(page_url, timeout=30)
+        soup = BeautifulSoup(resp.text, 'html.parser')
+        
+        form = soup.find('form', id='dl_form')
+        if not form:
+            print("  [Vimm] Formulaire de téléchargement introuvable")
+            return False
+            
+        media_id_input = form.find('input', {'name': 'mediaId'})
+        if not media_id_input:
+            print("  [Vimm] mediaId introuvable")
+            return False
+            
+        media_id = media_id_input.get('value')
+        action = form.get('action')
+        download_url = urljoin(page_url, action)
+        
+        # Étape 2 : POST pour déclencher le téléchargement
+        # Note: Vimm est très strict sur le Referer
+        session.headers.update({'Referer': page_url})
+        payload = {'mediaId': media_id}
+        
+        # Utiliser download_file mais avec un POST ? 
+        # download_file utilise session.get. On va devoir le faire manuellement ici.
+        with session.post(download_url, data=payload, stream=True, timeout=120) as r:
+            r.raise_for_status()
+            
+            # Récupérer le nom de fichier
+            cd = r.headers.get('content-disposition', '')
+            match = re.search(r'filename="?([^";]+)"?', cd)
+            if match:
+                server_filename = match.group(1)
+                dest_path = os.path.join(os.path.dirname(dest_path), server_filename)
+                
+            total_size = int(r.headers.get('content-length', 0))
+            downloaded = 0
+            with open(dest_path, 'wb') as f:
+                for chunk in r.iter_content(chunk_size=8192):
+                    if chunk:
+                        f.write(chunk)
+                        downloaded += len(chunk)
+                        if total_size > 0 and progress_callback:
+                            progress_callback((downloaded / total_size) * 100)
+                            
+            if progress_callback: progress_callback(100.0)
+            return True
+            
+    except Exception as e:
+        print(f"  [Vimm] Erreur téléchargement: {e}")
+        return False
+
+
+RETRO_GAME_SETS_DB = {}
+RETRO_GAME_SETS_CACHE_DIR = APP_ROOT / 'rom_db_shards' / 'retrogamesets'
+
+def load_retrogamesets_database(system_slug: str, session: requests.Session) -> list:
+    """Charge la base de données JSON pour un système spécifique depuis RetroGameSets."""
+    global RETRO_GAME_SETS_DB
+    
+    if system_slug in RETRO_GAME_SETS_DB:
+        return RETRO_GAME_SETS_DB[system_slug]
+        
+    os.makedirs(RETRO_GAME_SETS_CACHE_DIR, exist_ok=True)
+    json_path = RETRO_GAME_SETS_CACHE_DIR / f"{system_slug}.json"
+    
+    # Si le fichier n'existe pas, on télécharge le games.zip complet
+    if not json_path.exists():
+        print(f"  [RetroGameSets] Téléchargement de la base de données...")
+        try:
+            zip_url = urljoin(RETRO_GAME_SETS_BASE, 'softs/games.zip')
+            resp = session.get(zip_url, timeout=60)
+            if resp.status_code == 200:
+                import zipfile
+                import io
+                with zipfile.ZipFile(io.BytesIO(resp.content)) as z:
+                    # Extraire tous les JSON dans le dossier cache
+                    # Le zip contient un dossier 'games/'
+                    for member in z.namelist():
+                        if member.endswith('.json'):
+                            filename = os.path.basename(member)
+                            with open(RETRO_GAME_SETS_CACHE_DIR / filename, 'wb') as f:
+                                f.write(z.read(member))
+            else:
+                print(f"  [RetroGameSets] Erreur téléchargement games.zip: {resp.status_code}")
+                return []
+        except Exception as e:
+            print(f"  [RetroGameSets] Erreur lors de la mise à jour de la base: {e}")
+            return []
+
+    # Charger le JSON si présent
+    if json_path.exists():
+        try:
+            with open(json_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                RETRO_GAME_SETS_DB[system_slug] = data
+                return data
+        except Exception as e:
+            print(f"  [RetroGameSets] Erreur lecture JSON {system_slug}: {e}")
+            
+    return []
+
+def resolve_retrogamesets_game(game_info: dict, system_slug: str, session: requests.Session) -> dict | None:
+    """Recherche un jeu dans la base RetroGameSets."""
+    if not system_slug: return None
+    
+    db = load_retrogamesets_database(system_slug, session)
+    if not db: return None
+    
+    # Créer un index par nom pour recherche rapide
+    if not hasattr(resolve_retrogamesets_game, '_indices'):
+        resolve_retrogamesets_game._indices = {}
+        
+    if system_slug not in resolve_retrogamesets_game._indices:
+        index = {}
+        for entry in db:
+            if not isinstance(entry, list) or len(entry) < 2:
+                continue
+            # L'entrée est [path, url, size]
+            # path: "Nintendo - Game Boy/Tetris (World) (Rev A).zip"
+            path = entry[0]
+            url = entry[1]
+            
+            # Extraire le nom du fichier sans extension et sans le préfixe dossier
+            filename = os.path.basename(path)
+            name_no_ext = strip_rom_extension(filename)
+            index[name_no_ext.lower()] = {
+                'name': name_no_ext,
+                'url': url
+            }
+        resolve_retrogamesets_game._indices[system_slug] = index
+    
+    index = resolve_retrogamesets_game._indices[system_slug]
+    
+    for candidate_name in iter_game_candidate_names(game_info):
+        candidate_lower = candidate_name.lower()
+        if candidate_lower in index:
+            match = index[candidate_lower]
+            return {
+                'full_name': match.get('name'),
+                'url': match.get('url'),
+                'source': 'RetroGameSets'
+            }
+        # Recherche permissive : si le nom candidat est contenu dans un nom de l'index
+        for indexed_name_lower, match in index.items():
+            if candidate_lower in indexed_name_lower or indexed_name_lower in candidate_lower:
+                 return {
+                    'full_name': match.get('name'),
+                    'url': match.get('url'),
+                    'source': 'RetroGameSets'
+                }
+            
+    return None
 
 
 def list_myrient_directory(myrient_url: str, session: requests.Session) -> set:
@@ -3032,8 +3387,64 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
                                 remaining.append(game_info)
                         all_found.extend(newly_found)
                         still_missing = remaining
-    
-    # ========================================================================
+
+            elif source['type'] == 'cdromance' and source.get('enabled', True):
+                print(f"\n--- Recherche sur CDRomance ---")
+                cd_session = get_cdromance_session()
+                newly_found = []
+                remaining = []
+                for game_info in still_missing:
+                    cd_match = resolve_cdromance_game(game_info, cd_session)
+                    if cd_match:
+                        game_info['page_url'] = cd_match['page_url']
+                        game_info['source'] = 'CDRomance'
+                        game_info['download_filename'] = f"{game_info['game_name']}.zip"
+                        newly_found.append(game_info)
+                        print(f"  [CDRomance] {game_info['game_name']} trouvé")
+                    else:
+                        remaining.append(game_info)
+                all_found.extend(newly_found)
+                still_missing = remaining
+
+            elif source['type'] == 'vimm' and source.get('enabled', True):
+                slug = mappings.get('vimm')
+                if slug:
+                    print(f"\n--- Recherche sur Vimm's Lair ({slug}) ---")
+                    vimm_session = get_vimm_session()
+                    newly_found = []
+                    remaining = []
+                    for game_info in still_missing:
+                        vimm_match = resolve_vimm_game(game_info, slug, vimm_session)
+                        if vimm_match:
+                            game_info['page_url'] = vimm_match['page_url']
+                            game_info['source'] = 'Vimm\'s Lair'
+                            game_info['download_filename'] = f"{game_info['game_name']}.zip"
+                            newly_found.append(game_info)
+                            print(f"  [Vimm] {game_info['game_name']} trouvé")
+                        else:
+                            remaining.append(game_info)
+                    all_found.extend(newly_found)
+                    still_missing = remaining
+
+            elif source['type'] == 'retrogamesets' and source.get('enabled', True):
+                slug = mappings.get('retrogamesets')
+                if slug:
+                    print(f"\n--- Recherche sur RetroGameSets ({slug}) ---")
+                    newly_found = []
+                    remaining = []
+                    for game_info in still_missing:
+                        rgs_match = resolve_retrogamesets_game(game_info, slug, session)
+                        if rgs_match:
+                            game_info['download_url'] = rgs_match['url']
+                            game_info['source'] = 'RetroGameSets'
+                            game_info['download_filename'] = f"{game_info['game_name']}.zip"
+                            newly_found.append(game_info)
+                            print(f"  [RetroGameSets] {game_info['game_name']} trouvé")
+                        else:
+                            remaining.append(game_info)
+                    all_found.extend(newly_found)
+                    still_missing = remaining
+
     # ÉTAPE 3 : Recherche directe sur Myrient (pour les non-trouvés)
     # ========================================================================
     myrient_sources = [s for s in sources if s['type'] == 'myrient' and s.get('enabled', True)]
@@ -3185,6 +3596,7 @@ def search_all_sources(
                         game['download_url'] = f"{base_url.rstrip('/')}/{quote(game['download_filename'])}"
                     direct_found.extend(found)
                     all_found.extend(found)
+        """
 
     print(f"\n  TrouvÃ© via source principale: {len(direct_found)} jeux")
     print(f"  Restants aprÃ¨s Minerva: {len(still_missing)} jeux")
@@ -3262,8 +3674,64 @@ def search_all_sources(
                         all_found.extend(newly_found)
                         still_missing = remaining
 
-    # ========================================================================
-    # Ã‰TAPE 4 : Recherche archive.org par checksum puis nom (fallback final)
+            elif source['type'] == 'cdromance' and source.get('enabled', True):
+                print(f"\n--- Recherche sur CDRomance ---")
+                cd_session = get_cdromance_session()
+                newly_found = []
+                remaining = []
+                for game_info in still_missing:
+                    cd_match = resolve_cdromance_game(game_info, cd_session)
+                    if cd_match:
+                        game_info['page_url'] = cd_match['page_url']
+                        game_info['source'] = 'CDRomance'
+                        game_info['download_filename'] = f"{game_info['game_name']}.zip"
+                        newly_found.append(game_info)
+                        print(f"  [CDRomance] {game_info['game_name']} trouvé")
+                    else:
+                        remaining.append(game_info)
+                all_found.extend(newly_found)
+                still_missing = remaining
+
+            elif source['type'] == 'vimm' and source.get('enabled', True):
+                slug = mappings.get('vimm')
+                if slug:
+                    print(f"\n--- Recherche sur Vimm's Lair ({slug}) ---")
+                    vimm_session = get_vimm_session()
+                    newly_found = []
+                    remaining = []
+                    for game_info in still_missing:
+                        vimm_match = resolve_vimm_game(game_info, slug, vimm_session)
+                        if vimm_match:
+                            game_info['page_url'] = vimm_match['page_url']
+                            game_info['source'] = 'Vimm\'s Lair'
+                            game_info['download_filename'] = f"{game_info['game_name']}.zip"
+                            newly_found.append(game_info)
+                            print(f"  [Vimm] {game_info['game_name']} trouvé")
+                        else:
+                            remaining.append(game_info)
+                    all_found.extend(newly_found)
+                    still_missing = remaining
+
+            elif source['type'] == 'retrogamesets' and source.get('enabled', True):
+                slug = mappings.get('retrogamesets')
+                if slug:
+                    print(f"\n--- Recherche sur RetroGameSets ({slug}) ---")
+                    newly_found = []
+                    remaining = []
+                    for game_info in still_missing:
+                        rgs_match = resolve_retrogamesets_game(game_info, slug, session)
+                        if rgs_match:
+                            game_info['download_url'] = rgs_match['url']
+                            game_info['source'] = 'RetroGameSets'
+                            game_info['download_filename'] = f"{game_info['game_name']}.zip"
+                            newly_found.append(game_info)
+                            print(f"  [RetroGameSets] {game_info['game_name']} trouvé")
+                        else:
+                            remaining.append(game_info)
+                    all_found.extend(newly_found)
+                    still_missing = remaining
+
+    # ÉTAPE 4 : Recherche archive.org par checksum puis nom (fallback final)
     # ========================================================================
     archive_sources = [s for s in sources if s['type'] == 'archive_org' and s.get('enabled', True)]
     if archive_sources and still_missing:
@@ -3709,6 +4177,20 @@ def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_ru
                 elif source == 'LoLROMs' and download_url:
                     success = download_file(download_url, dest_path, get_lolroms_session())
 
+                elif source == 'CDRomance':
+                    page_url = game_info.get('page_url')
+                    if page_url:
+                        success = download_cdromance(page_url, dest_path, get_cdromance_session())
+
+                elif source == 'Vimm\'s Lair':
+                    page_url = game_info.get('page_url')
+                    if page_url:
+                        success = download_vimm(page_url, dest_path, get_vimm_session())
+
+                elif source == 'RetroGameSets' and download_url:
+                    api_keys = load_api_keys()
+                    success = download_from_premium_source('1fichier', download_url, dest_path, api_keys)
+
                 elif source.startswith('Minerva') and torrent_url:
                     print(f"  Torrent: {torrent_url[:80]}...")
                     success = download_from_minerva_torrent(torrent_url, filename, dest_path)
@@ -3885,6 +4367,20 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
 
                 elif source == 'LoLROMs' and download_url:
                     success = download_file(download_url, dest_path, get_lolroms_session())
+
+                elif source == 'CDRomance':
+                    page_url = game_info.get('page_url')
+                    if page_url:
+                        success = download_cdromance(page_url, dest_path, get_cdromance_session())
+
+                elif source == 'Vimm\'s Lair':
+                    page_url = game_info.get('page_url')
+                    if page_url:
+                        success = download_vimm(page_url, dest_path, get_vimm_session())
+
+                elif source == 'RetroGameSets' and download_url:
+                    api_keys = load_api_keys()
+                    success = download_from_premium_source('1fichier', download_url, dest_path, api_keys)
 
                 elif source.startswith('Minerva') and torrent_url:
                     print(f"  Torrent: {torrent_url[:80]}...")
@@ -4275,7 +4771,23 @@ def gui_mode():
                                 success = download_planetemu(page_url, dest_path, self.session, update_progress)
                         elif source == 'LoLROMs' and download_url:
                             success = download_file(download_url, dest_path, get_lolroms_session(), update_progress)
+
+                        elif source == 'CDRomance':
+                            page_url = game_info.get('page_url')
+                            if page_url:
+                                success = download_cdromance(page_url, dest_path, get_cdromance_session(), update_progress)
+
+                        elif source == 'Vimm\'s Lair':
+                            page_url = game_info.get('page_url')
+                            if page_url:
+                                success = download_vimm(page_url, dest_path, get_vimm_session(), update_progress)
+
+                        elif source == 'RetroGameSets' and download_url:
+                            api_keys = load_api_keys()
+                            success = download_from_premium_source('1fichier', download_url, dest_path, api_keys, update_progress)
+
                         elif source.startswith('Minerva') and torrent_url:
+
                             success = download_from_minerva_torrent(torrent_url, filename, dest_path, update_progress)
                         elif source == 'database' and download_url:
                             if '1fichier.com' in download_url:
@@ -4717,6 +5229,21 @@ def gui_mode():
                             success = download_planetemu(game_info['page_url'], dest_path, self.session, progress)
                         elif source == 'LoLROMs' and download_url:
                             success = download_file(download_url, dest_path, get_lolroms_session(), progress)
+
+                        elif source == 'CDRomance':
+                            page_url = game_info.get('page_url')
+                            if page_url:
+                                success = download_cdromance(page_url, dest_path, get_cdromance_session(), progress)
+
+                        elif source == 'Vimm\'s Lair':
+                            page_url = game_info.get('page_url')
+                            if page_url:
+                                success = download_vimm(page_url, dest_path, get_vimm_session(), progress)
+
+                        elif source == 'RetroGameSets' and download_url:
+                            api_keys = load_api_keys()
+                            success = download_from_premium_source('1fichier', download_url, dest_path, api_keys, progress)
+
                         elif source.startswith('Minerva') and torrent_url:
                             success = download_from_minerva_torrent(torrent_url, filename, dest_path, progress)
                         elif source == 'database' and download_url:
