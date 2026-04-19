@@ -78,5 +78,10 @@ Roms/**/*.rar
 # Database files (keep the zip, exclude extracted JSON)
 # rom_database.json
 # md5_lookup.json
+minerva hashes officiel.db
+minerva hashes officiel.db-shm
+minerva hashes officiel.db-wal
+rom_db_shards/build_report.json
+rom_db_shards_backup_*/
 
 tasks/

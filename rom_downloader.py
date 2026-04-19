@@ -218,92 +218,192 @@ LOLROMS_SESSION = None
 # ============================================================================
 
 ROM_DATABASE_FILE = APP_ROOT / 'rom_database.zip'
+ROM_DATABASE_SHARDS_DIR = APP_ROOT / 'rom_db_shards'
+DEFAULT_CONFIG_URLS = {
+    'archive_org': 'https://archive.org/download/',
+    'edgeemu_base': 'https://edgeemu.net',
+    'edgeemu_browse': 'https://edgeemu.net/browse-',
+    'planetemu_base': 'https://www.planetemu.net',
+    'planetemu_roms': 'https://www.planetemu.net/roms/',
+    'planetemu_download_api': 'https://www.planetemu.net/php/roms/download.php',
+    '1fichier_free': 'https://1fichier.com/',
+    '1fichier_apikeys': 'https://1fichier.com/console/params.pl',
+    'alldebrid_apikeys': 'https://alldebrid.com/apikeys/',
+    'alldebrid_unlock': 'https://api.alldebrid.com/v4/link/unlock',
+    'realdebrid_apikeys': 'https://real-debrid.com/apitoken',
+    'realdebrid_unlock': 'https://api.real-debrid.com/rest/1.0/unrestrict/link',
+}
 ROM_DATABASE = None
+ROM_DB_SHARD_CONNECTIONS = {}
 
 
 def load_rom_database():
-    """Charge la base de données des URLs en mémoire."""
+    """Charge la configuration; les index ROM sont lus depuis les shards zip."""
     global ROM_DATABASE
-    
+
     if ROM_DATABASE is not None:
         return ROM_DATABASE
-    
+
     try:
         import zipfile
-        # Charger la base complète
         if os.path.exists(ROM_DATABASE_FILE):
             with zipfile.ZipFile(ROM_DATABASE_FILE, 'r') as zf:
                 with zf.open('rom_database.json') as f:
                     ROM_DATABASE = json.load(f)
-            print(f"Base de données chargée : {ROM_DATABASE.get('total_urls', 0):,} URLs")
+            config = DEFAULT_CONFIG_URLS.copy()
+            config.update(ROM_DATABASE.get('config_urls', {}))
+            ROM_DATABASE['config_urls'] = config
+            print(f"Base de donnees legacy chargee : {ROM_DATABASE.get('total_urls', 0):,} URLs")
         else:
-            print(f"ATTENTION: {ROM_DATABASE_FILE} non trouvé!")
-            print("Exécutez create_rom_database.py pour créer la base puis zippez le fichier.")
-            ROM_DATABASE = {'urls': [], 'sources': {}}
-            
+            shard_count = len(list(ROM_DATABASE_SHARDS_DIR.glob('shard_*.zip'))) if ROM_DATABASE_SHARDS_DIR.exists() else 0
+            ROM_DATABASE = {
+                'urls': [],
+                'sources': {},
+                'config_urls': DEFAULT_CONFIG_URLS.copy(),
+                'shard_count': shard_count
+            }
+            if shard_count:
+                print(f"Base locale en shards chargee : {shard_count} shards zip")
+            else:
+                print(f"ATTENTION: aucun shard trouve dans {ROM_DATABASE_SHARDS_DIR}")
+                print("Executez scripts/build_minerva_hash_shards.py pour reconstruire la base.")
+
         return ROM_DATABASE
-        
     except Exception as e:
-        print(f"Erreur chargement base de données: {e}")
-        ROM_DATABASE = {'urls': [], 'sources': {}}
+        print(f"Erreur chargement base de donnees: {e}")
+        ROM_DATABASE = {'urls': [], 'sources': {}, 'config_urls': DEFAULT_CONFIG_URLS.copy()}
         return ROM_DATABASE
 
 
-def search_by_md5(md5_hash: str) -> list:
-    """
-    Recherche une ROM par son hash MD5 dans les shards localement.
-    """
-    if not md5_hash:
-        return []
-    
-    md5_hash = md5_hash.lower().strip()
-    shard_char = md5_hash[0]
-    shard_zip = APP_ROOT / 'rom_db_shards' / f"shard_{shard_char}.zip"
+def load_rom_db_shard(shard_char: str):
+    """Ouvre un shard SQLite zippe et garde la connexion en cache."""
+    shard_char = (shard_char or '').lower()
+    if not re.fullmatch(r'[0-9a-f]', shard_char):
+        return None, set()
+
+    cached = ROM_DB_SHARD_CONNECTIONS.get(shard_char)
+    if cached:
+        return cached['conn'], cached['columns']
+
+    shard_zip = ROM_DATABASE_SHARDS_DIR / f"shard_{shard_char}.zip"
     shard_db_name = f"shard_{shard_char}.db"
-    
     if not shard_zip.exists():
-        return []
-    
+        return None, set()
+
     try:
         import sqlite3
         import zipfile
         from tempfile import NamedTemporaryFile
-        
+
         with zipfile.ZipFile(shard_zip, 'r') as zf:
             with zf.open(shard_db_name) as db_file:
-                # SQLite needs a real file or bytes. We'll extract to a temp file.
                 with NamedTemporaryFile(delete=False, suffix='.db') as tmp:
                     tmp.write(db_file.read())
                     tmp_path = tmp.name
-                
-                try:
-                    conn = sqlite3.connect(tmp_path)
-                    cursor = conn.cursor()
-                    cursor.execute("SELECT urls FROM roms WHERE md5 = ?", (md5_hash,))
-                    row = cursor.fetchone()
-                    if row:
-                        urls = json.loads(row[0])
-                        # Transform to the format expected by the downloader
-                        results = []
-                        for url in urls:
-                            host = 'archive.org'
-                            if 'minerva-archive.org' in url: host = 'minerva-torrent'
-                            elif '1fichier.com' in url: host = '1fichier'
-                            
-                            results.append({
-                                'md5': md5_hash,
-                                'url': url,
-                                'host': host,
-                                'game_name': md5_hash # We don't have the name in shards
-                            })
-                        return results
-                finally:
-                    if 'conn' in locals(): conn.close()
-                    if os.path.exists(tmp_path): os.remove(tmp_path)
+
+        conn = sqlite3.connect(tmp_path)
+        columns = {row[1] for row in conn.execute("PRAGMA table_info(roms)").fetchall()}
+        ROM_DB_SHARD_CONNECTIONS[shard_char] = {
+            'conn': conn,
+            'columns': columns,
+            'tmp_path': tmp_path
+        }
+        return conn, columns
     except Exception as e:
-        print(f"Erreur lors de la recherche MD5 dans le shard {shard_char}: {e}")
-        
-    return []
+        print(f"Erreur ouverture shard {shard_char}: {e}")
+        return None, set()
+
+
+def build_minerva_torrent_url_from_path(torrent_path: str) -> str:
+    """Construit une URL de torrent Minerva depuis le chemin officiel de la DB hashes."""
+    torrent_path = (torrent_path or '').replace('\\', '/').lstrip('./')
+    if not torrent_path:
+        return ''
+    if torrent_path.startswith(('http://', 'https://')):
+        return torrent_path
+    return urljoin('https://minerva-archive.org/assets/', quote(torrent_path, safe='/'))
+
+
+def is_minerva_database_result(result: dict) -> bool:
+    """Detecte une entree de shard qui pointe vers un torrent Minerva."""
+    host = (result.get('host') or '').lower()
+    url = (result.get('url') or '').lower()
+    torrent_url = (result.get('torrent_url') or '').lower()
+    return (
+        'minerva-torrent' in host
+        or 'minerva-archive.org' in url
+        or 'minerva-archive.org' in torrent_url
+        or bool(result.get('torrent_path'))
+    )
+
+def search_by_md5(md5_hash: str) -> list:
+    """Recherche une ROM par MD5 dans les shards SQLite zippes."""
+    md5_hash = normalize_checksum(md5_hash, 'md5')
+    if not md5_hash:
+        return []
+
+    conn, columns = load_rom_db_shard(md5_hash[0])
+    if not conn:
+        return []
+
+    try:
+        cursor = conn.cursor()
+        if 'entries' in columns:
+            cursor.execute("SELECT entries, urls FROM roms WHERE md5 = ?", (md5_hash,))
+            row = cursor.fetchone()
+            if not row:
+                return []
+
+            entries = json.loads(row[0] or '[]')
+            urls = json.loads(row[1] or '[]')
+            results = []
+            for index, entry in enumerate(entries):
+                torrent_path = entry.get('torrent_path') or entry.get('torrents') or ''
+                torrent_url = entry.get('torrent_url') or build_minerva_torrent_url_from_path(torrent_path)
+                if not torrent_url and index < len(urls):
+                    torrent_url = urls[index]
+                file_name = entry.get('file_name') or entry.get('filename') or entry.get('full_name') or md5_hash
+                results.append({
+                    'md5': md5_hash,
+                    'url': torrent_url,
+                    'torrent_url': torrent_url,
+                    'torrent_path': torrent_path,
+                    'host': entry.get('host') or 'minerva-torrent',
+                    'filename': file_name,
+                    'file_name': file_name,
+                    'full_name': file_name,
+                    'full_path': entry.get('full_path') or file_name,
+                    'size': entry.get('size'),
+                    'crc': entry.get('crc32') or entry.get('crc'),
+                    'sha1': entry.get('sha1'),
+                    'game_name': file_name
+                })
+            return results
+
+        cursor.execute("SELECT urls FROM roms WHERE md5 = ?", (md5_hash,))
+        row = cursor.fetchone()
+        if not row:
+            return []
+
+        urls = json.loads(row[0])
+        results = []
+        for url in urls:
+            host = 'archive.org'
+            if 'minerva-archive.org' in url:
+                host = 'minerva-torrent'
+            elif '1fichier.com' in url:
+                host = '1fichier'
+            results.append({
+                'md5': md5_hash,
+                'url': url,
+                'torrent_url': url if host == 'minerva-torrent' else '',
+                'host': host,
+                'game_name': md5_hash
+            })
+        return results
+    except Exception as e:
+        print(f"Erreur lors de la recherche MD5 dans le shard {md5_hash[0]}: {e}")
+        return []
 
 
 def database_result_filename(entry: dict, fallback: str = '') -> str:
@@ -446,47 +546,89 @@ def get_default_sources_legacy():
 
 # Mappings des systèmes pour les scrapers
 # Permet de traduire le nom du système (extrait du DAT) en slug pour le site
+SOURCE_TYPE_ORDER = {
+    'archive_org': 10,
+    'retrogamesets': 20,
+    'edgeemu': 30,
+    'planetemu': 35,
+    'lolroms': 40,
+    'cdromance': 45,
+    'vimm': 50,
+    'free_host': 70,
+    'myrient': 80,
+    'minerva': 100,
+}
+
+
+def source_order_key(source: dict) -> tuple:
+    """Trie les sources avec les DDL avant les torrents Minerva."""
+    return (
+        SOURCE_TYPE_ORDER.get(source.get('type'), 60),
+        source.get('priority', 50),
+        source.get('name', '').lower()
+    )
+
+
+def normalize_source_label(value: str) -> str:
+    """Normalise un nom de provider pour les retries."""
+    return re.sub(r'\s+', ' ', (value or '').strip().lower())
+
+
+def source_is_excluded(source: dict, excluded_sources: set[str]) -> bool:
+    """Indique si une source est deja exclue pour un retry."""
+    if not excluded_sources:
+        return False
+    labels = {
+        normalize_source_label(source.get('name', '')),
+        normalize_source_label(source.get('type', '')),
+    }
+    if source.get('type') == 'archive_org':
+        labels.add('archive.org')
+        labels.add('archive_org')
+    return bool(labels & excluded_sources)
+
+
 def get_default_sources():
     if ROM_DATABASE is None:
         load_rom_database()
 
     config = ROM_DATABASE.get('config_urls', {})
-    return [
+    sources = [
         {
             'name': 'Minerva No-Intro',
             'base_url': f'{MINERVA_BROWSE_BASE}No-Intro/',
             'type': 'minerva',
             'enabled': True,
-            'description': 'Source principale torrent pour les DAT No-Intro / Retool',
+            'description': 'Dernier recours torrent pour les DAT No-Intro / Retool',
             'collection': 'No-Intro',
             'minerva_path_mode': 'single',
             'scan_depth': 0,
             'torrent_scope': 'system',
-            'priority': 1
+            'priority': 100
         },
         {
             'name': 'Minerva Redump',
             'base_url': f'{MINERVA_BROWSE_BASE}Redump/',
             'type': 'minerva',
             'enabled': True,
-            'description': 'Source principale torrent pour les DAT Redump / Retool',
+            'description': 'Dernier recours torrent pour les DAT Redump / Retool',
             'collection': 'Redump',
             'minerva_path_mode': 'single',
             'scan_depth': 0,
             'torrent_scope': 'system',
-            'priority': 1
+            'priority': 100
         },
         {
             'name': 'Minerva TOSEC',
             'base_url': f'{MINERVA_BROWSE_BASE}TOSEC/',
             'type': 'minerva',
             'enabled': True,
-            'description': 'Collection optionnelle TOSEC',
+            'description': 'Dernier recours torrent pour la collection TOSEC',
             'collection': 'TOSEC',
             'minerva_path_mode': 'split',
             'scan_depth': 2,
             'torrent_scope': 'vendor',
-            'priority': 1
+            'priority': 100
         },
         {
             'name': 'archive.org',
@@ -553,6 +695,7 @@ def get_default_sources():
             'priority': 4
         }
     ]
+    return sorted(sources, key=source_order_key)
 
 SYSTEM_MAPPINGS = {
     'Nintendo - Game Boy': {
@@ -1018,6 +1161,8 @@ def select_database_result(db_results: list) -> dict | None:
     """Choisit un résultat de la base locale sans privilégier les URLs Myrient mortes."""
     candidates = []
     for result in db_results:
+        if is_minerva_database_result(result):
+            continue
         host = (result.get('host') or '').lower()
         url = (result.get('url') or '').lower()
         if 'myrient' in host or 'myrient' in url:
@@ -1070,6 +1215,50 @@ def search_database_for_game(game_info: dict) -> tuple[list, str]:
             return results, f"nom jeu: {game_name}"
 
     return [], ''
+
+
+def search_minerva_hash_database_for_game(game_info: dict) -> dict | None:
+    """Resout un jeu via les shards officiels Minerva en matchant le MD5 DAT."""
+    for rom_info in game_info.get('roms', []):
+        md5_value = normalize_checksum(rom_info.get('md5', ''), 'md5')
+        if not md5_value:
+            continue
+
+        for result in search_by_md5(md5_value):
+            if not is_minerva_database_result(result):
+                continue
+            torrent_url = result.get('torrent_url') or result.get('url')
+            if not torrent_url:
+                continue
+
+            file_name = result.get('file_name') or result.get('filename') or result.get('full_name') or rom_info.get('name')
+            full_path = result.get('full_path') or file_name
+            resolved = game_info.copy()
+            resolved['source'] = 'Minerva Official Hashes'
+            resolved['database_host'] = 'minerva-torrent'
+            resolved['download_filename'] = file_name
+            resolved['torrent_target_filename'] = full_path
+            resolved['torrent_url'] = torrent_url
+            resolved['minerva_md5'] = md5_value
+            resolved['minerva_full_path'] = full_path
+            resolved['minerva_torrent_path'] = result.get('torrent_path', '')
+            return resolved
+
+    return None
+
+
+def search_minerva_hash_database_for_games(missing_games: list) -> tuple[list, list]:
+    """Recherche une liste de jeux dans les shards officiels Minerva par MD5."""
+    found = []
+    still_missing = []
+    for game_info in missing_games:
+        resolved = search_minerva_hash_database_for_game(game_info)
+        if resolved:
+            found.append(resolved)
+            print(f"  [Minerva hashes] {game_info['game_name']} -> {resolved.get('download_filename')}")
+        else:
+            still_missing.append(game_info)
+    return found, still_missing
 
 
 def resolve_executable_path(candidates: tuple[str, ...], fallback_paths: tuple[str, ...] = ()) -> str:
@@ -1672,17 +1861,7 @@ def print_sources_info():
     print("Extrait de games.zip RGSX (74,189 URLs analysées)")
     print("=" * 70)
     
-    print("\n--- Source Principale ---")
-    for i, source in enumerate(get_default_sources(), 1):
-        if source['type'] != 'minerva':
-            continue
-        print(f"\n{i}. {source['name']}")
-        print(f"   Type: {source['type']}")
-        print(f"   Collection: {source.get('collection', 'N/A')}")
-        print(f"   Description: {source.get('description', 'N/A')}")
-        print(f"   Priorité: {source.get('priority', 'N/A')}")
-    
-    print("\n--- Sources Secondaires ---")
+    print("\n--- Sources DDL prioritaires ---")
     for i, source in enumerate(get_default_sources(), 1):
         if source['type'] not in ('archive_org', 'edgeemu', 'planetemu', 'lolroms', 'cdromance', 'vimm', 'retrogamesets', 'free_host'):
             continue
@@ -1690,6 +1869,16 @@ def print_sources_info():
         print(f"   Type: {source['type']}")
         if source['base_url']:
             print(f"   URL: Masquée")
+        print(f"   Description: {source.get('description', 'N/A')}")
+        print(f"   Priorité: {source.get('priority', 'N/A')}")
+    
+    print("\n--- Dernier recours torrent ---")
+    for i, source in enumerate(get_default_sources(), 1):
+        if source['type'] != 'minerva':
+            continue
+        print(f"\n{i}. {source['name']}")
+        print(f"   Type: {source['type']}")
+        print(f"   Collection: {source.get('collection', 'N/A')}")
         print(f"   Description: {source.get('description', 'N/A')}")
         print(f"   Priorité: {source.get('priority', 'N/A')}")
     
@@ -1788,7 +1977,7 @@ def get_archive_file_checksum(file_info: dict, checksum_type: str) -> str:
 def search_archive_org_by_checksum(checksum_value: str, rom_name: str, checksum_type: str) -> dict:
     """
     Recherche un fichier sur archive.org par checksum, puis recoupe par nom si nécessaire.
-    archive.org reste un fallback final après Minerva et la base locale.
+    archive.org est interroge avant le dernier recours torrent Minerva.
     """
     normalized_checksum = normalize_checksum(checksum_value, checksum_type)
     if not normalized_checksum:
@@ -3467,7 +3656,7 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
                 all_found.extend(found)
     
     # ========================================================================
-    # ÉTAPE 4 : Recherche archive.org par checksum puis nom (fallback final)
+    # ETAPE 4 : Recherche archive.org par checksum puis nom avant torrent
     # ========================================================================
     archive_sources = [
         s for s in sources
@@ -3499,11 +3688,12 @@ def search_all_sources(
     sources: list,
     session: requests.Session,
     system_name: str = None,
-    dat_profile: dict | None = None
+    dat_profile: dict | None = None,
+    excluded_sources: set[str] | None = None
 ) -> tuple:
     """
     Search for missing games across all configured sources.
-    Minerva est la source principale; les autres services servent de fallback.
+    Les liens directs sont prioritaires; les torrents Minerva ne servent qu'en dernier recours.
     Returns (found_games: list, not_found_games: list)
     """
     print("\n" + "=" * 70)
@@ -3511,11 +3701,17 @@ def search_all_sources(
     print("=" * 70)
 
     load_rom_database()
+    excluded_sources = {
+        normalize_source_label(source_name)
+        for source_name in (excluded_sources or set())
+        if source_name
+    }
 
     all_found = []
     still_missing = missing_games.copy()
     direct_found = []
     found_in_db = []
+    minerva_found = []
 
     mappings = SYSTEM_MAPPINGS.get(system_name, {}) if system_name else {}
 
@@ -3527,20 +3723,24 @@ def search_all_sources(
     print(f"{'=' * 70}")
 
     not_in_db = []
-    for game_info in still_missing:
-        game_name = game_info['game_name']
-        db_results, search_hint = search_database_for_game(game_info)
+    if 'database' in excluded_sources:
+        not_in_db = still_missing
+        print("  [DB] ignoree pour ce retry")
+    else:
+        for game_info in still_missing:
+            game_name = game_info['game_name']
+            db_results, search_hint = search_database_for_game(game_info)
 
-        best_result = select_database_result(db_results)
-        if best_result:
-            game_info['download_filename'] = database_result_filename(best_result, game_name)
-            game_info['download_url'] = best_result.get('url')
-            game_info['source'] = 'database'
-            game_info['database_host'] = best_result.get('host')
-            found_in_db.append(game_info)
-            print(f"  [DB] {game_name} -> {best_result.get('host')}{f' ({search_hint})' if search_hint else ''}")
-        else:
-            not_in_db.append(game_info)
+            best_result = select_database_result(db_results)
+            if best_result:
+                game_info['download_filename'] = database_result_filename(best_result, game_name)
+                game_info['download_url'] = best_result.get('url')
+                game_info['source'] = 'database'
+                game_info['database_host'] = best_result.get('host')
+                found_in_db.append(game_info)
+                print(f"  [DB] {game_name} -> {best_result.get('host')}{f' ({search_hint})' if search_hint else ''}")
+            else:
+                not_in_db.append(game_info)
 
     all_found.extend(found_in_db)
     still_missing = not_in_db
@@ -3549,17 +3749,18 @@ def search_all_sources(
     print(f"  Non trouvÃ© dans la base: {len(still_missing)} jeux")
 
     # ========================================================================
-    # ÉTAPE 2 : Recherche directe sur Minerva / sources HTML
+    # ETAPE 2 : Recherche directe sur les sources DDL type listing HTML
     # ========================================================================
     print(f"\n{'=' * 70}")
-    print("ÉTAPE 2: Recherche directe sur la source principale (Minerva)")
+    print("ETAPE 2: Recherche directe sur les sources DDL")
     print(f"{'=' * 70}")
 
     direct_sources = [
         s for s in sources
         if s.get('enabled', True)
         and s.get('compatible', True)
-        and s['type'] in {'minerva', 'myrient'}
+        and not source_is_excluded(s, excluded_sources)
+        and s['type'] in {'myrient'}
     ]
 
     if direct_sources and still_missing:
@@ -3596,16 +3797,18 @@ def search_all_sources(
                         game['download_url'] = f"{base_url.rstrip('/')}/{quote(game['download_filename'])}"
                     direct_found.extend(found)
                     all_found.extend(found)
-        """
 
-    print(f"\n  TrouvÃ© via source principale: {len(direct_found)} jeux")
-    print(f"  Restants aprÃ¨s Minerva: {len(still_missing)} jeux")
+    print(f"\n  Trouve via source DDL directe: {len(direct_found)} jeux")
+    print(f"  Restants apres DDL direct: {len(still_missing)} jeux")
 
     # ========================================================================
     # ÉTAPE 3 : Recherche via scrapers secondaires
     # ========================================================================
     if still_missing and system_name:
         for source in sources:
+            if source_is_excluded(source, excluded_sources):
+                continue
+
             if source['type'] == 'edgeemu' and source.get('enabled', True):
                 slug = mappings.get('edgeemu')
                 if slug:
@@ -3733,17 +3936,67 @@ def search_all_sources(
 
     # ÉTAPE 4 : Recherche archive.org par checksum puis nom (fallback final)
     # ========================================================================
-    archive_sources = [s for s in sources if s['type'] == 'archive_org' and s.get('enabled', True)]
+    archive_sources = [
+        s for s in sources
+        if s['type'] == 'archive_org'
+        and s.get('enabled', True)
+        and not source_is_excluded(s, excluded_sources)
+    ]
     if archive_sources and still_missing:
-        print(f"\n--- Recherche archive.org par checksum puis nom (fallback final) ---")
+        print(f"\n--- Recherche archive.org par checksum puis nom (avant Minerva torrent) ---")
         found, still_missing = search_archive_org_for_games(still_missing)
         all_found.extend(found)
+
+    # ========================================================================
+    # ETAPE 5 : Dernier recours Minerva via torrent
+    # ========================================================================
+    minerva_sources = [
+        s for s in sources
+        if s.get('enabled', True)
+        and s.get('compatible', True)
+        and not source_is_excluded(s, excluded_sources)
+        and s['type'] == 'minerva'
+    ]
+
+    if minerva_sources and still_missing:
+        print(f"\n{'=' * 70}")
+        print("ETAPE 5: Dernier recours Minerva via torrent")
+        print(f"{'=' * 70}")
+
+        print("\n--- Recherche Minerva officielle par MD5 DAT ---")
+        found, still_missing = search_minerva_hash_database_for_games(still_missing)
+        minerva_found.extend(found)
+        all_found.extend(found)
+
+        for source in minerva_sources:
+            if not still_missing:
+                break
+            print(f"\n--- Recherche torrent sur {source['name']} ---")
+            base_url = build_minerva_directory_url(source, system_name)
+            minerva_files = collect_minerva_files_from_url(base_url, session, source.get('scan_depth', 0))
+            if not minerva_files:
+                continue
+
+            torrent_url = resolve_minerva_torrent_url(source, system_name, session)
+            if not torrent_url:
+                candidates = build_minerva_torrent_urls(source, system_name)
+                probe_url = candidates[0] if candidates else 'aucune URL candidate'
+                print(f"  Avertissement: torrent Minerva introuvable pour {source['name']} ({probe_url})")
+                continue
+
+            found, still_missing = match_myrient_files(still_missing, minerva_files, source['name'])
+            for game in found:
+                game['torrent_url'] = torrent_url
+                game['source'] = source['name']
+            minerva_found.extend(found)
+            all_found.extend(found)
 
     print(f"\n{'=' * 70}")
     print("RÃ‰SUMÃ‰ DE LA RECHERCHE")
     print(f"{'=' * 70}")
-    print(f"  Jeux trouvÃ©s (Minerva / direct): {len(direct_found)}")
-    print(f"  Jeux trouvÃ©s (base locale): {len(found_in_db)}")
+    print(f"  Jeux trouves (DDL direct): {len(direct_found)}")
+    print(f"  Jeux trouves (base locale): {len(found_in_db)}")
+    print(f"  Jeux trouves (Minerva torrent): {len(minerva_found)}")
     print(f"  Total trouvÃ©s: {len(all_found)}")
     print(f"  Jeux non trouvÃ©s: {len(still_missing)}")
     print(f"{'=' * 70}")
@@ -4017,6 +4270,321 @@ def file_exists_in_folder(folder: str, filename: str) -> tuple:
     return False, None
 
 
+def snapshot_folder_files(folder: str) -> dict:
+    """Capture l'etat des fichiers avant un telechargement."""
+    snapshot = {}
+    folder_path = Path(folder)
+    if not folder_path.exists():
+        return snapshot
+
+    for file_path in folder_path.glob('*'):
+        if not file_path.is_file():
+            continue
+        try:
+            stat = file_path.stat()
+            snapshot[str(file_path.resolve())] = (stat.st_mtime_ns, stat.st_size)
+        except Exception:
+            continue
+
+    return snapshot
+
+
+def resolve_downloaded_file_path(dest_path: str, folder: str, before_snapshot: dict) -> str:
+    """Retrouve le fichier reel ecrit, meme si le serveur impose un nom different."""
+    expected = Path(dest_path)
+    if expected.exists():
+        return str(expected)
+
+    folder_path = Path(folder)
+    if not folder_path.exists():
+        return ''
+
+    changed_files = []
+    for file_path in folder_path.glob('*'):
+        if not file_path.is_file():
+            continue
+        try:
+            resolved = str(file_path.resolve())
+            stat = file_path.stat()
+            state = (stat.st_mtime_ns, stat.st_size)
+        except Exception:
+            continue
+        if before_snapshot.get(resolved) != state:
+            changed_files.append((state[0], str(file_path)))
+
+    if not changed_files:
+        return ''
+
+    changed_files.sort(reverse=True)
+    return changed_files[0][1]
+
+
+def expected_game_md5_values(game_info: dict) -> set:
+    """Retourne les MD5 attendus par le DAT pour ce jeu."""
+    expected = set()
+    for rom_info in game_info.get('roms', []):
+        md5_value = normalize_checksum(rom_info.get('md5', ''), 'md5')
+        if md5_value:
+            expected.add(md5_value)
+    return expected
+
+
+def cleanup_invalid_download(path: str):
+    """Supprime un telechargement qui ne correspond pas au MD5 du DAT."""
+    if not path:
+        return
+    try:
+        file_path = Path(path)
+        if file_path.exists() and file_path.is_file():
+            file_path.unlink()
+    except Exception:
+        pass
+
+
+def verify_downloaded_md5(game_info: dict, downloaded_path: str) -> tuple[bool, str]:
+    """
+    Verifie le MD5 du fichier telecharge contre le DAT.
+    Pour un ZIP, on verifie les entrees internes, car les DAT No-Intro
+    reference souvent la ROM contenue plutot que le conteneur ZIP.
+    """
+    expected_md5 = expected_game_md5_values(game_info)
+    if not expected_md5:
+        return True, "MD5 DAT absent: validation MD5 ignoree"
+
+    if not downloaded_path or not os.path.exists(downloaded_path):
+        return False, "Validation MD5 impossible: fichier telecharge introuvable"
+
+    file_path = Path(downloaded_path)
+    suffix = file_path.suffix.lower()
+
+    if suffix == '.zip':
+        try:
+            import zipfile
+            with zipfile.ZipFile(file_path, 'r') as zf:
+                for zip_info in zf.infolist():
+                    if zip_info.is_dir():
+                        continue
+                    signatures = hash_zip_entry_signatures(zf, zip_info)
+                    if signatures.get('md5') in expected_md5:
+                        return True, f"MD5 OK: {zip_info.filename}"
+            return False, "MD5 KO: aucune entree ZIP ne correspond au DAT"
+        except Exception as e:
+            return False, f"MD5 KO: archive ZIP illisible ({e})"
+
+    if suffix in {'.7z', '.rar'}:
+        return False, f"MD5 KO: archive {suffix} non verifiable sans extraction"
+
+    try:
+        signatures = hash_file_signatures(file_path)
+    except Exception as e:
+        return False, f"MD5 KO: impossible de lire le fichier ({e})"
+
+    actual_md5 = signatures.get('md5', '')
+    if actual_md5 in expected_md5:
+        return True, f"MD5 OK: {actual_md5}"
+
+    expected_display = ', '.join(sorted(expected_md5))
+    return False, f"MD5 KO: {actual_md5 or 'absent'} != {expected_display}"
+
+
+DOWNLOAD_RESOLUTION_KEYS = {
+    'download_filename',
+    'download_url',
+    'torrent_url',
+    'torrent_target_filename',
+    'source',
+    'database_host',
+    'page_url',
+    'archive_org_identifier',
+    'archive_org_filename',
+    'archive_org_md5',
+    'archive_org_crc',
+    'archive_org_sha1',
+    'archive_org_checksum_type',
+    'downloaded_path',
+    'attempted_sources',
+}
+
+
+def clean_download_resolution(game_info: dict) -> dict:
+    """Copie un jeu DAT sans les champs de provider deja resolus."""
+    cleaned = game_info.copy()
+    for key in DOWNLOAD_RESOLUTION_KEYS:
+        cleaned.pop(key, None)
+    return cleaned
+
+
+def resolve_next_provider(game_info: dict, sources: list, session: requests.Session, system_name: str,
+                          dat_profile: dict | None, attempted_sources: list[str]) -> dict | None:
+    """Retrouve un provider alternatif pour le meme jeu en excluant ceux deja testes."""
+    retry_game = clean_download_resolution(game_info)
+    found, _not_available = search_all_sources(
+        [retry_game],
+        sources,
+        session,
+        system_name,
+        dat_profile,
+        excluded_sources={normalize_source_label(source) for source in attempted_sources}
+    )
+    return found[0] if found else None
+
+
+def attempt_download_from_resolved_provider(game_info: dict, output_folder: str, sources: list,
+                                            session: requests.Session, myrient_url: str = '',
+                                            progress_callback=None, log_func=print) -> tuple[bool, str]:
+    """Telecharge une resolution provider deja choisie, puis valide son MD5 DAT."""
+    source = game_info.get('source', 'unknown')
+    filename = game_info.get('download_filename', game_info.get('game_name', ''))
+    dest_path = os.path.join(output_folder, filename)
+    download_url = game_info.get('download_url')
+    torrent_url = game_info.get('torrent_url')
+    before_download = snapshot_folder_files(output_folder)
+    success = False
+
+    if source == 'archive_org':
+        identifier = game_info.get('archive_org_identifier', '')
+        if identifier and filename:
+            success = download_from_archive_org(identifier, filename, dest_path, progress_callback)
+
+    elif source == 'EdgeEmu' and download_url:
+        success = download_file(download_url, dest_path, session, progress_callback)
+
+    elif source == 'PlanetEmu':
+        page_url = game_info.get('page_url')
+        if page_url:
+            success = download_planetemu(page_url, dest_path, session, progress_callback)
+
+    elif source == 'LoLROMs' and download_url:
+        success = download_file(download_url, dest_path, get_lolroms_session(), progress_callback)
+
+    elif source == 'CDRomance':
+        page_url = game_info.get('page_url')
+        if page_url:
+            success = download_cdromance(page_url, dest_path, get_cdromance_session(), progress_callback)
+
+    elif source == 'Vimm\'s Lair':
+        page_url = game_info.get('page_url')
+        if page_url:
+            success = download_vimm(page_url, dest_path, get_vimm_session(), progress_callback)
+
+    elif source == 'RetroGameSets' and download_url:
+        success = download_from_premium_source('1fichier', download_url, dest_path, load_api_keys(), progress_callback)
+
+    elif source.startswith('Minerva') and torrent_url:
+        log_func(f"  Torrent: {torrent_url[:80]}...")
+        torrent_target = game_info.get('torrent_target_filename') or filename
+        success = download_from_minerva_torrent(torrent_url, torrent_target, dest_path, progress_callback)
+
+    elif source in ['myrient', 'Myrient', 'Myrient No-Intro', 'Myrient Redump', 'Myrient TOSEC', 'Source Custom'] and download_url:
+        log_func(f"  URL: {download_url[:80]}...")
+        success = download_file(download_url, dest_path, session, progress_callback)
+
+    elif source == 'database' and download_url:
+        log_func(f"  URL: {download_url[:80]}...")
+        if '1fichier.com' in download_url:
+            success = download_from_premium_source('1fichier', download_url, dest_path, load_api_keys(), progress_callback)
+        elif 'myrient' in download_url:
+            log_func("  URL Myrient ignoree (source fermee)")
+            success = False
+        else:
+            success = download_file(download_url, dest_path, session, progress_callback)
+
+    else:
+        source_info = next((item for item in sources if item['name'] == source), None)
+        base_url = source_info['base_url'] if source_info else myrient_url
+        if base_url:
+            download_url = f"{base_url.rstrip('/')}/{quote(filename)}"
+            log_func(f"  URL: {download_url[:80]}...")
+            success = download_file(download_url, dest_path, session, progress_callback)
+
+    downloaded_path = ''
+    if success:
+        downloaded_path = resolve_downloaded_file_path(dest_path, output_folder, before_download)
+        md5_ok, md5_message = verify_downloaded_md5(game_info, downloaded_path)
+        log_func(f"  {md5_message}")
+        if not md5_ok:
+            cleanup_invalid_download(downloaded_path)
+            success = False
+
+    return success, downloaded_path
+
+
+def download_with_provider_retries(game_info: dict, sources: list, session: requests.Session,
+                                   system_name: str, dat_profile: dict | None, output_folder: str,
+                                   myrient_url: str = '', dry_run: bool = False,
+                                   progress_callback=None, log_func=print,
+                                   is_running=lambda: True) -> tuple[str, dict]:
+    """Essaie les providers un par un jusqu'a obtenir un fichier valide MD5 DAT."""
+    original_game = clean_download_resolution(game_info)
+    current_game = game_info.copy()
+    attempted_sources = []
+    attempted_source_labels = set()
+
+    while current_game and is_running():
+        source = current_game.get('source', 'unknown')
+        source_label = normalize_source_label(source)
+        if source_label in attempted_source_labels:
+            log_func(f"  Provider deja teste: {source}")
+            break
+        attempted_source_labels.add(source_label)
+        filename = current_game.get('download_filename', current_game.get('game_name', ''))
+        attempted_sources.append(source)
+        log_func(f"  Provider: {source}")
+
+        if dry_run:
+            if current_game.get('torrent_url'):
+                log_func(f"  Serait telecharge via torrent Minerva vers: {output_folder}")
+            else:
+                log_func(f"  Serait telecharge vers: {output_folder}")
+            item_copy = current_game.copy()
+            item_copy['attempted_sources'] = attempted_sources.copy()
+            return 'dry_run', item_copy
+
+        exists, existing_path = file_exists_in_folder(output_folder, filename)
+        if exists:
+            md5_ok, md5_message = verify_downloaded_md5(current_game, existing_path)
+            log_func(f"  Fichier existant: {os.path.basename(existing_path)}")
+            log_func(f"  {md5_message}")
+            if md5_ok:
+                item_copy = current_game.copy()
+                item_copy['downloaded_path'] = existing_path
+                item_copy['attempted_sources'] = attempted_sources.copy()
+                return 'skipped', item_copy
+            cleanup_invalid_download(existing_path)
+            log_func("  Fichier existant supprime: MD5 incorrect")
+
+        success, downloaded_path = attempt_download_from_resolved_provider(
+            current_game,
+            output_folder,
+            sources,
+            session,
+            myrient_url,
+            progress_callback,
+            log_func
+        )
+        if success:
+            item_copy = current_game.copy()
+            item_copy['downloaded_path'] = downloaded_path
+            item_copy['attempted_sources'] = attempted_sources.copy()
+            return 'downloaded', item_copy
+
+        log_func(f"  Provider {source} invalide ou en echec, recherche d'un autre provider...")
+        current_game = resolve_next_provider(
+            original_game,
+            sources,
+            session,
+            system_name,
+            dat_profile,
+            attempted_sources
+        )
+        if current_game:
+            log_func(f"  Retry avec: {current_game.get('source', 'unknown')}")
+
+    item_copy = (current_game or game_info).copy()
+    item_copy['attempted_sources'] = attempted_sources.copy()
+    return ('stopped' if not is_running() else 'failed'), item_copy
+
+
 def build_custom_source(source_url: str) -> dict:
     """Détecte et construit une source personnalisée Minerva ou legacy."""
     normalized_url = (source_url or '').strip()
@@ -4133,7 +4701,6 @@ def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_ru
             for i, game_info in enumerate(to_download, 1):
                 game_name = game_info['game_name']
                 source = game_info.get('source', 'unknown')
-                filename = game_info.get('download_filename', game_name)
 
                 print(f"\n[{i}/{len(to_download)}] {game_name} [{source}]")
 
@@ -4264,7 +4831,7 @@ def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_ru
 
 
 def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limit, move_to_tosort=False, custom_sources=None):
-    """Run the download process with Minerva as the primary source."""
+    """Run the download process with DDL sources first and Minerva torrents last."""
     session = requests.Session()
     session.headers.update({
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
@@ -4333,93 +4900,33 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
                     skipped_items.append(game_info.copy())
                     continue
 
-                exists, existing_path = file_exists_in_folder(output_folder, filename)
-                if exists:
-                    print(f"  DÃ©jÃ  prÃ©sent: {os.path.basename(existing_path)}")
-                    skipped += 1
-                    skipped_items.append(game_info.copy())
-                    continue
+                status, result_item = download_with_provider_retries(
+                    game_info,
+                    sources,
+                    session,
+                    system_name,
+                    dat_profile,
+                    output_folder,
+                    myrient_url,
+                    dry_run,
+                    None,
+                    print
+                )
 
-                if dry_run:
-                    if game_info.get('torrent_url'):
-                        print(f"  Serait tÃ©lÃ©chargÃ© via torrent Minerva vers: {output_folder}")
-                    else:
-                        print(f"  Serait tÃ©lÃ©chargÃ© vers: {output_folder}")
-                    continue
-
-                dest_path = os.path.join(output_folder, filename)
-                download_url = game_info.get('download_url')
-                torrent_url = game_info.get('torrent_url')
-                success = False
-
-                if source == 'archive_org':
-                    identifier = game_info.get('archive_org_identifier', '')
-                    if identifier and filename:
-                        success = download_from_archive_org(identifier, filename, dest_path, session)
-
-                elif source == 'EdgeEmu' and download_url:
-                    success = download_file(download_url, dest_path, session)
-
-                elif source == 'PlanetEmu':
-                    page_url = game_info.get('page_url')
-                    if page_url:
-                        success = download_planetemu(page_url, dest_path, session)
-
-                elif source == 'LoLROMs' and download_url:
-                    success = download_file(download_url, dest_path, get_lolroms_session())
-
-                elif source == 'CDRomance':
-                    page_url = game_info.get('page_url')
-                    if page_url:
-                        success = download_cdromance(page_url, dest_path, get_cdromance_session())
-
-                elif source == 'Vimm\'s Lair':
-                    page_url = game_info.get('page_url')
-                    if page_url:
-                        success = download_vimm(page_url, dest_path, get_vimm_session())
-
-                elif source == 'RetroGameSets' and download_url:
-                    api_keys = load_api_keys()
-                    success = download_from_premium_source('1fichier', download_url, dest_path, api_keys)
-
-                elif source.startswith('Minerva') and torrent_url:
-                    print(f"  Torrent: {torrent_url[:80]}...")
-                    success = download_from_minerva_torrent(torrent_url, filename, dest_path)
-
-                elif source in ['myrient', 'Myrient', 'Myrient No-Intro', 'Myrient Redump', 'Myrient TOSEC', 'Source Custom'] and download_url:
-                    print(f"  URL: {download_url[:80]}...")
-                    success = download_file(download_url, dest_path, session)
-
-                elif source == 'database' and download_url:
-                    print(f"  URL: {download_url[:80]}...")
-
-                    if '1fichier.com' in download_url:
-                        api_keys = load_api_keys()
-                        success = download_from_premium_source('1fichier', download_url, dest_path, api_keys)
-                    elif 'archive.org' in download_url:
-                        success = download_file(download_url, dest_path, session)
-                    elif 'myrient' in download_url:
-                        print("  URL Myrient ignorée (source fermée)")
-                        success = False
-                    else:
-                        success = download_file(download_url, dest_path, session)
-
-                else:
-                    source_info = next((s for s in sources if s['name'] == source), None)
-                    base_url = source_info['base_url'] if source_info else myrient_url
-                    if base_url:
-                        download_url = f"{base_url.rstrip('/')}/{quote(filename)}"
-                        print(f"  URL: {download_url[:80]}...")
-                        success = download_file(download_url, dest_path, session)
-
-                if success:
-                    print(f"  TÃ©lÃ©chargÃ©: {filename}")
+                if status == 'downloaded':
+                    print(f"  Telecharge: {result_item.get('download_filename', game_name)}")
                     downloaded += 1
-                    downloaded_items.append(game_info.copy())
+                    downloaded_items.append(result_item.copy())
                     time.sleep(0.5)
+                elif status == 'skipped':
+                    skipped += 1
+                    skipped_items.append(result_item.copy())
+                elif status == 'dry_run':
+                    pass
                 else:
                     failed += 1
-                    failed_items.append(game_info.copy())
+                    failed_items.append(result_item.copy())
+                continue
 
             print("\n" + "=" * 60)
             print("RÃ©sumÃ©:")
@@ -4916,7 +5423,7 @@ def gui_mode():
                 self.myrient_url = tk.StringVar()
                 self.progress_var = tk.DoubleVar(value=0)
                 self.status_var = tk.StringVar(value="Pret a telecharger les jeux manquants")
-                self.hint_var = tk.StringVar(value="Laisse vide pour utiliser automatiquement la bonne source Minerva selon le DAT.")
+                self.hint_var = tk.StringVar(value="Laisse vide pour essayer les DDL d'abord, puis Minerva en dernier recours.")
                 self.root.title("ROM Downloader")
                 self.root.geometry("1040x760")
                 self.root.minsize(940, 660)
@@ -5004,7 +5511,7 @@ def gui_mode():
                 header.columnconfigure(1, weight=1)
                 tk.Frame(header, bg=UI_COLOR_ACCENT, width=6).grid(row=0, column=0, rowspan=2, sticky='ns', padx=(0, 14))
                 tk.Label(header, text="ROM Downloader", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 18, 'bold')).grid(row=0, column=1, sticky='w')
-                tk.Label(header, text="Charge un DAT No-Intro ou Redump retraite avec Retool, compare le dossier cible et telecharge les ROMs manquantes en priorite depuis Minerva.", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, justify='left', wraplength=760, font=(self.font, 10)).grid(row=1, column=1, sticky='w', pady=(2, 0))
+                tk.Label(header, text="Charge un DAT No-Intro ou Redump retraite avec Retool, compare le dossier cible et telecharge les ROMs manquantes en DDL d'abord, puis via Minerva si besoin.", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, justify='left', wraplength=760, font=(self.font, 10)).grid(row=1, column=1, sticky='w', pady=(2, 0))
                 self.family_badge = None
                 self.mode_badge = None
                 if self.images.get('hero'):
@@ -5035,7 +5542,7 @@ def gui_mode():
 
                 sources = self.card(main, 2)
                 tk.Label(sources, text="Sources de telechargement", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 13, 'bold')).grid(row=0, column=0, sticky='w')
-                tk.Label(sources, text="La collection Minerva adaptee au DAT devient la source principale. Les autres restent en fallback.", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, justify='left', wraplength=880, font=(self.font, 9)).grid(row=1, column=0, sticky='w', pady=(6, 12))
+                tk.Label(sources, text="Les sources DDL sont essayees en premier. Minerva reste active comme dernier recours torrent.", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, justify='left', wraplength=880, font=(self.font, 9)).grid(row=1, column=0, sticky='w', pady=(6, 12))
                 grid = tk.Frame(sources, bg=UI_COLOR_CARD_BG)
                 grid.grid(row=2, column=0, sticky='ew')
                 for index, source in enumerate(self.default_sources):
@@ -5102,7 +5609,7 @@ def gui_mode():
                 path = self.dat_file.get().strip()
                 profile = finalize_dat_profile(detect_dat_profile(path)) if path and os.path.exists(path) else finalize_dat_profile({'family': 'unknown', 'family_label': 'Inconnu', 'system_name': '', 'is_retool': False, 'retool_label': 'DAT brut'})
                 self.dat_profile = profile
-                self.hint_var.set("Laisse vide pour utiliser automatiquement la bonne source Minerva selon le DAT." if profile.get('system_name') else "Tu peux laisser l'URL vide pour la detection automatique, ou en saisir une manuellement.")
+                self.hint_var.set("Laisse vide pour essayer les DDL d'abord, puis Minerva en dernier recours." if profile.get('system_name') else "Tu peux laisser l'URL vide pour la detection automatique, ou en saisir une manuellement.")
                 if self.family_badge:
                     self.family_badge.configure(text=profile.get('family_label') if profile.get('family') != 'unknown' else "Profil manuel", bg={'no-intro': UI_COLOR_ACCENT, 'redump': UI_COLOR_SUCCESS, 'tosec': UI_COLOR_WARNING}.get(profile.get('family'), UI_COLOR_WARNING))
                 if self.mode_badge:
@@ -5205,68 +5712,38 @@ def gui_mode():
                             break
                         game_name = game_info['game_name']
                         source = game_info.get('source', 'unknown')
-                        filename = game_info.get('download_filename', game_name)
                         self.log(f"[{index}/{len(to_download)}] {game_name} [{source}]")
                         self.status_var.set(f"Telechargement {index}/{len(to_download)} : {game_name[:60]}")
-                        exists, existing_path = file_exists_in_folder(rom_folder, filename)
-                        if exists:
-                            self.log(f"  Deja present: {os.path.basename(existing_path)}")
-                            skipped += 1
-                            skipped_items.append(game_info.copy())
-                            continue
-                        dest_path = os.path.join(rom_folder, filename)
                         progress = lambda value: self._ui(lambda: self.progress_var.set(value))
-                        success = False
-                        download_url = game_info.get('download_url')
-                        torrent_url = game_info.get('torrent_url')
-                        if source == 'archive_org':
-                            identifier = game_info.get('archive_org_identifier', '')
-                            if identifier and filename:
-                                success = download_from_archive_org(identifier, filename, dest_path, progress)
-                        elif source == 'EdgeEmu' and download_url:
-                            success = download_file(download_url, dest_path, self.session, progress)
-                        elif source == 'PlanetEmu' and game_info.get('page_url'):
-                            success = download_planetemu(game_info['page_url'], dest_path, self.session, progress)
-                        elif source == 'LoLROMs' and download_url:
-                            success = download_file(download_url, dest_path, get_lolroms_session(), progress)
-
-                        elif source == 'CDRomance':
-                            page_url = game_info.get('page_url')
-                            if page_url:
-                                success = download_cdromance(page_url, dest_path, get_cdromance_session(), progress)
-
-                        elif source == 'Vimm\'s Lair':
-                            page_url = game_info.get('page_url')
-                            if page_url:
-                                success = download_vimm(page_url, dest_path, get_vimm_session(), progress)
-
-                        elif source == 'RetroGameSets' and download_url:
-                            api_keys = load_api_keys()
-                            success = download_from_premium_source('1fichier', download_url, dest_path, api_keys, progress)
-
-                        elif source.startswith('Minerva') and torrent_url:
-                            success = download_from_minerva_torrent(torrent_url, filename, dest_path, progress)
-                        elif source == 'database' and download_url:
-                            if '1fichier.com' in download_url:
-                                success = download_from_premium_source('1fichier', download_url, dest_path, load_api_keys(), progress)
-                            elif 'myrient' in download_url:
-                                success = False
-                            else:
-                                success = download_file(download_url, dest_path, self.session, progress)
-                        else:
-                            source_info = next((item for item in sources if item['name'] == source), None)
-                            base_url = source_info['base_url'] if source_info else self.myrient_url.get().strip()
-                            if base_url:
-                                success = download_file(f"{base_url.rstrip('/')}/{quote(filename)}", dest_path, self.session, progress)
-                        if success:
-                            self.log(f"  Telecharge: {filename}")
+                        status, result_item = download_with_provider_retries(
+                            game_info,
+                            sources,
+                            self.session,
+                            system_name,
+                            dat_profile,
+                            rom_folder,
+                            source_url,
+                            False,
+                            progress,
+                            self.log,
+                            is_running=lambda: self.running
+                        )
+                        if status == 'downloaded':
+                            self.log(f"  Telecharge: {result_item.get('download_filename', game_name)}")
                             downloaded += 1
-                            downloaded_items.append(game_info.copy())
+                            downloaded_items.append(result_item.copy())
                             time.sleep(0.5)
+                        elif status == 'skipped':
+                            skipped += 1
+                            skipped_items.append(result_item.copy())
+                        elif status == 'stopped':
+                            self.log("Arrete par l'utilisateur.")
+                            break
                         else:
                             self.log("  Echec du telechargement")
                             failed += 1
-                            failed_items.append(game_info.copy())
+                            failed_items.append(result_item.copy())
+                        continue
                     if self.move_to_tosort_var.get():
                         tosort_folder = os.path.join(rom_folder, "ToSort")
                         files_to_move = find_roms_not_in_dat(dat_games, local_roms, local_roms_normalized, rom_folder)
