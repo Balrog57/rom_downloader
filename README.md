@@ -69,6 +69,7 @@ Etat de la base locale au 2026-04-19 :
 
 Apres chaque telechargement, le MD5 est verifie par rapport au DAT. Pour un ZIP, la verification se fait sur les fichiers internes, pas sur le MD5 du conteneur ZIP.
 Si le MD5 ne correspond pas au DAT, le fichier telecharge est supprime et le meme jeu est retente automatiquement sur le provider suivant jusqu'a epuisement des sources.
+L'option de nettoyage TorrentZip extrait les archives validees par MD5 puis recree un ZIP compatible RomVault/TorrentZip avec date interne fixe, commentaire `TORRENTZIPPED-*` et nom de ROM issu du DAT.
 
 Minerva est telecharge en direct via torrent sans sortir de l'application, mais seulement apres les sources DDL.
 
@@ -109,7 +110,7 @@ Le rapport contient notamment :
 
 ## Option ToSort
 
-Si l'option est cochee, les fichiers presents dans le dossier mais absents du DAT sont deplaces vers un sous-dossier `ToSort`.
+Si l'option est cochee, les fichiers presents dans le dossier mais absents du DAT sont deplaces vers un sous-dossier `ToSort`. La detection se fait par checksums internes ou fichier brut, pas par nom.
 
 ## Utilisation
 
@@ -122,7 +123,7 @@ python rom_downloader.py --gui
 ### Ligne de commande
 
 ```bash
-python rom_downloader.py <fichier.dat> <dossier_roms> [url_source] [--dry-run] [--limit N] [--tosort]
+python rom_downloader.py <fichier.dat> <dossier_roms> [url_source] [--dry-run] [--limit N] [--tosort] [--clean-torrentzip]
 ```
 
 Exemples :
@@ -154,8 +155,11 @@ Le script peut installer les dependances manquantes automatiquement. Sinon :
 
 ```bash
 pip install requests beautifulsoup4 internetarchive
-pip install cloudscraper
+pip install cloudscraper tkinterdnd2 py7zr
 ```
+
+`tkinterdnd2` est optionnel, mais il active le glisser-deposer dans l'interface graphique.
+`py7zr` est optionnel, mais il permet de verifier le MD5 interne des archives 7z.
 
 ### Dependances Node
 
@@ -163,6 +167,24 @@ Le runtime torrent est installe automatiquement au premier telechargement Minerv
 
 ```bash
 npm install
+```
+
+### Configuration `.env`
+
+Tu peux creer un fichier `.env` a partir de `.env.example`.
+
+Variables reconnues :
+
+- `ONE_FICHIER_API_KEY`
+- `ALLDEBRID_API_KEY`
+- `REALDEBRID_API_KEY`
+- `IA_S3_ACCESS_KEY`
+- `IA_S3_SECRET_KEY`
+
+Exemple rapide :
+
+```env
+ALLDEBRID_API_KEY=
 ```
 
 ## Structure utile
@@ -179,6 +201,7 @@ npm install
 - `--dry-run` : simule sans telecharger
 - `--limit N` : limite le nombre de telechargements
 - `--tosort` : deplace le hors-DAT dans `ToSort`
+- `--clean-torrentzip` : recompresse les archives validees MD5 en ZIP TorrentZip/RomVault
 - `--sources` : affiche les sources disponibles
 
 ## Notes
