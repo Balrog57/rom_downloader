@@ -15,7 +15,7 @@ Sources supportees:
     - 1fichier (gratuit)
 
 Usage en ligne de commande:
-    python rom_downloader.py <dat_file> <rom_folder> [url_source] [--dry-run] [--limit N] [--tosort]
+    python rom_downloader.py <dat_file> <rom_folder> [url_source] [--dry-run] [--limit N] [--tosort] [--clean-torrentzip]
 
 Usage interactif (sans arguments):
     python rom_downloader.py
@@ -28,6 +28,7 @@ Options:
     --dry-run         Simulation sans telechargement
     --limit N         Limite le nombre de telechargements
     --tosort          Deplace les ROMs hors DAT dans un sous-dossier ToSort
+    --clean-torrentzip Recompresse les archives validees MD5 en ZIP TorrentZip/RomVault
     --gui             Lance l'interface graphique
     --sources         Affiche la liste des sources de telechargement
 """
@@ -35,10 +36,12 @@ Options:
 import argparse
 import hashlib
 import html as html_module
+import importlib
 import json
 import os
 import re
 import shutil
+import struct
 import subprocess
 import sys
 import tempfile
@@ -89,6 +92,41 @@ if 'IA_S3_ACCESS_KEY' in os.environ and 'IAS3_ACCESS_KEY' not in os.environ:
 if 'IA_S3_SECRET_KEY' in os.environ and 'IAS3_SECRET_KEY' not in os.environ:
     os.environ['IAS3_SECRET_KEY'] = os.environ['IA_S3_SECRET_KEY']
 
+
+def install_python_packages(packages: list[str], quiet: bool = True) -> bool:
+    """Installe des packages Python pour l'interpreteur courant."""
+    cmd = [
+        sys.executable, '-m', 'pip', 'install',
+        '--disable-pip-version-check',
+        '--no-warn-script-location',
+    ]
+    cmd.extend(packages)
+    if quiet:
+        cmd.append('-q')
+    try:
+        return subprocess.run(cmd, check=False).returncode == 0
+    except Exception as e:
+        print(f"Avertissement: installation pip impossible: {e}")
+        return False
+
+
+def import_optional_package(import_name: str, pip_name: str | None = None, auto_install: bool = False):
+    """Importe un package optionnel, avec installation automatique si demandee."""
+    try:
+        return importlib.import_module(import_name)
+    except ImportError:
+        if not auto_install:
+            return None
+    package_name = pip_name or import_name
+    print(f"Installation du package optionnel {package_name}...")
+    if install_python_packages([package_name]):
+        try:
+            return importlib.import_module(import_name)
+        except ImportError as e:
+            print(f"Avertissement: {package_name} installe mais import impossible: {e}")
+    return None
+
+
 try:
     import requests
     from bs4 import BeautifulSoup
@@ -96,11 +134,7 @@ try:
     import cloudscraper
 except ImportError:
     print("Installation des packages requis (requests, beautifulsoup4, internetarchive, cloudscraper)...")
-    subprocess.run(
-        [sys.executable, '-m', 'pip', 'install',
-         'requests', 'beautifulsoup4', 'internetarchive', 'charset_normalizer', 'cloudscraper', '-q'],
-        check=False
-    )
+    install_python_packages(['requests', 'beautifulsoup4', 'internetarchive', 'charset_normalizer', 'cloudscraper'])
     import requests
     from bs4 import BeautifulSoup
     import internetarchive
@@ -548,12 +582,12 @@ def get_default_sources_legacy():
 # Permet de traduire le nom du système (extrait du DAT) en slug pour le site
 SOURCE_TYPE_ORDER = {
     'archive_org': 10,
-    'retrogamesets': 20,
-    'edgeemu': 30,
-    'planetemu': 35,
+    'edgeemu': 20,
+    'planetemu': 30,
     'lolroms': 40,
     'cdromance': 45,
     'vimm': 50,
+    'retrogamesets': 60,
     'free_host': 70,
     'myrient': 80,
     'minerva': 100,
@@ -730,8 +764,7 @@ SYSTEM_MAPPINGS = {
         'edgeemu': 'nintendo-nes',
         'planetemu': 'nintendo-entertainment-system',
         'lolroms': 'Nintendo - Famicom/Headered',
-        'vimm': 'NES',
-        'retrogamesets': 'NES (Archive)'
+        'vimm': 'NES'
     },
     'Nintendo - Super Nintendo Entertainment System': {
         'edgeemu': 'nintendo-snes',
@@ -1069,11 +1102,7 @@ def prepare_sources_for_profile(sources: list, dat_profile: dict | None) -> list
         compatible = is_source_compatible_with_profile(source_copy, dat_profile)
         source_copy['compatible'] = compatible
 
-        if source_copy.get('type') == 'minerva' and not source_copy.get('fixed_directory'):
-            if dat_profile and dat_profile.get('family') in {'no-intro', 'redump', 'tosec'}:
-                source_copy['enabled'] = source_copy.get('enabled', True) and compatible
-        elif dat_profile and dat_profile.get('family') == 'redump' and source_copy.get('type') in {'edgeemu', 'planetemu', 'lolroms'}:
-            source_copy['enabled'] = False
+        source_copy['enabled'] = True
 
         prepared.append(source_copy)
 
@@ -1825,7 +1854,7 @@ def download_from_premium_source(source_type: str, url: str, dest_path: str,
                                   api_keys: dict, progress_callback=None) -> bool:
     """
     Download from a premium source (1fichier, AllDebrid, RealDebrid).
-    For 1fichier: tries API first, falls back to free mode if no API key.
+    For 1fichier: tries API first, then AllDebrid / RealDebrid, then free mode.
     """
     if source_type == '1fichier':
         api_key = api_keys.get('1fichier', '')
@@ -1838,9 +1867,22 @@ def download_from_premium_source(source_type: str, url: str, dest_path: str,
                 result = download_1fichier(file_id, dest_path, api_key, progress_callback)
                 if result:
                     return True
+
+        # Try debrid services before falling back to free 1fichier
+        alldebrid_key = api_keys.get('alldebrid', '')
+        if alldebrid_key:
+            print("  Tentative via AllDebrid...")
+            if download_alldebrid(url, dest_path, alldebrid_key, progress_callback):
+                return True
+
+        realdebrid_key = api_keys.get('realdebrid', '')
+        if realdebrid_key:
+            print("  Tentative via RealDebrid...")
+            if download_realdebrid(url, dest_path, realdebrid_key, progress_callback):
+                return True
         
         # Fallback to free mode
-        print("  Bascule en mode gratuit (sans API key)...")
+        print("  Bascule en mode gratuit 1fichier...")
         session = requests.Session()
         session.headers.update({'User-Agent': 'Mozilla/5.0'})
         return download_1fichier_free(url, dest_path, session, progress_callback)
@@ -2431,6 +2473,67 @@ def hash_zip_entry_signatures(zip_file, zip_info) -> dict:
     }
 
 
+def iter_archive_member_signatures(file_path: Path):
+    """Calcule les signatures des fichiers contenus dans une archive supportee."""
+    suffix = file_path.suffix.lower()
+
+    if suffix == '.zip':
+        import zipfile
+        with zipfile.ZipFile(file_path, 'r') as zf:
+            for zip_info in zf.infolist():
+                if zip_info.is_dir():
+                    continue
+                yield {
+                    'name': Path(zip_info.filename).name or zip_info.filename,
+                    'member': zip_info.filename,
+                    'size': zip_info.file_size,
+                    **hash_zip_entry_signatures(zf, zip_info)
+                }
+        return
+
+    if suffix == '.7z':
+        py7zr = import_optional_package('py7zr', auto_install=True)
+        if py7zr is None:
+            raise RuntimeError("py7zr indisponible")
+        with tempfile.TemporaryDirectory(prefix='rom_downloader_7z_') as temp_dir:
+            with py7zr.SevenZipFile(file_path, mode='r') as archive:
+                archive.extractall(path=temp_dir)
+            temp_root = Path(temp_dir)
+            for extracted in temp_root.rglob('*'):
+                if not extracted.is_file():
+                    continue
+                signatures = hash_file_signatures(extracted)
+                yield {
+                    'name': extracted.name,
+                    'member': str(extracted.relative_to(temp_root)),
+                    'size': extracted.stat().st_size,
+                    **signatures
+                }
+        return
+
+    if suffix == '.rar':
+        rarfile = import_optional_package('rarfile', auto_install=True)
+        if rarfile is None:
+            raise RuntimeError("rarfile indisponible")
+        with rarfile.RarFile(file_path, 'r') as archive:
+            for rar_info in archive.infolist():
+                if rar_info.isdir():
+                    continue
+                with archive.open(rar_info, 'r') as entry_handle:
+                    crc_value, md5_hash, sha1_hash = compute_stream_checksums(entry_handle)
+                yield {
+                    'name': Path(rar_info.filename).name or rar_info.filename,
+                    'member': rar_info.filename,
+                    'size': rar_info.file_size,
+                    'crc': normalize_checksum(f"{rar_info.CRC & 0xffffffff:08x}", 'crc') or crc_value,
+                    'md5': md5_hash,
+                    'sha1': sha1_hash
+                }
+        return
+
+    raise RuntimeError(f"archive {suffix} non supportee")
+
+
 def scan_local_roms(rom_folder: str, dat_games: dict | None = None) -> tuple:
     """Scan a folder for local ROM files."""
     print(f"Scanning local ROMs folder: {rom_folder}")
@@ -2447,7 +2550,7 @@ def scan_local_roms(rom_folder: str, dat_games: dict | None = None) -> tuple:
 
     target_signatures = build_target_signature_sets(dat_games)
     target_sizes = target_signatures['size']
-    archive_extensions = ('.zip',)
+    archive_extensions = ('.zip', '.7z', '.rar')
     hashed_items = 0
 
     for file_path in rom_path.rglob('*'):
@@ -2457,31 +2560,22 @@ def scan_local_roms(rom_folder: str, dat_games: dict | None = None) -> tuple:
 
             if file_path.suffix.lower() in archive_extensions:
                 try:
-                    import zipfile
-                    with zipfile.ZipFile(file_path, 'r') as zf:
-                        for zip_info in zf.infolist():
-                            if zip_info.is_dir():
-                                continue
+                    for archive_entry in iter_archive_member_signatures(file_path):
+                        internal_name = archive_entry['name']
+                        add_local_name_reference(internal_name, local_roms, local_roms_normalized, local_game_names)
 
-                            internal_name = Path(zip_info.filename).name or zip_info.filename
-                            add_local_name_reference(internal_name, local_roms, local_roms_normalized, local_game_names)
+                        if target_sizes and archive_entry.get('size') not in target_sizes:
+                            continue
 
-                            if target_sizes and zip_info.file_size not in target_sizes:
-                                continue
-
-                            signatures = hash_zip_entry_signatures(zf, zip_info)
-                            reference = {
-                                'path': str(file_path),
-                                'member': zip_info.filename,
-                                'name': internal_name,
-                                'size': zip_info.file_size,
-                                **signatures
-                            }
-                            for checksum_type in ('md5', 'crc', 'sha1'):
-                                index_signature_value(signature_index, checksum_type, reference.get(checksum_type, ''), reference)
-                            hashed_items += 1
-                except Exception:
-                    pass
+                        reference = {
+                            'path': str(file_path),
+                            **archive_entry
+                        }
+                        for checksum_type in ('md5', 'crc', 'sha1'):
+                            index_signature_value(signature_index, checksum_type, reference.get(checksum_type, ''), reference)
+                        hashed_items += 1
+                except Exception as e:
+                    print(f"  Avertissement: archive locale ignoree ({file_path.name}): {e}")
             else:
                 try:
                     file_size = file_path.stat().st_size
@@ -2514,7 +2608,11 @@ def scan_local_roms(rom_folder: str, dat_games: dict | None = None) -> tuple:
 
 def find_missing_games(dat_games: dict, local_roms: set, local_roms_normalized: set, local_game_names: set,
                        signature_index: dict | None = None) -> list:
-    """Compare DAT games with local ROMs and return missing ones."""
+    """Compare DAT games with local ROMs and return missing ones.
+
+    A local ROM validates a DAT entry by checksum only. Names are kept in the
+    scan indexes for reports/ToSort, but they must not mark a game as present.
+    """
     print("Comparing DAT games with local ROMs...")
 
     signature_index = signature_index or {'md5': {}, 'crc': {}, 'sha1': {}}
@@ -2522,7 +2620,10 @@ def find_missing_games(dat_games: dict, local_roms: set, local_roms_normalized: 
     for game_name, game_info in dat_games.items():
         found = False
 
-        for checksum_type in ('md5', 'crc', 'sha1'):
+        has_md5 = any(normalize_checksum(rom_info.get('md5', ''), 'md5') for rom_info in game_info.get('roms', []))
+        checksum_order = ('md5',) if has_md5 else ('crc', 'sha1')
+
+        for checksum_type in checksum_order:
             for rom_info in game_info.get('roms', []):
                 checksum_value = normalize_checksum(rom_info.get(checksum_type, ''), checksum_type)
                 if checksum_value and checksum_value in signature_index.get(checksum_type, {}):
@@ -2530,20 +2631,6 @@ def find_missing_games(dat_games: dict, local_roms: set, local_roms_normalized: 
                     break
             if found:
                 break
-
-        if not found:
-            for rom_info in game_info['roms']:
-                rom_name = rom_info['name']
-                rom_name_no_ext = strip_rom_extension(rom_name)
-
-                if rom_name in local_roms or rom_name_no_ext.lower() in local_roms_normalized:
-                    found = True
-                    break
-
-        if not found:
-            game_name_normalized = game_name.lower()
-            if game_name_normalized in local_game_names:
-                found = True
 
         if not found:
             missing.append(game_info)
@@ -2554,101 +2641,52 @@ def find_missing_games(dat_games: dict, local_roms: set, local_roms_normalized: 
 
 def find_roms_not_in_dat(dat_games: dict, local_roms: set, local_roms_normalized: set,
                          rom_folder: str) -> list:
-    """Find ROM files that are not in the DAT file."""
-    print("Finding ROMs not in DAT file...")
+    """Find local files whose content checksums are not present in the DAT."""
+    print("Finding ROMs not in DAT file by checksums...")
     generated_report_prefix = 'rom_downloader_report_'
-
-    # Build sets for DAT game names with different normalization strategies
-    dat_game_names_exact = set()  # Exact normalized names
-    dat_game_names_base = set()   # Base names (before first parenthesis)
-    
-    for game_name in dat_games.keys():
-        name_lower = game_name.lower()
-        dat_game_names_exact.add(name_lower)
-        
-        # Extract base name (before first parenthesis)
-        if '(' in name_lower:
-            base_name = name_lower.split('(')[0].strip()
-            # Also try without trailing dash or spaces
-            base_name_clean = base_name.rstrip(' -')
-            dat_game_names_base.add(base_name)
-            dat_game_names_base.add(base_name_clean)
-        else:
-            dat_game_names_base.add(name_lower)
-
-    # Also add ROM names from DAT
-    for game_info in dat_games.values():
-        for rom_info in game_info.get('roms', []):
-            rom_name = rom_info.get('name', '')
-            rom_name_no_ext = rom_name
-            for ext in ROM_EXTENSIONS:
-                if rom_name.lower().endswith(ext):
-                    rom_name_no_ext = rom_name[:-len(ext)]
-                    break
-
-            name_lower = rom_name_no_ext.lower()
-            dat_game_names_exact.add(name_lower)
-            
-            # Extract base name
-            if '(' in name_lower:
-                base_name = name_lower.split('(')[0].strip()
-                base_name_clean = base_name.rstrip(' -')
-                dat_game_names_base.add(base_name)
-                dat_game_names_base.add(base_name_clean)
-            else:
-                dat_game_names_base.add(name_lower)
-
-    def is_name_in_dat(name_to_check: str) -> bool:
-        """Check if a name matches any DAT game using multiple strategies."""
-        name_lower = name_to_check.lower()
-        
-        # Strategy 1: Exact match
-        if name_lower in dat_game_names_exact:
-            return True
-        
-        # Strategy 2: Base name match
-        if '(' in name_lower:
-            base_name = name_lower.split('(')[0].strip()
-            base_name_clean = base_name.rstrip(' -')
-            if base_name in dat_game_names_base or base_name_clean in dat_game_names_base:
-                return True
-        else:
-            if name_lower in dat_game_names_base:
-                return True
-
-        return False
-
-    # Find files not in DAT
     files_to_move = []
     rom_path = Path(rom_folder)
-
-    archive_extensions = ('.zip', '.7z', '.rar', '.gz', '.z')
-    all_extensions = list(ROM_EXTENSIONS) + ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.mp4', '.avi', '.mkv', '.pdf', '.txt', '.nfo']
+    target_signatures = build_target_signature_sets(dat_games)
 
     if not rom_path.exists():
         return files_to_move
 
+    def signatures_match_dat(signatures: dict) -> bool:
+        for checksum_type in ('md5', 'crc', 'sha1'):
+            checksum_value = normalize_checksum(signatures.get(checksum_type, ''), checksum_type)
+            if checksum_value and checksum_value in target_signatures.get(checksum_type, set()):
+                return True
+        return False
+
     for file_path in rom_path.rglob('*'):
-        if file_path.is_file():
-            filename = file_path.name
+        if not file_path.is_file():
+            continue
+        filename = file_path.name
 
-            # Skip if already in ToSort folder
-            if 'ToSort' in file_path.parts:
-                continue
+        if 'ToSort' in file_path.parts:
+            continue
+        if filename.lower().startswith(generated_report_prefix) and file_path.suffix.lower() == '.txt':
+            continue
+        if file_path.name.lower() == 'repack_archives_to_individual_zip.bat':
+            continue
 
-            # Skip reports generated by the downloader itself
-            if filename.lower().startswith(generated_report_prefix) and file_path.suffix.lower() == '.txt':
-                continue
+        file_is_in_dat = False
+        if file_path.suffix.lower() in {'.zip', '.7z', '.rar'}:
+            try:
+                for archive_entry in iter_archive_member_signatures(file_path):
+                    if signatures_match_dat(archive_entry):
+                        file_is_in_dat = True
+                        break
+            except Exception as e:
+                print(f"  Avertissement: archive ToSort non verifiable ({file_path.name}): {e}")
+        else:
+            try:
+                file_is_in_dat = signatures_match_dat(hash_file_signatures(file_path))
+            except Exception as e:
+                print(f"  Avertissement: fichier ToSort non verifiable ({file_path.name}): {e}")
 
-            # Check if file matches a DAT game
-            name_no_ext = filename
-            for ext in all_extensions:
-                if name_no_ext.lower().endswith(ext):
-                    name_no_ext = name_no_ext[:-len(ext)]
-                    break
-
-            if not is_name_in_dat(name_no_ext):
-                files_to_move.append(str(file_path))
+        if not file_is_in_dat:
+            files_to_move.append(str(file_path))
 
     print(f"Found {len(files_to_move)} files not in DAT")
     return files_to_move
@@ -2688,6 +2726,303 @@ def move_files_to_tosort(files_to_move: list, rom_folder: str, tosort_folder: st
             failed += 1
     
     return moved, failed
+
+
+def build_dat_md5_lookup(dat_games: dict) -> dict:
+    """Indexe les ROMs du DAT par MD5."""
+    lookup = {}
+    for game_info in dat_games.values():
+        for rom_info in game_info.get('roms', []):
+            md5_value = normalize_checksum(rom_info.get('md5', ''), 'md5')
+            if not md5_value:
+                continue
+            lookup.setdefault(md5_value, []).append({
+                'game_name': game_info.get('game_name', ''),
+                'rom_name': Path(rom_info.get('name', '')).name,
+                'md5': md5_value,
+            })
+    return lookup
+
+
+def find_7z_executable() -> str:
+    """Retourne le chemin de 7-Zip si disponible."""
+    env_path = os.environ.get('SEVENZIP_EXE') or os.environ.get('SEVEN_ZIP_EXE') or os.environ.get('Z7_EXE')
+    candidates = [
+        env_path,
+        shutil.which('7z'),
+        shutil.which('7za'),
+        r'C:\Program Files\7-Zip\7z.exe',
+        r'C:\Program Files (x86)\7-Zip\7z.exe',
+    ]
+    for candidate in candidates:
+        if candidate and os.path.exists(candidate):
+            return candidate
+    return ''
+
+
+def patch_zip_to_torrentzip(zip_path: Path) -> str:
+    """Applique les champs TorrentZip/RomVault sur un ZIP existant."""
+    data = bytearray(zip_path.read_bytes())
+    min_pos = max(0, len(data) - 65557)
+    eocd = -1
+    for pos in range(len(data) - 22, min_pos - 1, -1):
+        if data[pos:pos + 4] == b'PK\x05\x06':
+            eocd = pos
+            break
+    if eocd < 0:
+        raise RuntimeError("EOCD ZIP introuvable")
+
+    cd_size = struct.unpack_from('<I', data, eocd + 12)[0]
+    cd_offset = struct.unpack_from('<I', data, eocd + 16)[0]
+    torrent_flag = 2
+    torrent_time = (23 << 11) | (32 << 5)
+    torrent_date = ((1996 - 1980) << 9) | (12 << 5) | 24
+
+    ptr = 0
+    while ptr < cd_offset:
+        if data[ptr:ptr + 4] != b'PK\x03\x04':
+            break
+        struct.pack_into('<H', data, ptr + 6, torrent_flag)
+        struct.pack_into('<H', data, ptr + 10, torrent_time)
+        struct.pack_into('<H', data, ptr + 12, torrent_date)
+        compressed_size = struct.unpack_from('<I', data, ptr + 18)[0]
+        filename_length = struct.unpack_from('<H', data, ptr + 26)[0]
+        extra_length = struct.unpack_from('<H', data, ptr + 28)[0]
+        ptr += 30 + filename_length + extra_length + compressed_size
+
+    ptr = cd_offset
+    cd_end = cd_offset + cd_size
+    while ptr < cd_end:
+        if data[ptr:ptr + 4] != b'PK\x01\x02':
+            break
+        struct.pack_into('<H', data, ptr + 4, 0)
+        struct.pack_into('<H', data, ptr + 8, torrent_flag)
+        struct.pack_into('<H', data, ptr + 12, torrent_time)
+        struct.pack_into('<H', data, ptr + 14, torrent_date)
+        filename_length = struct.unpack_from('<H', data, ptr + 28)[0]
+        extra_length = struct.unpack_from('<H', data, ptr + 30)[0]
+        comment_length = struct.unpack_from('<H', data, ptr + 32)[0]
+        ptr += 46 + filename_length + extra_length + comment_length
+
+    central_directory = bytes(data[cd_offset:cd_offset + cd_size])
+    crc_hex = f"{zlib.crc32(central_directory) & 0xffffffff:08X}"
+    comment = f"TORRENTZIPPED-{crc_hex}".encode('ascii')
+    struct.pack_into('<H', data, eocd + 20, len(comment))
+    patched = bytes(data[:eocd + 22]) + comment
+    zip_path.write_bytes(patched)
+    return comment.decode('ascii')
+
+
+def zip_is_torrentzip_compatible(zip_path: Path) -> bool:
+    """Verifie les champs TorrentZip que RomVault produit."""
+    try:
+        data = zip_path.read_bytes()
+        eocd = data.rfind(b'PK\x05\x06', max(0, len(data) - 65557))
+        if eocd < 0:
+            return False
+        cd_size = struct.unpack_from('<I', data, eocd + 12)[0]
+        cd_offset = struct.unpack_from('<I', data, eocd + 16)[0]
+        comment_length = struct.unpack_from('<H', data, eocd + 20)[0]
+        comment = data[eocd + 22:eocd + 22 + comment_length].decode('ascii', 'ignore')
+        expected = f"TORRENTZIPPED-{zlib.crc32(data[cd_offset:cd_offset + cd_size]) & 0xffffffff:08X}"
+        if comment != expected:
+            return False
+
+        ptr = cd_offset
+        cd_end = cd_offset + cd_size
+        while ptr < cd_end:
+            if data[ptr:ptr + 4] != b'PK\x01\x02':
+                return False
+            version_made = struct.unpack_from('<H', data, ptr + 4)[0]
+            flag = struct.unpack_from('<H', data, ptr + 8)[0]
+            dos_time = struct.unpack_from('<H', data, ptr + 12)[0]
+            dos_date = struct.unpack_from('<H', data, ptr + 14)[0]
+            if version_made != 0 or flag != 2 or dos_time != 0xbc00 or dos_date != 0x2198:
+                return False
+            filename_length = struct.unpack_from('<H', data, ptr + 28)[0]
+            extra_length = struct.unpack_from('<H', data, ptr + 30)[0]
+            entry_comment_length = struct.unpack_from('<H', data, ptr + 32)[0]
+            ptr += 46 + filename_length + extra_length + entry_comment_length
+        return True
+    except Exception:
+        return False
+
+
+def create_torrentzip_single_file(source_file: Path, internal_name: str, output_zip: Path) -> str:
+    """Cree un ZIP Deflate maximal puis applique le header TorrentZip/RomVault."""
+    output_zip.parent.mkdir(parents=True, exist_ok=True)
+    temp_zip = output_zip.with_name(f"{output_zip.stem}.tmp_torrentzip{output_zip.suffix}")
+    if temp_zip.exists():
+        temp_zip.unlink()
+
+    seven_zip = find_7z_executable()
+    with tempfile.TemporaryDirectory(prefix='rom_downloader_torrentzip_') as temp_dir:
+        stage_dir = Path(temp_dir)
+        staged_file = stage_dir / Path(internal_name).name
+        shutil.copyfile(source_file, staged_file)
+
+        if seven_zip:
+            args = [
+                seven_zip, 'a', '-tzip', '-mm=Deflate', '-mx=9', '-mfb=258',
+                '-mpass=15', '-mmt=1', '-mtm=off', '-mtc=off', '-mta=off',
+                str(temp_zip), staged_file.name
+            ]
+            result = subprocess.run(args, cwd=str(stage_dir), stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE, text=True, check=False)
+            if result.returncode != 0:
+                raise RuntimeError((result.stderr or result.stdout or '7-Zip a echoue').strip())
+        else:
+            import zipfile
+            with zipfile.ZipFile(temp_zip, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
+                zf.write(staged_file, arcname=staged_file.name)
+
+    comment = patch_zip_to_torrentzip(temp_zip)
+    os.replace(temp_zip, output_zip)
+    return comment
+
+
+def extract_archive_member_to_file(archive_path: Path, member_name: str, output_file: Path):
+    """Extrait une entree precise d'une archive supportee vers un fichier."""
+    suffix = archive_path.suffix.lower()
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+
+    if suffix == '.zip':
+        import zipfile
+        with zipfile.ZipFile(archive_path, 'r') as zf:
+            with zf.open(member_name, 'r') as src, open(output_file, 'wb') as dst:
+                shutil.copyfileobj(src, dst)
+        return
+
+    if suffix == '.rar':
+        rarfile = import_optional_package('rarfile', auto_install=True)
+        if rarfile is None:
+            raise RuntimeError("rarfile indisponible")
+        with rarfile.RarFile(archive_path, 'r') as archive:
+            with archive.open(member_name, 'r') as src, open(output_file, 'wb') as dst:
+                shutil.copyfileobj(src, dst)
+        return
+
+    if suffix == '.7z':
+        py7zr = import_optional_package('py7zr', auto_install=True)
+        if py7zr is None:
+            raise RuntimeError("py7zr indisponible")
+        with tempfile.TemporaryDirectory(prefix='rom_downloader_7z_extract_') as temp_dir:
+            with py7zr.SevenZipFile(archive_path, mode='r') as archive:
+                archive.extractall(path=temp_dir)
+            extracted = Path(temp_dir) / member_name
+            if not extracted.exists():
+                matches = [item for item in Path(temp_dir).rglob('*') if item.is_file() and item.name == Path(member_name).name]
+                extracted = matches[0] if matches else extracted
+            if not extracted.exists():
+                raise RuntimeError(f"entree 7z introuvable: {member_name}")
+            shutil.copyfile(extracted, output_file)
+        return
+
+    raise RuntimeError(f"archive {suffix} non supportee")
+
+
+def repack_verified_archives_to_torrentzip(dat_games: dict, rom_folder: str, dry_run: bool = False,
+                                           log_func=print, status_callback=None,
+                                           is_running=lambda: True) -> dict:
+    """Recompresse les archives contenant des ROMs du DAT en ZIP TorrentZip/RomVault."""
+    root = Path(rom_folder)
+    summary = {'repacked': 0, 'skipped': 0, 'failed': 0, 'deleted': 0, 'items': []}
+    if not root.exists():
+        return summary
+
+    md5_lookup = build_dat_md5_lookup(dat_games)
+    if not md5_lookup:
+        log_func("Nettoyage TorrentZip ignore: aucun MD5 dans le DAT")
+        return summary
+
+    archive_paths = [
+        path for path in root.rglob('*')
+        if path.is_file()
+        and path.suffix.lower() in {'.zip', '.7z', '.rar'}
+        and 'ToSort' not in path.parts
+    ]
+
+    total = len(archive_paths)
+    log_func(f"Nettoyage TorrentZip: {total} archive(s) a verifier")
+
+    for index, archive_path in enumerate(archive_paths, 1):
+        if not is_running():
+            log_func("Nettoyage TorrentZip arrete par l'utilisateur.")
+            break
+        if status_callback:
+            status_callback(f"Nettoyage ZIP {index}/{total}: {archive_path.name[:60]}")
+
+        try:
+            matches = []
+            seen_md5 = set()
+            for entry in iter_archive_member_signatures(archive_path):
+                md5_value = normalize_checksum(entry.get('md5', ''), 'md5')
+                if md5_value in md5_lookup and md5_value not in seen_md5:
+                    expected = md5_lookup[md5_value][0]
+                    matches.append({
+                        'member': entry.get('member') or entry.get('name'),
+                        'md5': md5_value,
+                        'rom_name': expected['rom_name'] or entry.get('name') or archive_path.stem,
+                        'game_name': expected['game_name'],
+                    })
+                    seen_md5.add(md5_value)
+
+            if not matches:
+                summary['skipped'] += 1
+                continue
+
+            output_paths = set()
+            with tempfile.TemporaryDirectory(prefix='rom_downloader_repack_') as temp_dir:
+                temp_root = Path(temp_dir)
+                prepared_outputs = []
+                for match in matches:
+                    rom_name = Path(match['rom_name']).name
+                    target_zip = archive_path.parent / f"{Path(rom_name).stem}.zip"
+                    output_paths.add(str(target_zip.resolve()).lower())
+
+                    if (archive_path.resolve() == target_zip.resolve()
+                            and len(matches) == 1
+                            and Path(matches[0]['member']).name == Path(matches[0]['rom_name']).name
+                            and zip_is_torrentzip_compatible(archive_path)):
+                        summary['skipped'] += 1
+                        continue
+
+                    if dry_run:
+                        log_func(f"  [DRY-RUN] Recompresserait: {archive_path.name} -> {target_zip.name}")
+                        summary['repacked'] += 1
+                        continue
+
+                    extracted = temp_root / f"{len(prepared_outputs):04d}_{rom_name}"
+                    extract_archive_member_to_file(archive_path, match['member'], extracted)
+                    extracted_md5 = hash_file_signatures(extracted).get('md5')
+                    if extracted_md5 != match['md5']:
+                        raise RuntimeError(f"MD5 extrait incorrect pour {rom_name}")
+                    prepared_outputs.append((match, extracted, rom_name, target_zip))
+
+                for match, extracted, rom_name, target_zip in prepared_outputs:
+                    comment = create_torrentzip_single_file(extracted, rom_name, target_zip)
+                    ok, message = verify_downloaded_md5({'roms': [{'md5': match['md5']}]}, str(target_zip))
+                    if not ok:
+                        raise RuntimeError(message)
+                    log_func(f"  TorrentZip OK: {target_zip.name} ({comment})")
+                    summary['repacked'] += 1
+                    summary['items'].append({'source': str(archive_path), 'output': str(target_zip), 'game_name': match['game_name']})
+
+            archive_resolved = str(archive_path.resolve()).lower()
+            if not dry_run and archive_path.exists() and archive_resolved not in output_paths:
+                archive_path.unlink()
+                summary['deleted'] += 1
+
+        except Exception as e:
+            summary['failed'] += 1
+            log_func(f"  Echec nettoyage TorrentZip {archive_path.name}: {e}")
+
+    log_func(
+        "Nettoyage TorrentZip termine: "
+        f"{summary['repacked']} recompresse(s), {summary['skipped']} ignore(s), "
+        f"{summary['deleted']} source(s) supprimee(s), {summary['failed']} echec(s)"
+    )
+    return summary
 
 
 def build_report_slug(value: str) -> str:
@@ -2740,6 +3075,14 @@ def write_download_report(output_folder: str, summary: dict) -> str:
         lines.extend([
             f"ToSort deplaces: {summary.get('tosort_moved', 0)}",
             f"ToSort echecs: {summary.get('tosort_failed', 0)}",
+        ])
+
+    if 'torrentzip_repacked' in summary or 'torrentzip_failed' in summary:
+        lines.extend([
+            f"TorrentZip recompresse(s): {summary.get('torrentzip_repacked', 0)}",
+            f"TorrentZip ignore(s): {summary.get('torrentzip_skipped', 0)}",
+            f"TorrentZip sources supprimees: {summary.get('torrentzip_deleted', 0)}",
+            f"TorrentZip echecs: {summary.get('torrentzip_failed', 0)}",
         ])
 
     lines.extend(["", "Resolution par source", "-" * 72])
@@ -3765,6 +4108,8 @@ def search_all_sources(
 
     if direct_sources and still_missing:
         for source in direct_sources:
+            if not still_missing:
+                break
             print(f"\n--- Recherche directe sur {source['name']} ---")
 
             if source['type'] == 'minerva':
@@ -3806,6 +4151,8 @@ def search_all_sources(
     # ========================================================================
     if still_missing and system_name:
         for source in sources:
+            if not still_missing:
+                break
             if source_is_excluded(source, excluded_sources):
                 continue
 
@@ -4082,7 +4429,20 @@ def download_file(url: str, dest_path: str, session: requests.Session, progress_
 
     for attempt in range(max_retries):
         try:
-            with session.get(url, stream=True, timeout=120) as response:
+            request_kwargs = {
+                'stream': True,
+                'timeout': 120,
+                'allow_redirects': True,
+            }
+            archive_hosts = ('archive.org', '.archive.org')
+            if any(host in (url or '').lower() for host in archive_hosts):
+                access_key = os.environ.get('IAS3_ACCESS_KEY', '')
+                secret_key = os.environ.get('IAS3_SECRET_KEY', '')
+                if access_key and secret_key:
+                    from requests.auth import HTTPBasicAuth
+                    request_kwargs['auth'] = HTTPBasicAuth(access_key, secret_key)
+
+            with session.get(url, **request_kwargs) as response:
                 response.raise_for_status()
 
                 # Get the filename from the server's response
@@ -4191,6 +4551,97 @@ def download_from_archive_org(identifier: str, filename: str, dest_path: str, pr
     return False
 
 
+def download_from_archive_org(identifier: str, filename: str, dest_path: str, progress_callback=None) -> bool:
+    """Download a file from archive.org using internetarchive, then authenticated HTTP fallback."""
+    max_retries = 3
+
+    for attempt in range(max_retries):
+        try:
+            print(f"  TÃ©lÃ©chargement depuis archive.org: {identifier}/{filename}")
+
+            item = internetarchive.get_item(identifier)
+            file_obj = item.get_file(filename)
+
+            if file_obj is None:
+                print(f"  Fichier non trouvÃ©: {filename}")
+                return False
+
+            response = file_obj.download()
+
+            if hasattr(response, 'iter_content'):
+                total_size = int(response.headers.get('content-length', 0))
+                downloaded = 0
+
+                with open(dest_path, 'wb') as f:
+                    for chunk in response.iter_content(chunk_size=8192):
+                        if chunk:
+                            f.write(chunk)
+                            downloaded += len(chunk)
+                            if total_size > 0 and progress_callback:
+                                progress_callback((downloaded / total_size) * 100)
+            else:
+                file_obj.download(dest_path)
+
+            if progress_callback:
+                progress_callback(100.0)
+
+            print(f"  TÃ©lÃ©chargement terminÃ©: {dest_path}")
+            return True
+
+        except Exception as e:
+            print(f"  [WARN] Tentative internetarchive {attempt + 1}/{max_retries} Ã©chouÃ©e: {e}")
+            if os.path.exists(dest_path):
+                try:
+                    os.remove(dest_path)
+                except Exception:
+                    pass
+
+            try:
+                download_url = f"https://archive.org/download/{identifier}/{quote(filename)}"
+                print(f"  Fallback HTTP direct: {download_url}")
+                session = requests.Session()
+                session.headers.update({'User-Agent': 'Mozilla/5.0'})
+
+                auth = None
+                access_key = os.environ.get('IAS3_ACCESS_KEY', '')
+                secret_key = os.environ.get('IAS3_SECRET_KEY', '')
+                if access_key and secret_key:
+                    from requests.auth import HTTPBasicAuth
+                    auth = HTTPBasicAuth(access_key, secret_key)
+
+                with session.get(download_url, stream=True, allow_redirects=True, timeout=120, auth=auth) as response:
+                    response.raise_for_status()
+                    total_size = int(response.headers.get('content-length', 0))
+                    downloaded = 0
+
+                    with open(dest_path, 'wb') as f:
+                        for chunk in response.iter_content(chunk_size=8192):
+                            if chunk:
+                                f.write(chunk)
+                                downloaded += len(chunk)
+                                if total_size > 0 and progress_callback:
+                                    progress_callback((downloaded / total_size) * 100)
+
+                if progress_callback:
+                    progress_callback(100.0)
+
+                if os.path.exists(dest_path) and os.path.getsize(dest_path) > 0:
+                    print(f"  TÃ©lÃ©chargement HTTP archive.org terminÃ©: {dest_path}")
+                    return True
+            except Exception as http_error:
+                print(f"  [WARN] Fallback HTTP archive.org Ã©chouÃ©: {http_error}")
+                if os.path.exists(dest_path):
+                    try:
+                        os.remove(dest_path)
+                    except Exception:
+                        pass
+
+            if attempt < max_retries - 1:
+                time.sleep(2)
+
+    return False
+
+
 # ============================================================================
 # Mode interactif (console)
 # ============================================================================
@@ -4225,6 +4676,8 @@ def interactive_mode():
     
     tosort_input = get_input("Deplacer les ROMs non presentes dans le DAT vers ToSort ? (o/n): ")
     move_to_tosort = tosort_input.lower() in ['o', 'oui', 'y', 'yes']
+    clean_input = get_input("Recompresser les archives validees en ZIP TorrentZip/RomVault ? (o/n): ")
+    clean_torrentzip = clean_input.lower() in ['o', 'oui', 'y', 'yes']
     print()
 
     # Validate
@@ -4235,7 +4688,7 @@ def interactive_mode():
         print(f"Erreur: Dossier ROMs introuvable: {rom_folder}")
         return
 
-    run_download(dat_file, rom_folder, myrient_url, rom_folder, False, None, move_to_tosort)
+    run_download(dat_file, rom_folder, myrient_url, rom_folder, False, None, move_to_tosort, clean_torrentzip)
 
 
 def file_exists_in_folder(folder: str, filename: str) -> tuple:
@@ -4341,6 +4794,19 @@ def cleanup_invalid_download(path: str):
         pass
 
 
+def cleanup_failed_download_outputs(dest_path: str, folder: str, before_snapshot: dict):
+    """Supprime les sorties creees ou modifiees par une tentative ratee."""
+    candidates = set()
+    resolved_dest = resolve_downloaded_file_path(dest_path, folder, before_snapshot)
+    if resolved_dest:
+        candidates.add(resolved_dest)
+    if dest_path:
+        candidates.add(dest_path)
+
+    for candidate in candidates:
+        cleanup_invalid_download(candidate)
+
+
 def verify_downloaded_md5(game_info: dict, downloaded_path: str) -> tuple[bool, str]:
     """
     Verifie le MD5 du fichier telecharge contre le DAT.
@@ -4357,22 +4823,14 @@ def verify_downloaded_md5(game_info: dict, downloaded_path: str) -> tuple[bool, 
     file_path = Path(downloaded_path)
     suffix = file_path.suffix.lower()
 
-    if suffix == '.zip':
+    if suffix in {'.zip', '.7z', '.rar'}:
         try:
-            import zipfile
-            with zipfile.ZipFile(file_path, 'r') as zf:
-                for zip_info in zf.infolist():
-                    if zip_info.is_dir():
-                        continue
-                    signatures = hash_zip_entry_signatures(zf, zip_info)
-                    if signatures.get('md5') in expected_md5:
-                        return True, f"MD5 OK: {zip_info.filename}"
-            return False, "MD5 KO: aucune entree ZIP ne correspond au DAT"
+            for archive_entry in iter_archive_member_signatures(file_path):
+                if archive_entry.get('md5') in expected_md5:
+                    return True, f"MD5 OK: {archive_entry.get('member') or archive_entry.get('name')}"
+            return False, f"MD5 KO: aucune entree {suffix} ne correspond au DAT"
         except Exception as e:
-            return False, f"MD5 KO: archive ZIP illisible ({e})"
-
-    if suffix in {'.7z', '.rar'}:
-        return False, f"MD5 KO: archive {suffix} non verifiable sans extraction"
+            return False, f"MD5 KO: archive {suffix} illisible ou non verifiable ({e})"
 
     try:
         signatures = hash_file_signatures(file_path)
@@ -4468,7 +4926,11 @@ def attempt_download_from_resolved_provider(game_info: dict, output_folder: str,
             success = download_vimm(page_url, dest_path, get_vimm_session(), progress_callback)
 
     elif source == 'RetroGameSets' and download_url:
-        success = download_from_premium_source('1fichier', download_url, dest_path, load_api_keys(), progress_callback)
+        if is_1fichier_url(download_url):
+            success = download_from_premium_source('1fichier', download_url, dest_path, load_api_keys(), progress_callback)
+        else:
+            log_func(f"  URL: {download_url[:80]}...")
+            success = download_file(download_url, dest_path, session, progress_callback)
 
     elif source.startswith('Minerva') and torrent_url:
         log_func(f"  Torrent: {torrent_url[:80]}...")
@@ -4505,6 +4967,8 @@ def attempt_download_from_resolved_provider(game_info: dict, output_folder: str,
         if not md5_ok:
             cleanup_invalid_download(downloaded_path)
             success = False
+    else:
+        cleanup_failed_download_outputs(dest_path, output_folder, before_download)
 
     return success, downloaded_path
 
@@ -4583,6 +5047,121 @@ def download_with_provider_retries(game_info: dict, sources: list, session: requ
     item_copy = (current_game or game_info).copy()
     item_copy['attempted_sources'] = attempted_sources.copy()
     return ('stopped' if not is_running() else 'failed'), item_copy
+
+
+def download_missing_games_sequentially(
+    missing_games: list,
+    sources: list,
+    session: requests.Session,
+    system_name: str,
+    dat_profile: dict | None,
+    output_folder: str,
+    myrient_url: str = '',
+    dry_run: bool = False,
+    limit: int | None = None,
+    progress_callback=None,
+    log_func=print,
+    status_callback=None,
+    is_running=lambda: True
+) -> dict:
+    """
+    Traite les jeux un par un: resolution DDL, telechargement, validation MD5,
+    fallback provider, puis passage au jeu suivant.
+    """
+    resolved_items = []
+    downloaded_items = []
+    failed_items = []
+    skipped_items = []
+    not_available = []
+    downloaded = 0
+    failed = 0
+    skipped = 0
+    handled = 0
+
+    total = len(missing_games)
+    for index, original_game in enumerate(missing_games, 1):
+        if not is_running():
+            log_func("Arrete par l'utilisateur.")
+            break
+
+        if limit and handled >= limit:
+            log_func(f"\nLimite atteinte ({limit} jeu(x) traite(s)).")
+            break
+
+        game_name = original_game.get('game_name', 'Jeu inconnu')
+        log_func(f"\n[{index}/{total}] {game_name}")
+        if status_callback:
+            status_callback(f"Recherche {index}/{total}: {game_name[:60]}")
+
+        found, unavailable = search_all_sources(
+            [clean_download_resolution(original_game)],
+            sources,
+            session,
+            system_name,
+            dat_profile
+        )
+
+        if not found:
+            log_func("  Aucun provider disponible")
+            not_available.append((unavailable[0] if unavailable else original_game).copy())
+            handled += 1
+            continue
+
+        first_resolution = found[0]
+        log_func(f"  Provider initial: {first_resolution.get('source', 'unknown')}")
+        if status_callback:
+            status_callback(f"Telechargement {index}/{total}: {game_name[:60]}")
+
+        status, result_item = download_with_provider_retries(
+            first_resolution,
+            sources,
+            session,
+            system_name,
+            dat_profile,
+            output_folder,
+            myrient_url,
+            dry_run,
+            progress_callback,
+            log_func,
+            is_running=is_running
+        )
+
+        if status == 'downloaded':
+            log_func(f"  Telecharge: {result_item.get('download_filename', game_name)}")
+            downloaded += 1
+            downloaded_items.append(result_item.copy())
+            resolved_items.append(result_item.copy())
+            time.sleep(0.5)
+        elif status == 'skipped':
+            skipped += 1
+            skipped_items.append(result_item.copy())
+            resolved_items.append(result_item.copy())
+        elif status == 'dry_run':
+            resolved_items.append(result_item.copy())
+            handled += 1
+        elif status == 'stopped':
+            log_func("Arrete par l'utilisateur.")
+            break
+        else:
+            log_func("  Echec du telechargement")
+            failed += 1
+            failed_items.append(result_item.copy())
+            handled += 1
+            continue
+
+        if status in {'downloaded', 'skipped'}:
+            handled += 1
+
+    return {
+        'resolved_items': resolved_items,
+        'downloaded_items': downloaded_items,
+        'failed_items': failed_items,
+        'skipped_items': skipped_items,
+        'not_available': not_available,
+        'downloaded': downloaded,
+        'failed': failed,
+        'skipped': skipped,
+    }
 
 
 def build_custom_source(source_url: str) -> dict:
@@ -4830,7 +5409,8 @@ def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_ru
             print("\nAucun fichier à déplacer.")
 
 
-def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limit, move_to_tosort=False, custom_sources=None):
+def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limit,
+                 move_to_tosort=False, clean_torrentzip=False, custom_sources=None):
     """Run the download process with DDL sources first and Minerva torrents last."""
     session = requests.Session()
     session.headers.update({
@@ -4849,6 +5429,7 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
     skipped_items = []
     tosort_moved = 0
     tosort_failed = 0
+    torrentzip_summary = {'repacked': 0, 'skipped': 0, 'failed': 0, 'deleted': 0}
 
     system_name = dat_profile.get('system_name') or detect_system_name(dat_file)
     print(f"SystÃ¨me dÃ©tectÃ© : {system_name}")
@@ -4864,13 +5445,24 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
         sources = prepare_sources_for_profile(sources, dat_profile)
         report_active_sources = [source['name'] for source in sources if source.get('enabled', True)]
 
-        to_download, not_available = search_all_sources(
+        result = download_missing_games_sequentially(
             missing_games,
             sources,
             session,
             system_name,
-            dat_profile
+            dat_profile,
+            output_folder,
+            myrient_url,
+            dry_run,
+            limit,
+            None,
+            print
         )
+        to_download = result['resolved_items']
+        not_available = result['not_available']
+        downloaded_items = result['downloaded_items']
+        failed_items = result['failed_items']
+        skipped_items = result['skipped_items']
 
         if not_available:
             print("\n" + "=" * 60)
@@ -4880,7 +5472,7 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
                 print(f"  - {game_info['game_name']}")
             print()
 
-        if to_download:
+        if False and to_download:
             print(f"\n{'TÃ©lÃ©chargement' if not dry_run else 'Simulation'} de {len(to_download)} jeu(x)...")
 
             downloaded = 0
@@ -4936,6 +5528,16 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
             if dry_run:
                 print("\n(Simulation - aucun fichier tÃ©lÃ©chargÃ©)")
 
+    if missing_games:
+        print("\n" + "=" * 60)
+        print("Resume:")
+        print(f"  Telecharges: {result['downloaded']}")
+        print(f"  Echecs: {result['failed']}")
+        print(f"  Ignores: {result['skipped']}")
+        print(f"  Non trouves: {len(not_available)}")
+        if dry_run:
+            print("\n(Simulation - aucun fichier telecharge)")
+
     if move_to_tosort:
         print("\n" + "=" * 60)
         print("Recherche des fichiers Ã  dÃ©placer vers ToSort...")
@@ -4956,6 +5558,17 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
         else:
             print("\nAucun fichier Ã  dÃ©placer.")
 
+    if clean_torrentzip:
+        print("\n" + "=" * 60)
+        print("Nettoyage des archives validees en ZIP TorrentZip/RomVault...")
+        print("=" * 60)
+        torrentzip_summary = repack_verified_archives_to_torrentzip(
+            dat_games,
+            output_folder,
+            dry_run,
+            print
+        )
+
     report_path = write_download_report(output_folder, {
         'dat_file': dat_file,
         'system_name': system_name,
@@ -4972,6 +5585,10 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
         'not_available': not_available,
         'tosort_moved': tosort_moved,
         'tosort_failed': tosort_failed,
+        'torrentzip_repacked': torrentzip_summary.get('repacked', 0),
+        'torrentzip_skipped': torrentzip_summary.get('skipped', 0),
+        'torrentzip_deleted': torrentzip_summary.get('deleted', 0),
+        'torrentzip_failed': torrentzip_summary.get('failed', 0),
     })
     return report_path
 
@@ -4981,7 +5598,16 @@ def cli_mode(args):
     output_folder = args.output if args.output else args.rom_folder
     os.makedirs(output_folder, exist_ok=True)
 
-    run_download(args.dat_file, args.rom_folder, args.myrient_url, output_folder, args.dry_run, args.limit, args.tosort)
+    run_download(
+        args.dat_file,
+        args.rom_folder,
+        args.myrient_url,
+        output_folder,
+        args.dry_run,
+        args.limit,
+        args.tosort,
+        args.clean_torrentzip
+    )
 
 
 # ============================================================================
@@ -4995,12 +5621,9 @@ def gui_mode():
         from tkinter import ttk, filedialog, messagebox, scrolledtext
         import threading
         
-        # Try tkinterdnd2 for drag & drop
-        try:
-            import tkinterdnd2
-            HAS_DND = True
-        except ImportError:
-            HAS_DND = False
+        # Try tkinterdnd2 for drag & drop.
+        tkinterdnd2 = import_optional_package('tkinterdnd2', auto_install=True)
+        HAS_DND = tkinterdnd2 is not None
         
         class ROMDownloaderGUI:
             def __init__(self, root, use_dnd=False):
@@ -5012,6 +5635,7 @@ def gui_mode():
                 self.dat_file = tk.StringVar()
                 self.rom_folder = tk.StringVar()
                 self.myrient_url = tk.StringVar()
+                self.clean_torrentzip_var = tk.BooleanVar(value=False)
                 self.running = False
                 self.session = requests.Session()
                 self.session.headers.update({
@@ -5059,36 +5683,41 @@ def gui_mode():
                 sources_frame = ttk.Frame(main_frame)
                 sources_frame.grid(row=6, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=5)
                 
-                # Initialize source checkboxes
-                self.source_vars = {}
-                for i, source in enumerate(get_default_sources()):
-                    var = tk.BooleanVar(value=source.get('enabled', True))
-                    self.source_vars[source['name']] = var
-                    chk = ttk.Checkbutton(sources_frame, text=source['name'], variable=var)
-                    chk.grid(row=i // 2, column=i % 2, sticky=tk.W, padx=10, pady=2)
+                ttk.Label(
+                    sources_frame,
+                    text="Toutes les sources disponibles sont utilisees automatiquement. Les DDL passent avant Minerva.",
+                    wraplength=760
+                ).grid(row=0, column=0, sticky=tk.W, padx=10, pady=2)
+                ttk.Label(
+                    sources_frame,
+                    text=", ".join(source['name'] for source in get_default_sources()),
+                    wraplength=760
+                ).grid(row=1, column=0, sticky=tk.W, padx=10, pady=2)
 
                 self.move_to_tosort_var = tk.BooleanVar(value=False)
                 ttk.Checkbutton(main_frame, text="Deplacer les ROMs non presentes dans le DAT vers ToSort",
                                variable=self.move_to_tosort_var).grid(row=7, column=0, columnspan=3, sticky=tk.W, pady=5)
+                ttk.Checkbutton(main_frame, text="Apres verification MD5, recompresser les archives en ZIP TorrentZip/RomVault",
+                               variable=self.clean_torrentzip_var).grid(row=8, column=0, columnspan=3, sticky=tk.W, pady=5)
 
-                ttk.Separator(main_frame, orient='horizontal').grid(row=8, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=20)
+                ttk.Separator(main_frame, orient='horizontal').grid(row=9, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=20)
 
-                ttk.Label(main_frame, text="Progression:").grid(row=9, column=0, sticky=tk.W, pady=5)
+                ttk.Label(main_frame, text="Progression:").grid(row=10, column=0, sticky=tk.W, pady=5)
                 self.progress_var = tk.DoubleVar()
                 self.progress_bar = ttk.Progressbar(main_frame, variable=self.progress_var, maximum=100, mode='determinate')
-                self.progress_bar.grid(row=9, column=1, columnspan=2, sticky=(tk.W, tk.E), pady=5)
+                self.progress_bar.grid(row=10, column=1, columnspan=2, sticky=(tk.W, tk.E), pady=5)
 
                 self.status_var = tk.StringVar(value="Pret")
-                ttk.Label(main_frame, textvariable=self.status_var).grid(row=10, column=0, columnspan=3, pady=5)
+                ttk.Label(main_frame, textvariable=self.status_var).grid(row=11, column=0, columnspan=3, pady=5)
 
-                ttk.Label(main_frame, text="Journal:").grid(row=11, column=0, sticky=tk.W, pady=5)
+                ttk.Label(main_frame, text="Journal:").grid(row=12, column=0, sticky=tk.W, pady=5)
                 self.log_text = scrolledtext.ScrolledText(main_frame, height=20, width=100, wrap=tk.WORD)
-                self.log_text.grid(row=12, column=0, columnspan=3, sticky=(tk.W, tk.E, tk.N, tk.S), pady=5)
+                self.log_text.grid(row=13, column=0, columnspan=3, sticky=(tk.W, tk.E, tk.N, tk.S), pady=5)
                 main_frame.columnconfigure(1, weight=1)
-                main_frame.rowconfigure(12, weight=1)
+                main_frame.rowconfigure(13, weight=1)
 
                 button_frame = ttk.Frame(main_frame)
-                button_frame.grid(row=13, column=0, columnspan=3, pady=10)
+                button_frame.grid(row=14, column=0, columnspan=3, pady=10)
 
                 self.start_button = ttk.Button(button_frame, text="Demarrer", command=self.start_download, width=15)
                 self.start_button.grid(row=0, column=0, padx=5)
@@ -5184,11 +5813,7 @@ def gui_mode():
                     myrient_url = self.myrient_url.get()
                     output_folder = rom_folder
 
-                    # Build sources list from checkboxes
-                    sources = []
-                    for source in get_default_sources():
-                        if self.source_vars.get(source['name'], tk.BooleanVar(value=True)).get():
-                            sources.append(source.copy())
+                    sources = [source.copy() for source in get_default_sources()]
                     
                     # Add custom URL if provided
                     if myrient_url and myrient_url not in [s['base_url'] for s in sources]:
@@ -5343,6 +5968,17 @@ def gui_mode():
                         else:
                             self.log("Aucun fichier a deplacer.")
 
+                    if self.clean_torrentzip_var.get():
+                        self.log("\nNettoyage des archives validees en ZIP TorrentZip/RomVault...")
+                        repack_verified_archives_to_torrentzip(
+                            dat_games,
+                            rom_folder,
+                            False,
+                            self.log,
+                            lambda message: self.status_var.set(message),
+                            is_running=lambda: self.running
+                        )
+
                     self.status_var.set(f"Termine - {downloaded} telecharge(s)")
                     messagebox.showinfo("Termine", f"Telechargement termine !\n\nTelecharges: {downloaded}\nEchecs: {failed}\nIgnores: {skipped}")
                     
@@ -5398,12 +6034,8 @@ def gui_mode():
         from tkinter import filedialog, messagebox, scrolledtext, ttk
         import threading
 
-        try:
-            import tkinterdnd2
-            has_dnd = True
-        except ImportError:
-            tkinterdnd2 = None
-            has_dnd = False
+        tkinterdnd2 = import_optional_package('tkinterdnd2', auto_install=True)
+        has_dnd = tkinterdnd2 is not None
 
         class App:
             def __init__(self, root, use_dnd=False):
@@ -5422,6 +6054,7 @@ def gui_mode():
                 self.rom_folder = tk.StringVar()
                 self.myrient_url = tk.StringVar()
                 self.progress_var = tk.DoubleVar(value=0)
+                self.clean_torrentzip_var = tk.BooleanVar(value=False)
                 self.status_var = tk.StringVar(value="Pret a telecharger les jeux manquants")
                 self.hint_var = tk.StringVar(value="Laisse vide pour essayer les DDL d'abord, puis Minerva en dernier recours.")
                 self.root.title("ROM Downloader")
@@ -5542,17 +6175,12 @@ def gui_mode():
 
                 sources = self.card(main, 2)
                 tk.Label(sources, text="Sources de telechargement", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 13, 'bold')).grid(row=0, column=0, sticky='w')
-                tk.Label(sources, text="Les sources DDL sont essayees en premier. Minerva reste active comme dernier recours torrent.", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, justify='left', wraplength=880, font=(self.font, 9)).grid(row=1, column=0, sticky='w', pady=(6, 12))
-                grid = tk.Frame(sources, bg=UI_COLOR_CARD_BG)
-                grid.grid(row=2, column=0, sticky='ew')
-                for index, source in enumerate(self.default_sources):
-                    var = tk.BooleanVar(value=source.get('enabled', True))
-                    widget = self.toggle(grid, source['name'], var)
-                    widget.grid(row=index // 3, column=index % 3, sticky='w', padx=(0, 18))
-                    self.source_vars[source['name']] = var
-                    self.source_widgets[source['name']] = widget
+                source_names = ', '.join(source['name'] for source in self.default_sources)
+                tk.Label(sources, text="Toutes les sources disponibles sont utilisees automatiquement. Les DDL passent avant Minerva, qui reste le dernier recours torrent.", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, justify='left', wraplength=880, font=(self.font, 9)).grid(row=1, column=0, sticky='w', pady=(6, 8))
+                tk.Label(sources, text=source_names, bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, justify='left', wraplength=880, font=(self.font, 9)).grid(row=2, column=0, sticky='w')
                 self.move_to_tosort_var = tk.BooleanVar(value=False)
                 self.toggle(sources, "Deplacer les ROMs hors DAT dans un sous-dossier ToSort", self.move_to_tosort_var).grid(row=3, column=0, sticky='w', pady=(14, 0))
+                self.toggle(sources, "Apres verification MD5, recompresser les archives en ZIP TorrentZip/RomVault", self.clean_torrentzip_var).grid(row=4, column=0, sticky='w', pady=(8, 0))
 
                 progress = self.card(main, 3)
                 progress.columnconfigure(0, weight=1)
@@ -5614,15 +6242,12 @@ def gui_mode():
                     self.family_badge.configure(text=profile.get('family_label') if profile.get('family') != 'unknown' else "Profil manuel", bg={'no-intro': UI_COLOR_ACCENT, 'redump': UI_COLOR_SUCCESS, 'tosec': UI_COLOR_WARNING}.get(profile.get('family'), UI_COLOR_WARNING))
                 if self.mode_badge:
                     self.mode_badge.configure(text="Retool / 1G1R" if profile.get('is_retool') else "DAT brut", bg=UI_COLOR_SUCCESS if profile.get('is_retool') else UI_COLOR_GHOST_HOVER)
-                for source in prepare_sources_for_profile([source.copy() for source in self.default_sources], profile):
-                    self.source_vars[source['name']].set(source.get('enabled', True))
-                    self.source_widgets[source['name']].configure(state=tk.NORMAL if source.get('compatible', True) else tk.DISABLED)
 
             def selected_sources(self):
                 sources = []
                 for source in self.default_sources:
                     item = source.copy()
-                    item['enabled'] = bool(self.source_vars[source['name']].get())
+                    item['enabled'] = True
                     sources.append(item)
                 custom_url = self.myrient_url.get().strip()
                 if custom_url and custom_url.rstrip('/').lower() not in {s.get('base_url', '').rstrip('/').lower() for s in sources if s.get('base_url')}:
@@ -5667,6 +6292,7 @@ def gui_mode():
                     to_download = []
                     not_available = []
                     moved = move_failed = 0
+                    torrentzip_summary = {'repacked': 0, 'skipped': 0, 'failed': 0, 'deleted': 0}
                     if not missing_games:
                         if self.move_to_tosort_var.get():
                             tosort_folder = os.path.join(rom_folder, "ToSort")
@@ -5674,6 +6300,15 @@ def gui_mode():
                             if files_to_move:
                                 moved, move_failed = move_files_to_tosort(files_to_move, rom_folder, tosort_folder, False)
                                 self.log(f"ToSort -> deplaces: {moved}, echecs: {move_failed}")
+                        if self.clean_torrentzip_var.get():
+                            torrentzip_summary = repack_verified_archives_to_torrentzip(
+                                dat_games,
+                                rom_folder,
+                                False,
+                                self.log,
+                                lambda message: self._ui(lambda msg=message: self.status_var.set(msg)),
+                                is_running=lambda: self.running
+                            )
                         report_path = write_download_report(rom_folder, {
                             'dat_file': dat_path,
                             'system_name': system_name,
@@ -5690,66 +6325,64 @@ def gui_mode():
                             'not_available': [],
                             'tosort_moved': moved,
                             'tosort_failed': move_failed,
+                            'torrentzip_repacked': torrentzip_summary.get('repacked', 0),
+                            'torrentzip_skipped': torrentzip_summary.get('skipped', 0),
+                            'torrentzip_deleted': torrentzip_summary.get('deleted', 0),
+                            'torrentzip_failed': torrentzip_summary.get('failed', 0),
                         })
                         self.status_var.set("Termine - dossier deja complet")
                         self._ui(lambda path=report_path: messagebox.showinfo("Termine", f"Tous les jeux du DAT sont deja presents localement.\n\nRapport:\n{path}"))
                         return
                     self.log(f"DAT detecte: {describe_dat_profile(dat_profile)}")
                     self.log(f"Sources actives: {', '.join([s['name'] for s in sources if s.get('enabled', True)])}")
-                    to_download, not_available = search_all_sources(missing_games, sources, self.session, system_name, dat_profile)
+                    progress = lambda value: self._ui(lambda: self.progress_var.set(value))
+                    status_callback = lambda message: self._ui(lambda msg=message: self.status_var.set(msg))
+                    result = download_missing_games_sequentially(
+                        missing_games,
+                        sources,
+                        self.session,
+                        system_name,
+                        dat_profile,
+                        rom_folder,
+                        source_url,
+                        False,
+                        None,
+                        progress,
+                        self.log,
+                        status_callback,
+                        is_running=lambda: self.running
+                    )
+                    to_download = result['resolved_items']
+                    not_available = result['not_available']
+                    downloaded_items = result['downloaded_items']
+                    failed_items = result['failed_items']
+                    skipped_items = result['skipped_items']
                     if not_available:
                         self.log(f"{len(not_available)} jeux non disponibles:")
                         for game in not_available[:20]:
                             self.log(f"  - {game['game_name']}")
-                    if not to_download:
+                    if not to_download and not not_available:
                         self.status_var.set("Aucun jeu trouve sur les sources")
                         self._ui(lambda: messagebox.showwarning("Attention", "Aucun jeu manquant n'a ete trouve sur les sources actives."))
                         return
-                    downloaded = failed = skipped = 0
-                    for index, game_info in enumerate(to_download, 1):
-                        if not self.running:
-                            self.log("Arrete par l'utilisateur.")
-                            break
-                        game_name = game_info['game_name']
-                        source = game_info.get('source', 'unknown')
-                        self.log(f"[{index}/{len(to_download)}] {game_name} [{source}]")
-                        self.status_var.set(f"Telechargement {index}/{len(to_download)} : {game_name[:60]}")
-                        progress = lambda value: self._ui(lambda: self.progress_var.set(value))
-                        status, result_item = download_with_provider_retries(
-                            game_info,
-                            sources,
-                            self.session,
-                            system_name,
-                            dat_profile,
-                            rom_folder,
-                            source_url,
-                            False,
-                            progress,
-                            self.log,
-                            is_running=lambda: self.running
-                        )
-                        if status == 'downloaded':
-                            self.log(f"  Telecharge: {result_item.get('download_filename', game_name)}")
-                            downloaded += 1
-                            downloaded_items.append(result_item.copy())
-                            time.sleep(0.5)
-                        elif status == 'skipped':
-                            skipped += 1
-                            skipped_items.append(result_item.copy())
-                        elif status == 'stopped':
-                            self.log("Arrete par l'utilisateur.")
-                            break
-                        else:
-                            self.log("  Echec du telechargement")
-                            failed += 1
-                            failed_items.append(result_item.copy())
-                        continue
+                    downloaded = result['downloaded']
+                    failed = result['failed']
+                    skipped = result['skipped']
                     if self.move_to_tosort_var.get():
                         tosort_folder = os.path.join(rom_folder, "ToSort")
                         files_to_move = find_roms_not_in_dat(dat_games, local_roms, local_roms_normalized, rom_folder)
                         if files_to_move:
                             moved, move_failed = move_files_to_tosort(files_to_move, rom_folder, tosort_folder, False)
                             self.log(f"ToSort -> deplaces: {moved}, echecs: {move_failed}")
+                    if self.clean_torrentzip_var.get():
+                        torrentzip_summary = repack_verified_archives_to_torrentzip(
+                            dat_games,
+                            rom_folder,
+                            False,
+                            self.log,
+                            status_callback,
+                            is_running=lambda: self.running
+                        )
                     report_path = write_download_report(rom_folder, {
                         'dat_file': dat_path,
                         'system_name': system_name,
@@ -5766,6 +6399,10 @@ def gui_mode():
                         'not_available': not_available,
                         'tosort_moved': moved,
                         'tosort_failed': move_failed,
+                        'torrentzip_repacked': torrentzip_summary.get('repacked', 0),
+                        'torrentzip_skipped': torrentzip_summary.get('skipped', 0),
+                        'torrentzip_deleted': torrentzip_summary.get('deleted', 0),
+                        'torrentzip_failed': torrentzip_summary.get('failed', 0),
                     })
                     self.status_var.set(f"Termine - {downloaded} telecharge(s)")
                     self._ui(lambda path=report_path: messagebox.showinfo("Termine", f"Telechargement termine.\n\nTelecharges: {downloaded}\nEchecs: {failed}\nIgnores: {skipped}\n\nRapport:\n{path}"))
@@ -5815,6 +6452,7 @@ Exemples:
     parser.add_argument('--limit', type=int, help='Limite de telechargements')
     parser.add_argument('--gui', action='store_true', help='Mode interface graphique')
     parser.add_argument('--tosort', action='store_true', help='Deplacer les ROMs non presentes dans le DAT vers un sous-dossier ToSort')
+    parser.add_argument('--clean-torrentzip', action='store_true', help='Recompresser les archives validees MD5 en ZIP TorrentZip/RomVault')
     parser.add_argument('--sources', action='store_true', help='Afficher les sources de telechargement')
 
     args = parser.parse_args()
