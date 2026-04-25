@@ -1,6 +1,6 @@
 # ROM Downloader
 
-Compare un DAT No-Intro ou Redump deja retraite avec Retool a un dossier cible, detecte les ROMs manquantes, puis telecharge ce qui manque en priorite via les sources DDL. Les torrents Minerva restent le dernier recours.
+Compare un DAT No-Intro ou Redump deja retraite avec Retool a un dossier cible, detecte les ROMs manquantes, puis telecharge ce qui manque en priorite via les sources DDL, ensuite Minerva, puis archive.org en dernier recours.
 
 ## Fonctionnement
 
@@ -8,7 +8,7 @@ Le workflow attendu est simple :
 
 1. Tu donnes un fichier `.dat`.
 2. Tu donnes un dossier de sortie, qui peut deja contenir des ROMs.
-3. Tu peux laisser l'URL source vide pour utiliser l'ordre automatique DDL puis Minerva, ou renseigner manuellement une URL de listing si besoin.
+3. Tu peux laisser l'URL source vide pour utiliser l'ordre automatique DDL, puis Minerva, puis archive.org, ou renseigner manuellement une URL de listing si besoin.
 4. Le script verifie ce qui est deja present dans le dossier.
 5. Il ne telecharge que les jeux manquants.
 6. A la fin, il ecrit un rapport texte dans le dossier de destination avec le resume complet et surtout les jeux manquants.
@@ -41,16 +41,16 @@ L'ordre reel de recherche est le suivant :
 
 1. Shards locaux `rom_db_shards/shard_*.zip` comme catalogue MD5, avec recherche `md5 -> crc -> sha1 -> nom`.
 2. Sources DDL specialisees: `RetroGameSets`, `EdgeEmu`, `PlanetEmu`, `LoLROMs`, `CDRomance`, `Vimm's Lair` et liens directs compatibles.
-3. `archive.org` en recherche live par `md5 -> crc -> sha1 -> nom` quand aucun DDL n'a abouti.
-4. `Minerva` via torrent uniquement en dernier recours, en se basant sur le DAT detecte ou sur l'URL manuelle si tu en fournis une.
+3. `Minerva` via torrent, en se basant sur le DAT detecte ou sur l'URL manuelle si tu en fournis une.
+4. `archive.org` en recherche live par `md5 -> crc -> sha1 -> nom`, uniquement en dernier recours apres Minerva.
 
 Important :
-La base locale peut elle-meme renvoyer des liens `archive.org`, `1fichier` ou d'autres URLs directes. En pratique, `archive.org` peut donc etre atteint soit via la base locale, soit via la recherche live finale.
+La base locale peut elle-meme renvoyer des liens `1fichier` ou d'autres URLs directes. Les liens `archive.org` sont gardes pour le fallback final.
 
 ## Sources de telechargement
 
 - `rom_db_shards/shard_*.zip` : catalogue local MD5 fragmente et zippe
-- `archive.org` : DDL via base locale ou recherche live checksum
+- `archive.org` : recherche live checksum en dernier recours
 - `RetroGameSets` : DDL communautaire / 1fichier
 - `LoLROMs` : DDL via listing Cloudflare-compatible
 - `EdgeEmu` : DDL
@@ -58,7 +58,7 @@ La base locale peut elle-meme renvoyer des liens `archive.org`, `1fichier` ou d'
 - `CDRomance` : DDL avec ticket
 - `Vimm's Lair` : DDL via formulaire
 - `1fichier (Gratuit)` : DDL avec attente si necessaire
-- `Minerva No-Intro`, `Minerva Redump`, `Minerva TOSEC` : dernier recours torrent
+- `Minerva No-Intro`, `Minerva Redump`, `Minerva TOSEC` : fallback torrent avant archive.org
 
 Etat de la base locale au 2026-04-19 :
 
@@ -71,7 +71,7 @@ Apres chaque telechargement, le MD5 est verifie par rapport au DAT. Pour un ZIP,
 Si le MD5 ne correspond pas au DAT, le fichier telecharge est supprime et le meme jeu est retente automatiquement sur le provider suivant jusqu'a epuisement des sources.
 L'option de nettoyage TorrentZip extrait les archives validees par MD5 puis recree un ZIP compatible RomVault/TorrentZip avec date interne fixe, commentaire `TORRENTZIPPED-*` et nom de ROM issu du DAT.
 
-Minerva est telecharge en direct via torrent sans sortir de l'application, mais seulement apres les sources DDL.
+Minerva est telecharge en direct via torrent sans sortir de l'application, apres les sources DDL et avant archive.org.
 
 ## Reconstruction de la base Minerva
 
@@ -120,10 +120,23 @@ Si l'option est cochee, les fichiers presents dans le dossier mais absents du DA
 python rom_downloader.py --gui
 ```
 
+Le glisser-deposer est active si `tkinterdnd2` et son extension native `tkdnd`
+repondent au demarrage. Le test est isole dans un sous-processus court pour
+eviter qu'un backend DnD incompatible bloque l'ouverture de l'interface. Si le
+test echoue, l'interface demarre quand meme et les boutons `Parcourir` restent
+disponibles.
+
+Pour forcer la desactivation du glisser-deposer :
+
+```bash
+set ROM_DOWNLOADER_DISABLE_DND=1
+python rom_downloader.py --gui
+```
+
 ### Ligne de commande
 
 ```bash
-python rom_downloader.py <fichier.dat> <dossier_roms> [url_source] [--dry-run] [--limit N] [--tosort] [--clean-torrentzip]
+python rom_downloader.py <fichier.dat> <dossier_roms> [url_source] [--dry-run] [--limit N] [--parallel N] [--tosort] [--clean-torrentzip]
 ```
 
 Exemples :
@@ -200,6 +213,7 @@ ALLDEBRID_API_KEY=
 
 - `--dry-run` : simule sans telecharger
 - `--limit N` : limite le nombre de telechargements
+- `--parallel N` : nombre de telechargements simultanes, 3 par defaut
 - `--tosort` : deplace le hors-DAT dans `ToSort`
 - `--clean-torrentzip` : recompresse les archives validees MD5 en ZIP TorrentZip/RomVault
 - `--sources` : affiche les sources disponibles
@@ -207,7 +221,7 @@ ALLDEBRID_API_KEY=
 ## Notes
 
 - L'URL source est optionnelle.
-- Si elle est vide, le script essaie les DDL en premier puis deduit automatiquement la bonne collection Minerva depuis le DAT pour le dernier recours.
+- Si elle est vide, le script essaie les DDL en premier, deduit automatiquement la bonne collection Minerva depuis le DAT, puis garde archive.org pour le dernier recours.
 - Les fichiers ZIP locaux sont aussi inspectes pour verifier les checksums internes quand la taille correspond au DAT.
 
 ## Validation

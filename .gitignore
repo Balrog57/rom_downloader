@@ -46,6 +46,7 @@ api_keys.json
 
 # Logs
 *.log
+rom_downloader_gui_error.log
 
 # Test files
 test_*.py
@@ -92,6 +93,7 @@ rom_db_shards/retrogamesets/
 outputs/
 dat_size_summary.tsv
 dat.exemple/romset_dat_sizes.xlsx
+.rom_downloader_scan_cache.json
 x.bin
 
 tasks/
