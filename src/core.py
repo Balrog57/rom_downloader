@@ -61,7 +61,9 @@ SCAN_CACHE_FILENAME = ".rom_downloader_scan_cache.json"
 DEFAULT_PARALLEL_DOWNLOADS = 3
 PREFERENCES_FILE = APP_ROOT / ".rom_downloader_preferences.json"
 RESOLUTION_CACHE_FILE = APP_ROOT / ".rom_downloader_resolution_cache.json"
+LISTING_CACHE_FILE = APP_ROOT / ".rom_downloader_listing_cache.json"
 RESOLUTION_CACHE_TTL_SECONDS = 7 * 24 * 60 * 60
+LISTING_CACHE_TTL_SECONDS = 24 * 60 * 60
 DOWNLOAD_CHUNK_SIZE = 256 * 1024
 
 # ============================================================================
@@ -212,6 +214,51 @@ def clear_resolution_cache() -> None:
             RESOLUTION_CACHE_FILE.unlink()
     except Exception as e:
         print(f"Avertissement: cache de resolution non supprime: {e}")
+
+
+def load_listing_cache() -> dict:
+    """Charge le cache des listings distants."""
+    data = load_json_file(LISTING_CACHE_FILE, {'version': 1, 'entries': {}})
+    if not isinstance(data, dict):
+        return {'version': 1, 'entries': {}}
+    data.setdefault('version', 1)
+    data.setdefault('entries', {})
+    if not isinstance(data['entries'], dict):
+        data['entries'] = {}
+    return data
+
+
+def save_listing_cache(cache: dict) -> bool:
+    """Sauvegarde le cache des listings distants."""
+    cache = cache or {'version': 1, 'entries': {}}
+    cache['version'] = 1
+    cache.setdefault('entries', {})
+    return save_json_file(LISTING_CACHE_FILE, cache)
+
+
+def clear_listing_cache() -> None:
+    """Supprime le cache des listings distants."""
+    try:
+        if LISTING_CACHE_FILE.exists():
+            LISTING_CACHE_FILE.unlink()
+    except Exception as e:
+        print(f"Avertissement: cache de listings non supprime: {e}")
+
+
+def listing_cache_get(cache: dict, key: str):
+    entry = (cache or {}).get('entries', {}).get(key)
+    if not entry:
+        return None
+    if time.time() - float(entry.get('created_at', 0)) > LISTING_CACHE_TTL_SECONDS:
+        return None
+    return entry.get('value')
+
+
+def listing_cache_set(cache: dict, key: str, value) -> None:
+    cache.setdefault('entries', {})[key] = {
+        'created_at': time.time(),
+        'value': value,
+    }
 
 
 try:
@@ -1268,6 +1315,12 @@ def describe_dat_profile(dat_profile: dict | None) -> str:
 def list_minerva_directory(minerva_url: str, session: requests.Session) -> tuple[set, list]:
     """Liste les fichiers et sous-dossiers d'un rÃ©pertoire Minerva."""
     print(f"Fetching Minerva directory listing: {minerva_url}")
+    cache = load_listing_cache()
+    cache_key = f"minerva:{minerva_url}"
+    cached = listing_cache_get(cache, cache_key)
+    if cached:
+        print("  Listing Minerva depuis le cache")
+        return set(cached.get('files', [])), list(cached.get('directories', []))
 
     files = set()
     directories = []
@@ -1303,6 +1356,8 @@ def list_minerva_directory(minerva_url: str, session: requests.Session) -> tuple
                     })
 
         print(f"Found {len(files)} files and {len(directories)} subdirectories on Minerva")
+        listing_cache_set(cache, cache_key, {'files': sorted(files), 'directories': directories})
+        save_listing_cache(cache)
     except Exception as e:
         print(f"Error fetching Minerva directory: {e}")
 
@@ -2107,6 +2162,7 @@ def build_diagnostic_report() -> dict:
         'assets_present': BALROG_ASSETS_DIR.exists(),
         'preferences_file': str(PREFERENCES_FILE),
         'resolution_cache_file': str(RESOLUTION_CACHE_FILE),
+        'listing_cache_file': str(LISTING_CACHE_FILE),
         'dependencies': dependencies,
         'env': {
             'IA_credentials': bool(os.environ.get('IAS3_ACCESS_KEY') and os.environ.get('IAS3_SECRET_KEY')),
@@ -2128,6 +2184,8 @@ def print_diagnostic_report(report: dict) -> None:
     print(f"DAT: {report['dat_files']} fichiers, sections: {', '.join(report['dat_sections']) or 'aucune'}")
     print(f"DB shards: {report['db_shards']}")
     print(f"Assets presents: {'oui' if report['assets_present'] else 'non'}")
+    print(f"Cache resolution: {report['resolution_cache_file']}")
+    print(f"Cache listings: {report['listing_cache_file']}")
     print("Dependances:")
     for name, ok in report['dependencies'].items():
         print(f"  - {name}: {'ok' if ok else 'absent'}")
@@ -3770,6 +3828,12 @@ def list_lolroms_directory(system_path: str) -> dict:
 
     url = build_lolroms_url(system_path)
     print(f"Scraping LoLROMs: {url}")
+    cache = load_listing_cache()
+    cache_key = f"lolroms:{url}"
+    cached = listing_cache_get(cache, cache_key)
+    if cached:
+        print("  Listing LoLROMs depuis le cache")
+        return dict(cached)
 
     mapping = {}
     try:
@@ -3804,6 +3868,8 @@ def list_lolroms_directory(system_path: str) -> dict:
             }
 
         print(f"Found {len(mapping)} files on LoLROMs")
+        listing_cache_set(cache, cache_key, mapping)
+        save_listing_cache(cache)
     except Exception as e:
         print(f"Erreur scraping LoLROMs: {e}")
 
@@ -3818,6 +3884,12 @@ def list_edgeemu_directory(system_slug: str, session: requests.Session) -> dict:
     config = ROM_DATABASE.get('config_urls', {})
     url = f"{config.get('edgeemu_browse', '')}{system_slug}"
     print(f"Scraping EdgeEmu: {url}")
+    cache = load_listing_cache()
+    cache_key = f"edgeemu:{url}"
+    cached = listing_cache_get(cache, cache_key)
+    if cached:
+        print("  Listing EdgeEmu depuis le cache")
+        return dict(cached)
     
     mapping = {}
     try:
@@ -3839,6 +3911,8 @@ def list_edgeemu_directory(system_slug: str, session: requests.Session) -> dict:
                         'full_name': game_name,
                         'url': download_url
                     }
+            listing_cache_set(cache, cache_key, mapping)
+            save_listing_cache(cache)
     except Exception as e:
         print(f"Erreur scraping EdgeEmu: {e}")
         
@@ -3920,6 +3994,12 @@ def list_planetemu_directory(system_slug: str, session: requests.Session) -> dic
         base = 'https://www.planetemu.net/roms/'
     url = f"{base}{system_slug}"
     print(f"Scraping PlanetEmu: {url}")
+    cache = load_listing_cache()
+    cache_key = f"planetemu:{url}"
+    cached = listing_cache_get(cache, cache_key)
+    if cached:
+        print("  Listing PlanetEmu depuis le cache")
+        return dict(cached)
     
     mapping = {}
     try:
@@ -3939,6 +4019,8 @@ def list_planetemu_directory(system_slug: str, session: requests.Session) -> dic
                             'full_name': game_name,
                             'page_url': page_url
                         }
+            listing_cache_set(cache, cache_key, mapping)
+            save_listing_cache(cache)
     except Exception as e:
         print(f"Erreur scraping PlanetEmu: {e}")
         
@@ -6207,6 +6289,7 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
     """Run the download process with archive.org as the final fallback."""
     if refresh_resolution_cache:
         clear_resolution_cache()
+        clear_listing_cache()
 
     session = requests.Session()
     session.headers.update({
@@ -7056,10 +7139,52 @@ def gui_mode():
                 enabled_check.configure(command=sync_enabled)
                 self.button(side, "Monter", lambda: move(-1), width=10).pack(fill='x', pady=(0, 8))
                 self.button(side, "Descendre", lambda: move(1), width=10).pack(fill='x', pady=(0, 8))
+                self.button(side, "Cles API", self.open_api_settings, width=10).pack(fill='x', pady=(8, 8))
+                self.button(side, "Vider cache", self.clear_remote_caches, width=10).pack(fill='x', pady=(0, 8))
                 self.button(side, "Sauver", save_and_close, kind='accent', width=10).pack(fill='x', pady=(16, 8))
                 self.button(side, "Annuler", window.destroy, width=10).pack(fill='x')
                 listbox.bind('<<ListboxSelect>>', on_select)
                 render_list(0)
+
+            def open_api_settings(self):
+                window = tk.Toplevel(self.root)
+                window.title("Cles API")
+                window.configure(bg=UI_COLOR_CARD_BG)
+                window.geometry("520x250")
+                window.transient(self.root)
+                window.columnconfigure(1, weight=1)
+                keys = load_api_keys()
+                variables = {}
+                labels = [
+                    ('1fichier', '1fichier'),
+                    ('alldebrid', 'AllDebrid'),
+                    ('realdebrid', 'RealDebrid'),
+                ]
+                tk.Label(window, text="Cles API locales (.env)", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 13, 'bold')).grid(row=0, column=0, columnspan=2, sticky='w', padx=14, pady=(14, 12))
+                for row, (key, label) in enumerate(labels, start=1):
+                    tk.Label(window, text=label, bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 10)).grid(row=row, column=0, sticky='w', padx=14, pady=6)
+                    var = tk.StringVar(value=keys.get(key, ''))
+                    variables[key] = var
+                    tk.Entry(window, textvariable=var, show='*', bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, insertbackground=UI_COLOR_TEXT_MAIN, relief='flat', font=(self.font, 10)).grid(row=row, column=1, sticky='ew', padx=(8, 14), pady=6, ipady=5)
+
+                actions = tk.Frame(window, bg=UI_COLOR_CARD_BG)
+                actions.grid(row=5, column=0, columnspan=2, sticky='e', padx=14, pady=(16, 0))
+
+                def save_keys():
+                    new_keys = {key: var.get().strip() for key, var in variables.items()}
+                    if save_api_keys(new_keys):
+                        self.status_var.set("Cles API enregistrees dans .env")
+                        window.destroy()
+                    else:
+                        messagebox.showerror("Cles API", "Impossible d'enregistrer les cles API.")
+
+                self.button(actions, "Sauver", save_keys, kind='accent', width=10).pack(side='left', padx=(0, 8))
+                self.button(actions, "Annuler", window.destroy, width=10).pack(side='left')
+
+            def clear_remote_caches(self):
+                clear_resolution_cache()
+                clear_listing_cache()
+                self.status_var.set("Caches de resolution et listings vides")
 
             def export_diagnostic(self):
                 base_folder = self.rom_folder.get().strip() if self.rom_folder.get().strip() else str(APP_ROOT)
@@ -7348,12 +7473,18 @@ Exemples:
     parser.add_argument('--diagnose-output', help='Exporter le diagnostic JSON vers ce fichier')
     parser.add_argument('--healthcheck-sources', action='store_true', help='Tester rapidement les sources configurees')
     parser.add_argument('--refresh-cache', action='store_true', help='Ignorer et reconstruire le cache de resolution provider')
+    parser.add_argument('--clear-listing-cache', action='store_true', help='Vider le cache des listings distants puis quitter')
 
     args = parser.parse_args()
 
     # Show sources
     if args.sources:
         print_sources_info()
+        return
+
+    if args.clear_listing_cache:
+        clear_listing_cache()
+        print("Cache des listings distants vide.")
         return
 
     if args.diagnose:
@@ -7382,6 +7513,7 @@ Exemples:
     if args.dat_file and args.rom_folder:
         if args.refresh_cache:
             clear_resolution_cache()
+            clear_listing_cache()
         if args.analyze:
             print_analysis_summary(analyze_dat_folder(
                 args.dat_file,
