@@ -111,11 +111,7 @@ jobs:
 
           Installation rapide:
 
-          ````powershell
-          irm https://raw.githubusercontent.com/${{ github.repository }}/main/install.ps1 | iex
-          ```
-
-          Ou telecharger directement ROMDownloader.exe.
+          Telecharger ROMDownloader.exe et executer directement.
           "@
           $args = @(
             "release", "create", $tag,
