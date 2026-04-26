@@ -804,6 +804,85 @@ def source_is_excluded(source: dict, excluded_sources: set[str]) -> bool:
     return bool(labels & excluded_sources)
 
 
+def source_matches_label(source: dict, source_label: str) -> bool:
+    """Compare un label runtime avec une source configuree."""
+    normalized = normalize_source_label(source_label)
+    if not normalized:
+        return False
+    labels = {
+        normalize_source_label(source.get('name', '')),
+        normalize_source_label(source.get('type', '')),
+    }
+    if source.get('type') == 'archive_org':
+        labels.update({'archive.org', 'archive_org'})
+    return normalized in labels
+
+
+def find_source_config(sources: list, source_label: str) -> dict | None:
+    """Retrouve la configuration source associee a un provider resolu."""
+    for source in sources:
+        if source_matches_label(source, source_label):
+            return source
+    return None
+
+
+def optional_positive_int(value, *, minimum: int = 1, maximum: int | None = None) -> int | None:
+    """Convertit une valeur de preference en entier positif optionnel."""
+    if value in (None, ''):
+        return None
+    try:
+        number = int(value)
+    except (TypeError, ValueError):
+        return None
+    if number < minimum:
+        return None
+    if maximum is not None:
+        number = min(number, maximum)
+    return number
+
+
+def source_timeout_seconds(source: dict | None, default: int = 120) -> int:
+    """Timeout reseau effectif pour une source."""
+    return optional_positive_int((source or {}).get('timeout_seconds'), minimum=3, maximum=1800) or default
+
+
+def source_quota_limit(source: dict | None) -> int | None:
+    """Quota de tentatives par run pour une source, None = illimite."""
+    return optional_positive_int((source or {}).get('quota_per_run'), minimum=1, maximum=100000)
+
+
+def source_policy_summary(source: dict) -> str:
+    """Resume compact d'une politique source pour les logs et diagnostics."""
+    parts = []
+    if source.get('timeout_seconds'):
+        parts.append(f"timeout {source_timeout_seconds(source)}s")
+    quota = source_quota_limit(source)
+    if quota is not None:
+        parts.append(f"quota {quota}/run")
+    return ", ".join(parts)
+
+
+def reserve_source_quota(source_label: str, sources: list, usage: dict | None, lock=None) -> tuple[bool, str]:
+    """Reserve une tentative source si le quota par run le permet."""
+    source = find_source_config(sources, source_label)
+    limit = source_quota_limit(source)
+    if limit is None:
+        return True, ''
+    normalized = normalize_source_label(source_label)
+    if lock:
+        lock.acquire()
+    try:
+        current = int((usage or {}).get(normalized, 0))
+        if current >= limit:
+            return False, f"quota atteint ({current}/{limit})"
+        if usage is not None:
+            usage[normalized] = current + 1
+        return True, f"{current + 1}/{limit}"
+    finally:
+        if lock:
+            lock.release()
+
+
 def get_default_sources():
     if ROM_DATABASE is None:
         load_rom_database()
@@ -2103,14 +2182,15 @@ def provider_healthcheck(sources: list | None = None, timeout: int = 8) -> list[
                 'detail': 'URL absente',
             })
             continue
+        source_timeout = source_timeout_seconds(source, timeout)
         started = time.time()
         status = 'ok'
         detail = ''
         try:
-            response = session.head(url, timeout=timeout, allow_redirects=True)
+            response = session.head(url, timeout=source_timeout, allow_redirects=True)
             if response.status_code in {403, 405}:
                 response.close()
-                response = session.get(url, timeout=timeout, stream=True, allow_redirects=True)
+                response = session.get(url, timeout=source_timeout, stream=True, allow_redirects=True)
             detail = f"HTTP {response.status_code}"
             if response.status_code >= 500:
                 status = 'error'
@@ -2126,6 +2206,7 @@ def provider_healthcheck(sources: list | None = None, timeout: int = 8) -> list[
             'status': status,
             'detail': detail,
             'elapsed_ms': int((time.time() - started) * 1000),
+            'timeout_seconds': source_timeout,
         })
     return results
 
@@ -2136,7 +2217,7 @@ def print_provider_healthcheck(results: list[dict]) -> None:
     print("HEALTHCHECK SOURCES")
     print("=" * 70)
     for result in results:
-        print(f"{result['status'].upper():<11} {result['name']:<24} {result.get('detail', '')} ({result.get('elapsed_ms', 0)} ms)")
+        print(f"{result['status'].upper():<11} {result['name']:<24} {result.get('detail', '')} ({result.get('elapsed_ms', 0)} ms, timeout {result.get('timeout_seconds', '?')}s)")
     print("=" * 70)
 
 
@@ -5127,10 +5208,12 @@ def download_file_legacy(url: str, dest_path: str, session: requests.Session, pr
     return False
 
 
-def download_file(url: str, dest_path: str, session: requests.Session, progress_callback=None) -> bool:
+def download_file(url: str, dest_path: str, session: requests.Session, progress_callback=None,
+                  timeout_seconds: int = 120) -> bool:
     """Download a file with retry, larger chunks and resumable .part files."""
     max_retries = 3
     retry_delay = 3
+    timeout_seconds = source_timeout_seconds({'timeout_seconds': timeout_seconds}, 120)
 
     for attempt in range(max_retries):
         current_dest_path = dest_path
@@ -5139,7 +5222,7 @@ def download_file(url: str, dest_path: str, session: requests.Session, progress_
             resume_from = os.path.getsize(part_path) if os.path.exists(part_path) else 0
             request_kwargs = {
                 'stream': True,
-                'timeout': 120,
+                'timeout': timeout_seconds,
                 'allow_redirects': True,
             }
             if resume_from > 0:
@@ -5623,6 +5706,8 @@ def attempt_download_from_resolved_provider(game_info: dict, output_folder: str,
     torrent_url = game_info.get('torrent_url')
     before_download = snapshot_folder_files(output_folder)
     success = False
+    source_config = find_source_config(sources, source)
+    download_timeout = source_timeout_seconds(source_config, 120)
 
     if source == 'archive_org':
         identifier = game_info.get('archive_org_identifier', '')
@@ -5630,7 +5715,7 @@ def attempt_download_from_resolved_provider(game_info: dict, output_folder: str,
             success = download_from_archive_org(identifier, filename, dest_path, progress_callback)
 
     elif source == 'EdgeEmu' and download_url:
-        success = download_file(download_url, dest_path, session, progress_callback)
+        success = download_file(download_url, dest_path, session, progress_callback, download_timeout)
 
     elif source == 'PlanetEmu':
         page_url = game_info.get('page_url')
@@ -5638,7 +5723,7 @@ def attempt_download_from_resolved_provider(game_info: dict, output_folder: str,
             success = download_planetemu(page_url, dest_path, session, progress_callback)
 
     elif source == 'LoLROMs' and download_url:
-        success = download_file(download_url, dest_path, get_lolroms_session(), progress_callback)
+        success = download_file(download_url, dest_path, get_lolroms_session(), progress_callback, download_timeout)
 
     elif source == 'CDRomance':
         page_url = game_info.get('page_url')
@@ -5655,7 +5740,7 @@ def attempt_download_from_resolved_provider(game_info: dict, output_folder: str,
             success = download_from_premium_source('1fichier', download_url, dest_path, load_api_keys(), progress_callback)
         else:
             log_func(f"  URL: {download_url[:80]}...")
-            success = download_file(download_url, dest_path, session, progress_callback)
+            success = download_file(download_url, dest_path, session, progress_callback, download_timeout)
 
     elif source.startswith('Minerva') and torrent_url:
         log_func(f"  Torrent: {torrent_url[:80]}...")
@@ -5664,7 +5749,7 @@ def attempt_download_from_resolved_provider(game_info: dict, output_folder: str,
 
     elif source in ['myrient', 'Myrient', 'Myrient No-Intro', 'Myrient Redump', 'Myrient TOSEC', 'Source Custom'] and download_url:
         log_func(f"  URL: {download_url[:80]}...")
-        success = download_file(download_url, dest_path, session, progress_callback)
+        success = download_file(download_url, dest_path, session, progress_callback, download_timeout)
 
     elif source == 'database' and download_url:
         log_func(f"  URL: {download_url[:80]}...")
@@ -5674,7 +5759,7 @@ def attempt_download_from_resolved_provider(game_info: dict, output_folder: str,
             log_func("  URL Myrient ignoree (source fermee)")
             success = False
         else:
-            success = download_file(download_url, dest_path, session, progress_callback)
+            success = download_file(download_url, dest_path, session, progress_callback, download_timeout)
 
     else:
         source_info = next((item for item in sources if item['name'] == source), None)
@@ -5682,7 +5767,7 @@ def attempt_download_from_resolved_provider(game_info: dict, output_folder: str,
         if base_url:
             download_url = f"{base_url.rstrip('/')}/{quote(filename)}"
             log_func(f"  URL: {download_url[:80]}...")
-            success = download_file(download_url, dest_path, session, progress_callback)
+            success = download_file(download_url, dest_path, session, progress_callback, download_timeout)
 
     downloaded_path = ''
     if success:
@@ -5702,7 +5787,8 @@ def download_with_provider_retries(game_info: dict, sources: list, session: requ
                                    system_name: str, dat_profile: dict | None, output_folder: str,
                                    myrient_url: str = '', dry_run: bool = False,
                                    progress_callback=None, log_func=print,
-                                   is_running=lambda: True) -> tuple[str, dict]:
+                                   is_running=lambda: True, source_usage: dict | None = None,
+                                   source_usage_lock=None) -> tuple[str, dict]:
     """Essaie les providers un par un jusqu'a obtenir un fichier valide MD5 DAT."""
     original_game = clean_download_resolution(game_info)
     current_game = game_info.copy()
@@ -5718,9 +5804,33 @@ def download_with_provider_retries(game_info: dict, sources: list, session: requ
             log_func(f"  Provider deja teste: {source}")
             break
         attempted_source_labels.add(source_label)
+        quota_ok, quota_detail = reserve_source_quota(source, sources, source_usage, source_usage_lock)
+        if not quota_ok:
+            attempted_sources.append(source)
+            provider_attempts.append({
+                'source': source,
+                'status': 'quota_skipped',
+                'duration_seconds': round(time.time() - attempt_started, 3),
+                'detail': quota_detail,
+            })
+            log_func(f"  Provider {source} ignore: {quota_detail}")
+            current_game = resolve_next_provider(
+                original_game,
+                sources,
+                session,
+                system_name,
+                dat_profile,
+                attempted_sources
+            )
+            if current_game:
+                log_func(f"  Retry avec: {current_game.get('source', 'unknown')}")
+            continue
         filename = current_game.get('download_filename', current_game.get('game_name', ''))
         attempted_sources.append(source)
-        log_func(f"  Provider: {source}")
+        source_config = find_source_config(sources, source)
+        policy = source_policy_summary(source_config or {})
+        quota_suffix = f", usage {quota_detail}" if quota_detail else ""
+        log_func(f"  Provider: {source}{f' ({policy}{quota_suffix})' if policy or quota_suffix else ''}")
 
         if dry_run:
             if current_game.get('torrent_url'):
@@ -5832,6 +5942,8 @@ def download_missing_games_sequentially(
     parallel_downloads = max(1, int(parallel_downloads or 1))
     resolution_cache = load_resolution_cache()
     resolution_cache_dirty = False
+    source_usage = {}
+    source_usage_lock = threading.Lock()
 
     total = len(missing_games)
     if parallel_downloads > 1 and not dry_run:
@@ -5854,7 +5966,9 @@ def download_missing_games_sequentially(
                 dry_run,
                 None,
                 safe_log,
-                is_running=is_running
+                is_running=is_running,
+                source_usage=source_usage,
+                source_usage_lock=source_usage_lock
             )
 
         futures = {}
@@ -5987,7 +6101,9 @@ def download_missing_games_sequentially(
             dry_run,
             progress_callback,
             log_func,
-            is_running=is_running
+            is_running=is_running,
+            source_usage=source_usage,
+            source_usage_lock=source_usage_lock
         )
 
         if status == 'downloaded':
@@ -6603,6 +6719,7 @@ def gui_mode():
                 self.default_sources = [source.copy() for source in get_default_sources()]
                 self.source_enabled = dict(self.preferences.get('source_enabled', {}))
                 self.source_order = list(self.preferences.get('source_order', []))
+                self.source_policies = dict(self.preferences.get('source_policies', {}))
                 self.source_vars = {}
                 self.source_widgets = {}
                 self.images = {}
@@ -6717,6 +6834,7 @@ def gui_mode():
                     'logs_visible': bool(self.log_visible.get()),
                     'source_enabled': self.source_enabled,
                     'source_order': self.source_order,
+                    'source_policies': self.source_policies,
                 })
                 save_preferences(self.preferences)
 
@@ -7047,6 +7165,13 @@ def gui_mode():
                 for source in ordered_sources:
                     item = source.copy()
                     item['enabled'] = bool(self.source_enabled.get(item['name'], item.get('enabled', True)))
+                    policy = self.source_policies.get(item['name'], {})
+                    timeout = optional_positive_int(policy.get('timeout_seconds'), minimum=3, maximum=1800)
+                    quota = optional_positive_int(policy.get('quota_per_run'), minimum=1, maximum=100000)
+                    if timeout is not None:
+                        item['timeout_seconds'] = timeout
+                    if quota is not None:
+                        item['quota_per_run'] = quota
                     sources.append(item)
                 return prepare_sources_for_profile(sources, self.dat_profile)
 
@@ -7054,7 +7179,7 @@ def gui_mode():
                 window = tk.Toplevel(self.root)
                 window.title("Sources")
                 window.configure(bg=UI_COLOR_CARD_BG)
-                window.geometry("520x430")
+                window.geometry("680x500")
                 window.transient(self.root)
                 window.columnconfigure(0, weight=1)
                 window.rowconfigure(1, weight=1)
@@ -7074,6 +7199,10 @@ def gui_mode():
                     name: tk.BooleanVar(value=bool(self.source_enabled.get(name, known[name].get('enabled', True))))
                     for name in order if name in known
                 }
+                policies_by_name = {
+                    name: dict(self.source_policies.get(name, {}))
+                    for name in order if name in known
+                }
 
                 listbox = tk.Listbox(body, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, selectbackground=UI_COLOR_ACCENT, relief='flat', font=(self.font, 10), height=14)
                 listbox.grid(row=0, column=0, sticky='nsew')
@@ -7086,6 +7215,39 @@ def gui_mode():
                 enabled_var = tk.BooleanVar(value=True)
                 enabled_check = self.toggle(side, "Active", enabled_var)
                 enabled_check.pack(anchor='w', pady=(0, 10))
+                tk.Label(side, text="Timeout (s)", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, font=(self.font, 9)).pack(anchor='w', pady=(8, 2))
+                timeout_var = tk.StringVar()
+                timeout_entry = tk.Entry(side, textvariable=timeout_var, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, insertbackground=UI_COLOR_TEXT_MAIN, relief='flat', width=10, font=(self.font, 10))
+                timeout_entry.pack(fill='x', pady=(0, 6), ipady=4)
+                tk.Label(side, text="Quota/run", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, font=(self.font, 9)).pack(anchor='w', pady=(4, 2))
+                quota_var = tk.StringVar()
+                quota_entry = tk.Entry(side, textvariable=quota_var, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, insertbackground=UI_COLOR_TEXT_MAIN, relief='flat', width=10, font=(self.font, 10))
+                quota_entry.pack(fill='x', pady=(0, 10), ipady=4)
+                current_policy_name = {'name': None}
+
+                def save_policy_fields():
+                    name = current_policy_name.get('name')
+                    if not name:
+                        return
+                    policy = policies_by_name.setdefault(name, {})
+                    timeout = optional_positive_int(timeout_var.get().strip(), minimum=3, maximum=1800)
+                    quota = optional_positive_int(quota_var.get().strip(), minimum=1, maximum=100000)
+                    if timeout is None:
+                        policy.pop('timeout_seconds', None)
+                    else:
+                        policy['timeout_seconds'] = timeout
+                    if quota is None:
+                        policy.pop('quota_per_run', None)
+                    else:
+                        policy['quota_per_run'] = quota
+                    if not policy:
+                        policies_by_name.pop(name, None)
+
+                def load_policy_fields(name):
+                    current_policy_name['name'] = name
+                    policy = policies_by_name.get(name, {})
+                    timeout_var.set(str(policy.get('timeout_seconds', '')))
+                    quota_var.set(str(policy.get('quota_per_run', '')))
 
                 def render_list(selected_index=None):
                     listbox.delete(0, 'end')
@@ -7094,7 +7256,9 @@ def gui_mode():
                             continue
                         mark = "[x]" if vars_by_name[name].get() else "[ ]"
                         source = known[name]
-                        listbox.insert('end', f"{mark} {name} ({source.get('type', '')})")
+                        policy_text = source_policy_summary(policies_by_name.get(name, {}))
+                        suffix = f" - {policy_text}" if policy_text else ""
+                        listbox.insert('end', f"{mark} {name} ({source.get('type', '')}){suffix}")
                     if selected_index is not None and listbox.size():
                         selected_index = max(0, min(selected_index, listbox.size() - 1))
                         listbox.selection_set(selected_index)
@@ -7110,9 +7274,13 @@ def gui_mode():
                     return names[index], index
 
                 def on_select(_event=None):
+                    previous = current_policy_name.get('name')
+                    if previous:
+                        save_policy_fields()
                     name, _index = selected_name()
                     if name:
                         enabled_var.set(vars_by_name[name].get())
+                        load_policy_fields(name)
 
                 def sync_enabled():
                     name, index = selected_name()
@@ -7130,13 +7298,17 @@ def gui_mode():
                     render_list(new_index)
 
                 def save_and_close():
+                    save_policy_fields()
                     self.source_order = [name for name in order if name in known]
                     self.source_enabled = {name: var.get() for name, var in vars_by_name.items()}
+                    self.source_policies = {name: policy for name, policy in policies_by_name.items() if policy}
                     self.persist_preferences()
                     window.destroy()
                     self.status_var.set("Configuration des sources enregistree")
 
                 enabled_check.configure(command=sync_enabled)
+                timeout_entry.bind('<FocusOut>', lambda _event: save_policy_fields())
+                quota_entry.bind('<FocusOut>', lambda _event: save_policy_fields())
                 self.button(side, "Monter", lambda: move(-1), width=10).pack(fill='x', pady=(0, 8))
                 self.button(side, "Descendre", lambda: move(1), width=10).pack(fill='x', pady=(0, 8))
                 self.button(side, "Cles API", self.open_api_settings, width=10).pack(fill='x', pady=(8, 8))

@@ -58,12 +58,13 @@ Le bouton `Analyser` lance une pre-analyse sans telechargement: total DAT, prese
 En GUI, l'analyse resout aussi un petit echantillon de sources candidates pour les premiers jeux manquants.
 La GUI retient localement le dernier DAT, le dernier dossier, les options ToSort/TorrentZip, le parallelisme et l'etat des logs.
 Le panneau `Logs` est repliable et affiche le detail des operations sans quitter la fenetre.
-L'ecran `Configurer les sources` permet aussi de changer l'ordre des sources, les activer/desactiver, saisir les cles API locales dans `.env` et vider les caches.
+L'ecran `Configurer les sources` permet aussi de changer l'ordre des sources, les activer/desactiver, fixer un timeout et un quota par run, saisir les cles API locales dans `.env` et vider les caches.
 
 Les sources de telechargement sont automatiques: les sources directes sont essayees avant Minerva, puis archive.org en dernier recours.
 La resolution des providers est mise en cache temporairement dans `.rom_downloader_resolution_cache.json` pour eviter de refaire les memes recherches pendant plusieurs essais; `--refresh-cache` force une reconstruction.
 Les listings distants scrapes sont mis en cache 24 h dans `.rom_downloader_listing_cache.json`; `--clear-listing-cache` ou le bouton `Vider cache` de la GUI les supprime.
 Les telechargements HTTP utilisent des fichiers `.part` et reprennent quand le serveur accepte les requetes `Range`.
+Les quotas par source sont appliques pendant les retries: quand une source atteint sa limite de tentatives sur un run, le moteur passe au provider suivant.
 
 ## Dependances
 
@@ -100,7 +101,7 @@ python main.py --clear-listing-cache
 - UI: bouton `Analyser`, recherche/filtre DAT, logs repliables, resume de pre-analyse et preferences GUI locales.
 - Optimisation: cache de resolution provider et reprise HTTP via fichiers `.part`.
 - Analyse: sources candidates par echantillon et metriques provider dans les rapports.
-- Sources: commande `--healthcheck-sources`, configuration GUI activation/ordre, cles API locales, cache de listings distants et registre provider commun.
+- Sources: commande `--healthcheck-sources`, configuration GUI activation/ordre/timeouts/quotas, cles API locales, cache de listings distants et registre provider commun.
 - Diagnostic: commande `--diagnose` et export JSON pour l'etat local utile au support.
 - Qualite: CI GitHub Actions avec compilation, smoke checks et garde anti-regression.
 
@@ -122,7 +123,7 @@ python main.py --clear-listing-cache
 ### 3. Gestion des sources
 
 - Brancher progressivement chaque source sur l'interface provider commune: `resolve()`, `download()`, `healthcheck()` et `priority()`.
-- Etendre l'ecran de configuration des sources avec timeouts, quotas et controles par source.
+- Ajouter des statistiques visuelles par source dans l'ecran de configuration.
 - Exposer l'etat du cache de listings dans l'interface avec expiration et invalidation par source.
 
 ### 4. Qualite et architecture
