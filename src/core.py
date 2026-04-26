@@ -187,6 +187,21 @@ def format_bytes(size: int | float | None) -> str:
         value /= 1024
 
 
+def format_duration(seconds: int | float | None) -> str:
+    """Formate une duree courte pour les logs de progression."""
+    try:
+        total = max(0, int(seconds or 0))
+    except Exception:
+        total = 0
+    hours, remainder = divmod(total, 3600)
+    minutes, secs = divmod(remainder, 60)
+    if hours:
+        return f"{hours}h{minutes:02d}m"
+    if minutes:
+        return f"{minutes}m{secs:02d}s"
+    return f"{secs}s"
+
+
 def load_resolution_cache() -> dict:
     """Charge le cache persistant de resolution provider."""
     data = load_json_file(RESOLUTION_CACHE_FILE, {'version': 1, 'entries': {}})
@@ -5270,6 +5285,8 @@ def download_file(url: str, dest_path: str, session: requests.Session, progress_
                     resume_from = 0
 
                 downloaded = resume_from
+                started_at = time.time()
+                last_report_at = started_at
                 mode = 'ab' if resume_from and response.status_code == 206 else 'wb'
                 with open(part_path, mode) as handle:
                     for chunk in response.iter_content(chunk_size=DOWNLOAD_CHUNK_SIZE):
@@ -5279,6 +5296,17 @@ def download_file(url: str, dest_path: str, session: requests.Session, progress_
                         downloaded += len(chunk)
                         if total_size > 0 and progress_callback:
                             progress_callback((downloaded / total_size) * 100)
+                        now = time.time()
+                        if total_size > 0 and now - last_report_at >= 5:
+                            elapsed = max(0.001, now - started_at)
+                            speed = max(0.0, (downloaded - resume_from) / elapsed)
+                            remaining = max(0, total_size - downloaded)
+                            eta = remaining / speed if speed > 0 else 0
+                            print(
+                                f"  Progression: {(downloaded / total_size) * 100:.1f}% "
+                                f"- {format_bytes(speed)}/s - ETA {format_duration(eta)}"
+                            )
+                            last_report_at = now
 
                 if progress_callback:
                     progress_callback(100.0)
@@ -5590,6 +5618,19 @@ def expected_game_md5_values(game_info: dict) -> set:
     return expected
 
 
+def expected_game_sizes(game_info: dict) -> set[int]:
+    """Retourne les tailles attendues par le DAT pour ce jeu."""
+    expected = set()
+    for rom_info in game_info.get('roms', []):
+        try:
+            size = int(rom_info.get('size') or 0)
+        except (TypeError, ValueError):
+            size = 0
+        if size > 0:
+            expected.add(size)
+    return expected
+
+
 def cleanup_invalid_download(path: str):
     """Supprime un telechargement qui ne correspond pas au MD5 du DAT."""
     if not path:
@@ -5622,8 +5663,9 @@ def verify_downloaded_md5(game_info: dict, downloaded_path: str) -> tuple[bool, 
     reference souvent la ROM contenue plutot que le conteneur ZIP.
     """
     expected_md5 = expected_game_md5_values(game_info)
-    if not expected_md5:
-        return True, "MD5 DAT absent: validation MD5 ignoree"
+    expected_sizes = expected_game_sizes(game_info)
+    if not expected_md5 and not expected_sizes:
+        return True, "MD5/taille DAT absents: validation ignoree"
 
     if not downloaded_path or not os.path.exists(downloaded_path):
         return False, "Validation MD5 impossible: fichier telecharge introuvable"
@@ -5633,12 +5675,25 @@ def verify_downloaded_md5(game_info: dict, downloaded_path: str) -> tuple[bool, 
 
     if suffix in {'.zip', '.7z', '.rar'}:
         try:
-            for archive_entry in iter_archive_member_signatures(file_path):
-                if archive_entry.get('md5') in expected_md5:
-                    return True, f"MD5 OK: {archive_entry.get('member') or archive_entry.get('name')}"
-            return False, f"MD5 KO: aucune entree {suffix} ne correspond au DAT"
+            if expected_md5:
+                for archive_entry in iter_archive_member_signatures(file_path):
+                    if archive_entry.get('md5') in expected_md5:
+                        return True, f"MD5 OK: {archive_entry.get('member') or archive_entry.get('name')}"
+                return False, f"MD5 KO: aucune entree {suffix} ne correspond au DAT"
+            for archive_entry in iter_archive_member_signatures(file_path, target_sizes=expected_sizes, require_hashes=False):
+                if archive_entry.get('size') in expected_sizes:
+                    return True, f"Taille DAT OK: {archive_entry.get('member') or archive_entry.get('name')} ({format_bytes(archive_entry.get('size'))})"
+            expected_display = ', '.join(format_bytes(size) for size in sorted(expected_sizes))
+            return False, f"Taille DAT KO: aucune entree {suffix} ne correspond a {expected_display}"
         except Exception as e:
-            return False, f"MD5 KO: archive {suffix} illisible ou non verifiable ({e})"
+            return False, f"Validation KO: archive {suffix} illisible ou non verifiable ({e})"
+
+    if not expected_md5 and expected_sizes:
+        actual_size = file_path.stat().st_size
+        if actual_size in expected_sizes:
+            return True, f"Taille DAT OK: {format_bytes(actual_size)}"
+        expected_display = ', '.join(format_bytes(size) for size in sorted(expected_sizes))
+        return False, f"Taille DAT KO: {format_bytes(actual_size)} != {expected_display}"
 
     try:
         signatures = hash_file_signatures(file_path)
