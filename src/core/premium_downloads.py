@@ -7,7 +7,7 @@ import requests
 
 from .api_keys import is_1fichier_url, load_api_keys
 from .env import DOWNLOAD_CHUNK_SIZE
-from .rom_database import ROM_DATABASE
+from . import rom_database as _rom_db
 
 
 WAIT_REGEXES_1F = [
@@ -112,7 +112,7 @@ def download_1fichier(file_id: str, dest_path: str, api_key: str, progress_callb
         return False
 
     try:
-        config = ROM_DATABASE.get('config_urls', {})
+        config = _rom_db.ROM_DATABASE.get('config_urls', {})
         api_url = config.get('1fichier_getlink', '')
         params = {
             'apikey': api_key,
@@ -167,7 +167,7 @@ def download_alldebrid(url: str, dest_path: str, api_key: str, progress_callback
         return False
 
     try:
-        config = ROM_DATABASE.get('config_urls', {})
+        config = _rom_db.ROM_DATABASE.get('config_urls', {})
         api_url = config.get('alldebrid_unlock', '')
         params = {
             'agent': 'rom_downloader',
@@ -224,7 +224,7 @@ def download_realdebrid(url: str, dest_path: str, api_key: str, progress_callbac
         return False
 
     try:
-        config = ROM_DATABASE.get('config_urls', {})
+        config = _rom_db.ROM_DATABASE.get('config_urls', {})
         api_url = config.get('realdebrid_unlock', '')
         params = {
             'auth_token': api_key,

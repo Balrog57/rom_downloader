@@ -1,7 +1,8 @@
 import json
 import os
 
-from .rom_database import ROM_DATABASE, load_rom_database
+from . import rom_database as _rom_db
+from .rom_database import load_rom_database
 
 
 API_CONFIG_FILE = 'api_keys.json'
@@ -91,9 +92,9 @@ def configure_api_keys():
         print(f"  - {service}: {masked if key else '(non configuree)'}")
 
     print("\nPour obtenir vos cles API (voir la configuration de la DB):")
-    if ROM_DATABASE is None:
+    if _rom_db.ROM_DATABASE is None:
         load_rom_database()
-    config = ROM_DATABASE.get('config_urls', {})
+    config = _rom_db.ROM_DATABASE.get('config_urls', {})
     print(f"  1fichier:   {config.get('1fichier_apikeys', 'Consultez le site 1fichier')}")
     print(f"  AllDebrid:  {config.get('alldebrid_apikeys', 'Consultez le site AllDebrid')}")
     print(f"  RealDebrid: {config.get('realdebrid_apikeys', 'Consultez le site RealDebrid')}")

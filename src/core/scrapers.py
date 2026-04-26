@@ -12,7 +12,8 @@ from .constants import *
 from .env import *
 from .dependencies import *
 from .dat_parser import strip_rom_extension, normalize_checksum
-from .rom_database import ROM_DATABASE, load_rom_database, database_result_filename
+from . import rom_database as _rom_db
+from .rom_database import load_rom_database, database_result_filename
 from .sources import SYSTEM_MAPPINGS, normalize_source_label, source_is_excluded, source_order_key
 from .minerva import (
     search_minerva_hash_database_for_games,
@@ -171,7 +172,7 @@ def list_edgeemu_directory(system_slug: str, session: requests.Session) -> dict:
     if not system_slug:
         return {}
         
-    config = ROM_DATABASE.get('config_urls', {})
+    config = _rom_db.ROM_DATABASE.get('config_urls', {})
     url = f"{config.get('edgeemu_browse', '')}{system_slug}"
     print(f"Scraping EdgeEmu: {url}")
     from . import _facade
@@ -236,10 +237,10 @@ def resolve_edgeemu_game(game_info: dict, system_slug: str, session: requests.Se
     if not system_slug:
         return None
 
-    if ROM_DATABASE is None:
+    if _rom_db.ROM_DATABASE is None:
         load_rom_database()
 
-    config = ROM_DATABASE.get('config_urls', {})
+    config = _rom_db.ROM_DATABASE.get('config_urls', {})
     edgeemu_base = (config.get('edgeemu_base', '') or '').rstrip('/')
     if not edgeemu_base:
         return None
@@ -276,7 +277,7 @@ def list_planetemu_directory(system_slug: str, session: requests.Session) -> dic
     if not system_slug:
         return {}
         
-    config = ROM_DATABASE.get('config_urls', {})
+    config = _rom_db.ROM_DATABASE.get('config_urls', {})
     base = config.get('planetemu_roms', '')
     if not base:
         base = 'https://www.planetemu.net/roms/'
@@ -325,7 +326,7 @@ def download_planetemu(page_url: str, dest_path: str, session: requests.Session,
             
         rom_id = id_match.group(1)
         
-        config = ROM_DATABASE.get('config_urls', {})
+        config = _rom_db.ROM_DATABASE.get('config_urls', {})
         download_api = config.get('planetemu_download_api', '')
         if not download_api:
              download_api = 'https://www.planetemu.net/php/roms/download.php'
