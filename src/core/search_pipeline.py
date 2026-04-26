@@ -1,9 +1,11 @@
 import re
+import concurrent.futures
 from urllib.parse import quote
 
 import requests
 
 from ..network.cache_runtime import get_session_cache
+from ..network.search import ParallelSearchPool
 
 from .constants import *
 from .env import *
@@ -247,6 +249,58 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
     return all_found, still_missing
 
 
+def _resolve_games_parallel(
+    still_missing: list,
+    resolve_fn,
+    resolve_key_prefix: str,
+    source_label: str,
+    system_name: str,
+    extra_fields_fn=None,
+    max_workers: int = 5,
+) -> tuple[list, list]:
+    """Resout les jeux en parallele via un scraper, retourne (found, remaining)."""
+    session_cache = get_session_cache()
+    search_pool = ParallelSearchPool(max_workers=max_workers)
+
+    def _resolve_one(game_info):
+        resolve_key = f"{resolve_key_prefix}:{game_info['game_name']}:{system_name}"
+        cached = session_cache.get_resolution(resolve_key)
+        if cached is not None:
+            return (game_info, cached)
+        result = resolve_fn(game_info)
+        session_cache.set_resolution(resolve_key, result)
+        return (game_info, result)
+
+    scraper_funcs = [("resolve", _resolve_one)]
+    pairs = []
+    futures = {}
+    for game_info in still_missing:
+        future = search_pool.executor.submit(_resolve_one, game_info)
+        futures[future] = game_info
+
+    found = []
+    remaining = []
+    for future in concurrent.futures.as_completed(futures):
+        game_info = futures[future]
+        try:
+            _, result = future.result()
+        except Exception:
+            remaining.append(game_info)
+            continue
+        if result:
+            merged = dict(game_info)
+            if extra_fields_fn:
+                extra_fields_fn(merged, result)
+            merged['source'] = source_label
+            found.append(merged)
+            print(f"  [{source_label}] {game_info['game_name']} trouve")
+        else:
+            remaining.append(game_info)
+
+    search_pool.shutdown(wait=False)
+    return found, remaining
+
+
 def search_all_sources(
     missing_games: list,
     sources: list,
@@ -381,28 +435,21 @@ def search_all_sources(
 
             if source['type'] == 'edgeemu' and source.get('enabled', True):
                 slug = mappings.get('edgeemu')
-                if slug:
+                if slug and still_missing:
                     print(f"\n--- Recherche sur EdgeEmu ({slug}) ---")
-                    newly_found = []
-                    if still_missing:
-                        remaining = []
-                        session_cache = get_session_cache()
-                        for game_info in still_missing:
-                            resolve_key = f"resolve:edgeemu:{game_info['game_name']}:{system_name}"
-                            edge_match = session_cache.get_resolution(resolve_key)
-                            if edge_match is None:
-                                edge_match = resolve_edgeemu_game(game_info, slug, session)
-                                session_cache.set_resolution(resolve_key, edge_match)
-                            if edge_match:
-                                game_info['download_url'] = edge_match['url']
-                                game_info['source'] = 'EdgeEmu'
-                                game_info['download_filename'] = edge_match['filename']
-                                newly_found.append(game_info)
-                                print(f"  [EdgeEmu] {game_info['game_name']} trouve")
-                            else:
-                                remaining.append(game_info)
-                        all_found.extend(newly_found)
-                        still_missing = remaining
+                    def _edge_fields(merged, result):
+                        merged['download_url'] = result['url']
+                        merged['download_filename'] = result['filename']
+                    newly_found, remaining = _resolve_games_parallel(
+                        still_missing,
+                        lambda gi: resolve_edgeemu_game(gi, slug, session),
+                        "resolve:edgeemu",
+                        "EdgeEmu",
+                        system_name,
+                        extra_fields_fn=_edge_fields,
+                    )
+                    all_found.extend(newly_found)
+                    still_missing = remaining
 
             elif source['type'] == 'planetemu' and source.get('enabled', True):
                 slug = mappings.get('planetemu')
@@ -463,74 +510,57 @@ def search_all_sources(
                         still_missing = remaining
 
             elif source['type'] == 'cdromance' and source.get('enabled', True):
-                print(f"\n--- Recherche sur CDRomance ---")
-                cd_session = get_cdromance_session()
-                newly_found = []
-                remaining = []
-                session_cache = get_session_cache()
-                for game_info in still_missing:
-                    resolve_key = f"resolve:cdromance:{game_info['game_name']}:{system_name}"
-                    cd_match = session_cache.get_resolution(resolve_key)
-                    if cd_match is None:
-                        cd_match = resolve_cdromance_game(game_info, cd_session)
-                        session_cache.set_resolution(resolve_key, cd_match)
-                    if cd_match:
-                        game_info['page_url'] = cd_match['page_url']
-                        game_info['source'] = 'CDRomance'
-                        game_info['download_filename'] = f"{game_info['game_name']}.zip"
-                        newly_found.append(game_info)
-                        print(f"  [CDRomance] {game_info['game_name']} trouve")
-                    else:
-                        remaining.append(game_info)
-                all_found.extend(newly_found)
-                still_missing = remaining
+                if still_missing:
+                    print(f"\n--- Recherche sur CDRomance ---")
+                    cd_session = get_cdromance_session()
+                    def _cd_fields(merged, result):
+                        merged['page_url'] = result['page_url']
+                        merged['download_filename'] = f"{merged['game_name']}.zip"
+                    newly_found, remaining = _resolve_games_parallel(
+                        still_missing,
+                        lambda gi: resolve_cdromance_game(gi, cd_session),
+                        "resolve:cdromance",
+                        "CDRomance",
+                        system_name,
+                        extra_fields_fn=_cd_fields,
+                    )
+                    all_found.extend(newly_found)
+                    still_missing = remaining
 
             elif source['type'] == 'vimm' and source.get('enabled', True):
                 slug = mappings.get('vimm')
-                if slug:
+                if slug and still_missing:
                     print(f"\n--- Recherche sur Vimm's Lair ({slug}) ---")
                     vimm_session = get_vimm_session()
-                    newly_found = []
-                    remaining = []
-                    session_cache = get_session_cache()
-                    for game_info in still_missing:
-                        resolve_key = f"resolve:vimm:{game_info['game_name']}:{system_name}"
-                        vimm_match = session_cache.get_resolution(resolve_key)
-                        if vimm_match is None:
-                            vimm_match = resolve_vimm_game(game_info, slug, vimm_session)
-                            session_cache.set_resolution(resolve_key, vimm_match)
-                        if vimm_match:
-                            game_info['page_url'] = vimm_match['page_url']
-                            game_info['source'] = 'Vimm\'s Lair'
-                            game_info['download_filename'] = f"{game_info['game_name']}.zip"
-                            newly_found.append(game_info)
-                            print(f"  [Vimm] {game_info['game_name']} trouve")
-                        else:
-                            remaining.append(game_info)
+                    def _vimm_fields(merged, result):
+                        merged['page_url'] = result['page_url']
+                        merged['download_filename'] = f"{merged['game_name']}.zip"
+                    newly_found, remaining = _resolve_games_parallel(
+                        still_missing,
+                        lambda gi: resolve_vimm_game(gi, slug, vimm_session),
+                        "resolve:vimm",
+                        "Vimm's Lair",
+                        system_name,
+                        extra_fields_fn=_vimm_fields,
+                    )
                     all_found.extend(newly_found)
                     still_missing = remaining
 
             elif source['type'] == 'retrogamesets' and source.get('enabled', True):
                 slug = mappings.get('retrogamesets')
-                if slug:
+                if slug and still_missing:
                     print(f"\n--- Recherche sur RetroGameSets ({slug}) ---")
-                    newly_found = []
-                    remaining = []
-                    session_cache = get_session_cache()
-                    for game_info in still_missing:
-                        resolve_key = f"resolve:retrogamesets:{game_info['game_name']}:{system_name}"
-                        rgs_match = session_cache.get_resolution(resolve_key)
-                        if rgs_match is None:
-                            rgs_match = resolve_retrogamesets_game(game_info, slug, session)
-                            session_cache.set_resolution(resolve_key, rgs_match)
-                        if rgs_match:
-                            game_info['download_url'] = rgs_match['url']
-                            game_info['source'] = 'RetroGameSets'
-                            game_info['download_filename'] = f"{game_info['game_name']}.zip"
-                            newly_found.append(game_info)
-                            print(f"  [RetroGameSets] {game_info['game_name']} trouve")
-                        else:
-                            remaining.append(game_info)
+                    def _rgs_fields(merged, result):
+                        merged['download_url'] = result['url']
+                        merged['download_filename'] = f"{merged['game_name']}.zip"
+                    newly_found, remaining = _resolve_games_parallel(
+                        still_missing,
+                        lambda gi: resolve_retrogamesets_game(gi, slug, session),
+                        "resolve:retrogamesets",
+                        "RetroGameSets",
+                        system_name,
+                        extra_fields_fn=_rgs_fields,
+                    )
                     all_found.extend(newly_found)
                     still_missing = remaining
 
