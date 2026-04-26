@@ -6417,6 +6417,8 @@ def gui_mode():
                 self.session.headers.update({'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'})
                 self.preferences = load_preferences()
                 self.default_sources = [source.copy() for source in get_default_sources()]
+                self.source_enabled = dict(self.preferences.get('source_enabled', {}))
+                self.source_order = list(self.preferences.get('source_order', []))
                 self.source_vars = {}
                 self.source_widgets = {}
                 self.images = {}
@@ -6529,6 +6531,8 @@ def gui_mode():
                     'clean_torrentzip': bool(self.clean_torrentzip_var.get()),
                     'parallel_downloads': max(1, int(self.parallel_var.get() or 1)),
                     'logs_visible': bool(self.log_visible.get()),
+                    'source_enabled': self.source_enabled,
+                    'source_order': self.source_order,
                 })
                 save_preferences(self.preferences)
 
@@ -6570,12 +6574,13 @@ def gui_mode():
                 source_names = ', '.join(source['name'] for source in self.default_sources)
                 tk.Label(sources, text="Toutes les sources disponibles sont utilisees automatiquement. Les DDL passent avant Minerva, et archive.org reste le dernier recours.", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, justify='left', wraplength=880, font=(self.font, 9)).grid(row=1, column=0, sticky='w', pady=(6, 8))
                 tk.Label(sources, text=source_names, bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, justify='left', wraplength=880, font=(self.font, 9)).grid(row=2, column=0, sticky='w')
+                self.button(sources, "Configurer les sources", self.open_source_settings, kind='ghost', width=20).grid(row=3, column=0, sticky='w', pady=(10, 0))
                 self.move_to_tosort_var = tk.BooleanVar(value=bool(self.preferences.get('move_to_tosort', False)))
                 self.clean_torrentzip_var.set(bool(self.preferences.get('clean_torrentzip', False)))
-                self.toggle(sources, "Deplacer les ROMs hors DAT dans un sous-dossier ToSort", self.move_to_tosort_var).grid(row=3, column=0, sticky='w', pady=(14, 0))
-                self.toggle(sources, "Apres verification MD5, recompresser les archives en ZIP TorrentZip/RomVault", self.clean_torrentzip_var).grid(row=4, column=0, sticky='w', pady=(8, 0))
+                self.toggle(sources, "Deplacer les ROMs hors DAT dans un sous-dossier ToSort", self.move_to_tosort_var).grid(row=4, column=0, sticky='w', pady=(14, 0))
+                self.toggle(sources, "Apres verification MD5, recompresser les archives en ZIP TorrentZip/RomVault", self.clean_torrentzip_var).grid(row=5, column=0, sticky='w', pady=(8, 0))
                 parallel_row = tk.Frame(sources, bg=UI_COLOR_CARD_BG)
-                parallel_row.grid(row=5, column=0, sticky='w', pady=(10, 0))
+                parallel_row.grid(row=6, column=0, sticky='w', pady=(10, 0))
                 tk.Label(parallel_row, text="Telechargements simultanes", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 10)).pack(side='left')
                 parallel_spin = tk.Spinbox(parallel_row, from_=1, to=12, textvariable=self.parallel_var, width=5, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, buttonbackground=UI_COLOR_GHOST, relief='flat', font=(self.font, 10), command=self.persist_preferences)
                 parallel_spin.pack(side='left', padx=(10, 0))
@@ -6849,12 +6854,111 @@ def gui_mode():
                     self.mode_badge.configure(text="Retool / 1G1R" if profile.get('is_retool') else "DAT brut", bg=UI_COLOR_SUCCESS if profile.get('is_retool') else UI_COLOR_GHOST_HOVER)
 
             def selected_sources(self):
+                order = {name: index for index, name in enumerate(self.source_order)}
+                ordered_sources = sorted(
+                    self.default_sources,
+                    key=lambda source: (order.get(source['name'], len(order) + source_order_key(source)[0]), source_order_key(source))
+                )
                 sources = []
-                for source in self.default_sources:
+                for source in ordered_sources:
                     item = source.copy()
-                    item['enabled'] = True
+                    item['enabled'] = bool(self.source_enabled.get(item['name'], item.get('enabled', True)))
                     sources.append(item)
                 return prepare_sources_for_profile(sources, self.dat_profile)
+
+            def open_source_settings(self):
+                window = tk.Toplevel(self.root)
+                window.title("Sources")
+                window.configure(bg=UI_COLOR_CARD_BG)
+                window.geometry("520x430")
+                window.transient(self.root)
+                window.columnconfigure(0, weight=1)
+                window.rowconfigure(1, weight=1)
+
+                tk.Label(window, text="Ordre et activation des sources", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 13, 'bold')).grid(row=0, column=0, sticky='w', padx=14, pady=(14, 8))
+                body = tk.Frame(window, bg=UI_COLOR_CARD_BG)
+                body.grid(row=1, column=0, sticky='nsew', padx=14)
+                body.columnconfigure(0, weight=1)
+                body.rowconfigure(0, weight=1)
+
+                order = self.source_order or [source['name'] for source in self.default_sources]
+                known = {source['name']: source for source in self.default_sources}
+                for source in self.default_sources:
+                    if source['name'] not in order:
+                        order.append(source['name'])
+                vars_by_name = {
+                    name: tk.BooleanVar(value=bool(self.source_enabled.get(name, known[name].get('enabled', True))))
+                    for name in order if name in known
+                }
+
+                listbox = tk.Listbox(body, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, selectbackground=UI_COLOR_ACCENT, relief='flat', font=(self.font, 10), height=14)
+                listbox.grid(row=0, column=0, sticky='nsew')
+                scrollbar = tk.Scrollbar(body, orient='vertical', command=listbox.yview)
+                scrollbar.grid(row=0, column=1, sticky='ns')
+                listbox.configure(yscrollcommand=scrollbar.set)
+
+                side = tk.Frame(body, bg=UI_COLOR_CARD_BG)
+                side.grid(row=0, column=2, sticky='ns', padx=(10, 0))
+                enabled_var = tk.BooleanVar(value=True)
+                enabled_check = self.toggle(side, "Active", enabled_var)
+                enabled_check.pack(anchor='w', pady=(0, 10))
+
+                def render_list(selected_index=None):
+                    listbox.delete(0, 'end')
+                    for name in order:
+                        if name not in known:
+                            continue
+                        mark = "[x]" if vars_by_name[name].get() else "[ ]"
+                        source = known[name]
+                        listbox.insert('end', f"{mark} {name} ({source.get('type', '')})")
+                    if selected_index is not None and listbox.size():
+                        selected_index = max(0, min(selected_index, listbox.size() - 1))
+                        listbox.selection_set(selected_index)
+                        listbox.activate(selected_index)
+                        on_select()
+
+                def selected_name():
+                    selection = listbox.curselection()
+                    if not selection:
+                        return None, None
+                    names = [name for name in order if name in known]
+                    index = selection[0]
+                    return names[index], index
+
+                def on_select(_event=None):
+                    name, _index = selected_name()
+                    if name:
+                        enabled_var.set(vars_by_name[name].get())
+
+                def sync_enabled():
+                    name, index = selected_name()
+                    if name:
+                        vars_by_name[name].set(enabled_var.get())
+                        render_list(index)
+
+                def move(delta):
+                    name, index = selected_name()
+                    if name is None:
+                        return
+                    new_index = max(0, min(index + delta, len(order) - 1))
+                    order.remove(name)
+                    order.insert(new_index, name)
+                    render_list(new_index)
+
+                def save_and_close():
+                    self.source_order = [name for name in order if name in known]
+                    self.source_enabled = {name: var.get() for name, var in vars_by_name.items()}
+                    self.persist_preferences()
+                    window.destroy()
+                    self.status_var.set("Configuration des sources enregistree")
+
+                enabled_check.configure(command=sync_enabled)
+                self.button(side, "Monter", lambda: move(-1), width=10).pack(fill='x', pady=(0, 8))
+                self.button(side, "Descendre", lambda: move(1), width=10).pack(fill='x', pady=(0, 8))
+                self.button(side, "Sauver", save_and_close, kind='accent', width=10).pack(fill='x', pady=(16, 8))
+                self.button(side, "Annuler", window.destroy, width=10).pack(fill='x')
+                listbox.bind('<<ListboxSelect>>', on_select)
+                render_list(0)
 
             def export_diagnostic(self):
                 base_folder = self.rom_folder.get().strip() if self.rom_folder.get().strip() else str(APP_ROOT)

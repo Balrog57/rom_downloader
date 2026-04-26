@@ -93,8 +93,9 @@ python main.py --diagnose
 
 - UI: bouton `Analyser`, recherche/filtre DAT, logs repliables, resume de pre-analyse et preferences GUI locales.
 - Optimisation: cache de resolution provider et reprise HTTP via fichiers `.part`.
-- Sources: commande `--healthcheck-sources` pour verifier les sources actives.
+- Sources: commande `--healthcheck-sources`, configuration GUI activation/ordre et registre provider commun.
 - Diagnostic: commande `--diagnose` et export JSON pour l'etat local utile au support.
+- Qualite: CI GitHub Actions avec compilation, smoke checks et garde anti-regression.
 
 ## Roadmap
 
@@ -112,13 +113,13 @@ python main.py --diagnose
 
 ### 3. Gestion des sources
 
-- Formaliser une interface provider commune: `resolve()`, `download()`, `healthcheck()` et `priority()`.
-- Ajouter un ecran de configuration des sources: activation, ordre, timeouts, quotas et cles API.
+- Brancher progressivement chaque source sur l'interface provider commune: `resolve()`, `download()`, `healthcheck()` et `priority()`.
+- Etendre l'ecran de configuration des sources avec timeouts, quotas et cles API.
 - Mettre en cache les listings distants avec expiration et invalidation manuelle.
 
 ### 4. Qualite et architecture
 
 - Finir l'extraction de `src/core.py` vers des modules plus petits avec tests unitaires cibles.
-- Ajouter une CI GitHub Actions: compilation Python, smoke tests sans reseau et grep anti-regression.
+- Ajouter plus de tests unitaires autour des providers et du pipeline de resolution.
 - Ajouter un mode diagnostic exportable: versions, chemins, sources actives, DB presente et dependances disponibles.
 - Etudier un packaging Windows portable avec assets, DAT, DB et dependances documentes.
