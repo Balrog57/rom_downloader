@@ -7,6 +7,8 @@ from datetime import datetime
 from pathlib import Path
 from urllib.parse import quote
 
+import requests
+
 from ..version import APP_VERSION
 from ..progress import DownloadProgressMeter, format_duration
 from ..network.utils import format_bytes
