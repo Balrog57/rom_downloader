@@ -46,6 +46,7 @@ python main.py --clear-listing-cache
 - `db/shard_*.zip`: shards SQLite compresses pour la recherche locale par MD5.
 - `.env.example`: exemple de configuration locale.
 - `requirements.txt`: dependances Python.
+- `PACKAGING_WINDOWS.md`: notes pour une archive Windows portable.
 
 Le depot ne contient plus de runtime externe ni de dossier de generation. Les fichiers temporaires, caches, rapports locaux et donnees extraites restent ignores par Git.
 
@@ -79,6 +80,7 @@ Dependances Python principales:
 - `tkinterdnd2` optionnel pour le glisser-deposer GUI
 
 Le programme tente d'installer certaines dependances optionnelles si elles manquent.
+Voir `PACKAGING_WINDOWS.md` pour preparer une archive portable.
 
 ## Base locale
 
@@ -133,4 +135,4 @@ python main.py --clear-listing-cache
 - Finir l'extraction de `src/core.py` vers des modules plus petits avec tests unitaires cibles.
 - Ajouter plus de tests unitaires autour du pipeline de resolution et des providers reseau.
 - Ajouter un mode diagnostic exportable: versions, chemins, sources actives, DB presente et dependances disponibles.
-- Etudier un packaging Windows portable avec assets, DAT, DB et dependances documentes.
+- Convertir la strategie portable en build `.exe` automatise si necessaire.
