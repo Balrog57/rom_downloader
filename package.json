@@ -1,9 +1,0 @@
-{
-  "name": "rom_downloader",
-  "private": true,
-  "description": "Torrent runtime helper for Minerva integration",
-  "license": "UNLICENSED",
-  "dependencies": {
-    "torrent-stream": "^1.2.1"
-  }
-}

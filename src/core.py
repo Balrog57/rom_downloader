@@ -15,14 +15,14 @@ Sources supportees:
     - 1fichier (gratuit)
 
 Usage en ligne de commande:
-    python rom_downloader.py <dat_file> <rom_folder> [url_source] [--dry-run] [--limit N] [--tosort] [--clean-torrentzip]
+    python main.py <dat_file> <rom_folder> [--dry-run] [--limit N] [--tosort] [--clean-torrentzip]
 
 Usage interactif (sans arguments):
-    python rom_downloader.py
+    python main.py
     (pose les questions pour les chemins)
 
 Usage GUI (interface graphique):
-    python rom_downloader.py --gui
+    python main.py --gui
 
 Options:
     --dry-run         Simulation sans telechargement
@@ -55,7 +55,7 @@ from itertools import islice
 from pathlib import Path
 from urllib.parse import quote, unquote, urljoin
 
-APP_ROOT = Path(__file__).resolve().parent
+APP_ROOT = Path(__file__).resolve().parents[1]
 SCAN_CACHE_FILENAME = ".rom_downloader_scan_cache.json"
 DEFAULT_PARALLEL_DOWNLOADS = 3
 
@@ -75,7 +75,7 @@ def load_env_file(file_path: str = '.env'):
                     continue
                 if '=' in line:
                     key, value = line.split('=', 1)
-                    # Supprime les guillemets si présents
+                    # Supprime les guillemets si prÃ©sents
                     val = value.strip()
                     if (val.startswith('"') and val.endswith('"')) or \
                        (val.startswith("'") and val.endswith("'")):
@@ -87,8 +87,8 @@ def load_env_file(file_path: str = '.env'):
     except Exception as e:
         print(f"Avertissement: Erreur lors du chargement du fichier .env: {e}")
 
-# Charger le fichier .env dès le début
-load_env_file()
+# Charger le fichier .env dÃ¨s le dÃ©but
+load_env_file(APP_ROOT / '.env')
 
 # Mapping des credentials archive.org pour la librairie internetarchive
 if 'IA_S3_ACCESS_KEY' in os.environ and 'IAS3_ACCESS_KEY' not in os.environ:
@@ -145,7 +145,7 @@ except ImportError:
     import cloudscraper
 
 # ============================================================================
-# Extensions de ROMs supportées (constante globale)
+# Extensions de ROMs supportÃ©es (constante globale)
 # ============================================================================
 
 ROM_EXTENSIONS = (
@@ -207,8 +207,6 @@ LOLROMS_BASE = 'https://lolroms.com/'
 CDROMANCE_BASE = 'https://cdromance.org/'
 VIMM_BASE = 'https://vimm.net/'
 RETRO_GAME_SETS_BASE = 'https://retrogamesets.fr/'
-NPM_CACHE_DIR = APP_ROOT / '.npm-cache'
-WEBTORRENT_HELPER = APP_ROOT / 'scripts' / 'minerva_torrent_download.js'
 BALROG_ASSETS_DIR = APP_ROOT / 'assets'
 BALROG_WINDOW_ICON = BALROG_ASSETS_DIR / 'Retrogaming-Toolkit-AIO.ico'
 BALROG_1G1R_ICON = BALROG_ASSETS_DIR / 'icon_1g1r.png'
@@ -233,30 +231,17 @@ SOURCE_FAMILY_MAP = {
     'Redump': 'redump',
     'TOSEC': 'tosec'
 }
-WEBTORRENT_MODULE_DIR = APP_ROOT / 'node_modules' / 'torrent-stream'
-
-WINDOWS_NODE_PATHS = (
-    r'%ProgramFiles%\nodejs\node.exe',
-    r'%ProgramFiles(x86)%\nodejs\node.exe',
-    r'%LocalAppData%\Programs\nodejs\node.exe'
-)
-WINDOWS_NPM_PATHS = (
-    r'%ProgramFiles%\nodejs\npm.cmd',
-    r'%ProgramFiles%\nodejs\npm',
-    r'%ProgramFiles(x86)%\nodejs\npm.cmd',
-    r'%AppData%\npm\npm.cmd'
-)
 MINERVA_TORRENT_AVAILABILITY = {}
 MINERVA_TORRENT_URL_CACHE = {}
 LOLROMS_SESSION = None
 
 # ============================================================================
-# Base de données locale des URLs (extrait de RGSX games.zip)
-# 74,189 URLs - 100% autonome, ne dépend plus de RGSX
+# Base de donnÃ©es locale des URLs (extrait de RGSX games.zip)
+# 74,189 URLs - 100% autonome, ne dÃ©pend plus de RGSX
 # ============================================================================
 
 ROM_DATABASE_FILE = APP_ROOT / 'rom_database.zip'
-ROM_DATABASE_SHARDS_DIR = APP_ROOT / 'rom_db_shards'
+ROM_DATABASE_SHARDS_DIR = APP_ROOT / 'db'
 DEFAULT_CONFIG_URLS = {
     'archive_org': 'https://archive.org/download/',
     'edgeemu_base': 'https://edgeemu.net',
@@ -304,7 +289,7 @@ def load_rom_database():
                 print(f"Base locale en shards chargee : {shard_count} shards zip")
             else:
                 print(f"ATTENTION: aucun shard trouve dans {ROM_DATABASE_SHARDS_DIR}")
-                print("Executez scripts/build_minerva_hash_shards.py pour reconstruire la base.")
+                print("Ajoutez les fichiers db/shard_*.zip au depot pour activer la recherche locale.")
 
         return ROM_DATABASE
     except Exception as e:
@@ -445,7 +430,7 @@ def search_by_md5(md5_hash: str) -> list:
 
 
 def database_result_filename(entry: dict, fallback: str = '') -> str:
-    """Retourne le meilleur nom de fichier disponible pour une entrée de base locale."""
+    """Retourne le meilleur nom de fichier disponible pour une entrÃ©e de base locale."""
     return (
         entry.get('filename')
         or entry.get('full_name')
@@ -457,7 +442,7 @@ def database_result_filename(entry: dict, fallback: str = '') -> str:
 def search_by_crc(crc_hash: str) -> list:
     """
     Recherche une ROM par CRC dans la base locale.
-    La base actuelle ne contient pas d'index CRC dédié.
+    La base actuelle ne contient pas d'index CRC dÃ©diÃ©.
     """
     return []
 
@@ -465,14 +450,14 @@ def search_by_crc(crc_hash: str) -> list:
 def search_by_sha1(sha1_hash: str) -> list:
     """
     Recherche une ROM par SHA1 dans la base locale.
-    La base actuelle ne contient pas d'index SHA1 dédié.
+    La base actuelle ne contient pas d'index SHA1 dÃ©diÃ©.
     """
     return []
 
 
 def search_by_name(game_name: str) -> list:
     """
-    Recherche une ROM par son nom dans la base de données locale.
+    Recherche une ROM par son nom dans la base de donnÃ©es locale.
     """
     if ROM_DATABASE is None:
         load_rom_database()
@@ -513,11 +498,11 @@ def search_by_name(game_name: str) -> list:
     return exact_results + partial_results
 
 # ============================================================================
-# Configuration des sources de téléchargement
+# Configuration des sources de tÃ©lÃ©chargement
 # ============================================================================
 
-# Sources extraites de games.zip RGSX (74,189 URLs analysées)
-# Ces sources sont utilisées indépendamment de RGSX
+# Sources extraites de games.zip RGSX (74,189 URLs analysÃ©es)
+# Ces sources sont utilisÃ©es indÃ©pendamment de RGSX
 
 def get_default_sources_legacy():
     if ROM_DATABASE is None:
@@ -577,13 +562,13 @@ def get_default_sources_legacy():
             'base_url': config.get('1fichier_free', ''),
             'type': 'free_host',
             'enabled': True,
-            'description': 'Mode gratuit avec attente (si lien détecté)',
+            'description': 'Mode gratuit avec attente (si lien dÃ©tectÃ©)',
             'priority': 3
         }
     ]
 
-# Mappings des systèmes pour les scrapers
-# Permet de traduire le nom du système (extrait du DAT) en slug pour le site
+# Mappings des systÃ¨mes pour les scrapers
+# Permet de traduire le nom du systÃ¨me (extrait du DAT) en slug pour le site
 SOURCE_TYPE_ORDER = {
     'edgeemu': 20,
     'planetemu': 30,
@@ -673,7 +658,7 @@ def get_default_sources():
             'base_url': config.get('archive_org', ''),
             'type': 'archive_org',
             'enabled': True,
-            'description': 'Fallback checksum / téléchargement direct',
+            'description': 'Fallback checksum / tÃ©lÃ©chargement direct',
             'priority': 2
         },
         {
@@ -729,7 +714,7 @@ def get_default_sources():
             'base_url': config.get('1fichier_free', ''),
             'type': 'free_host',
             'enabled': True,
-            'description': 'Mode gratuit avec attente (si lien dÃ©tectÃ©)',
+            'description': 'Mode gratuit avec attente (si lien dÃƒÂ©tectÃƒÂ©)',
             'priority': 4
         }
     ]
@@ -857,19 +842,19 @@ SYSTEM_MAPPINGS = {
         'vimm': 'VirtualBoy',
         'retrogamesets': 'Virtual Boy (Archive)'
     },
-    'Nintendo - Pokémon Mini': {
-        'lolroms': 'Nintendo - Pokémon Mini',
+    'Nintendo - PokÃ©mon Mini': {
+        'lolroms': 'Nintendo - PokÃ©mon Mini',
         'retrogamesets': 'Pokemon Mini (Archive)'
     }
 }
 
 
 # ============================================================================
-# Configuration des clés API
+# Configuration des clÃ©s API
 # ============================================================================
 
 def build_minerva_directory_url(source: dict, system_name: str | None) -> str:
-    """Construit l'URL de listing Minerva à partir de la source et du système."""
+    """Construit l'URL de listing Minerva Ã  partir de la source et du systÃ¨me."""
     base_url = source.get('base_url', '').rstrip('/') + '/'
     if source.get('fixed_directory'):
         return base_url
@@ -889,7 +874,7 @@ def build_minerva_directory_url(source: dict, system_name: str | None) -> str:
 
 
 def build_minerva_torrent_name(source: dict, system_name: str | None) -> str:
-    """Construit le nom du torrent Minerva correspondant au système."""
+    """Construit le nom du torrent Minerva correspondant au systÃ¨me."""
     collection = source.get('collection', '').strip()
     if not collection:
         return ''
@@ -909,7 +894,7 @@ def build_minerva_torrent_name(source: dict, system_name: str | None) -> str:
 
 
 def build_minerva_torrent_urls(source: dict, system_name: str | None) -> list[str]:
-    """Construit les URLs candidates du torrent Minerva correspondant au système."""
+    """Construit les URLs candidates du torrent Minerva correspondant au systÃ¨me."""
     torrent_name = build_minerva_torrent_name(source, system_name)
     if not torrent_name:
         return []
@@ -939,7 +924,7 @@ def is_minerva_torrent_available(torrent_url: str, session: requests.Session) ->
 
 
 def resolve_minerva_torrent_url(source: dict, system_name: str | None, session: requests.Session) -> str:
-    """Résout l'URL réelle du torrent Minerva pour un système donné."""
+    """RÃ©sout l'URL rÃ©elle du torrent Minerva pour un systÃ¨me donnÃ©."""
     torrent_name = build_minerva_torrent_name(source, system_name)
     if not torrent_name:
         return ''
@@ -958,7 +943,7 @@ def resolve_minerva_torrent_url(source: dict, system_name: str | None, session: 
 
 
 def normalize_system_name(system_name: str) -> str:
-    """Nettoie le nom d'un système issu d'un DAT tout en gardant l'intitulé Minerva."""
+    """Nettoie le nom d'un systÃ¨me issu d'un DAT tout en gardant l'intitulÃ© Minerva."""
     cleaned = re.sub(r'\s+', ' ', (system_name or '')).strip()
     if not cleaned:
         return ''
@@ -980,8 +965,8 @@ def normalize_system_name(system_name: str) -> str:
 
 def detect_dat_profile(dat_file_path: str) -> dict:
     """
-    Détecte le profil d'un DAT afin d'aiguiller automatiquement les sources.
-    Compatible avec les DAT No-Intro / Redump retraités via Retool pour le 1G1R.
+    DÃ©tecte le profil d'un DAT afin d'aiguiller automatiquement les sources.
+    Compatible avec les DAT No-Intro / Redump retraitÃ©s via Retool pour le 1G1R.
     """
     header_name = ''
     header_url = ''
@@ -1045,7 +1030,7 @@ def detect_dat_profile(dat_file_path: str) -> dict:
 
 
 def build_profile_default_source_url(dat_profile: dict) -> str:
-    """Construit l'URL Minerva par défaut correspondant au profil DAT."""
+    """Construit l'URL Minerva par dÃ©faut correspondant au profil DAT."""
     family = (dat_profile or {}).get('family', 'unknown')
     system_name = (dat_profile or {}).get('system_name')
     collection = next(
@@ -1065,7 +1050,7 @@ def build_profile_default_source_url(dat_profile: dict) -> str:
 
 
 def finalize_dat_profile(dat_profile: dict) -> dict:
-    """Complète un profil DAT avec les champs dérivés utiles à la CLI et à la GUI."""
+    """ComplÃ¨te un profil DAT avec les champs dÃ©rivÃ©s utiles Ã  la CLI et Ã  la GUI."""
     profile = (dat_profile or {}).copy()
     profile['default_source_url'] = build_profile_default_source_url(profile)
     return profile
@@ -1079,7 +1064,7 @@ def get_source_family(source: dict) -> str:
 
 
 def is_source_compatible_with_profile(source: dict, dat_profile: dict | None) -> bool:
-    """Détermine si une source est cohérente avec le DAT détecté."""
+    """DÃ©termine si une source est cohÃ©rente avec le DAT dÃ©tectÃ©."""
     if not dat_profile:
         return True
 
@@ -1099,7 +1084,7 @@ def is_source_compatible_with_profile(source: dict, dat_profile: dict | None) ->
 
 
 def prepare_sources_for_profile(sources: list, dat_profile: dict | None) -> list:
-    """Applique les recommandations de sources à partir du profil DAT."""
+    """Applique les recommandations de sources Ã  partir du profil DAT."""
     prepared = []
     for source in sources:
         source_copy = source.copy()
@@ -1114,7 +1099,7 @@ def prepare_sources_for_profile(sources: list, dat_profile: dict | None) -> list
 
 
 def describe_dat_profile(dat_profile: dict | None) -> str:
-    """Retourne un résumé lisible du DAT détecté."""
+    """Retourne un rÃ©sumÃ© lisible du DAT dÃ©tectÃ©."""
     if not dat_profile:
         return "DAT inconnu"
 
@@ -1135,7 +1120,7 @@ def describe_dat_profile(dat_profile: dict | None) -> str:
 
 
 def list_minerva_directory(minerva_url: str, session: requests.Session) -> tuple[set, list]:
-    """Liste les fichiers et sous-dossiers d'un répertoire Minerva."""
+    """Liste les fichiers et sous-dossiers d'un rÃ©pertoire Minerva."""
     print(f"Fetching Minerva directory listing: {minerva_url}")
 
     files = set()
@@ -1179,7 +1164,7 @@ def list_minerva_directory(minerva_url: str, session: requests.Session) -> tuple
 
 
 def collect_minerva_files_from_url(minerva_url: str, session: requests.Session, depth: int = 0) -> set:
-    """Collecte récursivement les fichiers d'un dossier Minerva."""
+    """Collecte rÃ©cursivement les fichiers d'un dossier Minerva."""
     files, directories = list_minerva_directory(minerva_url, session)
     if depth <= 0 or not directories:
         return files
@@ -1191,7 +1176,7 @@ def collect_minerva_files_from_url(minerva_url: str, session: requests.Session, 
 
 
 def select_database_result(db_results: list) -> dict | None:
-    """Choisit un résultat de la base locale sans utiliser les providers de dernier recours."""
+    """Choisit un rÃ©sultat de la base locale sans utiliser les providers de dernier recours."""
     candidates = []
     for result in db_results:
         if is_minerva_database_result(result):
@@ -1217,7 +1202,7 @@ def select_database_result(db_results: list) -> dict | None:
 
 
 def search_database_for_game(game_info: dict) -> tuple[list, str]:
-    """Recherche un jeu dans la base locale selon la priorité MD5 -> CRC -> SHA1 -> nom."""
+    """Recherche un jeu dans la base locale selon la prioritÃ© MD5 -> CRC -> SHA1 -> nom."""
     roms = game_info.get('roms', [])
     search_plan = [
         ('MD5', 'md5', search_by_md5),
@@ -1309,140 +1294,100 @@ def resolve_executable_path(candidates: tuple[str, ...], fallback_paths: tuple[s
     return ''
 
 
-def resolve_node_runtime_paths() -> tuple[str, str]:
-    """Retourne les chemins vers node et npm, meme si le PATH du processus GUI est incomplet."""
-    node_path = resolve_executable_path(('node', 'node.exe'), WINDOWS_NODE_PATHS)
-    npm_path = resolve_executable_path(('npm', 'npm.cmd', 'npm.exe'), WINDOWS_NPM_PATHS)
-    return node_path, npm_path
-
-
-def ensure_webtorrent_runtime() -> bool:
-    """Installe le runtime torrent Node localement si nécessaire."""
-    if WEBTORRENT_MODULE_DIR.exists():
-        return True
-
-    node_path, npm_path = resolve_node_runtime_paths()
-
-    if not node_path:
-        print("  Erreur: Node.js est requis pour le téléchargement torrent Minerva")
-        return False
-
-    if not npm_path:
-        print("  Erreur: npm est requis pour installer le runtime torrent")
-        return False
-
-    print("  Installation du runtime torrent Node...")
-    env = os.environ.copy()
-    env['npm_config_cache'] = str(NPM_CACHE_DIR)
-
-    try:
-        subprocess.run(
-            [npm_path, 'install', '--no-fund', '--no-audit', '--ignore-scripts', 'torrent-stream'],
-            cwd=str(APP_ROOT),
-            check=True,
-            env=env,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True,
-            encoding='utf-8',
-            errors='replace'
-        )
-    except FileNotFoundError as e:
-        print(f"  Erreur lancement npm: {e}")
-        print(f"  npm detecte: {npm_path or 'introuvable'}")
-        return False
-    except subprocess.CalledProcessError as e:
-        print("  Échec de l'installation du runtime torrent:")
-        print(e.stdout or str(e))
-        return False
-
-    return WEBTORRENT_MODULE_DIR.exists()
-
-
 def download_from_minerva_torrent(torrent_url: str, target_filename: str, dest_path: str,
                                   progress_callback=None) -> bool:
-    """Télécharge un fichier précis depuis un torrent Minerva via le runtime Node local."""
+    """Telecharge un fichier precis depuis un torrent Minerva avec libtorrent."""
     if not torrent_url or not target_filename:
         print("  Erreur: URL de torrent ou nom de fichier manquant")
         return False
 
-    if not ensure_webtorrent_runtime():
-        return False
-
-    if not WEBTORRENT_HELPER.exists():
-        print(f"  Erreur: helper torrent introuvable: {WEBTORRENT_HELPER}")
-        return False
-
-    node_path, _ = resolve_node_runtime_paths()
-    if not node_path:
-        print("  Erreur: executable Node.js introuvable pour le helper torrent")
+    lt = import_optional_package('libtorrent', auto_install=True)
+    if lt is None:
+        print("  Erreur: libtorrent est requis pour le telechargement torrent Minerva")
         return False
 
     temp_dir = Path(tempfile.mkdtemp(prefix='minerva-torrent-'))
-    env = os.environ.copy()
-    if 'MINERVA_TORRENT_TIMEOUT_MS' not in env:
-        env['MINERVA_TORRENT_TIMEOUT_MS'] = '0'
+    destination = Path(dest_path)
+    timeout_ms = int(os.environ.get('MINERVA_TORRENT_TIMEOUT_MS', '0') or '0')
+    started = time.time()
 
     try:
-        process = subprocess.Popen(
-            [node_path, str(WEBTORRENT_HELPER), torrent_url, target_filename, dest_path, str(temp_dir)],
-            cwd=str(APP_ROOT),
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True,
-            encoding='utf-8',
-            errors='replace',
-            env=env
-        )
+        response = requests.get(torrent_url, timeout=60)
+        response.raise_for_status()
+        info = lt.torrent_info(lt.bdecode(response.content))
+        session = lt.session({
+            'listen_interfaces': '0.0.0.0:6881',
+            'enable_dht': True,
+            'enable_lsd': True,
+            'enable_upnp': True,
+            'enable_natpmp': True,
+        })
+        handle = session.add_torrent({'ti': info, 'save_path': str(temp_dir)})
+        files = info.files()
+        wanted = str(target_filename or '').replace('\\', '/').lower()
+        selected_index = None
+        selected_path = ''
+        selected_size = 0
 
-        if not process.stdout:
-            print("  Erreur: impossible de lire la sortie du helper torrent")
+        for index in range(files.num_files()):
+            file_path = files.file_path(index).replace('\\', '/')
+            file_name = Path(file_path).name
+            normalized_path = file_path.lower()
+            normalized_name = file_name.lower()
+            if normalized_name == wanted or normalized_path == wanted or normalized_path.endswith('/' + wanted):
+                selected_index = index
+                selected_path = file_path
+                selected_size = files.file_size(index)
+                break
+
+        if selected_index is None:
+            print(f"  Erreur torrent: fichier cible introuvable: {target_filename}")
             return False
 
-        for raw_line in process.stdout:
-            line = raw_line.strip()
-            if not line:
-                continue
+        handle.prioritize_files([0] * files.num_files())
+        handle.file_priority(selected_index, 7)
+        print(f"  Torrent charge: {info.name()} ({files.num_files()} fichiers)")
+        print(f"  Fichier selectionne dans le torrent: {selected_path}")
 
-            try:
-                event = json.loads(line)
-            except json.JSONDecodeError:
-                print(f"  [torrent] {line}")
-                continue
+        last_progress = -1.0
+        while not handle.is_seed():
+            status = handle.status()
+            progress = max(0.0, min(status.progress * 100.0, 100.0))
+            if progress_callback and progress - last_progress >= 0.5:
+                progress_callback(progress)
+                last_progress = progress
+            if timeout_ms > 0 and (time.time() - started) * 1000 > timeout_ms:
+                print(f"  Erreur torrent: timeout apres {timeout_ms} ms")
+                return False
+            selected_file = temp_dir / selected_path
+            if selected_file.exists() and (selected_size <= 0 or selected_file.stat().st_size >= selected_size):
+                break
+            time.sleep(1)
 
-            event_type = event.get('type')
-            if event_type == 'metadata':
-                print(f"  Torrent chargé: {event.get('torrentName', 'Inconnu')} ({event.get('files', 0)} fichiers)")
-            elif event_type == 'selected':
-                print(f"  Fichier sélectionné dans le torrent: {event.get('file', target_filename)}")
-            elif event_type == 'progress':
-                progress = float(event.get('progress', 0))
-                if progress_callback:
-                    progress_callback(progress)
-            elif event_type == 'warning':
-                print(f"  Avertissement torrent: {event.get('message', '')}")
-            elif event_type == 'error':
-                print(f"  Erreur torrent: {event.get('message', '')}")
-            elif event_type == 'done':
-                if progress_callback:
-                    progress_callback(100.0)
-                print(f"  Torrent terminé: {event.get('destination', dest_path)}")
+        source_file = temp_dir / selected_path
+        if not source_file.exists():
+            print(f"  Erreur torrent: fichier telecharge introuvable: {selected_path}")
+            return False
 
-        return process.wait() == 0 and os.path.exists(dest_path)
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.move(str(source_file), str(destination))
+        if progress_callback:
+            progress_callback(100.0)
+        print(f"  Torrent termine: {destination}")
+        return destination.exists()
     except Exception as e:
-        print(f"  Erreur téléchargement torrent Minerva: {e}")
+        print(f"  Erreur telechargement torrent Minerva: {e}")
         return False
     finally:
         shutil.rmtree(temp_dir, ignore_errors=True)
-
 
 API_CONFIG_FILE = 'api_keys.json'
 
 
 def load_api_keys() -> dict:
     """
-    Charge les clés API depuis le fichier de configuration et les variables d'environnement.
-    Priorité: Variables d'environnement (.env) > Fichier api_keys.json
+    Charge les clÃ©s API depuis le fichier de configuration et les variables d'environnement.
+    PrioritÃ©: Variables d'environnement (.env) > Fichier api_keys.json
     """
     keys = {
         '1fichier': os.environ.get('ONE_FICHIER_API_KEY', ''),
@@ -1450,39 +1395,39 @@ def load_api_keys() -> dict:
         'realdebrid': os.environ.get('REALDEBRID_API_KEY', '')
     }
     
-    # Si les clés du .env sont vides, on tente de charger depuis le fichier JSON
+    # Si les clÃ©s du .env sont vides, on tente de charger depuis le fichier JSON
     if os.path.exists(API_CONFIG_FILE):
         try:
             with open(API_CONFIG_FILE, 'r', encoding='utf-8') as f:
                 json_keys = json.load(f)
-                # On ne surcharge que si la clé .env est vide
+                # On ne surcharge que si la clÃ© .env est vide
                 for k in keys:
                     if not keys[k] and k in json_keys:
                         keys[k] = json_keys[k]
         except Exception as e:
-            print(f"Erreur lors du chargement des clés API (JSON): {e}")
+            print(f"Erreur lors du chargement des clÃ©s API (JSON): {e}")
     
     return keys
 
 
 def save_api_keys(keys: dict) -> bool:
-    """Sauvegarde les clés API dans le fichier .env."""
+    """Sauvegarde les clÃ©s API dans le fichier .env."""
     try:
         env_path = '.env'
-        # On lit le fichier existant pour ne pas écraser les autres variables
+        # On lit le fichier existant pour ne pas Ã©craser les autres variables
         lines = []
         if os.path.exists(env_path):
             with open(env_path, 'r', encoding='utf-8') as f:
                 lines = f.readlines()
         
-        # Mappings entre clés internes et noms de variables d'env
+        # Mappings entre clÃ©s internes et noms de variables d'env
         mapping = {
             '1fichier': 'ONE_FICHIER_API_KEY',
             'alldebrid': 'ALLDEBRID_API_KEY',
             'realdebrid': 'REALDEBRID_API_KEY'
         }
         
-        # On met à jour ou on ajoute les lignes
+        # On met Ã  jour ou on ajoute les lignes
         new_lines = []
         found_keys = set()
         
@@ -1498,7 +1443,7 @@ def save_api_keys(keys: dict) -> bool:
             if not handled:
                 new_lines.append(line)
         
-        # On ajoute les clés manquantes
+        # On ajoute les clÃ©s manquantes
         for k, env_name in mapping.items():
             if k not in found_keys:
                 new_lines.append(f"{env_name}={keys[k]}\n")
@@ -1506,52 +1451,52 @@ def save_api_keys(keys: dict) -> bool:
         with open(env_path, 'w', encoding='utf-8') as f:
             f.writelines(new_lines)
             
-        # On met aussi à jour l'os.environ actuel
+        # On met aussi Ã  jour l'os.environ actuel
         for k, env_name in mapping.items():
             os.environ[env_name] = keys[k]
             
         return True
     except Exception as e:
-        print(f"Erreur lors de la sauvegarde des clés API dans .env: {e}")
+        print(f"Erreur lors de la sauvegarde des clÃ©s API dans .env: {e}")
         return False
 
 
 def configure_api_keys():
     """Interactive configuration of API keys."""
     print("\n" + "=" * 60)
-    print("CONFIGURATION DES CLÉS API")
+    print("CONFIGURATION DES CLÃ‰S API")
     print("=" * 60)
     
     keys = load_api_keys()
     
-    print("\nClés API actuelles:")
+    print("\nClÃ©s API actuelles:")
     for service, key in keys.items():
         masked = key[:10] + "..." if len(key) > 10 else key
-        print(f"  - {service}: {masked if key else '(non configurée)'}")
+        print(f"  - {service}: {masked if key else '(non configurÃ©e)'}")
     
-    print("\nPour obtenir vos clés API (voir la configuration de la DB):")
+    print("\nPour obtenir vos clÃ©s API (voir la configuration de la DB):")
     config = ROM_DATABASE.get('config_urls', {})
     print(f"  1fichier:   {config.get('1fichier_apikeys', 'Consultez le site 1fichier')}")
     print(f"  AllDebrid:  {config.get('alldebrid_apikeys', 'Consultez le site AllDebrid')}")
     print(f"  RealDebrid: {config.get('realdebrid_apikeys', 'Consultez le site RealDebrid')}")
     
-    print("\nEntrez vos clés API (laissez vide pour conserver):")
+    print("\nEntrez vos clÃ©s API (laissez vide pour conserver):")
     
     for service in keys:
-        new_key = input(f"  Clé {service}: ").strip()
+        new_key = input(f"  ClÃ© {service}: ").strip()
         if new_key:
             keys[service] = new_key
     
     if save_api_keys(keys):
-        print("\nClés API sauvegardées avec succès dans le fichier .env!")
+        print("\nClÃ©s API sauvegardÃ©es avec succÃ¨s dans le fichier .env!")
     else:
-        print("\nErreur lors de la sauvegarde des clés API dans .env.")
+        print("\nErreur lors de la sauvegarde des clÃ©s API dans .env.")
     
     return keys
 
 
 def is_1fichier_url(url: str) -> bool:
-    """Détecte si l'URL est un lien 1fichier."""
+    """DÃ©tecte si l'URL est un lien 1fichier."""
     return "1fichier.com" in url if url else False
 
 
@@ -1559,7 +1504,7 @@ def is_1fichier_url(url: str) -> bool:
 # Fonctions pour les services premium (1fichier, AllDebrid, RealDebrid)
 # ============================================================================
 
-# Regex pour détecter le compte à rebours 1fichier (mode gratuit)
+# Regex pour dÃ©tecter le compte Ã  rebours 1fichier (mode gratuit)
 WAIT_REGEXES_1F = [
     r'var\s+ct\s*=\s*(\d+)\s*\*\s*60',
     r'var\s+ct\s*=\s*(\d+)\s*\*60',
@@ -1626,7 +1571,7 @@ def download_1fichier_free(url: str, dest_path: str, session: requests.Session, 
         
         # Step 4: Find download link
         patterns = [
-            r'href=[\"\']([^\"\']+)[\"\'][^>]*>(?:cliquer|click|télécharger|download)',
+            r'href=[\"\']([^\"\']+)[\"\'][^>]*>(?:cliquer|click|tÃ©lÃ©charger|download)',
             r'href=[\"\']([^\"\']*/dl/[^\"\']+)',
             r'(https?://[a-z0-9.-]*1fichier\.com/[A-Za-z0-9]{8,})'
         ]
@@ -1643,7 +1588,7 @@ def download_1fichier_free(url: str, dest_path: str, session: requests.Session, 
                 break
         
         if not direct_link:
-            print(f"  Erreur: Lien de téléchargement introuvable")
+            print(f"  Erreur: Lien de tÃ©lÃ©chargement introuvable")
             return False
         
         # Step 5: Download file
@@ -1675,7 +1620,7 @@ def download_1fichier(file_id: str, dest_path: str, api_key: str, progress_callb
     file_id: The file ID from the 1fichier URL (e.g., abc123 from the download link)
     """
     if not api_key:
-        print("  Erreur: Clé API 1fichier manquante")
+        print("  Erreur: ClÃ© API 1fichier manquante")
         return False
     
     try:
@@ -1701,7 +1646,7 @@ def download_1fichier(file_id: str, dest_path: str, api_key: str, progress_callb
         
         download_url = result.get('download_url')
         if not download_url:
-            print("  Erreur: Pas d'URL de téléchargement")
+            print("  Erreur: Pas d'URL de tÃ©lÃ©chargement")
             return False
         
         # Download the file
@@ -1736,7 +1681,7 @@ def download_alldebrid(url: str, dest_path: str, api_key: str, progress_callback
     url: The original hoster URL (e.g., 1fichier link)
     """
     if not api_key:
-        print("  Erreur: Clé API AllDebrid manquante")
+        print("  Erreur: ClÃ© API AllDebrid manquante")
         return False
     
     try:
@@ -1764,7 +1709,7 @@ def download_alldebrid(url: str, dest_path: str, api_key: str, progress_callback
         
         download_url = result.get('data', {}).get('downloadLink')
         if not download_url:
-            print("  Erreur: Pas d'URL de téléchargement")
+            print("  Erreur: Pas d'URL de tÃ©lÃ©chargement")
             return False
         
         # Download the file
@@ -1799,7 +1744,7 @@ def download_realdebrid(url: str, dest_path: str, api_key: str, progress_callbac
     url: The original hoster URL or torrent magnet link
     """
     if not api_key:
-        print("  Erreur: Clé API RealDebrid manquante")
+        print("  Erreur: ClÃ© API RealDebrid manquante")
         return False
     
     try:
@@ -1825,7 +1770,7 @@ def download_realdebrid(url: str, dest_path: str, api_key: str, progress_callbac
         
         download_url = result.get('download')
         if not download_url:
-            print("  Erreur: Pas d'URL de téléchargement")
+            print("  Erreur: Pas d'URL de tÃ©lÃ©chargement")
             return False
         
         # Download the file
@@ -1903,8 +1848,8 @@ def download_from_premium_source(source_type: str, url: str, dest_path: str,
 def print_sources_info():
     """Print information about available download sources."""
     print("\n" + "=" * 70)
-    print("SOURCES DE TÉLÉCHARGEMENT DISPONIBLES")
-    print("Extrait de games.zip RGSX (74,189 URLs analysées)")
+    print("SOURCES DE TÃ‰LÃ‰CHARGEMENT DISPONIBLES")
+    print("Extrait de games.zip RGSX (74,189 URLs analysÃ©es)")
     print("=" * 70)
     
     print("\n--- Sources DDL prioritaires ---")
@@ -1914,9 +1859,9 @@ def print_sources_info():
         print(f"\n{i}. {source['name']}")
         print(f"   Type: {source['type']}")
         if source['base_url']:
-            print(f"   URL: Masquée")
+            print(f"   URL: MasquÃ©e")
         print(f"   Description: {source.get('description', 'N/A')}")
-        print(f"   Priorité: {source.get('priority', 'N/A')}")
+        print(f"   PrioritÃ©: {source.get('priority', 'N/A')}")
     
     print("\n--- Dernier recours torrent ---")
     for i, source in enumerate(get_default_sources(), 1):
@@ -1926,9 +1871,9 @@ def print_sources_info():
         print(f"   Type: {source['type']}")
         print(f"   Collection: {source.get('collection', 'N/A')}")
         print(f"   Description: {source.get('description', 'N/A')}")
-        print(f"   Priorité: {source.get('priority', 'N/A')}")
+        print(f"   PrioritÃ©: {source.get('priority', 'N/A')}")
     
-    print("\n--- Sources Supplémentaires ---")
+    print("\n--- Sources SupplÃ©mentaires ---")
     additional_sources = globals().get('ADDITIONAL_SOURCES', [])
     for i, source in enumerate(additional_sources, 1):
         status = "ACTIVABLE" if not source.get('enabled', False) else "ACTIVE"
@@ -1985,7 +1930,7 @@ def get_archive_item_files(identifier: str):
 
 
 def archive_org_result(identifier: str, file_name: str, checksum_type: str, checksum_value: str, source: str) -> dict:
-    """Construit une réponse archive.org uniforme."""
+    """Construit une rÃ©ponse archive.org uniforme."""
     return {
         'found': True,
         'identifier': identifier,
@@ -1997,7 +1942,7 @@ def archive_org_result(identifier: str, file_name: str, checksum_type: str, chec
 
 
 def archive_org_matches_name(file_name: str, rom_name: str) -> bool:
-    """Vérifie si un nom de fichier archive.org correspond au nom attendu."""
+    """VÃ©rifie si un nom de fichier archive.org correspond au nom attendu."""
     if not file_name or not rom_name:
         return False
 
@@ -2012,7 +1957,7 @@ def archive_org_matches_name(file_name: str, rom_name: str) -> bool:
 
 
 def get_archive_file_checksum(file_info: dict, checksum_type: str) -> str:
-    """Récupère une somme de contrôle archive.org normalisée."""
+    """RÃ©cupÃ¨re une somme de contrÃ´le archive.org normalisÃ©e."""
     for field_name in ARCHIVE_CHECKSUM_FILE_FIELDS.get(checksum_type, []):
         checksum_value = normalize_checksum(file_info.get(field_name, ''), checksum_type)
         if checksum_value:
@@ -2022,7 +1967,7 @@ def get_archive_file_checksum(file_info: dict, checksum_type: str) -> str:
 
 def search_archive_org_by_checksum(checksum_value: str, rom_name: str, checksum_type: str) -> dict:
     """
-    Recherche un fichier sur archive.org par checksum, puis recoupe par nom si nécessaire.
+    Recherche un fichier sur archive.org par checksum, puis recoupe par nom si nÃ©cessaire.
     archive.org est interroge en dernier recours, apres Minerva.
     """
     normalized_checksum = normalize_checksum(checksum_value, checksum_type)
@@ -2053,7 +1998,7 @@ def search_archive_org_by_checksum(checksum_value: str, rom_name: str, checksum_
                         file_name = file_info.get('name', '')
                         file_checksum = get_archive_file_checksum(file_info, checksum_type)
                         if file_checksum and file_checksum == normalized_checksum:
-                            print(f"    [OK] Trouvé: {identifier}/{file_name}")
+                            print(f"    [OK] TrouvÃ©: {identifier}/{file_name}")
                             return archive_org_result(identifier, file_name, checksum_type, normalized_checksum, f'archive_org_{checksum_type}')
                 except Exception:
                     continue
@@ -2090,7 +2035,7 @@ def search_archive_org_by_checksum(checksum_value: str, rom_name: str, checksum_
 
                             file_checksum = get_archive_file_checksum(file_info, checksum_type)
                             if file_checksum and file_checksum == normalized_checksum:
-                                print(f"    [OK] Trouvé (nom+{label}): {identifier}/{file_name}")
+                                print(f"    [OK] TrouvÃ© (nom+{label}): {identifier}/{file_name}")
                                 return archive_org_result(identifier, file_name, checksum_type, normalized_checksum, f'archive_org_{checksum_type}')
                     except Exception:
                         continue
@@ -2099,7 +2044,7 @@ def search_archive_org_by_checksum(checksum_value: str, rom_name: str, checksum_
             except Exception as e:
                 strategies_tried.append(f'name_error_{collection}: {e}')
 
-    print(f"  [KO] Non trouvé sur archive.org (stratégies: {', '.join(strategies_tried)})")
+    print(f"  [KO] Non trouvÃ© sur archive.org (stratÃ©gies: {', '.join(strategies_tried)})")
     return {'found': False, 'strategies_tried': strategies_tried}
 
 
@@ -2120,13 +2065,13 @@ def search_archive_org_by_sha1(sha1_hash: str, rom_name: str) -> dict:
 
 def download_from_ia_zip(identifier: str, zip_path: str, filename: str, dest_path: str, progress_callback=None) -> bool:
     """
-    Télécharge un fichier spécifique à l'intérieur d'un ZIP sur archive.org.
-    Gère les redirections vers view_archive.php.
+    TÃ©lÃ©charge un fichier spÃ©cifique Ã  l'intÃ©rieur d'un ZIP sur archive.org.
+    GÃ¨re les redirections vers view_archive.php.
     """
     try:
         from urllib.parse import quote
         
-        # URL de base pour l'accès aux fichiers (IA S3 / Direct)
+        # URL de base pour l'accÃ¨s aux fichiers (IA S3 / Direct)
         clean_zip = quote(zip_path.replace("\\", "/"))
         clean_file = quote(filename.replace("\\", "/"))
         url = f"https://archive.org/download/{identifier}/{clean_zip}/{clean_file}"
@@ -2144,10 +2089,10 @@ def download_from_ia_zip(identifier: str, zip_path: str, filename: str, dest_pat
             from requests.auth import HTTPBasicAuth
             auth = HTTPBasicAuth(access_key, secret_key)
 
-        # Première tentative
+        # PremiÃ¨re tentative
         resp = session.get(url, stream=True, allow_redirects=True, timeout=120, auth=auth)
         
-        # Si redirection vers view_archive sans le paramètre file
+        # Si redirection vers view_archive sans le paramÃ¨tre file
         if "view_archive.php" in resp.url and "file=" not in resp.url:
             final_url = f"{resp.url}&file={clean_file}"
             print(f"  Redirection view_archive: {final_url}")
@@ -2186,28 +2131,28 @@ def download_from_archive_org(identifier: str, filename: str, dest_path: str, se
     
     for attempt in range(max_retries):
         try:
-            print(f"  Téléchargement archive.org: {identifier}/{filename}")
+            print(f"  TÃ©lÃ©chargement archive.org: {identifier}/{filename}")
             
-            # Méthode 1: Utiliser internetarchive
+            # MÃ©thode 1: Utiliser internetarchive
             try:
                 item = internetarchive.get_item(identifier)
                 file_obj = item.get_file(filename)
                 
                 if file_obj:
-                    # Télécharger directement
+                    # TÃ©lÃ©charger directement
                     with open(dest_path, 'wb') as f:
                         file_obj.download(f)
                     
                     if dest_path.exists():
                         size = dest_path.stat().st_size
-                        print(f"  [OK] Téléchargé via internetarchive ({size:,} octets)")
+                        print(f"  [OK] TÃ©lÃ©chargÃ© via internetarchive ({size:,} octets)")
                         if progress_callback:
                             progress_callback(100.0)
                         return True
             except Exception as e:
                 print(f"  [WARN] Erreur internetarchive: {e}, tentative HTTP directe...")
             
-            # Méthode 2: Download HTTP direct (fallback)
+            # MÃ©thode 2: Download HTTP direct (fallback)
             if session is None:
                 session = requests.Session()
                 session.headers.update({'User-Agent': 'Mozilla/5.0'})
@@ -2234,14 +2179,14 @@ def download_from_archive_org(identifier: str, filename: str, dest_path: str, se
             
             if dest_path.exists():
                 size = dest_path.stat().st_size
-                print(f"  [OK] Téléchargé via HTTP direct ({size:,} octets)")
+                print(f"  [OK] TÃ©lÃ©chargÃ© via HTTP direct ({size:,} octets)")
                 return True
             else:
-                print(f"  [ERREUR] Fichier non créé")
+                print(f"  [ERREUR] Fichier non crÃ©Ã©")
                 return False
                 
         except Exception as e:
-            print(f"  [ERREUR] Tentative {attempt + 1}/{max_retries} échouée: {e}")
+            print(f"  [ERREUR] Tentative {attempt + 1}/{max_retries} Ã©chouÃ©e: {e}")
             if os.path.exists(dest_path):
                 try:
                     os.remove(dest_path)
@@ -2281,7 +2226,7 @@ def search_archive_org_by_name(rom_name: str, rom_extension: str = '.zip') -> di
                     # Check if filename matches
                     if rom_name.lower() in file_name.lower() or file_name.lower() in rom_name.lower():
                         if file_name.endswith(rom_extension) or file_name.endswith('.gb') or file_name.endswith('.zip'):
-                            print(f"  Trouvé sur archive.org: {identifier}/{file_name}")
+                            print(f"  TrouvÃ© sur archive.org: {identifier}/{file_name}")
                             return {
                                 'found': True,
                                 'identifier': identifier,
@@ -2307,7 +2252,7 @@ def search_archive_org_by_name(rom_name: str, rom_extension: str = '.zip') -> di
                     file_name = file_info.get('name', '')
                     if rom_name.lower() in file_name.lower():
                         if file_name.endswith(('.zip', '.gb', '.7z', '.rar')):
-                            print(f"  Trouvé sur archive.org (sans collection): {identifier}/{file_name}")
+                            print(f"  TrouvÃ© sur archive.org (sans collection): {identifier}/{file_name}")
                             return {
                                 'found': True,
                                 'identifier': identifier,
@@ -2317,7 +2262,7 @@ def search_archive_org_by_name(rom_name: str, rom_extension: str = '.zip') -> di
             except Exception as e:
                 continue
 
-        print(f"  Non trouvé sur archive.org avec le nom: {rom_name}")
+        print(f"  Non trouvÃ© sur archive.org avec le nom: {rom_name}")
         return {'found': False}
 
     except Exception as e:
@@ -2498,7 +2443,7 @@ def update_file_scan_cache(cache: dict, key: str, state: dict, entries: list):
 
 
 def build_target_signature_sets(dat_games: dict | None) -> dict:
-    """Construit les ensembles de signatures présentes dans le DAT."""
+    """Construit les ensembles de signatures prÃ©sentes dans le DAT."""
     targets = {
         'md5': set(),
         'crc': set(),
@@ -2533,7 +2478,7 @@ def hash_file_signatures(file_path: Path) -> dict:
 
 
 def hash_zip_entry_signatures(zip_file, zip_info) -> dict:
-    """Calcule les signatures d'une entrée ZIP locale."""
+    """Calcule les signatures d'une entrÃ©e ZIP locale."""
     with zip_file.open(zip_info, 'r') as entry_handle:
         crc_value, md5_hash, sha1_hash = compute_stream_checksums(entry_handle)
     return {
@@ -3202,7 +3147,7 @@ def build_report_slug(value: str) -> str:
 
 
 def write_download_report(output_folder: str, summary: dict) -> str:
-    """Écrit un récapitulatif lisible de la session dans le dossier de destination."""
+    """Ã‰crit un rÃ©capitulatif lisible de la session dans le dossier de destination."""
     os.makedirs(output_folder, exist_ok=True)
 
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -3227,7 +3172,7 @@ def write_download_report(output_folder: str, summary: dict) -> str:
         f"Systeme: {summary.get('system_name', '')}",
         f"Profil: {summary.get('dat_profile', '')}",
         f"Dossier de destination: {summary.get('output_folder', '')}",
-        f"URL source manuelle: {summary.get('source_url', '') or 'Auto'}",
+        "Sources: automatiques",
         f"Sources actives: {', '.join(summary.get('active_sources', [])) or 'Aucune'}",
         "",
         "Resume",
@@ -3297,8 +3242,8 @@ def detect_system_name(dat_file_path: str) -> str:
         return profile_system_name
 
     """
-    Tente de détecter le nom du système à partir du nom du fichier DAT.
-    Gère les noms complexes (Retool, dates, tags).
+    Tente de dÃ©tecter le nom du systÃ¨me Ã  partir du nom du fichier DAT.
+    GÃ¨re les noms complexes (Retool, dates, tags).
     Exemple: 'Nintendo - Game Boy (Retool).dat' -> 'Nintendo - Game Boy'
     """
     try:
@@ -3313,7 +3258,7 @@ def detect_system_name(dat_file_path: str) -> str:
     filename = os.path.basename(dat_file_path)
     # Retirer l'extension
     name = os.path.splitext(filename)[0]
-    # Retirer les parenthèses () et les crochets [] ainsi que leur contenu
+    # Retirer les parenthÃ¨ses () et les crochets [] ainsi que leur contenu
     name = re.sub(r'[\(\[].*?[\)\]]', '', name).strip()
     # Normaliser les espaces multiples
     name = re.sub(r'\s+', ' ', name)
@@ -3337,7 +3282,7 @@ def get_lolroms_session():
 
 def get_cdromance_session():
     """Retourne une session Cloudflare-compatible pour CDRomance."""
-    return get_lolroms_session() # On réutilise la même logique scraper
+    return get_lolroms_session() # On rÃ©utilise la mÃªme logique scraper
 
 
 def get_vimm_session():
@@ -3359,7 +3304,7 @@ def build_lolroms_url(path: str) -> str:
 
 
 def resolve_lolroms_system_path(system_name: str) -> str:
-    """Résout le chemin LoLROMs correspondant au système demandé."""
+    """RÃ©sout le chemin LoLROMs correspondant au systÃ¨me demandÃ©."""
     if not system_name:
         return ''
 
@@ -3392,7 +3337,7 @@ def resolve_lolroms_system_path(system_name: str) -> str:
 
 
 def list_lolroms_directory(system_path: str) -> dict:
-    """Scrape LoLROMs pour un système donné et retourne un mapping par nom normalisé."""
+    """Scrape LoLROMs pour un systÃ¨me donnÃ© et retourne un mapping par nom normalisÃ©."""
     if not system_path:
         return {}
 
@@ -3439,7 +3384,7 @@ def list_lolroms_directory(system_path: str) -> dict:
 
 
 def list_edgeemu_directory(system_slug: str, session: requests.Session) -> dict:
-    """Scrape EdgeEmu pour un système donné et retourne un dict {nom_normalisé: url_téléchargement}."""
+    """Scrape EdgeEmu pour un systÃ¨me donnÃ© et retourne un dict {nom_normalisÃ©: url_tÃ©lÃ©chargement}."""
     if not system_slug:
         return {}
         
@@ -3453,13 +3398,13 @@ def list_edgeemu_directory(system_slug: str, session: requests.Session) -> dict:
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, 'html.parser')
             # Sur EdgeEmu, les jeux sont dans des balises <details> avec le nom dans <summary>
-            # et le lien de téléchargement dans un <a> à l'intérieur
+            # et le lien de tÃ©lÃ©chargement dans un <a> Ã  l'intÃ©rieur
             for details in soup.find_all('details'):
                 summary = details.find('summary')
                 if not summary: continue
                 
                 game_name = summary.get_text().strip()
-                # On cherche le lien de téléchargement
+                # On cherche le lien de tÃ©lÃ©chargement
                 a_tag = details.find('a', href=True)
                 if a_tag and '/download/' in a_tag['href']:
                     download_url = config.get('edgeemu_base', '') + a_tag['href']
@@ -3474,7 +3419,7 @@ def list_edgeemu_directory(system_slug: str, session: requests.Session) -> dict:
 
 
 def iter_game_candidate_names(game_info: dict) -> list:
-    """Retourne les meilleurs noms candidats pour résoudre un jeu sur une source externe."""
+    """Retourne les meilleurs noms candidats pour rÃ©soudre un jeu sur une source externe."""
     candidates = []
 
     primary_rom = strip_rom_extension(game_info.get('primary_rom', '')).strip()
@@ -3495,9 +3440,9 @@ def iter_game_candidate_names(game_info: dict) -> list:
 
 def resolve_edgeemu_game(game_info: dict, system_slug: str, session: requests.Session) -> dict | None:
     """
-    Résout directement une URL EdgeEmu à partir du nom de ROM.
+    RÃ©sout directement une URL EdgeEmu Ã  partir du nom de ROM.
     Le browse EdgeEmu ne retourne qu'un petit sous-ensemble variable de jeux,
-    donc on privilégie ici l'URL de téléchargement déterministe.
+    donc on privilÃ©gie ici l'URL de tÃ©lÃ©chargement dÃ©terministe.
     """
     if not system_slug:
         return None
@@ -3538,7 +3483,7 @@ def resolve_edgeemu_game(game_info: dict, system_slug: str, session: requests.Se
 
 
 def list_planetemu_directory(system_slug: str, session: requests.Session) -> dict:
-    """Scrape PlanetEmu pour un système donné."""
+    """Scrape PlanetEmu pour un systÃ¨me donnÃ©."""
     if not system_slug:
         return {}
         
@@ -3551,7 +3496,7 @@ def list_planetemu_directory(system_slug: str, session: requests.Session) -> dic
     
     mapping = {}
     try:
-        # PlanetEmu nécessite souvent plusieurs pages (?page=A, B, etc.)
+        # PlanetEmu nÃ©cessite souvent plusieurs pages (?page=A, B, etc.)
         # Pour faire simple, on scrape la page principale
         response = session.get(url, timeout=30)
         if response.status_code == 200:
@@ -3574,13 +3519,13 @@ def list_planetemu_directory(system_slug: str, session: requests.Session) -> dic
 
 
 def download_planetemu(page_url: str, dest_path: str, session: requests.Session, progress_callback=None) -> bool:
-    """Téléchargement spécifique pour PlanetEmu (POST + Token)."""
+    """TÃ©lÃ©chargement spÃ©cifique pour PlanetEmu (POST + Token)."""
     try:
-        # Étape 1 : Aller sur la page du jeu pour trouver l'ID
+        # Ã‰tape 1 : Aller sur la page du jeu pour trouver l'ID
         resp = session.get(page_url, timeout=30)
         html = resp.text
         
-        # Chercher l'ID dans le formulaire de téléchargement
+        # Chercher l'ID dans le formulaire de tÃ©lÃ©chargement
         id_match = re.search(r'name="id"\s+value="(\d+)"', html)
         if not id_match:
             print("  [PlanetEmu] ID de ROM introuvable sur la page")
@@ -3588,7 +3533,7 @@ def download_planetemu(page_url: str, dest_path: str, session: requests.Session,
             
         rom_id = id_match.group(1)
         
-        # Étape 2 : Envoyer le POST pour générer le token
+        # Ã‰tape 2 : Envoyer le POST pour gÃ©nÃ©rer le token
         config = ROM_DATABASE.get('config_urls', {})
         download_api = config.get('planetemu_download_api', '')
         if not download_api:
@@ -3613,10 +3558,10 @@ def download_planetemu(page_url: str, dest_path: str, session: requests.Session,
                 token_url = urljoin(download_api, a_token['href'])
 
         if not token_url:
-            print("  [PlanetEmu] Échec de génération du token")
+            print("  [PlanetEmu] Ã‰chec de gÃ©nÃ©ration du token")
             return False
             
-        # Étape 3 : Télécharger avec le token
+        # Ã‰tape 3 : TÃ©lÃ©charger avec le token
         return download_file(token_url, dest_path, session, progress_callback)
         
     except Exception as e:
@@ -3632,8 +3577,8 @@ def resolve_cdromance_game(game_info: dict, session: requests.Session) -> dict |
             if resp.status_code != 200: continue
             
             soup = BeautifulSoup(resp.text, 'html.parser')
-            # Les résultats de recherche sont dans des <a> avec la classe 'thumbnail-link' ou similaire
-            # On cherche le premier résultat qui ressemble au nom du jeu
+            # Les rÃ©sultats de recherche sont dans des <a> avec la classe 'thumbnail-link' ou similaire
+            # On cherche le premier rÃ©sultat qui ressemble au nom du jeu
             for link in soup.find_all('a', href=True):
                 if CDROMANCE_BASE in link['href'] and any(x in link['href'] for x in ['-iso', '-rom', '-roms']):
                     title = link.get('title', '').lower() or link.get_text().strip().lower()
@@ -3653,9 +3598,9 @@ def resolve_cdromance_game(game_info: dict, session: requests.Session) -> dict |
     return None
 
 def download_cdromance(page_url: str, dest_path: str, session: requests.Session, progress_callback=None) -> bool:
-    """Télécharge un jeu depuis CDRomance en gérant le système de tickets."""
+    """TÃ©lÃ©charge un jeu depuis CDRomance en gÃ©rant le systÃ¨me de tickets."""
     try:
-        # Étape 1 : Récupérer la page du jeu
+        # Ã‰tape 1 : RÃ©cupÃ©rer la page du jeu
         resp = session.get(page_url, timeout=30)
         soup = BeautifulSoup(resp.text, 'html.parser')
         
@@ -3666,7 +3611,7 @@ def download_cdromance(page_url: str, dest_path: str, session: requests.Session,
             ticket = ticket_el.get('value') or ticket_el.get_text().strip()
             
         if not ticket:
-            # Essayer de trouver dans le JS si pas trouvé en HTML
+            # Essayer de trouver dans le JS si pas trouvÃ© en HTML
             match = re.search(r'cdr_ticket\s*=\s*["\']([^"\']+)["\']', resp.text)
             if match: ticket = match.group(1)
 
@@ -3674,20 +3619,20 @@ def download_cdromance(page_url: str, dest_path: str, session: requests.Session,
             print("  [CDRomance] Ticket introuvable")
             return False
             
-        # Étape 2 : Envoyer le ticket pour obtenir les liens
+        # Ã‰tape 2 : Envoyer le ticket pour obtenir les liens
         # CDRomance utilise souvent un POST vers .org/
         post_data = {'cdrTicketInput': ticket}
         resp = session.post(CDROMANCE_BASE, data=post_data, timeout=30)
         soup = BeautifulSoup(resp.text, 'html.parser')
         
-        # Chercher les liens de téléchargement
+        # Chercher les liens de tÃ©lÃ©chargement
         dl_links = []
         for a in soup.find_all('a', href=True):
             if 'download.php' in a['href']:
                 dl_links.append(urljoin(CDROMANCE_BASE, a['href']))
         
         if not dl_links:
-            print("  [CDRomance] Aucun lien de téléchargement trouvé après validation du ticket")
+            print("  [CDRomance] Aucun lien de tÃ©lÃ©chargement trouvÃ© aprÃ¨s validation du ticket")
             return False
             
         # Prendre le premier lien
@@ -3695,7 +3640,7 @@ def download_cdromance(page_url: str, dest_path: str, session: requests.Session,
         return download_file(download_url, dest_path, session, progress_callback)
         
     except Exception as e:
-        print(f"  [CDRomance] Erreur téléchargement: {e}")
+        print(f"  [CDRomance] Erreur tÃ©lÃ©chargement: {e}")
         return False
 
 def resolve_vimm_game(game_info: dict, system_slug: str, session: requests.Session) -> dict | None:
@@ -3709,7 +3654,7 @@ def resolve_vimm_game(game_info: dict, system_slug: str, session: requests.Sessi
             if resp.status_code != 200: continue
             
             soup = BeautifulSoup(resp.text, 'html.parser')
-            # Les résultats sont dans des <a> à l'intérieur d'un tableau
+            # Les rÃ©sultats sont dans des <a> Ã  l'intÃ©rieur d'un tableau
             for a in soup.find_all('a', href=True):
                 if '/vault/' in a['href']:
                     title = a.get_text().strip().lower()
@@ -3725,16 +3670,16 @@ def resolve_vimm_game(game_info: dict, system_slug: str, session: requests.Sessi
     return None
 
 def download_vimm(page_url: str, dest_path: str, session: requests.Session, progress_callback=None) -> bool:
-    """Télécharge un jeu depuis Vimm's Lair en simulant le formulaire POST."""
+    """TÃ©lÃ©charge un jeu depuis Vimm's Lair en simulant le formulaire POST."""
     try:
-        # Étape 1 : Aller sur la page du jeu pour avoir les cookies et le mediaId
+        # Ã‰tape 1 : Aller sur la page du jeu pour avoir les cookies et le mediaId
         session.headers.update({'Referer': VIMM_BASE})
         resp = session.get(page_url, timeout=30)
         soup = BeautifulSoup(resp.text, 'html.parser')
         
         form = soup.find('form', id='dl_form')
         if not form:
-            print("  [Vimm] Formulaire de téléchargement introuvable")
+            print("  [Vimm] Formulaire de tÃ©lÃ©chargement introuvable")
             return False
             
         media_id_input = form.find('input', {'name': 'mediaId'})
@@ -3746,8 +3691,8 @@ def download_vimm(page_url: str, dest_path: str, session: requests.Session, prog
         action = form.get('action')
         download_url = urljoin(page_url, action)
         
-        # Étape 2 : POST pour déclencher le téléchargement
-        # Note: Vimm est très strict sur le Referer
+        # Ã‰tape 2 : POST pour dÃ©clencher le tÃ©lÃ©chargement
+        # Note: Vimm est trÃ¨s strict sur le Referer
         session.headers.update({'Referer': page_url})
         payload = {'mediaId': media_id}
         
@@ -3756,7 +3701,7 @@ def download_vimm(page_url: str, dest_path: str, session: requests.Session, prog
         with session.post(download_url, data=payload, stream=True, timeout=120) as r:
             r.raise_for_status()
             
-            # Récupérer le nom de fichier
+            # RÃ©cupÃ©rer le nom de fichier
             cd = r.headers.get('content-disposition', '')
             match = re.search(r'filename="?([^";]+)"?', cd)
             if match:
@@ -3777,15 +3722,15 @@ def download_vimm(page_url: str, dest_path: str, session: requests.Session, prog
             return True
             
     except Exception as e:
-        print(f"  [Vimm] Erreur téléchargement: {e}")
+        print(f"  [Vimm] Erreur tÃ©lÃ©chargement: {e}")
         return False
 
 
 RETRO_GAME_SETS_DB = {}
-RETRO_GAME_SETS_CACHE_DIR = APP_ROOT / 'rom_db_shards' / 'retrogamesets'
+RETRO_GAME_SETS_CACHE_DIR = APP_ROOT / 'db' / 'retrogamesets'
 
 def load_retrogamesets_database(system_slug: str, session: requests.Session) -> list:
-    """Charge la base de données JSON pour un système spécifique depuis RetroGameSets."""
+    """Charge la base de donnÃ©es JSON pour un systÃ¨me spÃ©cifique depuis RetroGameSets."""
     global RETRO_GAME_SETS_DB
     
     if system_slug in RETRO_GAME_SETS_DB:
@@ -3794,9 +3739,9 @@ def load_retrogamesets_database(system_slug: str, session: requests.Session) -> 
     os.makedirs(RETRO_GAME_SETS_CACHE_DIR, exist_ok=True)
     json_path = RETRO_GAME_SETS_CACHE_DIR / f"{system_slug}.json"
     
-    # Si le fichier n'existe pas, on télécharge le games.zip complet
+    # Si le fichier n'existe pas, on tÃ©lÃ©charge le games.zip complet
     if not json_path.exists():
-        print(f"  [RetroGameSets] Téléchargement de la base de données...")
+        print(f"  [RetroGameSets] TÃ©lÃ©chargement de la base de donnÃ©es...")
         try:
             zip_url = urljoin(RETRO_GAME_SETS_BASE, 'softs/games.zip')
             resp = session.get(zip_url, timeout=60)
@@ -3812,13 +3757,13 @@ def load_retrogamesets_database(system_slug: str, session: requests.Session) -> 
                             with open(RETRO_GAME_SETS_CACHE_DIR / filename, 'wb') as f:
                                 f.write(z.read(member))
             else:
-                print(f"  [RetroGameSets] Erreur téléchargement games.zip: {resp.status_code}")
+                print(f"  [RetroGameSets] Erreur tÃ©lÃ©chargement games.zip: {resp.status_code}")
                 return []
         except Exception as e:
-            print(f"  [RetroGameSets] Erreur lors de la mise à jour de la base: {e}")
+            print(f"  [RetroGameSets] Erreur lors de la mise Ã  jour de la base: {e}")
             return []
 
-    # Charger le JSON si présent
+    # Charger le JSON si prÃ©sent
     if json_path.exists():
         try:
             with open(json_path, 'r', encoding='utf-8') as f:
@@ -3837,7 +3782,7 @@ def resolve_retrogamesets_game(game_info: dict, system_slug: str, session: reque
     db = load_retrogamesets_database(system_slug, session)
     if not db: return None
     
-    # Créer un index par nom pour recherche rapide
+    # CrÃ©er un index par nom pour recherche rapide
     if not hasattr(resolve_retrogamesets_game, '_indices'):
         resolve_retrogamesets_game._indices = {}
         
@@ -3846,12 +3791,12 @@ def resolve_retrogamesets_game(game_info: dict, system_slug: str, session: reque
         for entry in db:
             if not isinstance(entry, list) or len(entry) < 2:
                 continue
-            # L'entrée est [path, url, size]
+            # L'entrÃ©e est [path, url, size]
             # path: "Nintendo - Game Boy/Tetris (World) (Rev A).zip"
             path = entry[0]
             url = entry[1]
             
-            # Extraire le nom du fichier sans extension et sans le préfixe dossier
+            # Extraire le nom du fichier sans extension et sans le prÃ©fixe dossier
             filename = os.path.basename(path)
             name_no_ext = strip_rom_extension(filename)
             index[name_no_ext.lower()] = {
@@ -3893,14 +3838,14 @@ def list_myrient_directory(myrient_url: str, session: requests.Session) -> set:
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, 'html.parser')
 
-            # Chercher spécifiquement dans le tableau de listing
+            # Chercher spÃ©cifiquement dans le tableau de listing
             table = soup.find('table', id='list')
             if table:
                 for link in table.find_all('a', href=True):
                     href = link.get('href', '')
                     text = link.get_text().strip()
 
-                    # Filtrer les liens de navigation et éléments non-fichiers
+                    # Filtrer les liens de navigation et Ã©lÃ©ments non-fichiers
                     if not href or href.startswith('?') or href.startswith('.'):
                         continue
                     if text in ['Parent directory/', './', '../', '']:
@@ -3973,14 +3918,14 @@ def match_myrient_files(missing_games: list, myrient_files: set, source_name: st
 def search_all_sources_legacy(missing_games: list, sources: list, session: requests.Session, system_name: str = None) -> tuple:
     """
     Search for missing games across all configured sources.
-    Utilise la base de données locale (74,189 URLs) + recherche directe + nouveaux scrapers.
+    Utilise la base de donnÃ©es locale (74,189 URLs) + recherche directe + nouveaux scrapers.
     Returns (found_games: list, not_found_games: list)
     """
     print("\n" + "=" * 70)
-    print(f"Recherche des jeux manquants pour le système: {system_name or 'Inconnu'}")
+    print(f"Recherche des jeux manquants pour le systÃ¨me: {system_name or 'Inconnu'}")
     print("=" * 70)
     
-    # Charger la base de données
+    # Charger la base de donnÃ©es
     effective_profile = finalize_dat_profile(dat_profile) if dat_profile else None
     if effective_profile and effective_profile.get('system_name'):
         system_name = effective_profile.get('system_name')
@@ -3995,14 +3940,14 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
     all_found = []
     still_missing = missing_games.copy()
     
-    # Mappings pour ce système
+    # Mappings pour ce systÃ¨me
     mappings = SYSTEM_MAPPINGS.get(system_name, {}) if system_name else {}
     
     # ========================================================================
-    # ÉTAPE 1 : Recherche dans la base de données locale (74,189 URLs)
+    # Ã‰TAPE 1 : Recherche dans la base de donnÃ©es locale (74,189 URLs)
     # ========================================================================
     print(f"\n{'=' * 70}")
-    print("ÉTAPE 1: Recherche dans la base de données locale")
+    print("Ã‰TAPE 1: Recherche dans la base de donnÃ©es locale")
     print(f"{'=' * 70}")
     
     found_in_db = []
@@ -4015,9 +3960,9 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
         # Recherche par nom dans la base
         db_results, search_hint = search_database_for_game(game_info)
         
-        # Si pas trouvé par nom, essayer par MD5
+        # Si pas trouvÃ© par nom, essayer par MD5
         if db_results:
-            # Prendre le premier résultat (priorité: archive.org > myrient > 1fichier)
+            # Prendre le premier rÃ©sultat (prioritÃ©: archive.org > myrient > 1fichier)
             best_result = None
             for result in db_results:
                 host = result.get('host', '')
@@ -4042,11 +3987,11 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
     all_found.extend(found_in_db)
     still_missing = not_in_db
     
-    print(f"\n  Trouvé dans la base: {len(found_in_db)} jeux")
-    print(f"  Non trouvé dans la base: {len(still_missing)} jeux")
+    print(f"\n  TrouvÃ© dans la base: {len(found_in_db)} jeux")
+    print(f"  Non trouvÃ© dans la base: {len(still_missing)} jeux")
     
     # ========================================================================
-    # ÉTAPE 2 : Recherche via les nouveaux scrapers (EdgeEmu / PlanetEmu)
+    # Ã‰TAPE 2 : Recherche via les nouveaux scrapers (EdgeEmu / PlanetEmu)
     # ========================================================================
     if still_missing and system_name:
         for source in sources:
@@ -4063,7 +4008,7 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
                             game_info['source'] = 'EdgeEmu'
                             game_info['download_filename'] = edge_match['filename']
                             newly_found.append(game_info)
-                            print(f"  [EdgeEmu] {game_info['game_name']} trouvé")
+                            print(f"  [EdgeEmu] {game_info['game_name']} trouvÃ©")
                         else:
                             remaining.append(game_info)
                     all_found.extend(newly_found)
@@ -4084,7 +4029,7 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
                                 game_info['source'] = 'PlanetEmu'
                                 game_info['download_filename'] = f"{game_info['game_name']}.zip"
                                 newly_found.append(game_info)
-                                print(f"  [PlanetEmu] {game_info['game_name']} trouvé")
+                                print(f"  [PlanetEmu] {game_info['game_name']} trouvÃ©")
                             else:
                                 remaining.append(game_info)
                         all_found.extend(newly_found)
@@ -4102,7 +4047,7 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
                         game_info['source'] = 'CDRomance'
                         game_info['download_filename'] = f"{game_info['game_name']}.zip"
                         newly_found.append(game_info)
-                        print(f"  [CDRomance] {game_info['game_name']} trouvé")
+                        print(f"  [CDRomance] {game_info['game_name']} trouvÃ©")
                     else:
                         remaining.append(game_info)
                 all_found.extend(newly_found)
@@ -4122,7 +4067,7 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
                             game_info['source'] = 'Vimm\'s Lair'
                             game_info['download_filename'] = f"{game_info['game_name']}.zip"
                             newly_found.append(game_info)
-                            print(f"  [Vimm] {game_info['game_name']} trouvé")
+                            print(f"  [Vimm] {game_info['game_name']} trouvÃ©")
                         else:
                             remaining.append(game_info)
                     all_found.extend(newly_found)
@@ -4141,13 +4086,13 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
                             game_info['source'] = 'RetroGameSets'
                             game_info['download_filename'] = f"{game_info['game_name']}.zip"
                             newly_found.append(game_info)
-                            print(f"  [RetroGameSets] {game_info['game_name']} trouvé")
+                            print(f"  [RetroGameSets] {game_info['game_name']} trouvÃ©")
                         else:
                             remaining.append(game_info)
                     all_found.extend(newly_found)
                     still_missing = remaining
 
-    # ÉTAPE 3 : Recherche directe sur Myrient (pour les non-trouvés)
+    # Ã‰TAPE 3 : Recherche directe sur Myrient (pour les non-trouvÃ©s)
     # ========================================================================
     myrient_sources = [s for s in sources if s['type'] == 'myrient' and s.get('enabled', True)]
     
@@ -4155,7 +4100,7 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
         for source in myrient_sources:
             print(f"\n--- Recherche directe sur {source['name']} ---")
             
-            # Essayer de deviner le dossier Myrient si c'est un lien générique
+            # Essayer de deviner le dossier Myrient si c'est un lien gÃ©nÃ©rique
             base_url = source['base_url']
             if base_url.endswith('/No-Intro/') and system_name:
                 base_url = f"{base_url}{quote(system_name)}/"
@@ -4182,15 +4127,15 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
         all_found.extend(found)
     
     # ========================================================================
-    # RÉSUMÉ
+    # RÃ‰SUMÃ‰
     # ========================================================================
     print(f"\n{'=' * 70}")
-    print(f"RÉSUMÉ DE LA RECHERCHE")
+    print(f"RÃ‰SUMÃ‰ DE LA RECHERCHE")
     print(f"{'=' * 70}")
-    print(f"  Jeux trouvés (base locale): {len(found_in_db)}")
-    print(f"  Jeux trouvés (Myrient direct): {len(all_found) - len(found_in_db)}")
-    print(f"  Total trouvés: {len(all_found)}")
-    print(f"  Jeux non trouvés: {len(still_missing)}")
+    print(f"  Jeux trouvÃ©s (base locale): {len(found_in_db)}")
+    print(f"  Jeux trouvÃ©s (Myrient direct): {len(all_found) - len(found_in_db)}")
+    print(f"  Total trouvÃ©s: {len(all_found)}")
+    print(f"  Jeux non trouvÃ©s: {len(still_missing)}")
     print(f"{'=' * 70}")
     
     return all_found, still_missing
@@ -4210,7 +4155,7 @@ def search_all_sources(
     Returns (found_games: list, not_found_games: list)
     """
     print("\n" + "=" * 70)
-    print(f"Recherche des jeux manquants pour le systÃ¨me: {system_name or 'Inconnu'}")
+    print(f"Recherche des jeux manquants pour le systÃƒÂ¨me: {system_name or 'Inconnu'}")
     print("=" * 70)
 
     load_rom_database()
@@ -4230,10 +4175,10 @@ def search_all_sources(
     mappings = SYSTEM_MAPPINGS.get(system_name, {}) if system_name else {}
 
     # ========================================================================
-    # ÉTAPE 1 : Recherche dans la base de données locale (shards + fallback)
+    # Ã‰TAPE 1 : Recherche dans la base de donnÃ©es locale (shards + fallback)
     # ========================================================================
     print(f"\n{'=' * 70}")
-    print("ÉTAPE 1: Recherche dans la base de données locale (MD5 shards + fallback)")
+    print("Ã‰TAPE 1: Recherche dans la base de donnÃ©es locale (MD5 shards + fallback)")
     print(f"{'=' * 70}")
 
     not_in_db = []
@@ -4259,8 +4204,8 @@ def search_all_sources(
     all_found.extend(found_in_db)
     still_missing = not_in_db
 
-    print(f"\n  TrouvÃ© dans la base: {len(found_in_db)} jeux")
-    print(f"  Non trouvÃ© dans la base: {len(still_missing)} jeux")
+    print(f"\n  TrouvÃƒÂ© dans la base: {len(found_in_db)} jeux")
+    print(f"  Non trouvÃƒÂ© dans la base: {len(still_missing)} jeux")
 
     # ========================================================================
     # ETAPE 2 : Recherche directe sur les sources DDL type listing HTML
@@ -4318,7 +4263,7 @@ def search_all_sources(
     print(f"  Restants apres DDL direct: {len(still_missing)} jeux")
 
     # ========================================================================
-    # ÉTAPE 3 : Recherche via scrapers secondaires
+    # Ã‰TAPE 3 : Recherche via scrapers secondaires
     # ========================================================================
     if still_missing and system_name:
         for source in sources:
@@ -4341,7 +4286,7 @@ def search_all_sources(
                                 game_info['source'] = 'EdgeEmu'
                                 game_info['download_filename'] = edge_match['filename']
                                 newly_found.append(game_info)
-                                print(f"  [EdgeEmu] {game_info['game_name']} trouvÃ©")
+                                print(f"  [EdgeEmu] {game_info['game_name']} trouvÃƒÂ©")
                             else:
                                 remaining.append(game_info)
                         all_found.extend(newly_found)
@@ -4362,7 +4307,7 @@ def search_all_sources(
                                 game_info['source'] = 'PlanetEmu'
                                 game_info['download_filename'] = f"{game_info['game_name']}.zip"
                                 newly_found.append(game_info)
-                                print(f"  [PlanetEmu] {game_info['game_name']} trouvÃ©")
+                                print(f"  [PlanetEmu] {game_info['game_name']} trouvÃƒÂ©")
                             else:
                                 remaining.append(game_info)
                         all_found.extend(newly_found)
@@ -4388,7 +4333,7 @@ def search_all_sources(
                                 game_info['source'] = 'LoLROMs'
                                 game_info['download_filename'] = matched['filename']
                                 newly_found.append(game_info)
-                                print(f"  [LoLROMs] {game_info['game_name']} trouvé")
+                                print(f"  [LoLROMs] {game_info['game_name']} trouvÃ©")
                             else:
                                 remaining.append(game_info)
 
@@ -4407,7 +4352,7 @@ def search_all_sources(
                         game_info['source'] = 'CDRomance'
                         game_info['download_filename'] = f"{game_info['game_name']}.zip"
                         newly_found.append(game_info)
-                        print(f"  [CDRomance] {game_info['game_name']} trouvé")
+                        print(f"  [CDRomance] {game_info['game_name']} trouvÃ©")
                     else:
                         remaining.append(game_info)
                 all_found.extend(newly_found)
@@ -4427,7 +4372,7 @@ def search_all_sources(
                             game_info['source'] = 'Vimm\'s Lair'
                             game_info['download_filename'] = f"{game_info['game_name']}.zip"
                             newly_found.append(game_info)
-                            print(f"  [Vimm] {game_info['game_name']} trouvé")
+                            print(f"  [Vimm] {game_info['game_name']} trouvÃ©")
                         else:
                             remaining.append(game_info)
                     all_found.extend(newly_found)
@@ -4446,7 +4391,7 @@ def search_all_sources(
                             game_info['source'] = 'RetroGameSets'
                             game_info['download_filename'] = f"{game_info['game_name']}.zip"
                             newly_found.append(game_info)
-                            print(f"  [RetroGameSets] {game_info['game_name']} trouvé")
+                            print(f"  [RetroGameSets] {game_info['game_name']} trouvÃ©")
                         else:
                             remaining.append(game_info)
                     all_found.extend(newly_found)
@@ -4515,14 +4460,14 @@ def search_all_sources(
         all_found.extend(found)
 
     print(f"\n{'=' * 70}")
-    print("RÃ‰SUMÃ‰ DE LA RECHERCHE")
+    print("RÃƒâ€°SUMÃƒâ€° DE LA RECHERCHE")
     print(f"{'=' * 70}")
     print(f"  Jeux trouves (DDL direct): {len(direct_found)}")
     print(f"  Jeux trouves (base locale): {len(found_in_db)}")
     print(f"  Jeux trouves (Minerva torrent): {len(minerva_found)}")
     print(f"  Jeux trouves (archive.org dernier recours): {len(archive_found)}")
-    print(f"  Total trouvÃ©s: {len(all_found)}")
-    print(f"  Jeux non trouvÃ©s: {len(still_missing)}")
+    print(f"  Total trouvÃƒÂ©s: {len(all_found)}")
+    print(f"  Jeux non trouvÃƒÂ©s: {len(still_missing)}")
     print(f"{'=' * 70}")
 
     return all_found, still_missing
@@ -4659,7 +4604,7 @@ def download_file(url: str, dest_path: str, session: requests.Session, progress_
                 return True
 
         except Exception as e:
-            print(f"  Tentative {attempt + 1}/{max_retries} échouée: {e}")
+            print(f"  Tentative {attempt + 1}/{max_retries} Ã©chouÃ©e: {e}")
             if os.path.exists(dest_path):
                 try:
                     os.remove(dest_path)
@@ -4679,13 +4624,13 @@ def download_from_archive_org(identifier: str, filename: str, dest_path: str, pr
     
     for attempt in range(max_retries):
         try:
-            print(f"  Téléchargement depuis archive.org: {identifier}/{filename}")
+            print(f"  TÃ©lÃ©chargement depuis archive.org: {identifier}/{filename}")
             
             item = internetarchive.get_item(identifier)
             file_obj = item.get_file(filename)
             
             if file_obj is None:
-                print(f"  Fichier non trouvé: {filename}")
+                print(f"  Fichier non trouvÃ©: {filename}")
                 return False
             
             # Download the file
@@ -4712,11 +4657,11 @@ def download_from_archive_org(identifier: str, filename: str, dest_path: str, pr
             if progress_callback:
                 progress_callback(100.0)
                 
-            print(f"  Téléchargement terminé: {dest_path}")
+            print(f"  TÃ©lÃ©chargement terminÃ©: {dest_path}")
             return True
             
         except Exception as e:
-            print(f"  Tentative {attempt + 1}/{max_retries} échouée: {e}")
+            print(f"  Tentative {attempt + 1}/{max_retries} Ã©chouÃ©e: {e}")
             if os.path.exists(dest_path):
                 try:
                     os.remove(dest_path)
@@ -4734,13 +4679,13 @@ def download_from_archive_org(identifier: str, filename: str, dest_path: str, pr
 
     for attempt in range(max_retries):
         try:
-            print(f"  TÃ©lÃ©chargement depuis archive.org: {identifier}/{filename}")
+            print(f"  TÃƒÂ©lÃƒÂ©chargement depuis archive.org: {identifier}/{filename}")
 
             item = internetarchive.get_item(identifier)
             file_obj = item.get_file(filename)
 
             if file_obj is None:
-                print(f"  Fichier non trouvÃ©: {filename}")
+                print(f"  Fichier non trouvÃƒÂ©: {filename}")
                 return False
 
             response = file_obj.download()
@@ -4762,11 +4707,11 @@ def download_from_archive_org(identifier: str, filename: str, dest_path: str, pr
             if progress_callback:
                 progress_callback(100.0)
 
-            print(f"  TÃ©lÃ©chargement terminÃ©: {dest_path}")
+            print(f"  TÃƒÂ©lÃƒÂ©chargement terminÃƒÂ©: {dest_path}")
             return True
 
         except Exception as e:
-            print(f"  [WARN] Tentative internetarchive {attempt + 1}/{max_retries} Ã©chouÃ©e: {e}")
+            print(f"  [WARN] Tentative internetarchive {attempt + 1}/{max_retries} ÃƒÂ©chouÃƒÂ©e: {e}")
             if os.path.exists(dest_path):
                 try:
                     os.remove(dest_path)
@@ -4803,10 +4748,10 @@ def download_from_archive_org(identifier: str, filename: str, dest_path: str, pr
                     progress_callback(100.0)
 
                 if os.path.exists(dest_path) and os.path.getsize(dest_path) > 0:
-                    print(f"  TÃ©lÃ©chargement HTTP archive.org terminÃ©: {dest_path}")
+                    print(f"  TÃƒÂ©lÃƒÂ©chargement HTTP archive.org terminÃƒÂ©: {dest_path}")
                     return True
             except Exception as http_error:
-                print(f"  [WARN] Fallback HTTP archive.org Ã©chouÃ©: {http_error}")
+                print(f"  [WARN] Fallback HTTP archive.org ÃƒÂ©chouÃƒÂ©: {http_error}")
                 if os.path.exists(dest_path):
                     try:
                         os.remove(dest_path)
@@ -4857,7 +4802,7 @@ def interactive_mode():
 
     dat_file = get_input("Chemin vers le fichier DAT: ")
     rom_folder = get_input("Chemin vers le dossier des ROMs: ")
-    myrient_url = get_input("URL source optionnelle (laisser vide pour l'auto Minerva): ")
+    myrient_url = ''
     print()
     
     tosort_input = get_input("Deplacer les ROMs non presentes dans le DAT vers ToSort ? (o/n): ")
@@ -5451,7 +5396,7 @@ def download_missing_games_sequentially(
 
 
 def build_custom_source(source_url: str) -> dict:
-    """Détecte et construit une source personnalisée Minerva ou legacy."""
+    """DÃ©tecte et construit une source personnalisÃ©e Minerva ou legacy."""
     normalized_url = (source_url or '').strip()
     lower_url = normalized_url.lower()
 
@@ -5463,7 +5408,7 @@ def build_custom_source(source_url: str) -> dict:
                 'base_url': normalized_url if normalized_url.endswith('/') else normalized_url + '/',
                 'type': 'minerva',
                 'enabled': True,
-                'description': 'Source personnalisée Minerva',
+                'description': 'Source personnalisÃ©e Minerva',
                 'collection': 'No-Intro',
                 'minerva_path_mode': 'single',
                 'scan_depth': 0,
@@ -5478,7 +5423,7 @@ def build_custom_source(source_url: str) -> dict:
                 'base_url': normalized_url if normalized_url.endswith('/') else normalized_url + '/',
                 'type': 'minerva',
                 'enabled': True,
-                'description': 'Source personnalisée Minerva',
+                'description': 'Source personnalisÃ©e Minerva',
                 'collection': 'Redump',
                 'minerva_path_mode': 'single',
                 'scan_depth': 0,
@@ -5493,7 +5438,7 @@ def build_custom_source(source_url: str) -> dict:
                 'base_url': normalized_url if normalized_url.endswith('/') else normalized_url + '/',
                 'type': 'minerva',
                 'enabled': True,
-                'description': 'Source personnalisée Minerva',
+                'description': 'Source personnalisÃ©e Minerva',
                 'collection': 'TOSEC',
                 'minerva_path_mode': 'split',
                 'scan_depth': 2,
@@ -5527,14 +5472,14 @@ def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_ru
     # Find missing games
     missing_games = find_missing_games(dat_games, local_roms, local_roms_normalized, local_game_names, signature_index)
 
-    # Détection du système
+    # DÃ©tection du systÃ¨me
     system_name = dat_profile.get('system_name') or detect_system_name(dat_file)
-    print(f"Système détecté : {system_name}")
+    print(f"SystÃ¨me dÃ©tectÃ© : {system_name}")
 
     print(f"DAT detecte : {describe_dat_profile(dat_profile)}")
 
     if not missing_games:
-        print("\nAucun jeu manquant trouvé !")
+        print("\nAucun jeu manquant trouvÃ© !")
     else:
         # Use custom sources if provided, otherwise use default sources
         sources = custom_sources if custom_sources else get_default_sources().copy()
@@ -5549,7 +5494,7 @@ def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_ru
         # Display games not found
         if not_available:
             print("\n" + "=" * 60)
-            print("Jeux NON trouvés sur aucune source:")
+            print("Jeux NON trouvÃ©s sur aucune source:")
             print("=" * 60)
             for game_info in not_available:
                 print(f"  - {game_info['game_name']}")
@@ -5557,7 +5502,7 @@ def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_ru
 
         if to_download:
             # Download
-            print(f"\n{'Téléchargement' if not dry_run else 'Simulation'} de {len(to_download)} jeu(x)...")
+            print(f"\n{'TÃ©lÃ©chargement' if not dry_run else 'Simulation'} de {len(to_download)} jeu(x)...")
 
             downloaded = 0
             failed = 0
@@ -5570,19 +5515,19 @@ def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_ru
                 print(f"\n[{i}/{len(to_download)}] {game_name} [{source}]")
 
                 if limit and downloaded >= limit:
-                    print("  Ignoré (limite atteinte)")
+                    print("  IgnorÃ© (limite atteinte)")
                     skipped += 1
                     continue
 
                 # Check if file already exists (with better duplicate detection)
                 exists, existing_path = file_exists_in_folder(output_folder, filename)
                 if exists:
-                    print(f"  Déjà présent: {os.path.basename(existing_path)}")
+                    print(f"  DÃ©jÃ  prÃ©sent: {os.path.basename(existing_path)}")
                     skipped += 1
                     continue
 
                 if dry_run:
-                    print(f"  Serait téléchargé vers: {output_folder}")
+                    print(f"  Serait tÃ©lÃ©chargÃ© vers: {output_folder}")
                     continue
 
                 # Download based on source
@@ -5628,26 +5573,26 @@ def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_ru
                     success = download_from_minerva_torrent(torrent_url, filename, dest_path)
 
                 elif source in ['myrient', 'Myrient', 'Myrient No-Intro', 'Myrient Redump', 'Myrient TOSEC', 'Myrient Custom'] and download_url:
-                    # Télécharger depuis Myrient
+                    # TÃ©lÃ©charger depuis Myrient
                     print(f"  URL: {download_url[:80]}...")
                     success = download_file(download_url, dest_path, session)
 
                 elif source == 'database' and download_url:
-                    # URL directe depuis la base de données
+                    # URL directe depuis la base de donnÃ©es
                     print(f"  URL: {download_url[:80]}...")
 
-                    # Vérifier si c'est un lien 1fichier
+                    # VÃ©rifier si c'est un lien 1fichier
                     if '1fichier.com' in download_url:
                         api_keys = load_api_keys()
                         success = download_from_premium_source('1fichier', download_url, dest_path, api_keys)
                     elif 'archive.org' in download_url:
-                        # Télécharger depuis archive.org
+                        # TÃ©lÃ©charger depuis archive.org
                         success = download_file(download_url, dest_path, session)
                     elif 'myrient' in download_url:
-                        # Télécharger depuis Myrient
+                        # TÃ©lÃ©charger depuis Myrient
                         success = download_file(download_url, dest_path, session)
                     else:
-                        # URL générique
+                        # URL gÃ©nÃ©rique
                         success = download_file(download_url, dest_path, session)
 
                 else:
@@ -5659,7 +5604,7 @@ def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_ru
                     success = download_file(download_url, dest_path, session)
 
                 if success:
-                    print(f"  Téléchargé: {filename}")
+                    print(f"  TÃ©lÃ©chargÃ©: {filename}")
                     downloaded += 1
                     time.sleep(0.5)
                 else:
@@ -5667,17 +5612,17 @@ def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_ru
 
             # Summary
             print("\n" + "=" * 60)
-            print("Résumé:")
-            print(f"  Téléchargés: {downloaded}")
-            print(f"  Échecs: {failed}")
-            print(f"  Ignorés: {skipped}")
+            print("RÃ©sumÃ©:")
+            print(f"  TÃ©lÃ©chargÃ©s: {downloaded}")
+            print(f"  Ã‰checs: {failed}")
+            print(f"  IgnorÃ©s: {skipped}")
             if dry_run:
-                print("\n(Simulation - aucun fichier téléchargé)")
+                print("\n(Simulation - aucun fichier tÃ©lÃ©chargÃ©)")
 
     # Move files not in DAT to ToSort
     if move_to_tosort and missing_games:
         print("\n" + "=" * 60)
-        print("Recherche des fichiers à déplacer vers ToSort...")
+        print("Recherche des fichiers Ã  dÃ©placer vers ToSort...")
         print("=" * 60)
         
         # Determine ToSort folder (in parent of rom_folder)
@@ -5686,13 +5631,13 @@ def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_ru
         files_to_move = find_roms_not_in_dat(dat_games, local_roms, local_roms_normalized, rom_folder)
         
         if files_to_move:
-            print(f"\n{len(files_to_move)} fichiers à déplacer vers: {tosort_folder}")
+            print(f"\n{len(files_to_move)} fichiers Ã  dÃ©placer vers: {tosort_folder}")
             moved, failed = move_files_to_tosort(files_to_move, rom_folder, tosort_folder, dry_run)
-            print(f"\nRésumé ToSort:")
-            print(f"  Déplacés: {moved}")
-            print(f"  Échecs: {failed}")
+            print(f"\nRÃ©sumÃ© ToSort:")
+            print(f"  DÃ©placÃ©s: {moved}")
+            print(f"  Ã‰checs: {failed}")
         else:
-            print("\nAucun fichier à déplacer.")
+            print("\nAucun fichier Ã  dÃ©placer.")
 
 
 def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limit,
@@ -5719,10 +5664,10 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
     torrentzip_summary = {'repacked': 0, 'skipped': 0, 'failed': 0, 'deleted': 0}
 
     system_name = dat_profile.get('system_name') or detect_system_name(dat_file)
-    print(f"SystÃ¨me dÃ©tectÃ© : {system_name}")
+    print(f"SystÃƒÂ¨me dÃƒÂ©tectÃƒÂ© : {system_name}")
 
     if not missing_games:
-        print("\nAucun jeu manquant trouvÃ© !")
+        print("\nAucun jeu manquant trouvÃƒÂ© !")
     else:
         sources = [source.copy() for source in (custom_sources if custom_sources else get_default_sources())]
 
@@ -5757,14 +5702,14 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
 
         if not_available:
             print("\n" + "=" * 60)
-            print("Jeux NON trouvÃ©s sur aucune source:")
+            print("Jeux NON trouvÃƒÂ©s sur aucune source:")
             print("=" * 60)
             for game_info in not_available:
                 print(f"  - {game_info['game_name']}")
             print()
 
         if False and to_download:
-            print(f"\n{'TÃ©lÃ©chargement' if not dry_run else 'Simulation'} de {len(to_download)} jeu(x)...")
+            print(f"\n{'TÃƒÂ©lÃƒÂ©chargement' if not dry_run else 'Simulation'} de {len(to_download)} jeu(x)...")
 
             downloaded = 0
             failed = 0
@@ -5778,7 +5723,7 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
                 print(f"\n[{i}/{len(to_download)}] {game_name} [{source}]")
 
                 if limit and downloaded >= limit:
-                    print("  IgnorÃ© (limite atteinte)")
+                    print("  IgnorÃƒÂ© (limite atteinte)")
                     skipped += 1
                     skipped_items.append(game_info.copy())
                     continue
@@ -5812,12 +5757,12 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
                 continue
 
             print("\n" + "=" * 60)
-            print("RÃ©sumÃ©:")
-            print(f"  TÃ©lÃ©chargÃ©s: {downloaded}")
-            print(f"  Ã‰checs: {failed}")
-            print(f"  IgnorÃ©s: {skipped}")
+            print("RÃƒÂ©sumÃƒÂ©:")
+            print(f"  TÃƒÂ©lÃƒÂ©chargÃƒÂ©s: {downloaded}")
+            print(f"  Ãƒâ€°checs: {failed}")
+            print(f"  IgnorÃƒÂ©s: {skipped}")
             if dry_run:
-                print("\n(Simulation - aucun fichier tÃ©lÃ©chargÃ©)")
+                print("\n(Simulation - aucun fichier tÃƒÂ©lÃƒÂ©chargÃƒÂ©)")
 
     if missing_games:
         print("\n" + "=" * 60)
@@ -5831,7 +5776,7 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
 
     if move_to_tosort:
         print("\n" + "=" * 60)
-        print("Recherche des fichiers Ã  dÃ©placer vers ToSort...")
+        print("Recherche des fichiers ÃƒÂ  dÃƒÂ©placer vers ToSort...")
         print("=" * 60)
 
         tosort_folder = os.path.join(rom_folder, "ToSort")
@@ -5839,15 +5784,15 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
         files_to_move = find_roms_not_in_dat(dat_games, local_roms, local_roms_normalized, rom_folder)
 
         if files_to_move:
-            print(f"\n{len(files_to_move)} fichiers Ã  dÃ©placer vers: {tosort_folder}")
+            print(f"\n{len(files_to_move)} fichiers ÃƒÂ  dÃƒÂ©placer vers: {tosort_folder}")
             moved, failed = move_files_to_tosort(files_to_move, rom_folder, tosort_folder, dry_run)
             tosort_moved = moved
             tosort_failed = failed
-            print(f"\nRÃ©sumÃ© ToSort:")
-            print(f"  DÃ©placÃ©s: {moved}")
-            print(f"  Ã‰checs: {failed}")
+            print(f"\nRÃƒÂ©sumÃƒÂ© ToSort:")
+            print(f"  DÃƒÂ©placÃƒÂ©s: {moved}")
+            print(f"  Ãƒâ€°checs: {failed}")
         else:
-            print("\nAucun fichier Ã  dÃ©placer.")
+            print("\nAucun fichier ÃƒÂ  dÃƒÂ©placer.")
 
     if clean_torrentzip:
         print("\n" + "=" * 60)
@@ -5892,7 +5837,7 @@ def cli_mode(args):
     run_download(
         args.dat_file,
         args.rom_folder,
-        args.myrient_url,
+        '',
         output_folder,
         args.dry_run,
         args.limit,
@@ -5902,415 +5847,31 @@ def cli_mode(args):
     )
 
 
+def discover_dat_menu_items(dat_root: Path | None = None) -> list[dict]:
+    """Retourne les sections et DAT disponibles pour le menu GUI."""
+    dat_root = dat_root or (APP_ROOT / 'dat')
+    items = []
+    if not dat_root.exists():
+        return items
+
+    direct_files = sorted(dat_root.glob('*.dat'), key=lambda path: path.name.lower())
+    if direct_files:
+        items.append({'type': 'section', 'label': 'dat'})
+        items.extend({'type': 'file', 'label': path.name, 'path': str(path)} for path in direct_files)
+
+    for section in sorted((path for path in dat_root.iterdir() if path.is_dir()), key=lambda path: path.name.lower()):
+        files = sorted(section.rglob('*.dat'), key=lambda path: str(path.relative_to(section)).lower())
+        if not files:
+            continue
+        items.append({'type': 'section', 'label': section.name})
+        for path in files:
+            label = str(path.relative_to(section))
+            items.append({'type': 'file', 'label': label, 'path': str(path)})
+    return items
+
+
 # ============================================================================
 # Interface Graphique (GUI)
-# ============================================================================
-
-def legacy_gui_mode_unused():
-    """Run in GUI mode."""
-    try:
-        import tkinter as tk
-        from tkinter import ttk, filedialog, messagebox, scrolledtext
-        import threading
-        
-        # Try tkinterdnd2 for drag & drop.
-        tkinterdnd2 = import_optional_package('tkinterdnd2', auto_install=True)
-        HAS_DND = tkinterdnd2 is not None
-        
-        class ROMDownloaderGUI:
-            def __init__(self, root, use_dnd=False):
-                self.root = root
-                self.root.title("ROM Downloader")
-                self.root.geometry("900x750")
-                self.root.minsize(800, 650)
-
-                self.dat_file = tk.StringVar()
-                self.rom_folder = tk.StringVar()
-                self.myrient_url = tk.StringVar()
-                self.clean_torrentzip_var = tk.BooleanVar(value=False)
-                self.running = False
-                self.session = requests.Session()
-                self.session.headers.update({
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-                })
-
-                self.use_dnd = use_dnd
-                self.source_vars = {}  # Store checkbox variables for sources
-                self.setup_ui()
-                if self.use_dnd:
-                    self.setup_drag_drop()
-
-            def setup_ui(self):
-                main_frame = ttk.Frame(self.root, padding="10")
-                main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
-                self.root.columnconfigure(0, weight=1)
-                self.root.rowconfigure(0, weight=1)
-
-                title_label = ttk.Label(main_frame, text="ROM Downloader", font=('Segoe UI', 16, 'bold'))
-                title_label.grid(row=0, column=0, columnspan=3, pady=(0, 20))
-
-                ttk.Label(main_frame, text="Fichier DAT:").grid(row=1, column=0, sticky=tk.W, pady=5)
-                self.dat_entry = ttk.Entry(main_frame, textvariable=self.dat_file, width=80)
-                self.dat_entry.grid(row=1, column=1, sticky=(tk.W, tk.E), pady=5, padx=5)
-                if self.use_dnd:
-                    self.dat_entry.drop_target_register(tkinterdnd2.DND_FILES)
-                ttk.Button(main_frame, text="Parcourir...", command=self.browse_dat).grid(row=1, column=2, pady=5)
-
-                ttk.Label(main_frame, text="Dossier ROMs:").grid(row=2, column=0, sticky=tk.W, pady=5)
-                self.rom_entry = ttk.Entry(main_frame, textvariable=self.rom_folder, width=80)
-                self.rom_entry.grid(row=2, column=1, sticky=(tk.W, tk.E), pady=5, padx=5)
-                if self.use_dnd:
-                    self.rom_entry.drop_target_register(tkinterdnd2.DND_FILES)
-                ttk.Button(main_frame, text="Parcourir...", command=self.browse_rom).grid(row=2, column=2, pady=5)
-
-                ttk.Label(main_frame, text="URL source (optionnel):").grid(row=3, column=0, sticky=tk.W, pady=5)
-                self.url_entry = ttk.Entry(main_frame, textvariable=self.myrient_url, width=80)
-                self.url_entry.grid(row=3, column=1, sticky=(tk.W, tk.E), pady=5, padx=5)
-                ttk.Button(main_frame, text="Defaut GB", command=self.set_default_gb).grid(row=3, column=2, pady=5)
-
-                # Sources section
-                ttk.Separator(main_frame, orient='horizontal').grid(row=4, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=15)
-                ttk.Label(main_frame, text="Sources de téléchargement:", font=('Segoe UI', 11, 'bold')).grid(row=5, column=0, sticky=tk.W, pady=5)
-                
-                sources_frame = ttk.Frame(main_frame)
-                sources_frame.grid(row=6, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=5)
-                
-                ttk.Label(
-                    sources_frame,
-                    text="Toutes les sources disponibles sont utilisees automatiquement. archive.org passe en dernier recours.",
-                    wraplength=760
-                ).grid(row=0, column=0, sticky=tk.W, padx=10, pady=2)
-                ttk.Label(
-                    sources_frame,
-                    text=", ".join(source['name'] for source in get_default_sources()),
-                    wraplength=760
-                ).grid(row=1, column=0, sticky=tk.W, padx=10, pady=2)
-
-                self.move_to_tosort_var = tk.BooleanVar(value=False)
-                ttk.Checkbutton(main_frame, text="Deplacer les ROMs non presentes dans le DAT vers ToSort",
-                               variable=self.move_to_tosort_var).grid(row=7, column=0, columnspan=3, sticky=tk.W, pady=5)
-                ttk.Checkbutton(main_frame, text="Apres verification MD5, recompresser les archives en ZIP TorrentZip/RomVault",
-                               variable=self.clean_torrentzip_var).grid(row=8, column=0, columnspan=3, sticky=tk.W, pady=5)
-
-                ttk.Separator(main_frame, orient='horizontal').grid(row=9, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=20)
-
-                ttk.Label(main_frame, text="Progression:").grid(row=10, column=0, sticky=tk.W, pady=5)
-                self.progress_var = tk.DoubleVar()
-                self.progress_bar = ttk.Progressbar(main_frame, variable=self.progress_var, maximum=100, mode='determinate')
-                self.progress_bar.grid(row=10, column=1, columnspan=2, sticky=(tk.W, tk.E), pady=5)
-
-                self.status_var = tk.StringVar(value="Pret")
-                ttk.Label(main_frame, textvariable=self.status_var).grid(row=11, column=0, columnspan=3, pady=5)
-
-                ttk.Label(main_frame, text="Journal:").grid(row=12, column=0, sticky=tk.W, pady=5)
-                self.log_text = scrolledtext.ScrolledText(main_frame, height=20, width=100, wrap=tk.WORD)
-                self.log_text.grid(row=13, column=0, columnspan=3, sticky=(tk.W, tk.E, tk.N, tk.S), pady=5)
-                main_frame.columnconfigure(1, weight=1)
-                main_frame.rowconfigure(13, weight=1)
-
-                button_frame = ttk.Frame(main_frame)
-                button_frame.grid(row=14, column=0, columnspan=3, pady=10)
-
-                self.start_button = ttk.Button(button_frame, text="Demarrer", command=self.start_download, width=15)
-                self.start_button.grid(row=0, column=0, padx=5)
-
-                self.stop_button = ttk.Button(button_frame, text="Arreter", command=self.stop_download, width=15, state=tk.DISABLED)
-                self.stop_button.grid(row=0, column=1, padx=5)
-                
-                ttk.Button(button_frame, text="Quitter", command=self.root.quit, width=15).grid(row=0, column=2, padx=5)
-            
-            def setup_drag_drop(self):
-                if not self.use_dnd:
-                    return
-                self.dat_entry.dnd_bind('<<Drop>>', self.on_dat_drop)
-                self.rom_entry.dnd_bind('<<Drop>>', self.on_rom_drop)
-                self.url_entry.bind('<Control-v>', self.handle_paste)
-            
-            def on_dat_drop(self, event):
-                path = self.clean_path(event.data)
-                self.dat_file.set(path)
-                return event.action
-            
-            def on_rom_drop(self, event):
-                path = self.clean_path(event.data)
-                self.rom_folder.set(path)
-                return event.action
-            
-            def clean_path(self, path: str) -> str:
-                path = path.strip()
-                if path.startswith('"') and path.endswith('"'):
-                    path = path[1:-1]
-                if path.startswith('{') and path.endswith('}'):
-                    path = path[1:-1]
-                if '\n' in path:
-                    path = path.split('\n')[0]
-                return path.strip()
-            
-            def handle_paste(self, event):
-                self.root.after(10, lambda: self.myrient_url.set(self.myrient_url.get().strip()))
-            
-            def browse_dat(self):
-                filename = filedialog.askopenfilename(title="Selectionner le fichier DAT", filetypes=[("DAT files", "*.dat"), ("All files", "*.*")])
-                if filename:
-                    self.dat_file.set(filename)
-            
-            def browse_rom(self):
-                folder = filedialog.askdirectory(title="Selectionner le dossier des ROMs")
-                if folder:
-                    self.rom_folder.set(folder)
-            
-            def set_default_gb(self):
-                self.myrient_url.set(f"{MINERVA_BROWSE_BASE}No-Intro/Nintendo%20-%20Game%20Boy/")
-            
-            def log(self, message: str):
-                self.log_text.insert(tk.END, message + "\n")
-                self.log_text.see(tk.END)
-                self.root.update_idletasks()
-            
-            def validate_inputs(self) -> bool:
-                if not self.dat_file.get():
-                    messagebox.showerror("Erreur", "Veuillez selectionner un fichier DAT")
-                    return False
-                if not os.path.exists(self.dat_file.get()):
-                    messagebox.showerror("Erreur", f"Fichier DAT introuvable: {self.dat_file.get()}")
-                    return False
-                if not self.rom_folder.get():
-                    messagebox.showerror("Erreur", "Veuillez selectionner un dossier de ROMs")
-                    return False
-                if not os.path.exists(self.rom_folder.get()):
-                    messagebox.showerror("Erreur", f"Dossier ROMs introuvable: {self.rom_folder.get()}")
-                    return False
-                return True
-            
-            def start_download(self):
-                if not self.validate_inputs():
-                    return
-                self.running = True
-                self.start_button.config(state=tk.DISABLED)
-                self.stop_button.config(state=tk.NORMAL)
-                self.progress_var.set(0)
-                self.log_text.delete(1.0, tk.END)
-                thread = threading.Thread(target=self.run_download)
-                thread.daemon = True
-                thread.start()
-            
-            def stop_download(self):
-                self.running = False
-                self.status_var.set("Arret en cours...")
-            
-            def run_download(self):
-                try:
-                    dat_path = self.dat_file.get()
-                    rom_folder = self.rom_folder.get()
-                    myrient_url = self.myrient_url.get()
-                    output_folder = rom_folder
-
-                    sources = [source.copy() for source in get_default_sources()]
-                    
-                    # Add custom URL if provided
-                    if myrient_url and myrient_url not in [s['base_url'] for s in sources]:
-                        sources.insert(0, build_custom_source(myrient_url))
-
-                    self.log(f"Parsing DAT file: {dat_path}")
-                    self.status_var.set("Analyse du fichier DAT...")
-                    dat_games = parse_dat_file(dat_path)
-
-                    self.log(f"Scanning ROM folder: {rom_folder}")
-                    self.status_var.set("Analyse des ROMs locales...")
-                    local_roms, local_roms_normalized, local_game_names, signature_index = scan_local_roms(rom_folder, dat_games)
-
-                    self.status_var.set("Recherche des jeux manquants...")
-                    missing_games = find_missing_games(dat_games, local_roms, local_roms_normalized, local_game_names, signature_index)
-                    system_name = detect_system_name(dat_path)
-
-                    if not missing_games:
-                        self.log("Aucun jeu manquant trouve !")
-                        self.status_var.set("Termine - Aucun jeu manquant")
-                        messagebox.showinfo("Termine", "Tous les jeux du DAT sont presents localement !")
-                        self.reset_ui()
-                        return
-
-                    self.log(f"{len(missing_games)} jeux manquants trouves")
-                    self.log(f"Sources actives: {', '.join([s['name'] for s in sources])}")
-
-                    # Search across all sources
-                    self.status_var.set("Recherche sur les sources...")
-                    to_download, not_available = search_all_sources(missing_games, sources, self.session, system_name)
-
-                    if not_available:
-                        self.log(f"\n{len(not_available)} jeux NON disponibles sur aucune source:")
-                        for game in not_available[:20]:
-                            self.log(f"  - {game['game_name']}")
-                        if len(not_available) > 20:
-                            self.log(f"  ... et {len(not_available) - 20} autres")
-
-                    if not to_download:
-                        self.status_var.set("Aucun jeu trouve")
-                        messagebox.showwarning("Attention", "Aucun jeu manquant n'a ete trouve sur les sources.")
-                        self.reset_ui()
-                        return
-
-                    self.log(f"\nTelechargement de {len(to_download)} jeu(x)...")
-                    downloaded = 0
-                    failed = 0
-                    skipped = 0
-
-                    for i, game_info in enumerate(to_download, 1):
-                        if not self.running:
-                            self.log("Arrete par l'utilisateur")
-                            break
-
-                        game_name = game_info['game_name']
-                        source = game_info.get('source', 'unknown')
-                        filename = game_info.get('download_filename', game_name)
-
-                        self.log(f"\n[{i}/{len(to_download)}] {game_name} [{source}]")
-                        self.status_var.set(f"Telechargement: {i}/{len(to_download)} - {game_name[:50]}...")
-
-                        # Check if file already exists (with better duplicate detection)
-                        exists, existing_path = file_exists_in_folder(output_folder, filename)
-                        if exists:
-                            self.log(f"  Deja present: {os.path.basename(existing_path)}")
-                            skipped += 1
-                            continue
-
-                        def update_progress(p):
-                            self.progress_var.set(p)
-
-                        # Download based on source
-                        dest_path = os.path.join(output_folder, filename)
-                        success = False
-                        download_url = game_info.get('download_url')
-                        torrent_url = game_info.get('torrent_url')
-                        
-                        if source == 'archive_org':
-                            identifier = game_info.get('archive_org_identifier', '')
-                            if identifier and filename:
-                                success = download_from_archive_org(identifier, filename, dest_path, update_progress)
-                        elif source == 'EdgeEmu' and download_url:
-                            success = download_file(download_url, dest_path, self.session, update_progress)
-                        elif source == 'PlanetEmu':
-                            page_url = game_info.get('page_url')
-                            if page_url:
-                                success = download_planetemu(page_url, dest_path, self.session, update_progress)
-                        elif source == 'LoLROMs' and download_url:
-                            success = download_file(download_url, dest_path, get_lolroms_session(), update_progress)
-
-                        elif source == 'CDRomance':
-                            page_url = game_info.get('page_url')
-                            if page_url:
-                                success = download_cdromance(page_url, dest_path, get_cdromance_session(), update_progress)
-
-                        elif source == 'Vimm\'s Lair':
-                            page_url = game_info.get('page_url')
-                            if page_url:
-                                success = download_vimm(page_url, dest_path, get_vimm_session(), update_progress)
-
-                        elif source == 'RetroGameSets' and download_url:
-                            api_keys = load_api_keys()
-                            success = download_from_premium_source('1fichier', download_url, dest_path, api_keys, update_progress)
-
-                        elif source.startswith('Minerva') and torrent_url:
-
-                            success = download_from_minerva_torrent(torrent_url, filename, dest_path, update_progress)
-                        elif source == 'database' and download_url:
-                            if '1fichier.com' in download_url:
-                                api_keys = load_api_keys()
-                                success = download_from_premium_source('1fichier', download_url, dest_path, api_keys, update_progress)
-                            elif 'myrient' in download_url:
-                                self.log("  URL Myrient ignorée (source fermée)")
-                                success = False
-                            else:
-                                success = download_file(download_url, dest_path, self.session, update_progress)
-                        else:
-                            source_info = next((s for s in sources if s['name'] == source), None)
-                            base_url = source_info['base_url'] if source_info else myrient_url
-                            if base_url:
-                                download_url = f"{base_url.rstrip('/')}/{quote(filename)}"
-                                success = download_file(download_url, dest_path, self.session, update_progress)
-                        
-                        if success:
-                            self.log(f"  Telecharge: {filename}")
-                            downloaded += 1
-                            time.sleep(0.5)
-                        else:
-                            self.log("  Echec du telechargement")
-                            failed += 1
-                    
-                    self.log("\n" + "=" * 60)
-                    self.log(f"Resume:")
-                    self.log(f"  Telecharges: {downloaded}")
-                    self.log(f"  Echecs: {failed}")
-                    self.log(f"  Ignores: {skipped}")
-
-                    # Move files not in DAT to ToSort if checkbox is checked
-                    if self.move_to_tosort_var.get():
-                        self.log("\n" + "=" * 60)
-                        self.log("Recherche des fichiers a deplacer vers ToSort...")
-                        tosort_folder = os.path.join(rom_folder, "ToSort")
-                        
-                        files_to_move = find_roms_not_in_dat(dat_games, local_roms, local_roms_normalized, rom_folder)
-                        
-                        if files_to_move:
-                            self.log(f"{len(files_to_move)} fichiers a deplacer vers: {tosort_folder}")
-                            moved, move_failed = move_files_to_tosort(files_to_move, rom_folder, tosort_folder, False)
-                            self.log(f"\nResume ToSort:")
-                            self.log(f"  Deplaces: {moved}")
-                            self.log(f"  Echecs: {move_failed}")
-                        else:
-                            self.log("Aucun fichier a deplacer.")
-
-                    if self.clean_torrentzip_var.get():
-                        self.log("\nNettoyage des archives validees en ZIP TorrentZip/RomVault...")
-                        repack_verified_archives_to_torrentzip(
-                            dat_games,
-                            rom_folder,
-                            False,
-                            self.log,
-                            lambda message: self.status_var.set(message),
-                            is_running=lambda: self.running
-                        )
-
-                    self.status_var.set(f"Termine - {downloaded} telecharge(s)")
-                    messagebox.showinfo("Termine", f"Telechargement termine !\n\nTelecharges: {downloaded}\nEchecs: {failed}\nIgnores: {skipped}")
-                    
-                except Exception as e:
-                    self.log(f"ERREUR: {e}")
-                    self.status_var.set("Erreur")
-                    messagebox.showerror("Erreur", f"Une erreur est survenue:\n{e}")
-                
-                finally:
-                    self.reset_ui()
-            
-            def reset_ui(self):
-                self.running = False
-                self.start_button.config(state=tk.NORMAL)
-                self.stop_button.config(state=tk.DISABLED)
-                self.progress_var.set(0)
-        
-        # Start GUI
-        if HAS_DND:
-            root = tkinterdnd2.TkinterDnD.Tk()
-            app = ROMDownloaderGUI(root, use_dnd=True)
-        else:
-            root = tk.Tk()
-            app = ROMDownloaderGUI(root, use_dnd=False)
-            # Show info after a short delay so window is visible
-            root.after(500, lambda: messagebox.showinfo("Info", "Note: Le drag & drop n'est pas disponible.\nInstallez tkinterdnd2 pour l'activer:\n  pip install tkinterdnd2\n\nVous pouvez copier/coller les chemins avec Ctrl+V"))
-        
-        # Handle window close properly
-        root.protocol("WM_DELETE_WINDOW", root.quit)
-        root.mainloop()
-        root.destroy()
-
-    except Exception as e:
-        print(f"Erreur GUI: {e}")
-        print("Bascule vers le mode interactif...")
-        interactive_mode()
-
-
-# ============================================================================
-# Point d'entrée principal
 # ============================================================================
 
 def detect_system_name(dat_file_path: str) -> str:
@@ -6391,12 +5952,15 @@ def gui_mode():
                 self.running = False
                 self.dat_profile = finalize_dat_profile({'family': 'unknown', 'family_label': 'Inconnu', 'system_name': '', 'is_retool': False, 'retool_label': 'DAT brut'})
                 self.dat_file = tk.StringVar()
+                self.dat_display = tk.StringVar(value="Selectionner un DAT")
+                self.dat_dropdown = None
+                self.dat_menu_items = []
                 self.rom_folder = tk.StringVar()
                 self.myrient_url = tk.StringVar()
                 self.progress_var = tk.DoubleVar(value=0)
                 self.clean_torrentzip_var = tk.BooleanVar(value=False)
                 self.status_var = tk.StringVar(value="Pret a telecharger les jeux manquants")
-                self.hint_var = tk.StringVar(value="Laisse vide pour essayer les DDL, puis Minerva, puis archive.org en dernier recours.")
+                self.hint_var = tk.StringVar(value="Selectionne un DAT du dossier dat, puis un dossier de sortie.")
                 self.root.title("ROM Downloader")
                 self.root.geometry("1040x760")
                 self.root.minsize(940, 660)
@@ -6423,7 +5987,6 @@ def gui_mode():
                     self.rom_entry.drop_target_register(tkinterdnd2.DND_FILES)
                     self.dat_entry.dnd_bind('<<Drop>>', lambda e: self._drop(self.dat_file, e))
                     self.rom_entry.dnd_bind('<<Drop>>', lambda e: self._drop(self.rom_folder, e))
-                self.url_entry.bind('<Control-v>', lambda _e: self.root.after(10, lambda: self.myrient_url.set(self.myrient_url.get().strip())))
                 self.refresh_profile()
                 self.root.after_idle(self.fit_window_to_content)
 
@@ -6492,25 +6055,19 @@ def gui_mode():
 
                 fields = self.card(main, 1)
                 fields.columnconfigure(1, weight=1)
-                field_specs = [
-                    (0, "Fichier DAT", self.dat_file, self.browse_dat),
-                    (1, "Dossier de sortie", self.rom_folder, self.browse_rom),
-                    (2, "URL source (optionnelle)", self.myrient_url, None)
-                ]
-                for row, label, var, action in field_specs:
-                    tk.Label(fields, text=label, bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 11, 'bold')).grid(row=row, column=0, sticky='w', pady=(0 if row == 0 else 14, 0))
-                    widget = self.entry(fields, var)
-                    if action:
-                        widget.grid(row=row, column=1, sticky='ew', padx=(14, 12), pady=(0 if row == 0 else 14, 0), ipady=10)
-                        self.button(fields, "Parcourir", action, kind='ghost', width=12).grid(row=row, column=2, sticky='e', pady=(0 if row == 0 else 14, 0))
-                    else:
-                        widget.grid(row=row, column=1, columnspan=2, sticky='ew', padx=(14, 0), pady=(14, 0), ipady=10)
-                    if row == 0:
-                        self.dat_entry = widget
-                    elif row == 1:
-                        self.rom_entry = widget
-                    else:
-                        self.url_entry = widget
+                tk.Label(fields, text="Fichier DAT", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 11, 'bold')).grid(row=0, column=0, sticky='w')
+                self.dat_entry = tk.Button(fields, textvariable=self.dat_display, command=self.toggle_dat_dropdown, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, activebackground=UI_COLOR_GHOST_HOVER, activeforeground=UI_COLOR_TEXT_MAIN, relief='flat', bd=0, highlightthickness=1, highlightbackground=UI_COLOR_INPUT_BORDER, font=(self.font, 11), anchor='w', cursor='hand2')
+                self.dat_entry.grid(row=0, column=1, sticky='ew', padx=(14, 12), ipady=10)
+                self.button(fields, "Parcourir", self.browse_dat, kind='ghost', width=12).grid(row=0, column=2, sticky='e')
+                self.dat_dropdown_host = tk.Frame(fields, bg=UI_COLOR_CARD_BG)
+                self.dat_dropdown_host.grid(row=1, column=1, columnspan=2, sticky='ew', padx=(14, 0), pady=(4, 0))
+                self.dat_dropdown_host.grid_remove()
+                self.populate_dat_menu()
+
+                tk.Label(fields, text="Dossier de sortie", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 11, 'bold')).grid(row=2, column=0, sticky='w', pady=(14, 0))
+                self.rom_entry = self.entry(fields, self.rom_folder)
+                self.rom_entry.grid(row=2, column=1, sticky='ew', padx=(14, 12), pady=(14, 0), ipady=10)
+                self.button(fields, "Parcourir", self.browse_rom, kind='ghost', width=12).grid(row=2, column=2, sticky='e', pady=(14, 0))
                 tk.Label(fields, textvariable=self.hint_var, bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, justify='left', wraplength=860, font=(self.font, 9)).grid(row=3, column=0, columnspan=3, sticky='w', pady=(10, 0))
 
                 sources = self.card(main, 2)
@@ -6538,7 +6095,10 @@ def gui_mode():
                 self.button(actions, "Quitter", self.root.quit, width=12).grid(row=0, column=3)
 
             def _drop(self, variable, event):
-                variable.set(self._clean(event.data))
+                value = self._clean(event.data)
+                variable.set(value)
+                if variable is self.dat_file:
+                    self.dat_display.set(os.path.basename(value))
                 return event.action
 
             def _clean(self, path):
@@ -6555,10 +6115,116 @@ def gui_mode():
                 else:
                     self.root.after(0, callback)
 
+            def populate_dat_menu(self):
+                self.dat_menu_items = discover_dat_menu_items()
+
+            def close_dat_dropdown(self):
+                if self.dat_dropdown is None:
+                    return
+                for child in self.dat_dropdown_host.winfo_children():
+                    child.destroy()
+                self.dat_dropdown_host.grid_remove()
+                self.dat_dropdown = None
+
+            def toggle_dat_dropdown(self):
+                if self.dat_dropdown is not None:
+                    self.close_dat_dropdown()
+                    return
+                self.open_dat_dropdown()
+
+            def open_dat_dropdown(self):
+                self.close_dat_dropdown()
+                self.populate_dat_menu()
+                self.root.update_idletasks()
+
+                self.dat_dropdown_host.grid()
+                dropdown = self.dat_dropdown_host
+                self.dat_dropdown = dropdown
+
+                outer = tk.Frame(dropdown, bg=UI_COLOR_CARD_BORDER)
+                outer.pack(fill='both', expand=True)
+                canvas = tk.Canvas(outer, bg=UI_COLOR_INPUT_BG, highlightthickness=0, bd=0, height=320)
+                scrollbar = tk.Scrollbar(outer, orient='vertical', command=canvas.yview)
+                content = tk.Frame(canvas, bg=UI_COLOR_INPUT_BG)
+                canvas_window = canvas.create_window((0, 0), window=content, anchor='nw')
+                canvas.configure(yscrollcommand=scrollbar.set)
+                canvas.pack(side='left', fill='both', expand=True)
+                scrollbar.pack(side='right', fill='y')
+
+                section_font = (self.font, 10, 'italic')
+                item_font = (self.font, 10)
+                row = 0
+                file_count = 0
+                for item in self.dat_menu_items:
+                    if item['type'] == 'section':
+                        label = tk.Label(content, text=item['label'], bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_ACCENT, font=section_font, anchor='w', padx=12, pady=8)
+                        label.grid(row=row, column=0, sticky='ew')
+                    else:
+                        file_count += 1
+                        label = item['label']
+                        button = tk.Button(
+                            content,
+                            text=label,
+                            command=lambda path=item['path'], label=label: self.select_dat(path, label),
+                            bg=UI_COLOR_INPUT_BG,
+                            fg=UI_COLOR_TEXT_MAIN,
+                            activebackground=UI_COLOR_GHOST_HOVER,
+                            activeforeground=UI_COLOR_TEXT_MAIN,
+                            relief='flat',
+                            bd=0,
+                            font=item_font,
+                            anchor='w',
+                            padx=24,
+                            pady=5,
+                            cursor='hand2',
+                        )
+                        button.grid(row=row, column=0, sticky='ew')
+                        button.bind('<Double-Button-1>', lambda _event, path=item['path'], label=label: self.select_dat(path, label))
+                    row += 1
+
+                if file_count == 0:
+                    tk.Label(content, text="Aucun DAT dans le dossier dat", bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_SUB, font=item_font, anchor='w', padx=12, pady=10).grid(row=0, column=0, sticky='ew')
+
+                content.columnconfigure(0, weight=1)
+
+                def update_scrollregion(_event=None):
+                    canvas.configure(scrollregion=canvas.bbox('all'))
+                    canvas.itemconfigure(canvas_window, width=canvas.winfo_width())
+
+                def on_mousewheel(event):
+                    if getattr(event, 'num', None) == 4:
+                        units = -8
+                    elif getattr(event, 'num', None) == 5:
+                        units = 8
+                    else:
+                        units = -int(event.delta / 120) * 8 if event.delta else 0
+                    if units:
+                        canvas.yview_scroll(units, 'units')
+                    return 'break'
+
+                content.bind('<Configure>', update_scrollregion)
+                canvas.bind('<Configure>', update_scrollregion)
+                for widget in (dropdown, outer, canvas, content):
+                    widget.bind('<MouseWheel>', on_mousewheel)
+                    widget.bind('<Button-4>', on_mousewheel)
+                    widget.bind('<Button-5>', on_mousewheel)
+                for child in content.winfo_children():
+                    child.bind('<MouseWheel>', on_mousewheel)
+                    child.bind('<Button-4>', on_mousewheel)
+                    child.bind('<Button-5>', on_mousewheel)
+
+                dropdown.bind('<Escape>', lambda _event: self.close_dat_dropdown())
+                self.root.update_idletasks()
+
+            def select_dat(self, path, label=None):
+                self.close_dat_dropdown()
+                self.dat_file.set(path)
+                self.dat_display.set(label or os.path.basename(path))
+
             def browse_dat(self):
                 filename = filedialog.askopenfilename(title="Selectionner le fichier DAT", filetypes=[("DAT files", "*.dat"), ("All files", "*.*")])
                 if filename:
-                    self.dat_file.set(filename)
+                    self.select_dat(filename)
 
             def browse_rom(self):
                 folder = filedialog.askdirectory(title="Selectionner le dossier de sortie")
@@ -6577,7 +6243,7 @@ def gui_mode():
                 path = self.dat_file.get().strip()
                 profile = finalize_dat_profile(detect_dat_profile(path)) if path and os.path.exists(path) else finalize_dat_profile({'family': 'unknown', 'family_label': 'Inconnu', 'system_name': '', 'is_retool': False, 'retool_label': 'DAT brut'})
                 self.dat_profile = profile
-                self.hint_var.set("Laisse vide pour essayer les DDL, puis Minerva, puis archive.org en dernier recours." if profile.get('system_name') else "Tu peux laisser l'URL vide pour la detection automatique, ou en saisir une manuellement.")
+                self.hint_var.set("Les sources automatiques sont utilisees dans l'ordre DDL, Minerva, puis archive.org." if profile.get('system_name') else "Selectionne un DAT du dossier dat ou choisis un fichier manuellement.")
                 if self.family_badge:
                     self.family_badge.configure(text=profile.get('family_label') if profile.get('family') != 'unknown' else "Profil manuel", bg={'no-intro': UI_COLOR_ACCENT, 'redump': UI_COLOR_SUCCESS, 'tosec': UI_COLOR_WARNING}.get(profile.get('family'), UI_COLOR_WARNING))
                 if self.mode_badge:
@@ -6589,9 +6255,6 @@ def gui_mode():
                     item = source.copy()
                     item['enabled'] = True
                     sources.append(item)
-                custom_url = self.myrient_url.get().strip()
-                if custom_url and custom_url.rstrip('/').lower() not in {s.get('base_url', '').rstrip('/').lower() for s in sources if s.get('base_url')}:
-                    sources.insert(0, build_custom_source(custom_url))
                 return prepare_sources_for_profile(sources, self.dat_profile)
 
             def log(self, message):
@@ -6619,7 +6282,7 @@ def gui_mode():
                 try:
                     dat_path = self.dat_file.get().strip()
                     rom_folder = self.rom_folder.get().strip()
-                    source_url = self.myrient_url.get().strip()
+                    source_url = ''
                     dat_profile = finalize_dat_profile(detect_dat_profile(dat_path))
                     system_name = dat_profile.get('system_name') or detect_system_name(dat_path)
                     sources = self.selected_sources()
@@ -6791,16 +6454,15 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=r'''
 Exemples:
-  python rom_downloader.py --gui
-  python rom_downloader.py "Dat\Nintendo - Game Boy (Retool).dat" "Roms\Game Boy"
-  python rom_downloader.py "Dat\Sony - PlayStation 2 (Retool).dat" "Roms\PS2" --limit 10
-  python rom_downloader.py  (mode interactif)
-  python rom_downloader.py --sources  (afficher les sources disponibles)
+  python main.py --gui
+  python main.py "dat\Nintendo - Game Boy (Retool).dat" "Roms\Game Boy"
+  python main.py "dat\Sony - PlayStation 2 (Retool).dat" "Roms\PS2" --limit 10
+  python main.py  (mode interactif)
+  python main.py --sources  (afficher les sources disponibles)
         '''
     )
     parser.add_argument('dat_file', nargs='?', help='Chemin vers le fichier DAT')
     parser.add_argument('rom_folder', nargs='?', help='Chemin vers le dossier de sortie ou de ROMs existantes')
-    parser.add_argument('myrient_url', nargs='?', help='URL source optionnelle (laisser vide pour la selection Minerva auto)')
     parser.add_argument('-o', '--output', help='Dossier de sortie (defaut: rom_folder)')
     parser.add_argument('--dry-run', action='store_true', help='Simulation sans telechargement')
     parser.add_argument('--limit', type=int, help='Limite de telechargements')
@@ -6823,7 +6485,7 @@ Exemples:
         return
 
     # GUI mode by default (no arguments)
-    if not args.dat_file and not args.rom_folder and not args.myrient_url:
+    if not args.dat_file and not args.rom_folder:
         gui_mode()
         return
 
@@ -6838,3 +6500,5 @@ Exemples:
 
 if __name__ == '__main__':
     main()
+
+
