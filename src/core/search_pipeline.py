@@ -3,6 +3,8 @@ from urllib.parse import quote
 
 import requests
 
+from ..network.cache_runtime import get_session_cache
+
 from .constants import *
 from .env import *
 from .dependencies import *
@@ -328,7 +330,12 @@ def search_all_sources(
 
             if source['type'] == 'minerva':
                 base_url = build_minerva_directory_url(source, system_name)
-                minerva_files = collect_minerva_files_from_url(base_url, session, source.get('scan_depth', 0))
+                listing_key = f"listing:minerva:{base_url}"
+                session_cache = get_session_cache()
+                minerva_files = session_cache.get_listing(listing_key)
+                if minerva_files is None:
+                    minerva_files = collect_minerva_files_from_url(base_url, session, source.get('scan_depth', 0))
+                    session_cache.set_listing(listing_key, minerva_files)
                 if minerva_files:
                     torrent_url = resolve_minerva_torrent_url(source, system_name, session)
                     if not torrent_url:
@@ -349,7 +356,12 @@ def search_all_sources(
                 if base_url.endswith('/No-Intro/') and system_name:
                     base_url = f"{base_url}{quote(system_name)}/"
 
-                myrient_files = list_myrient_directory(base_url, session)
+                listing_key = f"listing:myrient:{base_url}"
+                session_cache = get_session_cache()
+                myrient_files = session_cache.get_listing(listing_key)
+                if myrient_files is None:
+                    myrient_files = list_myrient_directory(base_url, session)
+                    session_cache.set_listing(listing_key, myrient_files)
                 if myrient_files:
                     found, still_missing = match_myrient_files(still_missing, myrient_files, source['name'])
                     for game in found:
@@ -374,8 +386,13 @@ def search_all_sources(
                     newly_found = []
                     if still_missing:
                         remaining = []
+                        session_cache = get_session_cache()
                         for game_info in still_missing:
-                            edge_match = resolve_edgeemu_game(game_info, slug, session)
+                            resolve_key = f"resolve:edgeemu:{game_info['game_name']}:{system_name}"
+                            edge_match = session_cache.get_resolution(resolve_key)
+                            if edge_match is None:
+                                edge_match = resolve_edgeemu_game(game_info, slug, session)
+                                session_cache.set_resolution(resolve_key, edge_match)
                             if edge_match:
                                 game_info['download_url'] = edge_match['url']
                                 game_info['source'] = 'EdgeEmu'
@@ -391,7 +408,12 @@ def search_all_sources(
                 slug = mappings.get('planetemu')
                 if slug:
                     print(f"\n--- Recherche sur PlanetEmu ({slug}) ---")
-                    planet_files = list_planetemu_directory(slug, session)
+                    listing_key = f"listing:planetemu:{slug}"
+                    session_cache = get_session_cache()
+                    planet_files = session_cache.get_listing(listing_key)
+                    if planet_files is None:
+                        planet_files = list_planetemu_directory(slug, session)
+                        session_cache.set_listing(listing_key, planet_files)
                     if planet_files:
                         newly_found = []
                         remaining = []
@@ -412,7 +434,12 @@ def search_all_sources(
                 lolroms_path = resolve_lolroms_system_path(system_name)
                 if lolroms_path:
                     print(f"\n--- Recherche sur LoLROMs ({lolroms_path}) ---")
-                    lolroms_files = list_lolroms_directory(lolroms_path)
+                    listing_key = f"listing:lolroms:{lolroms_path}"
+                    session_cache = get_session_cache()
+                    lolroms_files = session_cache.get_listing(listing_key)
+                    if lolroms_files is None:
+                        lolroms_files = list_lolroms_directory(lolroms_path)
+                        session_cache.set_listing(listing_key, lolroms_files)
                     if lolroms_files:
                         newly_found = []
                         remaining = []
@@ -440,8 +467,13 @@ def search_all_sources(
                 cd_session = get_cdromance_session()
                 newly_found = []
                 remaining = []
+                session_cache = get_session_cache()
                 for game_info in still_missing:
-                    cd_match = resolve_cdromance_game(game_info, cd_session)
+                    resolve_key = f"resolve:cdromance:{game_info['game_name']}:{system_name}"
+                    cd_match = session_cache.get_resolution(resolve_key)
+                    if cd_match is None:
+                        cd_match = resolve_cdromance_game(game_info, cd_session)
+                        session_cache.set_resolution(resolve_key, cd_match)
                     if cd_match:
                         game_info['page_url'] = cd_match['page_url']
                         game_info['source'] = 'CDRomance'
@@ -460,8 +492,13 @@ def search_all_sources(
                     vimm_session = get_vimm_session()
                     newly_found = []
                     remaining = []
+                    session_cache = get_session_cache()
                     for game_info in still_missing:
-                        vimm_match = resolve_vimm_game(game_info, slug, vimm_session)
+                        resolve_key = f"resolve:vimm:{game_info['game_name']}:{system_name}"
+                        vimm_match = session_cache.get_resolution(resolve_key)
+                        if vimm_match is None:
+                            vimm_match = resolve_vimm_game(game_info, slug, vimm_session)
+                            session_cache.set_resolution(resolve_key, vimm_match)
                         if vimm_match:
                             game_info['page_url'] = vimm_match['page_url']
                             game_info['source'] = 'Vimm\'s Lair'
@@ -479,8 +516,13 @@ def search_all_sources(
                     print(f"\n--- Recherche sur RetroGameSets ({slug}) ---")
                     newly_found = []
                     remaining = []
+                    session_cache = get_session_cache()
                     for game_info in still_missing:
-                        rgs_match = resolve_retrogamesets_game(game_info, slug, session)
+                        resolve_key = f"resolve:retrogamesets:{game_info['game_name']}:{system_name}"
+                        rgs_match = session_cache.get_resolution(resolve_key)
+                        if rgs_match is None:
+                            rgs_match = resolve_retrogamesets_game(game_info, slug, session)
+                            session_cache.set_resolution(resolve_key, rgs_match)
                         if rgs_match:
                             game_info['download_url'] = rgs_match['url']
                             game_info['source'] = 'RetroGameSets'
@@ -515,7 +557,12 @@ def search_all_sources(
                 break
             print(f"\n--- Recherche torrent sur {source['name']} ---")
             base_url = build_minerva_directory_url(source, system_name)
-            minerva_files = collect_minerva_files_from_url(base_url, session, source.get('scan_depth', 0))
+            listing_key = f"listing:minerva:{base_url}"
+            session_cache = get_session_cache()
+            minerva_files = session_cache.get_listing(listing_key)
+            if minerva_files is None:
+                minerva_files = collect_minerva_files_from_url(base_url, session, source.get('scan_depth', 0))
+                session_cache.set_listing(listing_key, minerva_files)
             if not minerva_files:
                 continue
 
