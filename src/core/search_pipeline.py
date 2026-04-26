@@ -6,6 +6,7 @@ import requests
 
 from ..network.cache_runtime import get_session_cache
 from ..network.search import ParallelSearchPool
+from ..network.async_search import async_fetch_listings_parallel, _AIOHTTP_AVAILABLE
 
 from .constants import *
 from .env import *
@@ -375,6 +376,34 @@ def search_all_sources(
         and not source_is_excluded(s, excluded_sources)
         and s['type'] in {'myrient'}
     ]
+
+    # Pre-fetch async des listings DDL si aiohttp disponible
+    if _AIOHTTP_AVAILABLE and direct_sources and still_missing:
+        prefetch_urls = []
+        for source in direct_sources:
+            if source['type'] == 'minerva':
+                base_url = build_minerva_directory_url(source, system_name)
+                listing_key = f"listing:minerva:{base_url}"
+                session_cache = get_session_cache()
+                if session_cache.get_listing(listing_key) is None:
+                    prefetch_urls.append(base_url)
+            elif source.get('base_url'):
+                base_url = source['base_url']
+                if base_url.endswith('/No-Intro/') and system_name:
+                    base_url = f"{base_url}{quote(system_name)}/"
+                listing_key = f"listing:myrient:{base_url}"
+                session_cache = get_session_cache()
+                if session_cache.get_listing(listing_key) is None:
+                    prefetch_urls.append(base_url)
+
+        if prefetch_urls:
+            print(f"  Pre-fetch async de {len(prefetch_urls)} listing(s)...")
+            import asyncio
+            from ..network.async_search import async_fetch_listings_parallel
+            try:
+                asyncio.run(async_fetch_listings_parallel(prefetch_urls, timeout=30))
+            except Exception:
+                pass
 
     if direct_sources and still_missing:
         for source in direct_sources:
