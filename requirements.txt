@@ -2,7 +2,6 @@ requests
 beautifulsoup4
 internetarchive
 cloudscraper
-libtorrent
 py7zr
 rarfile
 tkinterdnd2

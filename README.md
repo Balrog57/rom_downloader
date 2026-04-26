@@ -81,14 +81,13 @@ Dependances Python principales:
 - `beautifulsoup4`
 - `internetarchive`
 - `cloudscraper`
-- `libtorrent` pour les torrents Minerva, optionnel au fonctionnement hors torrent
 - `py7zr` pour lire/verifier les archives `.7z`
 - `rarfile` pour lire/verifier les archives `.rar`
 - `tkinterdnd2` optionnel pour le glisser-deposer GUI
 
 `charset_normalizer` n'est pas liste directement car il est installe comme dependance transitive de `requests`.
 Le programme tente encore d'installer certaines dependances optionnelles si elles manquent au moment d'une verification d'archive.
-Si `--diagnose` indique `libtorrent` absent avec une erreur `DLL load failed`, seuls les telechargements Minerva torrent sont affectes; les sources HTTP, la DB locale, l'analyse DAT et la GUI restent fonctionnelles.
+Les torrents Minerva demandent un binding Python `libtorrent` fonctionnel, mais il n'est pas liste dans `requirements.txt` car les wheels disponibles dependent fortement de la version Python et de Windows. Si `--diagnose` indique `libtorrent` absent ou une erreur `DLL load failed`, seuls les telechargements Minerva torrent sont affectes; les sources HTTP, la DB locale, l'analyse DAT et la GUI restent fonctionnelles.
 Voir `PACKAGING_WINDOWS.md` pour preparer une archive portable.
 
 ## Base locale
