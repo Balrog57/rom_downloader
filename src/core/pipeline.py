@@ -7,7 +7,6 @@ import requests
 from ..pipeline import build_pipeline_summary, merge_provider_metrics
 from ..network.sessions import create_optimized_session
 from ..network.circuits import SourceCircuitBreaker
-from ..network.cache_runtime import RuntimeCache
 from ..network.metrics import load_provider_metrics, save_provider_metrics, prioritize_sources
 
 from .env import *
@@ -255,7 +254,6 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
 
     session = create_optimized_session()
     circuit_breaker = SourceCircuitBreaker()
-    session_cache = RuntimeCache()
     session_metrics = load_provider_metrics()
 
     dat_games = parse_dat_file(dat_file)
