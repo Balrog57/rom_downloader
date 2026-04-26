@@ -5320,7 +5320,7 @@ def download_file_legacy(url: str, dest_path: str, session: requests.Session, pr
 
 
 def download_file(url: str, dest_path: str, session: requests.Session, progress_callback=None,
-                  timeout_seconds: int = 120) -> bool:
+                  timeout_seconds: int = 120, progress_detail_callback=None) -> bool:
     """Download a file with retry, larger chunks and resumable .part files."""
     max_retries = 3
     retry_delay = 3
@@ -5393,6 +5393,8 @@ def download_file(url: str, dest_path: str, session: requests.Session, progress_
                             progress_callback((downloaded / total_size) * 100)
                         progress_snapshot = progress_meter.snapshot(downloaded)
                         if progress_snapshot:
+                            if progress_detail_callback:
+                                progress_detail_callback(progress_snapshot)
                             print(
                                 f"  Progression: {progress_snapshot['percent']:.1f}% "
                                 f"- {format_bytes(progress_snapshot['speed'])}/s - "
@@ -5843,7 +5845,8 @@ def resolve_next_provider(game_info: dict, sources: list, session: requests.Sess
 
 def attempt_download_from_resolved_provider(game_info: dict, output_folder: str, sources: list,
                                             session: requests.Session, myrient_url: str = '',
-                                            progress_callback=None, log_func=print) -> tuple[bool, str]:
+                                            progress_callback=None, log_func=print,
+                                            progress_detail_callback=None) -> tuple[bool, str]:
     """Telecharge une resolution provider deja choisie, puis valide son MD5 DAT."""
     source = game_info.get('source', 'unknown')
     filename = game_info.get('download_filename', game_info.get('game_name', ''))
@@ -5861,7 +5864,7 @@ def attempt_download_from_resolved_provider(game_info: dict, output_folder: str,
             success = download_from_archive_org(identifier, filename, dest_path, progress_callback)
 
     elif source == 'EdgeEmu' and download_url:
-        success = download_file(download_url, dest_path, session, progress_callback, download_timeout)
+        success = download_file(download_url, dest_path, session, progress_callback, download_timeout, progress_detail_callback)
 
     elif source == 'PlanetEmu':
         page_url = game_info.get('page_url')
@@ -5869,7 +5872,7 @@ def attempt_download_from_resolved_provider(game_info: dict, output_folder: str,
             success = download_planetemu(page_url, dest_path, session, progress_callback)
 
     elif source == 'LoLROMs' and download_url:
-        success = download_file(download_url, dest_path, get_lolroms_session(), progress_callback, download_timeout)
+        success = download_file(download_url, dest_path, get_lolroms_session(), progress_callback, download_timeout, progress_detail_callback)
 
     elif source == 'CDRomance':
         page_url = game_info.get('page_url')
@@ -5886,7 +5889,7 @@ def attempt_download_from_resolved_provider(game_info: dict, output_folder: str,
             success = download_from_premium_source('1fichier', download_url, dest_path, load_api_keys(), progress_callback)
         else:
             log_func(f"  URL: {download_url[:80]}...")
-            success = download_file(download_url, dest_path, session, progress_callback, download_timeout)
+            success = download_file(download_url, dest_path, session, progress_callback, download_timeout, progress_detail_callback)
 
     elif source.startswith('Minerva') and torrent_url:
         log_func(f"  Torrent: {torrent_url[:80]}...")
@@ -5895,7 +5898,7 @@ def attempt_download_from_resolved_provider(game_info: dict, output_folder: str,
 
     elif source in ['myrient', 'Myrient', 'Myrient No-Intro', 'Myrient Redump', 'Myrient TOSEC', 'Source Custom'] and download_url:
         log_func(f"  URL: {download_url[:80]}...")
-        success = download_file(download_url, dest_path, session, progress_callback, download_timeout)
+        success = download_file(download_url, dest_path, session, progress_callback, download_timeout, progress_detail_callback)
 
     elif source == 'database' and download_url:
         log_func(f"  URL: {download_url[:80]}...")
@@ -5905,7 +5908,7 @@ def attempt_download_from_resolved_provider(game_info: dict, output_folder: str,
             log_func("  URL Myrient ignoree (source fermee)")
             success = False
         else:
-            success = download_file(download_url, dest_path, session, progress_callback, download_timeout)
+            success = download_file(download_url, dest_path, session, progress_callback, download_timeout, progress_detail_callback)
 
     else:
         source_info = next((item for item in sources if item['name'] == source), None)
@@ -5913,7 +5916,7 @@ def attempt_download_from_resolved_provider(game_info: dict, output_folder: str,
         if base_url:
             download_url = f"{base_url.rstrip('/')}/{quote(filename)}"
             log_func(f"  URL: {download_url[:80]}...")
-            success = download_file(download_url, dest_path, session, progress_callback, download_timeout)
+            success = download_file(download_url, dest_path, session, progress_callback, download_timeout, progress_detail_callback)
 
     downloaded_path = ''
     if success:
@@ -5934,7 +5937,7 @@ def download_with_provider_retries(game_info: dict, sources: list, session: requ
                                    myrient_url: str = '', dry_run: bool = False,
                                    progress_callback=None, log_func=print,
                                    is_running=lambda: True, source_usage: dict | None = None,
-                                   source_usage_lock=None) -> tuple[str, dict]:
+                                   source_usage_lock=None, progress_detail_callback=None) -> tuple[str, dict]:
     """Essaie les providers un par un jusqu'a obtenir un fichier valide MD5 DAT."""
     original_game = clean_download_resolution(game_info)
     current_game = game_info.copy()
@@ -6019,7 +6022,8 @@ def download_with_provider_retries(game_info: dict, sources: list, session: requ
             session,
             myrient_url,
             progress_callback,
-            log_func
+            log_func,
+            progress_detail_callback
         )
         if success:
             item_copy = current_game.copy()
@@ -6101,6 +6105,15 @@ def download_missing_games_sequentially(
 
         def worker_download(first_resolution: dict) -> tuple[str, dict]:
             worker_session = create_download_session()
+            game_label = first_resolution.get('game_name', 'Jeu')
+
+            def worker_progress_detail(update):
+                if status_callback:
+                    status_callback(
+                        f"{game_label[:42]} - {update.get('percent', 0):.1f}% - "
+                        f"{format_bytes(update.get('speed'))}/s - ETA {format_duration(update.get('eta'))}"
+                    )
+
             return download_with_provider_retries(
                 first_resolution,
                 sources,
@@ -6114,7 +6127,8 @@ def download_missing_games_sequentially(
                 safe_log,
                 is_running=is_running,
                 source_usage=source_usage,
-                source_usage_lock=source_usage_lock
+                source_usage_lock=source_usage_lock,
+                progress_detail_callback=worker_progress_detail
             )
 
         futures = {}
@@ -6236,6 +6250,14 @@ def download_missing_games_sequentially(
         if status_callback:
             status_callback(f"Telechargement {index}/{total}: {game_name[:60]}")
 
+        def progress_detail_callback(update, current_name=game_name):
+            if not status_callback:
+                return
+            status_callback(
+                f"{current_name[:42]} - {update.get('percent', 0):.1f}% - "
+                f"{format_bytes(update.get('speed'))}/s - ETA {format_duration(update.get('eta'))}"
+            )
+
         status, result_item = download_with_provider_retries(
             first_resolution,
             sources,
@@ -6249,7 +6271,8 @@ def download_missing_games_sequentially(
             log_func,
             is_running=is_running,
             source_usage=source_usage,
-            source_usage_lock=source_usage_lock
+            source_usage_lock=source_usage_lock,
+            progress_detail_callback=progress_detail_callback
         )
 
         if status == 'downloaded':

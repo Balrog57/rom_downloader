@@ -67,7 +67,7 @@ L'ecran `Configurer les sources` permet aussi de changer l'ordre des sources, le
 Les sources de telechargement sont automatiques: les sources directes sont essayees avant Minerva, puis archive.org en dernier recours.
 La resolution des providers est mise en cache temporairement dans `.rom_downloader_resolution_cache.json` pour eviter de refaire les memes recherches pendant plusieurs essais; `--refresh-cache` force une reconstruction.
 Les listings distants scrapes sont mis en cache 24 h dans `.rom_downloader_listing_cache.json`; `--clear-listing-cache` supprime tous les listings et `--clear-cache-source <source>` invalide les caches associes a une source.
-Les telechargements HTTP utilisent des fichiers `.part`, reprennent quand le serveur accepte les requetes `Range`, et journalisent debit/ETA pendant les gros transferts.
+Les telechargements HTTP utilisent des fichiers `.part`, reprennent quand le serveur accepte les requetes `Range`, journalisent debit/ETA pendant les gros transferts et remontent ces infos dans la barre de statut GUI.
 Les quotas par source sont appliques pendant les retries: quand une source atteint sa limite de tentatives sur un run, le moteur passe au provider suivant.
 Avant d'ignorer un fichier deja present, l'application valide le MD5 DAT quand il existe, puis la taille DAT si aucun MD5 n'est disponible.
 
@@ -120,7 +120,7 @@ python main.py --clear-listing-cache
 ## Etat de la roadmap
 
 - 1. UI: socle operationnel fait; restent la decomposition de la GUI Tk en composants, une pre-analyse paginee complete et un statut detaille par jeu.
-- 2. Optimisation telechargement: reprise, cache, validation, metriques et agregations pipeline testables sont en place; restent affichage ETA dans la barre de statut et vues statistiques.
+- 2. Optimisation telechargement: reprise, cache, validation, metriques, agregations pipeline testables et ETA dans la barre de statut GUI sont en place; restent les vues statistiques.
 - 3. Sources: ordre, activation, cles API, timeouts, quotas, healthcheck, cache et invalidation par source sont en place; reste le branchement complet de chaque provider sur l'interface commune.
 - 4. Qualite/architecture: CI, checks et packaging portable sont en place; restent extraction progressive de `src/core.py`, tests providers reseau et eventuel build `.exe`.
 
@@ -135,7 +135,6 @@ python main.py --clear-listing-cache
 ### 2. Optimisation du telechargement
 
 - Extraire la resolution effective et l'orchestration de telechargement hors `src/core.py`.
-- Ajouter debit et ETA directement dans la barre de statut GUI.
 - Ajouter des graphiques simples de temps par provider et d'echecs par cause.
 
 ### 3. Gestion des sources
