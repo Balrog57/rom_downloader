@@ -4,5 +4,4 @@ internetarchive
 charset_normalizer
 cloudscraper
 libtorrent
-openpyxl
 tkinterdnd2
