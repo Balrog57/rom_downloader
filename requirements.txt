@@ -1,7 +1,8 @@
 requests
 beautifulsoup4
 internetarchive
-charset_normalizer
 cloudscraper
 libtorrent
+py7zr
+rarfile
 tkinterdnd2

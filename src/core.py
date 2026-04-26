@@ -49,6 +49,7 @@ import sys
 import tempfile
 import threading
 import time
+import traceback
 import xml.etree.ElementTree as ET
 import zlib
 from datetime import datetime
@@ -299,7 +300,7 @@ try:
     import cloudscraper
 except ImportError:
     print("Installation des packages requis (requests, beautifulsoup4, internetarchive, cloudscraper)...")
-    install_python_packages(['requests', 'beautifulsoup4', 'internetarchive', 'charset_normalizer', 'cloudscraper'])
+    install_python_packages(['requests', 'beautifulsoup4', 'internetarchive', 'cloudscraper'])
     import requests
     from bs4 import BeautifulSoup
     import internetarchive
@@ -2256,12 +2257,14 @@ def build_diagnostic_report() -> dict:
     """Construit un diagnostic exportable de l'environnement runtime."""
     dat_items = discover_dat_menu_items()
     dependencies = {}
-    for module_name in ('requests', 'bs4', 'internetarchive', 'cloudscraper', 'libtorrent', 'tkinterdnd2'):
+    dependency_errors = {}
+    for module_name in ('requests', 'bs4', 'internetarchive', 'cloudscraper', 'libtorrent', 'py7zr', 'rarfile', 'tkinterdnd2'):
         try:
             importlib.import_module(module_name)
             dependencies[module_name] = True
         except Exception:
             dependencies[module_name] = False
+            dependency_errors[module_name] = traceback.format_exc(limit=1).strip().splitlines()[-1]
     return {
         'python': sys.version.split()[0],
         'executable': sys.executable,
@@ -2280,6 +2283,7 @@ def build_diagnostic_report() -> dict:
             'listing': describe_cache_file(LISTING_CACHE_FILE, LISTING_CACHE_TTL_SECONDS),
         },
         'dependencies': dependencies,
+        'dependency_errors': dependency_errors,
         'env': {
             'IA_credentials': bool(os.environ.get('IAS3_ACCESS_KEY') and os.environ.get('IAS3_SECRET_KEY')),
             'fichier_key': bool(os.environ.get('ONEFICHIER_API_KEY')),
@@ -2308,7 +2312,10 @@ def print_diagnostic_report(report: dict) -> None:
         print(f"  - {format_cache_status('listings', report['caches'].get('listing', {}))}")
     print("Dependances:")
     for name, ok in report['dependencies'].items():
-        print(f"  - {name}: {'ok' if ok else 'absent'}")
+        detail = ''
+        if not ok and report.get('dependency_errors', {}).get(name):
+            detail = f" ({report['dependency_errors'][name]})"
+        print(f"  - {name}: {'ok' if ok else 'absent'}{detail}")
     print("Configuration:")
     for name, ok in report['env'].items():
         print(f"  - {name}: {'present' if ok else 'absent'}")

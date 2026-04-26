@@ -77,10 +77,14 @@ Dependances Python principales:
 - `beautifulsoup4`
 - `internetarchive`
 - `cloudscraper`
-- `libtorrent` pour les torrents Minerva
+- `libtorrent` pour les torrents Minerva, optionnel au fonctionnement hors torrent
+- `py7zr` pour lire/verifier les archives `.7z`
+- `rarfile` pour lire/verifier les archives `.rar`
 - `tkinterdnd2` optionnel pour le glisser-deposer GUI
 
-Le programme tente d'installer certaines dependances optionnelles si elles manquent.
+`charset_normalizer` n'est pas liste directement car il est installe comme dependance transitive de `requests`.
+Le programme tente encore d'installer certaines dependances optionnelles si elles manquent au moment d'une verification d'archive.
+Si `--diagnose` indique `libtorrent` absent avec une erreur `DLL load failed`, seuls les telechargements Minerva torrent sont affectes; les sources HTTP, la DB locale, l'analyse DAT et la GUI restent fonctionnelles.
 Voir `PACKAGING_WINDOWS.md` pour preparer une archive portable.
 
 ## Base locale
@@ -110,6 +114,13 @@ python main.py --clear-listing-cache
 - Sources: commande `--healthcheck-sources`, configuration GUI activation/ordre/timeouts/quotas, cles API locales, etat des caches, cache de listings distants et registre provider commun.
 - Diagnostic: commande `--diagnose` et export JSON pour l'etat local utile au support.
 - Qualite: CI GitHub Actions avec compilation, smoke checks, checks helpers, garde anti-regression et debut d'extraction des helpers runtime.
+
+## Etat de la roadmap
+
+- 1. UI: socle operationnel fait; restent la decomposition de la GUI Tk en composants, une pre-analyse paginee complete et un statut detaille par jeu.
+- 2. Optimisation telechargement: reprise, cache, validation et metriques sont en place; restent pipeline resolution/telechargement plus testable, affichage ETA dans la barre de statut et vues statistiques.
+- 3. Sources: ordre, activation, cles API, timeouts, quotas, healthcheck et cache sont en place; restent invalidation par source et branchement complet de chaque provider sur l'interface commune.
+- 4. Qualite/architecture: CI, checks et packaging portable sont en place; restent extraction progressive de `src/core.py`, tests providers reseau et eventuel build `.exe`.
 
 ## Roadmap
 
