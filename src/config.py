@@ -7,11 +7,19 @@ from .core import (
     BALROG_WINDOW_ICON,
     DEFAULT_CONFIG_URLS,
     DEFAULT_PARALLEL_DOWNLOADS,
+    PREFERENCES_FILE,
+    RESOLUTION_CACHE_FILE,
     ROM_EXTENSIONS,
     SCAN_CACHE_FILENAME,
+    build_diagnostic_report,
+    clear_resolution_cache,
+    format_bytes,
     import_optional_package,
     install_python_packages,
     load_env_file,
+    load_preferences,
+    print_diagnostic_report,
+    save_preferences,
 )
 
 __all__ = [
@@ -21,10 +29,17 @@ __all__ = [
     "BALROG_WINDOW_ICON",
     "DEFAULT_CONFIG_URLS",
     "DEFAULT_PARALLEL_DOWNLOADS",
+    "PREFERENCES_FILE",
+    "RESOLUTION_CACHE_FILE",
     "ROM_EXTENSIONS",
     "SCAN_CACHE_FILENAME",
+    "build_diagnostic_report",
+    "clear_resolution_cache",
+    "format_bytes",
     "import_optional_package",
     "install_python_packages",
     "load_env_file",
+    "load_preferences",
+    "print_diagnostic_report",
+    "save_preferences",
 ]
-

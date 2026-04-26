@@ -28,7 +28,10 @@ Exemples:
 python main.py "dat\retool\Nintendo - Game Boy (20260405-031740).dat" "Roms\Game Boy"
 python main.py "dat\retool\Sony - PlayStation 2 (2026-04-05 01-38-25) (Retool 2026-04-06 18-57-20) (2,560) (-nz) [-AaBbcDdefkMmopPruv].dat" "Roms\PS2" --limit 10
 python main.py "dat\retool\Nintendo - Game Boy (20260405-031740).dat" "Roms\Game Boy" --tosort
+python main.py "dat\retool\Nintendo - Game Boy (20260405-031740).dat" "Roms\Game Boy" --analyze
 python main.py --sources
+python main.py --diagnose
+python main.py --healthcheck-sources
 ```
 
 ## Structure du depot
@@ -48,8 +51,12 @@ Le depot ne contient plus de runtime externe ni de dossier de generation. Les fi
 Le champ DAT de la GUI est un menu deroulant alimente par `dat/**/*.dat`.
 Les dossiers directs de `dat/` sont affiches comme titres de section en italique et ne sont pas selectionnables. Les fichiers DAT sous chaque section sont selectionnables.
 Le bouton `Parcourir` reste disponible comme secours pour choisir un DAT externe.
+Le bouton `Analyser` lance une pre-analyse sans telechargement: total DAT, presents, manquants, taille estimee et sources actives.
+La GUI retient localement le dernier DAT, le dernier dossier et les options ToSort/TorrentZip.
 
 Les sources de telechargement sont automatiques: les sources directes sont essayees avant Minerva, puis archive.org en dernier recours.
+La resolution des providers est mise en cache temporairement dans `.rom_downloader_resolution_cache.json` pour eviter de refaire les memes recherches pendant plusieurs essais; `--refresh-cache` force une reconstruction.
+Les telechargements HTTP utilisent des fichiers `.part` et reprennent quand le serveur accepte les requetes `Range`.
 
 ## Dependances
 
@@ -77,20 +84,28 @@ Le cache local `db/retrogamesets/`, les rapports de sortie et les caches Python 
 $files = @("main.py") + (Get-ChildItem src -Recurse -Filter *.py | ForEach-Object { $_.FullName })
 python -m py_compile @files
 python main.py --sources
+python main.py --diagnose
 ```
+
+## Roadmap implementee
+
+- UI: bouton `Analyser`, resume de pre-analyse et preferences GUI locales.
+- Optimisation: cache de resolution provider et reprise HTTP via fichiers `.part`.
+- Sources: commande `--healthcheck-sources` pour verifier les sources actives.
+- Diagnostic: commande `--diagnose` pour exporter l'etat local utile au support.
 
 ## Roadmap
 
 ### 1. UI
 
 - Remplacer la GUI Tk monolithique par une UI plus structuree: panneau DAT avec recherche, filtres par famille, recherche systeme, statut detaille par jeu et logs repliables.
-- Ajouter une vue de pre-analyse avant telechargement: total DAT, jeux presents, jeux manquants, taille estimee et sources candidates.
-- Ajouter des preferences persistantes: dernier dossier ROM, dernier DAT, parallelisme, ToSort et TorrentZip.
+- Etendre la pre-analyse avec les sources candidates par jeu.
+- Ajouter une preference persistante pour le parallelisme.
 
 ### 2. Optimisation du telechargement
 
-- Separer resolution et telechargement en pipeline avec cache des resultats par DAT.
-- Ajouter une reprise robuste avec fichiers `.part`, validation taille/hash avant skip et reprise HTTP quand elle est supportee.
+- Separer davantage resolution et telechargement en pipeline testable.
+- Ajouter validation taille/hash avant skip pour toutes les sources.
 - Afficher debit, ETA, temps par provider et nombre d'echecs par cause.
 
 ### 3. Gestion des sources

@@ -40,6 +40,7 @@ import html as html_module
 import importlib
 import json
 import os
+import platform
 import re
 import shutil
 import struct
@@ -58,6 +59,10 @@ from urllib.parse import quote, unquote, urljoin
 APP_ROOT = Path(__file__).resolve().parents[1]
 SCAN_CACHE_FILENAME = ".rom_downloader_scan_cache.json"
 DEFAULT_PARALLEL_DOWNLOADS = 3
+PREFERENCES_FILE = APP_ROOT / ".rom_downloader_preferences.json"
+RESOLUTION_CACHE_FILE = APP_ROOT / ".rom_downloader_resolution_cache.json"
+RESOLUTION_CACHE_TTL_SECONDS = 7 * 24 * 60 * 60
+DOWNLOAD_CHUNK_SIZE = 256 * 1024
 
 # ============================================================================
 # Chargement des variables d'environnement (.env)
@@ -129,6 +134,84 @@ def import_optional_package(import_name: str, pip_name: str | None = None, auto_
         except ImportError as e:
             print(f"Avertissement: {package_name} installe mais import impossible: {e}")
     return None
+
+
+def load_json_file(path: Path, default):
+    """Charge un JSON local en tolerant les fichiers absents ou corrompus."""
+    try:
+        if not path.exists():
+            return default
+        with open(path, 'r', encoding='utf-8') as handle:
+            data = json.load(handle)
+        return data if isinstance(data, type(default)) else default
+    except Exception:
+        return default
+
+
+def save_json_file(path: Path, data) -> bool:
+    """Ecrit un JSON local de facon atomique."""
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        tmp_path = path.with_suffix(path.suffix + '.tmp')
+        with open(tmp_path, 'w', encoding='utf-8') as handle:
+            json.dump(data, handle, indent=2, ensure_ascii=False)
+        os.replace(tmp_path, path)
+        return True
+    except Exception as e:
+        print(f"Avertissement: impossible d'ecrire {path.name}: {e}")
+        return False
+
+
+def load_preferences() -> dict:
+    """Charge les preferences locales de la GUI."""
+    return load_json_file(PREFERENCES_FILE, {})
+
+
+def save_preferences(preferences: dict) -> bool:
+    """Sauvegarde les preferences locales de la GUI."""
+    return save_json_file(PREFERENCES_FILE, preferences or {})
+
+
+def format_bytes(size: int | float | None) -> str:
+    """Formate une taille en unite lisible."""
+    try:
+        value = float(size or 0)
+    except Exception:
+        value = 0.0
+    units = ('o', 'Ko', 'Mo', 'Go', 'To')
+    for unit in units:
+        if value < 1024 or unit == units[-1]:
+            return f"{value:.1f} {unit}" if unit != 'o' else f"{int(value)} {unit}"
+        value /= 1024
+
+
+def load_resolution_cache() -> dict:
+    """Charge le cache persistant de resolution provider."""
+    data = load_json_file(RESOLUTION_CACHE_FILE, {'version': 1, 'entries': {}})
+    if not isinstance(data, dict):
+        return {'version': 1, 'entries': {}}
+    data.setdefault('version', 1)
+    data.setdefault('entries', {})
+    if not isinstance(data['entries'], dict):
+        data['entries'] = {}
+    return data
+
+
+def save_resolution_cache(cache: dict) -> bool:
+    """Sauvegarde le cache persistant de resolution provider."""
+    cache = cache or {'version': 1, 'entries': {}}
+    cache['version'] = 1
+    cache.setdefault('entries', {})
+    return save_json_file(RESOLUTION_CACHE_FILE, cache)
+
+
+def clear_resolution_cache() -> None:
+    """Supprime le cache de resolution si present."""
+    try:
+        if RESOLUTION_CACHE_FILE.exists():
+            RESOLUTION_CACHE_FILE.unlink()
+    except Exception as e:
+        print(f"Avertissement: cache de resolution non supprime: {e}")
 
 
 try:
@@ -595,6 +678,69 @@ def source_order_key(source: dict) -> tuple:
 def normalize_source_label(value: str) -> str:
     """Normalise un nom de provider pour les retries."""
     return re.sub(r'\s+', ' ', (value or '').strip().lower())
+
+
+def active_source_labels(sources: list) -> list[str]:
+    """Retourne les labels stables des sources actives."""
+    labels = []
+    for source in sources or []:
+        if source.get('enabled', True):
+            labels.append(normalize_source_label(source.get('name') or source.get('type', '')))
+    return sorted(label for label in labels if label)
+
+
+def resolution_cache_key(game_info: dict, sources: list, system_name: str,
+                         dat_profile: dict | None, excluded_sources: set[str] | None = None) -> str:
+    """Construit une cle de cache pour une resolution provider."""
+    roms = game_info.get('roms') or []
+    signature_parts = []
+    for rom_info in roms:
+        signature_parts.extend([
+            normalize_checksum(rom_info.get('md5', ''), 'md5'),
+            normalize_checksum(rom_info.get('crc', ''), 'crc'),
+            normalize_checksum(rom_info.get('sha1', ''), 'sha1'),
+            str(rom_info.get('size', '')).strip(),
+        ])
+    payload = {
+        'game': game_info.get('game_name', ''),
+        'primary_rom': game_info.get('primary_rom', ''),
+        'system': system_name or '',
+        'family': (dat_profile or {}).get('family', ''),
+        'sources': active_source_labels(sources),
+        'excluded': sorted(excluded_sources or []),
+        'signatures': [part for part in signature_parts if part],
+    }
+    encoded = json.dumps(payload, sort_keys=True, ensure_ascii=False)
+    return hashlib.sha1(encoded.encode('utf-8')).hexdigest()
+
+
+def resolve_game_sources_with_cache(game_info: dict, sources: list, session: requests.Session,
+                                    system_name: str, dat_profile: dict | None,
+                                    excluded_sources: set[str] | None = None,
+                                    cache: dict | None = None) -> tuple[list, list, bool]:
+    """Resout les sources d'un jeu en utilisant un cache persistant court."""
+    cache = cache or {'entries': {}}
+    entries = cache.setdefault('entries', {})
+    key = resolution_cache_key(game_info, sources, system_name, dat_profile, excluded_sources)
+    now = time.time()
+    cached = entries.get(key)
+    if cached and now - float(cached.get('created_at', 0)) <= RESOLUTION_CACHE_TTL_SECONDS:
+        return [item.copy() for item in cached.get('found', [])], [item.copy() for item in cached.get('unavailable', [])], True
+
+    found, unavailable = search_all_sources(
+        [clean_download_resolution(game_info)],
+        sources,
+        session,
+        system_name,
+        dat_profile,
+        excluded_sources=excluded_sources
+    )
+    entries[key] = {
+        'created_at': now,
+        'found': [item.copy() for item in found],
+        'unavailable': [item.copy() for item in unavailable],
+    }
+    return found, unavailable, False
 
 
 def source_is_excluded(source: dict, excluded_sources: set[str]) -> bool:
@@ -1885,6 +2031,112 @@ def print_sources_info():
     
     print("\n" + "=" * 70)
 
+
+def provider_healthcheck(sources: list | None = None, timeout: int = 8) -> list[dict]:
+    """Verifie rapidement la disponibilite HTTP des sources configurees."""
+    session = create_download_session()
+    results = []
+    for source in sources or get_default_sources():
+        if not source.get('enabled', True):
+            continue
+        url = source.get('base_url', '')
+        if not url:
+            results.append({
+                'name': source.get('name', 'Source inconnue'),
+                'type': source.get('type', ''),
+                'status': 'missing_url',
+                'detail': 'URL absente',
+            })
+            continue
+        started = time.time()
+        status = 'ok'
+        detail = ''
+        try:
+            response = session.head(url, timeout=timeout, allow_redirects=True)
+            if response.status_code in {403, 405}:
+                response.close()
+                response = session.get(url, timeout=timeout, stream=True, allow_redirects=True)
+            detail = f"HTTP {response.status_code}"
+            if response.status_code >= 500:
+                status = 'error'
+            elif response.status_code >= 400:
+                status = 'warning'
+            response.close()
+        except Exception as e:
+            status = 'error'
+            detail = str(e)
+        results.append({
+            'name': source.get('name', 'Source inconnue'),
+            'type': source.get('type', ''),
+            'status': status,
+            'detail': detail,
+            'elapsed_ms': int((time.time() - started) * 1000),
+        })
+    return results
+
+
+def print_provider_healthcheck(results: list[dict]) -> None:
+    """Affiche le resultat du healthcheck provider."""
+    print("\n" + "=" * 70)
+    print("HEALTHCHECK SOURCES")
+    print("=" * 70)
+    for result in results:
+        print(f"{result['status'].upper():<11} {result['name']:<24} {result.get('detail', '')} ({result.get('elapsed_ms', 0)} ms)")
+    print("=" * 70)
+
+
+def build_diagnostic_report() -> dict:
+    """Construit un diagnostic exportable de l'environnement runtime."""
+    dat_items = discover_dat_menu_items()
+    dependencies = {}
+    for module_name in ('requests', 'bs4', 'internetarchive', 'cloudscraper', 'libtorrent', 'tkinterdnd2'):
+        try:
+            importlib.import_module(module_name)
+            dependencies[module_name] = True
+        except Exception:
+            dependencies[module_name] = False
+    return {
+        'python': sys.version.split()[0],
+        'executable': sys.executable,
+        'platform': platform.platform(),
+        'app_root': str(APP_ROOT),
+        'cwd': os.getcwd(),
+        'dat_sections': [item['label'] for item in dat_items if item.get('type') == 'section'],
+        'dat_files': sum(1 for item in dat_items if item.get('type') == 'file'),
+        'db_shards': len(list(ROM_DATABASE_SHARDS_DIR.glob('shard_*.zip'))) if ROM_DATABASE_SHARDS_DIR.exists() else 0,
+        'assets_present': BALROG_ASSETS_DIR.exists(),
+        'preferences_file': str(PREFERENCES_FILE),
+        'resolution_cache_file': str(RESOLUTION_CACHE_FILE),
+        'dependencies': dependencies,
+        'env': {
+            'IA_credentials': bool(os.environ.get('IAS3_ACCESS_KEY') and os.environ.get('IAS3_SECRET_KEY')),
+            'fichier_key': bool(os.environ.get('ONEFICHIER_API_KEY')),
+            'alldebrid_key': bool(os.environ.get('ALLDEBRID_API_KEY')),
+            'realdebrid_key': bool(os.environ.get('REALDEBRID_API_KEY')),
+        },
+    }
+
+
+def print_diagnostic_report(report: dict) -> None:
+    """Affiche le diagnostic runtime."""
+    print("\n" + "=" * 70)
+    print("DIAGNOSTIC ROM DOWNLOADER")
+    print("=" * 70)
+    print(f"Python: {report['python']} ({report['executable']})")
+    print(f"Plateforme: {report['platform']}")
+    print(f"Racine app: {report['app_root']}")
+    print(f"DAT: {report['dat_files']} fichiers, sections: {', '.join(report['dat_sections']) or 'aucune'}")
+    print(f"DB shards: {report['db_shards']}")
+    print(f"Assets presents: {'oui' if report['assets_present'] else 'non'}")
+    print("Dependances:")
+    for name, ok in report['dependencies'].items():
+        print(f"  - {name}: {'ok' if ok else 'absent'}")
+    print("Configuration:")
+    for name, ok in report['env'].items():
+        print(f"  - {name}: {'present' if ok else 'absent'}")
+    print("=" * 70)
+
+
 # ============================================================================
 # Fonctions de traitement
 # ============================================================================
@@ -2751,6 +3003,94 @@ def find_missing_games(dat_games: dict, local_roms: set, local_roms_normalized: 
     return missing
 
 
+def estimate_games_size(games: list | dict) -> tuple[int, int]:
+    """Estime la taille brute des ROMs DAT a partir des champs size."""
+    iterable = games.values() if isinstance(games, dict) else games
+    total = 0
+    unknown = 0
+    for game_info in iterable:
+        rom_sizes = []
+        for rom_info in game_info.get('roms', []):
+            parsed_size = parse_rom_size(rom_info.get('size'))
+            if parsed_size is not None:
+                rom_sizes.append(parsed_size)
+        if rom_sizes:
+            total += sum(rom_sizes)
+        else:
+            unknown += 1
+    return total, unknown
+
+
+def build_analysis_summary(dat_file: str, rom_folder: str, dat_games: dict, missing_games: list,
+                           dat_profile: dict, sources: list, tosort_candidates: list | None = None) -> dict:
+    """Construit le resume de pre-analyse sans refaire les scans."""
+    total_size, total_unknown = estimate_games_size(dat_games)
+    missing_size, missing_unknown = estimate_games_size(missing_games)
+    present = max(0, len(dat_games) - len(missing_games))
+    return {
+        'dat_file': dat_file,
+        'rom_folder': rom_folder,
+        'system_name': dat_profile.get('system_name') or detect_system_name(dat_file),
+        'dat_profile': describe_dat_profile(dat_profile),
+        'total_games': len(dat_games),
+        'present_games': present,
+        'missing_games': len(missing_games),
+        'missing_percent': (len(missing_games) / len(dat_games) * 100) if dat_games else 0.0,
+        'total_size': total_size,
+        'total_unknown_sizes': total_unknown,
+        'missing_size': missing_size,
+        'missing_unknown_sizes': missing_unknown,
+        'active_sources': [source['name'] for source in sources if source.get('enabled', True)],
+        'tosort_candidates': len(tosort_candidates) if tosort_candidates is not None else None,
+    }
+
+
+def analyze_dat_folder(dat_file: str, rom_folder: str, include_tosort: bool = False,
+                       custom_sources: list | None = None) -> dict:
+    """Analyse un couple DAT/dossier avant tout telechargement."""
+    dat_games = parse_dat_file(dat_file)
+    dat_profile = finalize_dat_profile(detect_dat_profile(dat_file))
+    sources = prepare_sources_for_profile(
+        [source.copy() for source in (custom_sources if custom_sources else get_default_sources())],
+        dat_profile
+    )
+    local_roms, local_roms_normalized, local_game_names, signature_index = scan_local_roms(rom_folder, dat_games)
+    missing_games = find_missing_games(dat_games, local_roms, local_roms_normalized, local_game_names, signature_index)
+    tosort_candidates = None
+    if include_tosort:
+        tosort_candidates = find_roms_not_in_dat(dat_games, local_roms, local_roms_normalized, rom_folder)
+    return build_analysis_summary(dat_file, rom_folder, dat_games, missing_games, dat_profile, sources, tosort_candidates)
+
+
+def format_analysis_summary(summary: dict) -> str:
+    """Retourne un resume de pre-analyse lisible."""
+    lines = [
+        "PRE-ANALYSE",
+        "=" * 60,
+        f"DAT: {summary.get('dat_file')}",
+        f"Dossier: {summary.get('rom_folder')}",
+        f"Systeme: {summary.get('system_name') or 'Inconnu'}",
+        f"Profil: {summary.get('dat_profile')}",
+        f"Jeux DAT: {summary.get('total_games', 0)}",
+        f"Presents: {summary.get('present_games', 0)}",
+        f"Manquants: {summary.get('missing_games', 0)} ({summary.get('missing_percent', 0):.1f}%)",
+        f"Taille DAT estimee: {format_bytes(summary.get('total_size'))}",
+        f"Taille manquante estimee: {format_bytes(summary.get('missing_size'))}",
+    ]
+    if summary.get('missing_unknown_sizes'):
+        lines.append(f"Tailles manquantes inconnues: {summary.get('missing_unknown_sizes')}")
+    if summary.get('tosort_candidates') is not None:
+        lines.append(f"Candidats ToSort: {summary.get('tosort_candidates')}")
+    lines.append(f"Sources actives: {', '.join(summary.get('active_sources') or []) or 'Aucune'}")
+    lines.append("=" * 60)
+    return "\n".join(lines)
+
+
+def print_analysis_summary(summary: dict) -> None:
+    """Affiche la pre-analyse."""
+    print(format_analysis_summary(summary))
+
+
 def find_roms_not_in_dat(dat_games: dict, local_roms: set, local_roms_normalized: set,
                          rom_folder: str) -> list:
     """Find local files whose content checksums are not present in the DAT."""
@@ -2776,6 +3116,10 @@ def find_roms_not_in_dat(dat_games: dict, local_roms: set, local_roms_normalized
         filename = file_path.name
 
         if 'ToSort' in file_path.parts:
+            continue
+        if filename == SCAN_CACHE_FILENAME or filename.startswith('.rom_downloader_'):
+            continue
+        if filename.endswith('.part'):
             continue
         if filename.lower().startswith(generated_report_prefix) and file_path.suffix.lower() == '.txt':
             continue
@@ -4544,7 +4888,7 @@ def search_archive_org_for_games(not_available: list) -> tuple:
     return found_on_archive, still_not_available
 
 
-def download_file(url: str, dest_path: str, session: requests.Session, progress_callback=None) -> bool:
+def download_file_legacy(url: str, dest_path: str, session: requests.Session, progress_callback=None) -> bool:
     """Download a file from URL to destination path with retry support."""
     max_retries = 3
     retry_delay = 5
@@ -4614,6 +4958,91 @@ def download_file(url: str, dest_path: str, session: requests.Session, progress_
                 print(f"  Nouvelle tentative dans {retry_delay} secondes...")
                 time.sleep(retry_delay)
                 retry_delay *= 2  # Backoff exponentiel
+
+    return False
+
+
+def download_file(url: str, dest_path: str, session: requests.Session, progress_callback=None) -> bool:
+    """Download a file with retry, larger chunks and resumable .part files."""
+    max_retries = 3
+    retry_delay = 3
+
+    for attempt in range(max_retries):
+        current_dest_path = dest_path
+        part_path = current_dest_path + '.part'
+        try:
+            resume_from = os.path.getsize(part_path) if os.path.exists(part_path) else 0
+            request_kwargs = {
+                'stream': True,
+                'timeout': 120,
+                'allow_redirects': True,
+            }
+            if resume_from > 0:
+                request_kwargs['headers'] = {'Range': f'bytes={resume_from}-'}
+            archive_hosts = ('archive.org', '.archive.org')
+            if any(host in (url or '').lower() for host in archive_hosts):
+                access_key = os.environ.get('IAS3_ACCESS_KEY', '')
+                secret_key = os.environ.get('IAS3_SECRET_KEY', '')
+                if access_key and secret_key:
+                    from requests.auth import HTTPBasicAuth
+                    request_kwargs['auth'] = HTTPBasicAuth(access_key, secret_key)
+
+            with session.get(url, **request_kwargs) as response:
+                response.raise_for_status()
+
+                server_filename = ''
+                cd = response.headers.get('content-disposition', '')
+                match = re.search(r'filename=(?:"([^"]+)"|([^;]+))', cd, re.IGNORECASE)
+                if match:
+                    server_filename = match.group(1) or match.group(2)
+                if not server_filename:
+                    server_filename = os.path.basename(unquote(response.url.split('?')[0]))
+                if server_filename:
+                    server_filename = re.sub(r'[\\/*?:"<>|]', "", server_filename)
+                    current_dest_path = os.path.join(os.path.dirname(dest_path), server_filename)
+                    part_path = current_dest_path + '.part'
+                    resume_from = os.path.getsize(part_path) if os.path.exists(part_path) else 0
+
+                content_length = int(response.headers.get('content-length', 0))
+                content_range = response.headers.get('content-range', '')
+                total_size = content_length
+                if content_range and '/' in content_range:
+                    try:
+                        total_size = int(content_range.rsplit('/', 1)[1])
+                    except Exception:
+                        total_size = content_length + resume_from
+                elif resume_from and response.status_code == 206:
+                    total_size = content_length + resume_from
+
+                if resume_from and response.status_code != 206:
+                    try:
+                        os.remove(part_path)
+                    except FileNotFoundError:
+                        pass
+                    resume_from = 0
+
+                downloaded = resume_from
+                mode = 'ab' if resume_from and response.status_code == 206 else 'wb'
+                with open(part_path, mode) as handle:
+                    for chunk in response.iter_content(chunk_size=DOWNLOAD_CHUNK_SIZE):
+                        if not chunk:
+                            continue
+                        handle.write(chunk)
+                        downloaded += len(chunk)
+                        if total_size > 0 and progress_callback:
+                            progress_callback((downloaded / total_size) * 100)
+
+                if progress_callback:
+                    progress_callback(100.0)
+                os.replace(part_path, current_dest_path)
+                return True
+
+        except Exception as e:
+            print(f"  Tentative {attempt + 1}/{max_retries} echouee: {e}")
+            if attempt < max_retries - 1:
+                print(f"  Nouvelle tentative dans {retry_delay} secondes...")
+                time.sleep(retry_delay)
+                retry_delay *= 2
 
     return False
 
@@ -5210,6 +5639,8 @@ def download_missing_games_sequentially(
     skipped = 0
     handled = 0
     parallel_downloads = max(1, int(parallel_downloads or 1))
+    resolution_cache = load_resolution_cache()
+    resolution_cache_dirty = False
 
     total = len(missing_games)
     if parallel_downloads > 1 and not dry_run:
@@ -5254,13 +5685,17 @@ def download_missing_games_sequentially(
                 if status_callback:
                     status_callback(f"Recherche {index}/{total}: {game_name[:60]}")
 
-                found, unavailable = search_all_sources(
-                    [clean_download_resolution(original_game)],
+                found, unavailable, cache_hit = resolve_game_sources_with_cache(
+                    original_game,
                     sources,
                     session,
                     system_name,
-                    dat_profile
+                    dat_profile,
+                    cache=resolution_cache
                 )
+                resolution_cache_dirty = resolution_cache_dirty or not cache_hit
+                if cache_hit:
+                    log_func("  Resolution: cache")
 
                 handled += 1
                 if not found:
@@ -5299,6 +5734,9 @@ def download_missing_games_sequentially(
                     failed += 1
                     failed_items.append(result_item.copy())
 
+        if resolution_cache_dirty:
+            save_resolution_cache(resolution_cache)
+
         return {
             'resolved_items': resolved_items,
             'downloaded_items': downloaded_items,
@@ -5324,13 +5762,17 @@ def download_missing_games_sequentially(
         if status_callback:
             status_callback(f"Recherche {index}/{total}: {game_name[:60]}")
 
-        found, unavailable = search_all_sources(
-            [clean_download_resolution(original_game)],
+        found, unavailable, cache_hit = resolve_game_sources_with_cache(
+            original_game,
             sources,
             session,
             system_name,
-            dat_profile
+            dat_profile,
+            cache=resolution_cache
         )
+        resolution_cache_dirty = resolution_cache_dirty or not cache_hit
+        if cache_hit:
+            log_func("  Resolution: cache")
 
         if not found:
             log_func("  Aucun provider disponible")
@@ -5382,6 +5824,9 @@ def download_missing_games_sequentially(
 
         if status in {'downloaded', 'skipped'}:
             handled += 1
+
+    if resolution_cache_dirty:
+        save_resolution_cache(resolution_cache)
 
     return {
         'resolved_items': resolved_items,
@@ -5477,6 +5922,13 @@ def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_ru
     print(f"SystÃ¨me dÃ©tectÃ© : {system_name}")
 
     print(f"DAT detecte : {describe_dat_profile(dat_profile)}")
+
+    sources = [source.copy() for source in (custom_sources if custom_sources else get_default_sources())]
+    if myrient_url and myrient_url not in [s['base_url'] for s in sources]:
+        sources.insert(0, build_custom_source(myrient_url))
+    sources = prepare_sources_for_profile(sources, dat_profile)
+    report_active_sources = [source['name'] for source in sources if source.get('enabled', True)]
+    print_analysis_summary(build_analysis_summary(dat_file, rom_folder, dat_games, missing_games, dat_profile, sources))
 
     if not missing_games:
         print("\nAucun jeu manquant trouvÃ© !")
@@ -5642,8 +6094,11 @@ def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_ru
 
 def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limit,
                  move_to_tosort=False, clean_torrentzip=False, custom_sources=None,
-                 parallel_downloads: int | None = None):
+                 parallel_downloads: int | None = None, refresh_resolution_cache: bool = False):
     """Run the download process with archive.org as the final fallback."""
+    if refresh_resolution_cache:
+        clear_resolution_cache()
+
     session = requests.Session()
     session.headers.update({
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
@@ -5662,6 +6117,12 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
     tosort_moved = 0
     tosort_failed = 0
     torrentzip_summary = {'repacked': 0, 'skipped': 0, 'failed': 0, 'deleted': 0}
+    sources = [source.copy() for source in (custom_sources if custom_sources else get_default_sources())]
+    if myrient_url and myrient_url not in [s['base_url'] for s in sources]:
+        sources.insert(0, build_custom_source(myrient_url))
+    sources = prepare_sources_for_profile(sources, dat_profile)
+    report_active_sources = [source['name'] for source in sources if source.get('enabled', True)]
+    print_analysis_summary(build_analysis_summary(dat_file, rom_folder, dat_games, missing_games, dat_profile, sources))
 
     system_name = dat_profile.get('system_name') or detect_system_name(dat_file)
     print(f"SystÃƒÂ¨me dÃƒÂ©tectÃƒÂ© : {system_name}")
@@ -5843,7 +6304,8 @@ def cli_mode(args):
         args.limit,
         args.tosort,
         args.clean_torrentzip,
-        parallel_downloads=args.parallel
+        parallel_downloads=args.parallel,
+        refresh_resolution_cache=args.refresh_cache
     )
 
 
@@ -5945,6 +6407,7 @@ def gui_mode():
                 self.font = "Roboto" if "Roboto" in tkfont.families() else "Segoe UI"
                 self.session = requests.Session()
                 self.session.headers.update({'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'})
+                self.preferences = load_preferences()
                 self.default_sources = [source.copy() for source in get_default_sources()]
                 self.source_vars = {}
                 self.source_widgets = {}
@@ -5980,6 +6443,7 @@ def gui_mode():
                     pass
                 self.images['hero'] = self.load_photo(BALROG_1G1R_ICON, 16)
                 self.images['folder'] = None
+                self.apply_preferences()
                 self.build_ui()
                 self.dat_file.trace_add('write', lambda *_: self.root.after(120, self.refresh_profile))
                 if self.use_dnd:
@@ -6037,6 +6501,25 @@ def gui_mode():
             def toggle(self, parent, text, var):
                 return tk.Checkbutton(parent, text=text, variable=var, bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, activebackground=UI_COLOR_CARD_BG, activeforeground=UI_COLOR_TEXT_MAIN, selectcolor=UI_COLOR_INPUT_BG, anchor='w', font=(self.font, 10), disabledforeground=UI_COLOR_TEXT_SUB)
 
+            def apply_preferences(self):
+                dat_path = self.preferences.get('dat_file', '')
+                rom_folder = self.preferences.get('rom_folder', '')
+                if dat_path and os.path.exists(dat_path):
+                    self.dat_file.set(dat_path)
+                    self.dat_display.set(self.preferences.get('dat_label') or os.path.basename(dat_path))
+                if rom_folder and os.path.isdir(rom_folder):
+                    self.rom_folder.set(rom_folder)
+
+            def persist_preferences(self):
+                self.preferences.update({
+                    'dat_file': self.dat_file.get().strip(),
+                    'dat_label': self.dat_display.get().strip(),
+                    'rom_folder': self.rom_folder.get().strip(),
+                    'move_to_tosort': bool(getattr(self, 'move_to_tosort_var', tk.BooleanVar(value=False)).get()),
+                    'clean_torrentzip': bool(self.clean_torrentzip_var.get()),
+                })
+                save_preferences(self.preferences)
+
             def build_ui(self):
                 main = tk.Frame(self.root, bg=UI_COLOR_BG)
                 main.grid(row=0, column=0, sticky='nsew')
@@ -6075,7 +6558,8 @@ def gui_mode():
                 source_names = ', '.join(source['name'] for source in self.default_sources)
                 tk.Label(sources, text="Toutes les sources disponibles sont utilisees automatiquement. Les DDL passent avant Minerva, et archive.org reste le dernier recours.", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, justify='left', wraplength=880, font=(self.font, 9)).grid(row=1, column=0, sticky='w', pady=(6, 8))
                 tk.Label(sources, text=source_names, bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, justify='left', wraplength=880, font=(self.font, 9)).grid(row=2, column=0, sticky='w')
-                self.move_to_tosort_var = tk.BooleanVar(value=False)
+                self.move_to_tosort_var = tk.BooleanVar(value=bool(self.preferences.get('move_to_tosort', False)))
+                self.clean_torrentzip_var.set(bool(self.preferences.get('clean_torrentzip', False)))
                 self.toggle(sources, "Deplacer les ROMs hors DAT dans un sous-dossier ToSort", self.move_to_tosort_var).grid(row=3, column=0, sticky='w', pady=(14, 0))
                 self.toggle(sources, "Apres verification MD5, recompresser les archives en ZIP TorrentZip/RomVault", self.clean_torrentzip_var).grid(row=4, column=0, sticky='w', pady=(8, 0))
 
@@ -6087,6 +6571,8 @@ def gui_mode():
                 actions = tk.Frame(progress, bg=UI_COLOR_CARD_BG)
                 actions.grid(row=3, column=0, sticky='ew', pady=(16, 0))
                 actions.columnconfigure(0, weight=1)
+                self.analyze_button = self.button(actions, "Analyser", self.start_analysis, kind='ghost', width=12)
+                self.analyze_button.grid(row=0, column=0, sticky='w')
                 self.start_button = self.button(actions, "Lancer le telechargement", self.start, kind='accent', width=24)
                 self.start_button.grid(row=0, column=1, padx=(0, 10))
                 self.stop_button = self.button(actions, "Arreter", self.stop, kind='danger', width=12)
@@ -6220,6 +6706,7 @@ def gui_mode():
                 self.close_dat_dropdown()
                 self.dat_file.set(path)
                 self.dat_display.set(label or os.path.basename(path))
+                self.persist_preferences()
 
             def browse_dat(self):
                 filename = filedialog.askopenfilename(title="Selectionner le fichier DAT", filetypes=[("DAT files", "*.dat"), ("All files", "*.*")])
@@ -6230,6 +6717,7 @@ def gui_mode():
                 folder = filedialog.askdirectory(title="Selectionner le dossier de sortie")
                 if folder:
                     self.rom_folder.set(folder)
+                    self.persist_preferences()
 
             def auto_source(self):
                 default_url = self.dat_profile.get('default_source_url', '')
@@ -6260,13 +6748,50 @@ def gui_mode():
             def log(self, message):
                 print(message, flush=True)
 
-            def start(self):
+            def validate_paths(self):
                 if not self.dat_file.get() or not os.path.exists(self.dat_file.get()):
                     messagebox.showerror("Erreur", "Veuillez selectionner un fichier DAT valide")
-                    return
+                    return False
                 if not self.rom_folder.get() or not os.path.exists(self.rom_folder.get()):
                     messagebox.showerror("Erreur", "Veuillez selectionner un dossier de sortie valide")
+                    return False
+                return True
+
+            def start_analysis(self):
+                if not self.validate_paths():
                     return
+                self.persist_preferences()
+                self.status_var.set("Analyse du DAT et du dossier...")
+                self.analyze_button.configure(state=tk.DISABLED)
+                threading.Thread(target=self.run_analysis, daemon=True).start()
+
+            def run_analysis(self):
+                try:
+                    summary = analyze_dat_folder(
+                        self.dat_file.get().strip(),
+                        self.rom_folder.get().strip(),
+                        include_tosort=self.move_to_tosort_var.get(),
+                        custom_sources=self.selected_sources()
+                    )
+                    message = format_analysis_summary(summary)
+                    status = (
+                        f"Analyse: {summary['present_games']} presents, "
+                        f"{summary['missing_games']} manquants, "
+                        f"{format_bytes(summary['missing_size'])} estimes"
+                    )
+                    self._ui(lambda msg=status: self.status_var.set(msg))
+                    self._ui(lambda msg=message: messagebox.showinfo("Pre-analyse", msg))
+                except Exception as e:
+                    error_message = str(e)
+                    self._ui(lambda msg=error_message: messagebox.showerror("Erreur", f"Analyse impossible:\n{msg}"))
+                    self._ui(lambda: self.status_var.set("Erreur analyse"))
+                finally:
+                    self._ui(lambda: self.analyze_button.configure(state=tk.NORMAL))
+
+            def start(self):
+                if not self.validate_paths():
+                    return
+                self.persist_preferences()
                 self.running = True
                 self.start_button.configure(state=tk.DISABLED)
                 self.stop_button.configure(state=tk.NORMAL)
@@ -6289,6 +6814,11 @@ def gui_mode():
                     dat_games = parse_dat_file(dat_path)
                     local_roms, local_roms_normalized, local_game_names, signature_index = scan_local_roms(rom_folder, dat_games)
                     missing_games = find_missing_games(dat_games, local_roms, local_roms_normalized, local_game_names, signature_index)
+                    analysis_summary = build_analysis_summary(dat_path, rom_folder, dat_games, missing_games, dat_profile, sources)
+                    self.log(format_analysis_summary(analysis_summary))
+                    self._ui(lambda summary=analysis_summary: self.status_var.set(
+                        f"Analyse: {summary['present_games']} presents, {summary['missing_games']} manquants"
+                    ))
                     downloaded_items = []
                     failed_items = []
                     skipped_items = []
@@ -6457,8 +6987,10 @@ Exemples:
   python main.py --gui
   python main.py "dat\Nintendo - Game Boy (Retool).dat" "Roms\Game Boy"
   python main.py "dat\Sony - PlayStation 2 (Retool).dat" "Roms\PS2" --limit 10
+  python main.py "dat\Nintendo - Game Boy (Retool).dat" "Roms\Game Boy" --analyze
   python main.py  (mode interactif)
   python main.py --sources  (afficher les sources disponibles)
+  python main.py --diagnose
         '''
     )
     parser.add_argument('dat_file', nargs='?', help='Chemin vers le fichier DAT')
@@ -6471,12 +7003,24 @@ Exemples:
     parser.add_argument('--clean-torrentzip', action='store_true', help='Recompresser les archives validees MD5 en ZIP TorrentZip/RomVault')
     parser.add_argument('--parallel', type=int, default=DEFAULT_PARALLEL_DOWNLOADS, help=f'Nombre de telechargements simultanes (defaut: {DEFAULT_PARALLEL_DOWNLOADS})')
     parser.add_argument('--sources', action='store_true', help='Afficher les sources de telechargement')
+    parser.add_argument('--analyze', action='store_true', help='Afficher une pre-analyse DAT/dossier puis quitter')
+    parser.add_argument('--diagnose', action='store_true', help='Afficher un diagnostic local de l application')
+    parser.add_argument('--healthcheck-sources', action='store_true', help='Tester rapidement les sources configurees')
+    parser.add_argument('--refresh-cache', action='store_true', help='Ignorer et reconstruire le cache de resolution provider')
 
     args = parser.parse_args()
 
     # Show sources
     if args.sources:
         print_sources_info()
+        return
+
+    if args.diagnose:
+        print_diagnostic_report(build_diagnostic_report())
+        return
+
+    if args.healthcheck_sources:
+        print_provider_healthcheck(provider_healthcheck())
         return
 
     # GUI mode
@@ -6491,6 +7035,11 @@ Exemples:
 
     # CLI mode (dat_file and rom_folder provided)
     if args.dat_file and args.rom_folder:
+        if args.refresh_cache:
+            clear_resolution_cache()
+        if args.analyze:
+            print_analysis_summary(analyze_dat_folder(args.dat_file, args.rom_folder, include_tosort=args.tosort))
+            return
         cli_mode(args)
         return
 
