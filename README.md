@@ -60,7 +60,7 @@ Le champ DAT de la GUI est un menu deroulant alimente par `dat/**/*.dat`, avec r
 Les dossiers directs de `dat/` sont affiches comme titres de section en italique et ne sont pas selectionnables. Les fichiers DAT sous chaque section sont selectionnables.
 Le bouton `Parcourir` reste disponible comme secours pour choisir un DAT externe.
 Le bouton `Analyser` lance une pre-analyse sans telechargement: total DAT, presents, manquants, taille estimee et sources actives.
-En GUI, l'analyse resout aussi les sources candidates selon la limite configuree (`0` pour aucune, `all` pour tout resoudre).
+En GUI, l'analyse resout aussi les sources candidates selon la limite configuree (`0` pour aucune, `all` pour tout resoudre) et affiche les resultats detailles dans une fenetre paginee.
 La GUI retient localement le dernier DAT, le dernier dossier, les options ToSort/TorrentZip, le parallelisme et l'etat des logs.
 Le panneau `Logs` est repliable et affiche le detail des operations sans quitter la fenetre.
 L'ecran `Configurer les sources` permet aussi de changer l'ordre des sources, les activer/desactiver, fixer un timeout et un quota par run, saisir les cles API locales dans `.env`, voir l'etat des caches, vider tous les caches, invalider la source selectionnee et consulter les statistiques cumulees par provider.
@@ -111,7 +111,7 @@ python main.py --clear-listing-cache
 
 ## Roadmap implementee
 
-- UI: bouton `Analyser`, recherche/filtre DAT, logs repliables, resume de pre-analyse, limite de resolution candidate configurable et preferences GUI locales.
+- UI: bouton `Analyser`, recherche/filtre DAT, logs repliables, resume de pre-analyse, limite de resolution candidate configurable, resultats de pre-analyse pagines et preferences GUI locales.
 - Optimisation: cache de resolution provider, reprise HTTP via fichiers `.part`, validation MD5/taille avant skip, logs debit/ETA et agregations pipeline testables.
 - Analyse: sources candidates par echantillon et metriques provider dans les rapports.
 - Sources: commande `--healthcheck-sources`, configuration GUI activation/ordre/timeouts/quotas, cles API locales, etat des caches, invalidation par source, statistiques provider, cache de listings distants et registre provider commun.
@@ -120,7 +120,7 @@ python main.py --clear-listing-cache
 
 ## Etat de la roadmap
 
-- 1. UI: socle operationnel fait; restent la decomposition de la GUI Tk en composants, une vue paginee de pre-analyse et un statut detaille par jeu.
+- 1. UI: socle operationnel fait; restent la decomposition de la GUI Tk en composants et un statut detaille par jeu.
 - 2. Optimisation telechargement: reprise, cache, validation, metriques, agregations pipeline testables et ETA dans la barre de statut GUI sont en place; restent les vues statistiques.
 - 3. Sources: ordre, activation, cles API, timeouts, quotas, healthcheck, cache, invalidation par source et statistiques provider sont en place; reste le branchement complet de chaque provider sur l'interface commune.
 - 4. Qualite/architecture: CI, checks et packaging portable sont en place; restent extraction progressive de `src/core.py`, tests providers reseau et eventuel build `.exe`.
@@ -130,7 +130,7 @@ python main.py --clear-listing-cache
 ### 1. UI
 
 - Remplacer la GUI Tk monolithique par une UI plus structuree avec composants separes.
-- Ajouter une vue paginee pour les resultats detailles de pre-analyse.
+- Ajouter une vue detaillee par jeu pendant le telechargement.
 - Ajouter une recherche systeme plus avancee et un statut detaille par jeu.
 
 ### 2. Optimisation du telechargement
