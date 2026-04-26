@@ -35,6 +35,7 @@ python main.py --sources
 python main.py --diagnose
 python main.py --diagnose --diagnose-output diagnostic.json
 python main.py --healthcheck-sources
+python main.py --provider-registry
 python main.py --clear-listing-cache
 python main.py --clear-cache-source Minerva
 ```
@@ -114,7 +115,7 @@ python main.py --clear-listing-cache
 - UI: bouton `Analyser`, recherche/filtre DAT, logs repliables, resume de pre-analyse, limite de resolution candidate configurable, resultats de pre-analyse pagines et preferences GUI locales.
 - Optimisation: cache de resolution provider, reprise HTTP via fichiers `.part`, validation MD5/taille avant skip, logs debit/ETA et agregations pipeline testables.
 - Analyse: sources candidates par echantillon et metriques provider dans les rapports.
-- Sources: commande `--healthcheck-sources`, configuration GUI activation/ordre/timeouts/quotas, cles API locales, etat des caches, invalidation par source, statistiques provider, cache de listings distants et registre provider commun.
+- Sources: commandes `--healthcheck-sources` et `--provider-registry`, configuration GUI activation/ordre/timeouts/quotas, cles API locales, etat des caches, invalidation par source, statistiques provider, cache de listings distants et registre provider commun.
 - Diagnostic: commande `--diagnose` et export JSON pour l'etat local utile au support.
 - Qualite: CI GitHub Actions avec compilation, smoke checks, checks helpers, garde anti-regression, workflow packaging Windows et debut d'extraction des helpers runtime.
 
@@ -122,7 +123,7 @@ python main.py --clear-listing-cache
 
 - 1. UI: socle operationnel fait; restent la decomposition de la GUI Tk en composants et un statut detaille par jeu.
 - 2. Optimisation telechargement: reprise, cache, validation, metriques, agregations pipeline testables et ETA dans la barre de statut GUI sont en place; restent les vues statistiques.
-- 3. Sources: ordre, activation, cles API, timeouts, quotas, healthcheck, cache, invalidation par source et statistiques provider sont en place; reste le branchement complet de chaque provider sur l'interface commune.
+- 3. Sources: ordre, activation, cles API, timeouts, quotas, healthcheck, cache, invalidation par source, statistiques provider et registre commun inspectable sont en place; reste le branchement complet resolution/download de chaque provider sur l'interface commune.
 - 4. Qualite/architecture: CI, checks, packaging portable et workflow `.exe` manuel sont en place; restent extraction progressive de `src/core.py` et tests providers reseau.
 
 ## Roadmap
