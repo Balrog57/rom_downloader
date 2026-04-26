@@ -57,7 +57,7 @@ from itertools import islice
 from pathlib import Path
 from urllib.parse import quote, unquote, urljoin
 
-from .pipeline import build_pipeline_summary
+from .pipeline import build_pipeline_summary, merge_provider_metrics
 from .progress import DownloadProgressMeter, format_duration
 
 APP_ROOT = Path(__file__).resolve().parents[1]
@@ -6889,6 +6889,7 @@ def gui_mode():
                 self.source_enabled = dict(self.preferences.get('source_enabled', {}))
                 self.source_order = list(self.preferences.get('source_order', []))
                 self.source_policies = dict(self.preferences.get('source_policies', {}))
+                self.provider_stats = dict(self.preferences.get('provider_stats', {}))
                 self.source_vars = {}
                 self.source_widgets = {}
                 self.images = {}
@@ -7004,6 +7005,7 @@ def gui_mode():
                     'source_enabled': self.source_enabled,
                     'source_order': self.source_order,
                     'source_policies': self.source_policies,
+                    'provider_stats': self.provider_stats,
                 })
                 save_preferences(self.preferences)
 
@@ -7344,6 +7346,25 @@ def gui_mode():
                     sources.append(item)
                 return prepare_sources_for_profile(sources, self.dat_profile)
 
+            def provider_stats_text(self, source_name):
+                stats = self.provider_stats.get(source_name)
+                if not stats:
+                    return ""
+                attempts = int(stats.get('attempts', 0) or 0)
+                if attempts <= 0:
+                    return ""
+                ok = int(stats.get('downloaded', 0) or 0)
+                failed = int(stats.get('failed', 0) or 0)
+                dry = int(stats.get('dry_run', 0) or 0)
+                return f"stats {attempts} essais/{ok} ok/{failed} echec/{dry} dry"
+
+            def update_provider_stats(self, run_summary):
+                metrics = build_pipeline_summary(run_summary).get('provider_metrics', {})
+                if not metrics:
+                    return
+                self.provider_stats = merge_provider_metrics(self.provider_stats, metrics)
+                self.persist_preferences()
+
             def open_source_settings(self):
                 window = tk.Toplevel(self.root)
                 window.title("Sources")
@@ -7427,7 +7448,9 @@ def gui_mode():
                         mark = "[x]" if vars_by_name[name].get() else "[ ]"
                         source = known[name]
                         policy_text = source_policy_summary(policies_by_name.get(name, {}))
-                        suffix = f" - {policy_text}" if policy_text else ""
+                        stats_text = self.provider_stats_text(name)
+                        suffix_parts = [part for part in (policy_text, stats_text) if part]
+                        suffix = f" - {'; '.join(suffix_parts)}" if suffix_parts else ""
                         listbox.insert('end', f"{mark} {name} ({source.get('type', '')}){suffix}")
                     if selected_index is not None and listbox.size():
                         selected_index = max(0, min(selected_index, listbox.size() - 1))
@@ -7724,6 +7747,11 @@ def gui_mode():
                     downloaded_items = result['downloaded_items']
                     failed_items = result['failed_items']
                     skipped_items = result['skipped_items']
+                    self.update_provider_stats({
+                        'resolved_items': to_download,
+                        'failed_items': failed_items,
+                        'not_available': not_available,
+                    })
                     if not_available:
                         self.log(f"{len(not_available)} jeux non disponibles:")
                         for game in not_available[:20]:

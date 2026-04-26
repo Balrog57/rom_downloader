@@ -17,7 +17,7 @@ from src.core import (  # noqa: E402
     source_timeout_seconds,
     verify_downloaded_md5,
 )
-from src.pipeline import build_pipeline_summary  # noqa: E402
+from src.pipeline import build_pipeline_summary, merge_provider_metrics  # noqa: E402
 from src.progress import DownloadProgressMeter, format_duration  # noqa: E402
 
 
@@ -60,6 +60,8 @@ def main() -> None:
     assert_true(pipeline_summary["source_counts"]["Minerva"] == 1, "pipeline source count failed")
     assert_true(pipeline_summary["provider_metrics"]["EdgeEmu"]["quota_skipped"] == 1, "pipeline quota metric failed")
     assert_true(pipeline_summary["failure_causes"]["not_found"] == 1, "pipeline not_found cause failed")
+    merged = merge_provider_metrics({"EdgeEmu": {"attempts": 1, "failed": 1}}, {"EdgeEmu": {"attempts": 2, "downloaded": 1}})
+    assert_true(merged["EdgeEmu"]["attempts"] == 3 and merged["EdgeEmu"]["downloaded"] == 1, "provider metric merge failed")
 
     game = {"roms": [{"size": "4"}]}
     assert_true(expected_game_sizes(game) == {4}, "expected size extraction failed")

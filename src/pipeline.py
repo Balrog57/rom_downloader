@@ -73,3 +73,22 @@ def build_pipeline_summary(summary: dict) -> dict:
         "provider_metrics": aggregate_provider_metrics(resolved + failed),
         "failure_causes": failure_cause_counts(failed, not_available),
     }
+
+
+def merge_provider_metrics(existing: dict | None, incoming: dict | None) -> dict:
+    """Fusionne des metriques providers en conservant un cumul persistant."""
+    merged = {name: dict(values) for name, values in (existing or {}).items()}
+    for source_name, values in (incoming or {}).items():
+        target = merged.setdefault(source_name, {
+            "attempts": 0,
+            "downloaded": 0,
+            "failed": 0,
+            "skipped": 0,
+            "dry_run": 0,
+            "quota_skipped": 0,
+            "seconds": 0.0,
+        })
+        for key, value in values.items():
+            if isinstance(value, (int, float)):
+                target[key] = target.get(key, 0) + value
+    return merged
