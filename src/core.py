@@ -2336,6 +2336,23 @@ def print_provider_healthcheck(results: list[dict]) -> None:
     print("=" * 70)
 
 
+def print_provider_registry_info() -> None:
+    """Affiche les providers via l'interface commune."""
+    from .providers import build_provider_registry
+
+    adapters = build_provider_registry()
+    print("\n" + "=" * 70)
+    print("REGISTRE PROVIDERS")
+    print("=" * 70)
+    for index, adapter in enumerate(adapters, 1):
+        print(
+            f"{index:>2}. {adapter.name:<24} "
+            f"type={adapter.type:<14} priority={adapter.priority:<4} "
+            f"enabled={'oui' if adapter.enabled else 'non'}"
+        )
+    print("=" * 70)
+
+
 def build_diagnostic_report() -> dict:
     """Construit un diagnostic exportable de l'environnement runtime."""
     dat_items = discover_dat_menu_items()
@@ -7940,6 +7957,7 @@ Exemples:
     parser.add_argument('--diagnose', action='store_true', help='Afficher un diagnostic local de l application')
     parser.add_argument('--diagnose-output', help='Exporter le diagnostic JSON vers ce fichier')
     parser.add_argument('--healthcheck-sources', action='store_true', help='Tester rapidement les sources configurees')
+    parser.add_argument('--provider-registry', action='store_true', help='Afficher les providers via l interface commune')
     parser.add_argument('--refresh-cache', action='store_true', help='Ignorer et reconstruire le cache de resolution provider')
     parser.add_argument('--clear-listing-cache', action='store_true', help='Vider le cache des listings distants puis quitter')
     parser.add_argument('--clear-cache-source', help='Vider les caches lies a une source precise puis quitter')
@@ -7975,6 +7993,10 @@ Exemples:
 
     if args.healthcheck_sources:
         print_provider_healthcheck(provider_healthcheck())
+        return
+
+    if args.provider_registry:
+        print_provider_registry_info()
         return
 
     # GUI mode
