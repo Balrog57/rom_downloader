@@ -63,12 +63,12 @@ from .version import APP_VERSION
 
 # Nouveaux modules network (Phases 0-9)
 # Phase 0: imports modules network (activation progressive Phases 1-9)
-# from .network.sessions import create_optimized_session
-# from .network.circuits import SourceCircuitBreaker
-# from .network.cache_runtime import get_session_cache, clear_session_cache
-# from .network.metrics import load_provider_metrics, save_provider_metrics, prioritize_sources
-# from .network.downloads import ParallelDownloadPool
-# from .network.search import ParallelSearchPool
+from .network.sessions import create_optimized_session, timed_request, get_chunk_size, safe_stream_write, DEFAULT_TIMEOUT_SECONDS
+from .network.circuits import SourceCircuitBreaker
+from .network.cache_runtime import get_session_cache, clear_session_cache, RuntimeCache
+from .network.metrics import load_provider_metrics, save_provider_metrics, prioritize_sources, record_provider_attempt
+from .network.downloads import ParallelDownloadPool
+from .network.search import ParallelSearchPool
 
 APP_ROOT = Path(__file__).resolve().parents[1]
 SCAN_CACHE_FILENAME = ".rom_downloader_scan_cache.json"
@@ -2334,7 +2334,7 @@ def download_1fichier_free(url: str, dest_path: str, session: requests.Session, 
             downloaded = 0
             
             with open(dest_path, 'wb') as f:
-                for chunk in resp.iter_content(chunk_size=8192):
+                for chunk in resp.iter_content(chunk_size=DOWNLOAD_CHUNK_SIZE):
                     if chunk:
                         f.write(chunk)
                         downloaded += len(chunk)
@@ -2395,7 +2395,7 @@ def download_1fichier(file_id: str, dest_path: str, api_key: str, progress_callb
             downloaded = 0
             
             with open(dest_path, 'wb') as f:
-                for chunk in resp.iter_content(chunk_size=8192):
+                for chunk in resp.iter_content(chunk_size=DOWNLOAD_CHUNK_SIZE):
                     if chunk:
                         f.write(chunk)
                         downloaded += len(chunk)
@@ -2458,7 +2458,7 @@ def download_alldebrid(url: str, dest_path: str, api_key: str, progress_callback
             downloaded = 0
             
             with open(dest_path, 'wb') as f:
-                for chunk in resp.iter_content(chunk_size=8192):
+                for chunk in resp.iter_content(chunk_size=DOWNLOAD_CHUNK_SIZE):
                     if chunk:
                         f.write(chunk)
                         downloaded += len(chunk)
@@ -2519,7 +2519,7 @@ def download_realdebrid(url: str, dest_path: str, api_key: str, progress_callbac
             downloaded = 0
             
             with open(dest_path, 'wb') as f:
-                for chunk in resp.iter_content(chunk_size=8192):
+                for chunk in resp.iter_content(chunk_size=DOWNLOAD_CHUNK_SIZE):
                     if chunk:
                         f.write(chunk)
                         downloaded += len(chunk)
@@ -2996,7 +2996,7 @@ def download_from_ia_zip(identifier: str, zip_path: str, filename: str, dest_pat
         downloaded = 0
         
         with open(dest_path, 'wb') as f:
-            for chunk in resp.iter_content(chunk_size=8192):
+            for chunk in resp.iter_content(chunk_size=DOWNLOAD_CHUNK_SIZE):
                 if chunk:
                     f.write(chunk)
                     downloaded += len(chunk)
@@ -3055,7 +3055,7 @@ def download_from_archive_org(identifier: str, filename: str, dest_path: str, se
             downloaded = 0
             
             with open(dest_path, 'wb') as f:
-                for chunk in response.iter_content(chunk_size=8192):
+                for chunk in response.iter_content(chunk_size=DOWNLOAD_CHUNK_SIZE):
                     if chunk:
                         f.write(chunk)
                         downloaded += len(chunk)
@@ -4785,7 +4785,7 @@ def download_vimm(page_url: str, dest_path: str, session: requests.Session, prog
             total_size = int(r.headers.get('content-length', 0))
             downloaded = 0
             with open(dest_path, 'wb') as f:
-                for chunk in r.iter_content(chunk_size=8192):
+                for chunk in r.iter_content(chunk_size=DOWNLOAD_CHUNK_SIZE):
                     if chunk:
                         f.write(chunk)
                         downloaded += len(chunk)
@@ -5813,7 +5813,7 @@ def download_from_archive_org(identifier: str, filename: str, dest_path: str, pr
                 downloaded = 0
                 
                 with open(dest_path, 'wb') as f:
-                    for chunk in response.iter_content(chunk_size=8192):
+                    for chunk in response.iter_content(chunk_size=DOWNLOAD_CHUNK_SIZE):
                         if chunk:
                             f.write(chunk)
                             downloaded += len(chunk)
@@ -5866,7 +5866,7 @@ def download_from_archive_org(identifier: str, filename: str, dest_path: str, pr
                 downloaded = 0
 
                 with open(dest_path, 'wb') as f:
-                    for chunk in response.iter_content(chunk_size=8192):
+                    for chunk in response.iter_content(chunk_size=DOWNLOAD_CHUNK_SIZE):
                         if chunk:
                             f.write(chunk)
                             downloaded += len(chunk)
@@ -5908,7 +5908,7 @@ def download_from_archive_org(identifier: str, filename: str, dest_path: str, pr
                     downloaded = 0
 
                     with open(dest_path, 'wb') as f:
-                        for chunk in response.iter_content(chunk_size=8192):
+                        for chunk in response.iter_content(chunk_size=DOWNLOAD_CHUNK_SIZE):
                             if chunk:
                                 f.write(chunk)
                                 downloaded += len(chunk)
@@ -5956,12 +5956,8 @@ def get_input(prompt: str) -> str:
 
 
 def create_download_session() -> requests.Session:
-    """Cree une session HTTP isolee pour un thread de telechargement."""
-    session = requests.Session()
-    session.headers.update({
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-    })
-    return session
+    """Cree une session HTTP isolee pour un thread de telechargement (Phase 1)."""
+    return create_optimized_session()
 
 
 def interactive_mode():
@@ -6976,10 +6972,7 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
         clear_resolution_cache()
         clear_listing_cache()
 
-    session = requests.Session()
-    session.headers.update({
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-    })
+    session = create_optimized_session()
 
     dat_games = parse_dat_file(dat_file)
     local_roms, local_roms_normalized, local_game_names, signature_index = scan_local_roms(rom_folder, dat_games)
