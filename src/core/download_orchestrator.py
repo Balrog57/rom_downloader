@@ -7,6 +7,7 @@ from urllib.parse import quote
 from ..network.sessions import create_optimized_session
 from ..network.circuits import SourceCircuitBreaker
 from ..network.cache_runtime import get_session_cache, clear_session_cache, RuntimeCache
+from ..network.downloads import ParallelDownloadPool
 from ..network.metrics import load_provider_metrics, save_provider_metrics, prioritize_sources, record_provider_attempt
 from ..network.exceptions import ChecksumMismatchError, SourceTimeoutError, DownloadNetworkError
 from ..progress import DownloadProgressMeter, format_duration
@@ -436,7 +437,15 @@ def download_missing_games_sequentially(
             with log_lock:
                 log_func(message)
 
-        def worker_download(first_resolution: dict) -> tuple[str, dict]:
+        max_workers = min(parallel_downloads, limit or total)
+        log_func(f"Telechargements paralleles: {max_workers}")
+
+        pool = ParallelDownloadPool(
+            max_workers=max_workers,
+            circuit_breaker=circuit_breaker,
+        )
+
+        def _orchestrator_worker(first_resolution: dict) -> tuple[str, dict]:
             worker_session = create_download_session()
             game_label = first_resolution.get('game_name', 'Jeu')
 
@@ -465,75 +474,75 @@ def download_missing_games_sequentially(
                 circuit_breaker=circuit_breaker
             )
 
+        pool.download_fn = _orchestrator_worker
         futures = {}
-        max_workers = min(parallel_downloads, limit or total)
-        log_func(f"Telechargements paralleles: {max_workers}")
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-            for index, original_game in enumerate(missing_games, 1):
-                if not is_running():
-                    log_func("Arrete par l'utilisateur.")
-                    break
+        for index, original_game in enumerate(missing_games, 1):
+            if not is_running():
+                log_func("Arrete par l'utilisateur.")
+                break
 
-                if limit and handled >= limit:
-                    log_func(f"\nLimite atteinte ({limit} jeu(x) traite(s)).")
-                    break
+            if limit and handled >= limit:
+                log_func(f"\nLimite atteinte ({limit} jeu(x) traite(s)).")
+                break
 
-                game_name = original_game.get('game_name', 'Jeu inconnu')
-                log_func(f"\n[{index}/{total}] Recherche: {game_name}")
-                if status_callback:
-                    status_callback(f"Recherche {index}/{total}: {game_name[:60]}")
+            game_name = original_game.get('game_name', 'Jeu inconnu')
+            log_func(f"\n[{index}/{total}] Recherche: {game_name}")
+            if status_callback:
+                status_callback(f"Recherche {index}/{total}: {game_name[:60]}")
 
-                found, unavailable, cache_hit = resolve_game_sources_with_cache(
-                    original_game,
-                    sources,
-                    session,
-                    system_name,
-                    dat_profile,
-                    cache=resolution_cache
-                )
-                resolution_cache_dirty = resolution_cache_dirty or not cache_hit
-                if cache_hit:
-                    log_func("  Resolution: cache")
+            found, unavailable, cache_hit = resolve_game_sources_with_cache(
+                original_game,
+                sources,
+                session,
+                system_name,
+                dat_profile,
+                cache=resolution_cache
+            )
+            resolution_cache_dirty = resolution_cache_dirty or not cache_hit
+            if cache_hit:
+                log_func("  Resolution: cache")
 
-                handled += 1
-                if not found:
-                    log_func("  Aucun provider disponible")
-                    not_available.append((unavailable[0] if unavailable else original_game).copy())
-                    mark_game_handled()
-                    continue
-
-                first_resolution = found[0]
-                resolved_items.append(first_resolution.copy())
-                log_func(f"  Soumis: {game_name} [{first_resolution.get('source', 'unknown')}]")
-                future = executor.submit(worker_download, first_resolution)
-                futures[future] = game_name
-
-            for future in concurrent.futures.as_completed(futures):
-                game_name = futures[future]
-                if status_callback:
-                    status_callback(f"Validation: {game_name[:60]}")
-                try:
-                    status, result_item = future.result()
-                except Exception as e:
-                    status = 'failed'
-                    result_item = {'game_name': game_name, 'error': str(e)}
-
-                if status == 'downloaded':
-                    safe_log(f"  Telecharge: {result_item.get('download_filename', game_name)}")
-                    downloaded += 1
-                    downloaded_items.append(result_item.copy())
-                elif status == 'skipped':
-                    skipped += 1
-                    skipped_items.append(result_item.copy())
-                elif status == 'stopped':
-                    safe_log("Arrete par l'utilisateur.")
-                    break
-                else:
-                    safe_log(f"  Echec du telechargement: {game_name}")
-                    failed += 1
-                    failed_items.append(result_item.copy())
+            handled += 1
+            if not found:
+                log_func("  Aucun provider disponible")
+                not_available.append((unavailable[0] if unavailable else original_game).copy())
                 mark_game_handled()
+                continue
+
+            first_resolution = found[0]
+            resolved_items.append(first_resolution.copy())
+            log_func(f"  Soumis: {game_name} [{first_resolution.get('source', 'unknown')}]")
+            future = pool.submit(first_resolution)
+            futures[future] = game_name
+
+        for future in concurrent.futures.as_completed(futures):
+            game_name = futures[future]
+            if status_callback:
+                status_callback(f"Validation: {game_name[:60]}")
+            try:
+                status, result_item = future.result()
+            except Exception as e:
+                status = 'failed'
+                result_item = {'game_name': game_name, 'error': str(e)}
+
+            if status == 'downloaded':
+                safe_log(f"  Telecharge: {result_item.get('download_filename', game_name)}")
+                downloaded += 1
+                downloaded_items.append(result_item.copy())
+            elif status == 'skipped':
+                skipped += 1
+                skipped_items.append(result_item.copy())
+            elif status == 'stopped':
+                safe_log("Arrete par l'utilisateur.")
+                break
+            else:
+                safe_log(f"  Echec du telechargement: {game_name}")
+                failed += 1
+                failed_items.append(result_item.copy())
+            mark_game_handled()
+
+        pool.shutdown(wait=False)
 
         if resolution_cache_dirty:
             _facade.save_resolution_cache(resolution_cache)

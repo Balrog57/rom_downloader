@@ -21,7 +21,12 @@ from .metrics import record_provider_attempt
 
 
 class ParallelDownloadPool:
-    """Pool de workers pour telecharger N fichiers en parallele."""
+    """Pool de workers pour telecharger N fichiers en parallele.
+
+    Accepte une fonction de telechargement personnalisable via download_fn.
+    Par defaut utilise download_game() interne, mais peut accepter
+    download_with_provider_retries pour la logique orchestrateur complete.
+    """
 
     def __init__(
         self,
@@ -29,11 +34,13 @@ class ParallelDownloadPool:
         circuit_breaker: SourceCircuitBreaker | None = None,
         runtime_cache: RuntimeCache | None = None,
         metrics: dict[str, dict] | None = None,
+        download_fn: Callable | None = None,
     ):
         self.max_workers = max(1, max_workers)
         self.circuit = circuit_breaker or SourceCircuitBreaker()
         self.cache = runtime_cache or RuntimeCache()
         self.metrics = metrics or {}
+        self.download_fn = download_fn or self.download_game
         self.executor = concurrent.futures.ThreadPoolExecutor(
             max_workers=self.max_workers,
             thread_name_prefix="download_worker_",
@@ -139,8 +146,19 @@ class ParallelDownloadPool:
         result["error"] = "Toutes les sources ont echoue"
         return result
 
+    def submit(self, *args, **kwargs):
+        """Soumet un telechargement au pool. Utilise download_fn par defaut."""
+        return self.executor.submit(self.download_fn, *args, **kwargs)
+
     def submit_download(self, game_info: dict, dest_folder: str, **kwargs):
+        """Compatibilite: soumet via download_game."""
         return self.executor.submit(self.download_game, game_info, dest_folder, **kwargs)
+
+    def as_completed(self, futures: dict | None = None):
+        """Attends les resultats. Si futures=None, utilise le pool interne."""
+        if futures is not None:
+            return concurrent.futures.as_completed(futures)
+        return iter([])
 
     def shutdown(self, wait: bool = True) -> None:
         if not self._shutdown:
