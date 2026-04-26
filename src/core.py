@@ -2137,6 +2137,14 @@ def print_diagnostic_report(report: dict) -> None:
     print("=" * 70)
 
 
+def export_diagnostic_report(path: str | Path) -> str:
+    """Exporte le diagnostic runtime en JSON."""
+    output_path = Path(path)
+    report = build_diagnostic_report()
+    save_json_file(output_path, report)
+    return str(output_path)
+
+
 # ============================================================================
 # Fonctions de traitement
 # ============================================================================
@@ -6420,9 +6428,11 @@ def gui_mode():
                 self.dat_menu_items = []
                 self.rom_folder = tk.StringVar()
                 self.myrient_url = tk.StringVar()
+                self.parallel_var = tk.IntVar(value=max(1, int(self.preferences.get('parallel_downloads', DEFAULT_PARALLEL_DOWNLOADS) or DEFAULT_PARALLEL_DOWNLOADS)))
                 self.progress_var = tk.DoubleVar(value=0)
                 self.clean_torrentzip_var = tk.BooleanVar(value=False)
                 self.status_var = tk.StringVar(value="Pret a telecharger les jeux manquants")
+                self.log_visible = tk.BooleanVar(value=bool(self.preferences.get('logs_visible', False)))
                 self.hint_var = tk.StringVar(value="Selectionne un DAT du dossier dat, puis un dossier de sortie.")
                 self.root.title("ROM Downloader")
                 self.root.geometry("1040x760")
@@ -6517,6 +6527,8 @@ def gui_mode():
                     'rom_folder': self.rom_folder.get().strip(),
                     'move_to_tosort': bool(getattr(self, 'move_to_tosort_var', tk.BooleanVar(value=False)).get()),
                     'clean_torrentzip': bool(self.clean_torrentzip_var.get()),
+                    'parallel_downloads': max(1, int(self.parallel_var.get() or 1)),
+                    'logs_visible': bool(self.log_visible.get()),
                 })
                 save_preferences(self.preferences)
 
@@ -6562,6 +6574,12 @@ def gui_mode():
                 self.clean_torrentzip_var.set(bool(self.preferences.get('clean_torrentzip', False)))
                 self.toggle(sources, "Deplacer les ROMs hors DAT dans un sous-dossier ToSort", self.move_to_tosort_var).grid(row=3, column=0, sticky='w', pady=(14, 0))
                 self.toggle(sources, "Apres verification MD5, recompresser les archives en ZIP TorrentZip/RomVault", self.clean_torrentzip_var).grid(row=4, column=0, sticky='w', pady=(8, 0))
+                parallel_row = tk.Frame(sources, bg=UI_COLOR_CARD_BG)
+                parallel_row.grid(row=5, column=0, sticky='w', pady=(10, 0))
+                tk.Label(parallel_row, text="Telechargements simultanes", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 10)).pack(side='left')
+                parallel_spin = tk.Spinbox(parallel_row, from_=1, to=12, textvariable=self.parallel_var, width=5, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, buttonbackground=UI_COLOR_GHOST, relief='flat', font=(self.font, 10), command=self.persist_preferences)
+                parallel_spin.pack(side='left', padx=(10, 0))
+                parallel_spin.bind('<FocusOut>', lambda _event: self.persist_preferences())
 
                 progress = self.card(main, 3)
                 progress.columnconfigure(0, weight=1)
@@ -6578,7 +6596,19 @@ def gui_mode():
                 self.stop_button = self.button(actions, "Arreter", self.stop, kind='danger', width=12)
                 self.stop_button.grid(row=0, column=2, padx=(0, 10))
                 self.stop_button.configure(state=tk.DISABLED)
-                self.button(actions, "Quitter", self.root.quit, width=12).grid(row=0, column=3)
+                self.button(actions, "Logs", self.toggle_logs, width=10).grid(row=0, column=3, padx=(0, 10))
+                self.button(actions, "Diagnostic", self.export_diagnostic, width=12).grid(row=0, column=4, padx=(0, 10))
+                self.button(actions, "Quitter", self.root.quit, width=12).grid(row=0, column=5)
+                self.log_frame = tk.Frame(progress, bg=UI_COLOR_CARD_BG)
+                self.log_frame.grid(row=4, column=0, sticky='nsew', pady=(12, 0))
+                self.log_frame.columnconfigure(0, weight=1)
+                self.log_text = tk.Text(self.log_frame, height=9, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, insertbackground=UI_COLOR_TEXT_MAIN, relief='flat', wrap='word', font=(self.font, 9))
+                log_scroll = tk.Scrollbar(self.log_frame, orient='vertical', command=self.log_text.yview)
+                self.log_text.configure(yscrollcommand=log_scroll.set)
+                self.log_text.grid(row=0, column=0, sticky='nsew')
+                log_scroll.grid(row=0, column=1, sticky='ns')
+                if not self.log_visible.get():
+                    self.log_frame.grid_remove()
 
             def _drop(self, variable, event):
                 value = self._clean(event.data)
@@ -6600,6 +6630,22 @@ def gui_mode():
                     callback()
                 else:
                     self.root.after(0, callback)
+
+            def toggle_logs(self):
+                self.log_visible.set(not self.log_visible.get())
+                if self.log_visible.get():
+                    self.log_frame.grid()
+                else:
+                    self.log_frame.grid_remove()
+                self.persist_preferences()
+
+            def append_log(self, message):
+                if not hasattr(self, 'log_text'):
+                    return
+                self.log_text.configure(state='normal')
+                self.log_text.insert('end', str(message) + '\n')
+                self.log_text.see('end')
+                self.log_text.configure(state='normal')
 
             def populate_dat_menu(self):
                 self.dat_menu_items = discover_dat_menu_items()
@@ -6629,6 +6675,15 @@ def gui_mode():
 
                 outer = tk.Frame(dropdown, bg=UI_COLOR_CARD_BORDER)
                 outer.pack(fill='both', expand=True)
+                controls = tk.Frame(outer, bg=UI_COLOR_INPUT_BG)
+                controls.pack(fill='x')
+                filter_var = tk.StringVar()
+                family_var = tk.StringVar(value='all')
+                search = tk.Entry(controls, textvariable=filter_var, bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, insertbackground=UI_COLOR_TEXT_MAIN, relief='flat', font=(self.font, 10))
+                search.pack(fill='x', padx=8, pady=(8, 6), ipady=6)
+                filter_row = tk.Frame(controls, bg=UI_COLOR_INPUT_BG)
+                filter_row.pack(fill='x', padx=8, pady=(0, 6))
+
                 canvas = tk.Canvas(outer, bg=UI_COLOR_INPUT_BG, highlightthickness=0, bd=0, height=320)
                 scrollbar = tk.Scrollbar(outer, orient='vertical', command=canvas.yview)
                 content = tk.Frame(canvas, bg=UI_COLOR_INPUT_BG)
@@ -6639,38 +6694,6 @@ def gui_mode():
 
                 section_font = (self.font, 10, 'italic')
                 item_font = (self.font, 10)
-                row = 0
-                file_count = 0
-                for item in self.dat_menu_items:
-                    if item['type'] == 'section':
-                        label = tk.Label(content, text=item['label'], bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_ACCENT, font=section_font, anchor='w', padx=12, pady=8)
-                        label.grid(row=row, column=0, sticky='ew')
-                    else:
-                        file_count += 1
-                        label = item['label']
-                        button = tk.Button(
-                            content,
-                            text=label,
-                            command=lambda path=item['path'], label=label: self.select_dat(path, label),
-                            bg=UI_COLOR_INPUT_BG,
-                            fg=UI_COLOR_TEXT_MAIN,
-                            activebackground=UI_COLOR_GHOST_HOVER,
-                            activeforeground=UI_COLOR_TEXT_MAIN,
-                            relief='flat',
-                            bd=0,
-                            font=item_font,
-                            anchor='w',
-                            padx=24,
-                            pady=5,
-                            cursor='hand2',
-                        )
-                        button.grid(row=row, column=0, sticky='ew')
-                        button.bind('<Double-Button-1>', lambda _event, path=item['path'], label=label: self.select_dat(path, label))
-                    row += 1
-
-                if file_count == 0:
-                    tk.Label(content, text="Aucun DAT dans le dossier dat", bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_SUB, font=item_font, anchor='w', padx=12, pady=10).grid(row=0, column=0, sticky='ew')
-
                 content.columnconfigure(0, weight=1)
 
                 def update_scrollregion(_event=None):
@@ -6688,18 +6711,106 @@ def gui_mode():
                         canvas.yview_scroll(units, 'units')
                     return 'break'
 
-                content.bind('<Configure>', update_scrollregion)
-                canvas.bind('<Configure>', update_scrollregion)
-                for widget in (dropdown, outer, canvas, content):
+                def bind_scroll(widget):
                     widget.bind('<MouseWheel>', on_mousewheel)
                     widget.bind('<Button-4>', on_mousewheel)
                     widget.bind('<Button-5>', on_mousewheel)
-                for child in content.winfo_children():
-                    child.bind('<MouseWheel>', on_mousewheel)
-                    child.bind('<Button-4>', on_mousewheel)
-                    child.bind('<Button-5>', on_mousewheel)
+
+                def visible_items():
+                    selected_family = family_var.get()
+                    query = filter_var.get().strip().lower()
+                    grouped = []
+                    current_section = ''
+                    current_files = []
+                    for item in self.dat_menu_items:
+                        if item['type'] == 'section':
+                            if current_section and current_files:
+                                grouped.append((current_section, current_files))
+                            current_section = item['label']
+                            current_files = []
+                            continue
+                        section_key = current_section.lower()
+                        label = item['label']
+                        haystack = f"{current_section} {label}".lower()
+                        if selected_family != 'all' and section_key != selected_family:
+                            continue
+                        if query and query not in haystack:
+                            continue
+                        current_files.append(item)
+                    if current_section and current_files:
+                        grouped.append((current_section, current_files))
+                    return grouped
+
+                def render_items(*_args):
+                    for child in content.winfo_children():
+                        child.destroy()
+                    row = 0
+                    file_count = 0
+                    for section, files in visible_items():
+                        label = tk.Label(content, text=section, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_ACCENT, font=section_font, anchor='w', padx=12, pady=8)
+                        label.grid(row=row, column=0, sticky='ew')
+                        bind_scroll(label)
+                        row += 1
+                        for item in files:
+                            file_count += 1
+                            item_label = item['label']
+                            button = tk.Button(
+                                content,
+                                text=item_label,
+                                command=lambda path=item['path'], label=item_label: self.select_dat(path, label),
+                                bg=UI_COLOR_INPUT_BG,
+                                fg=UI_COLOR_TEXT_MAIN,
+                                activebackground=UI_COLOR_GHOST_HOVER,
+                                activeforeground=UI_COLOR_TEXT_MAIN,
+                                relief='flat',
+                                bd=0,
+                                font=item_font,
+                                anchor='w',
+                                padx=24,
+                                pady=5,
+                                cursor='hand2',
+                            )
+                            button.grid(row=row, column=0, sticky='ew')
+                            button.bind('<Double-Button-1>', lambda _event, path=item['path'], label=item_label: self.select_dat(path, label))
+                            bind_scroll(button)
+                            row += 1
+                    if file_count == 0:
+                        empty = tk.Label(content, text="Aucun DAT ne correspond au filtre", bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_SUB, font=item_font, anchor='w', padx=12, pady=10)
+                        empty.grid(row=0, column=0, sticky='ew')
+                        bind_scroll(empty)
+                    update_scrollregion()
+
+                def set_family(value):
+                    family_var.set(value)
+                    render_items()
+
+                sections = [item['label'] for item in self.dat_menu_items if item['type'] == 'section']
+                for value, text in [('all', 'Tous')] + [(section.lower(), section) for section in sections]:
+                    tk.Button(
+                        filter_row,
+                        text=text,
+                        command=lambda value=value: set_family(value),
+                        bg=UI_COLOR_GHOST,
+                        fg=UI_COLOR_TEXT_MAIN,
+                        activebackground=UI_COLOR_GHOST_HOVER,
+                        activeforeground=UI_COLOR_TEXT_MAIN,
+                        relief='flat',
+                        bd=0,
+                        padx=10,
+                        pady=4,
+                        font=(self.font, 9),
+                        cursor='hand2',
+                    ).pack(side='left', padx=(0, 6))
+
+                filter_var.trace_add('write', render_items)
+                content.bind('<Configure>', update_scrollregion)
+                canvas.bind('<Configure>', update_scrollregion)
+                for widget in (dropdown, outer, controls, filter_row, search, canvas, content):
+                    bind_scroll(widget)
 
                 dropdown.bind('<Escape>', lambda _event: self.close_dat_dropdown())
+                render_items()
+                search.focus_set()
                 self.root.update_idletasks()
 
             def select_dat(self, path, label=None):
@@ -6745,8 +6856,30 @@ def gui_mode():
                     sources.append(item)
                 return prepare_sources_for_profile(sources, self.dat_profile)
 
+            def export_diagnostic(self):
+                base_folder = self.rom_folder.get().strip() if self.rom_folder.get().strip() else str(APP_ROOT)
+                if not os.path.isdir(base_folder):
+                    base_folder = str(APP_ROOT)
+                filename = f"rom_downloader_diagnostic_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+                path = filedialog.asksaveasfilename(
+                    title="Exporter le diagnostic",
+                    initialdir=base_folder,
+                    initialfile=filename,
+                    defaultextension=".json",
+                    filetypes=[("JSON", "*.json"), ("All files", "*.*")]
+                )
+                if not path:
+                    return
+                try:
+                    exported = export_diagnostic_report(path)
+                    self.status_var.set(f"Diagnostic exporte: {exported}")
+                    messagebox.showinfo("Diagnostic", f"Diagnostic exporte:\n{exported}")
+                except Exception as e:
+                    messagebox.showerror("Diagnostic", f"Export impossible:\n{e}")
+
             def log(self, message):
                 print(message, flush=True)
+                self._ui(lambda msg=message: self.append_log(msg))
 
             def validate_paths(self):
                 if not self.dat_file.get() or not os.path.exists(self.dat_file.get()):
@@ -6884,7 +7017,7 @@ def gui_mode():
                         self.log,
                         status_callback,
                         is_running=lambda: self.running,
-                        parallel_downloads=int(os.environ.get('ROM_DOWNLOADER_PARALLEL_DOWNLOADS', DEFAULT_PARALLEL_DOWNLOADS))
+                        parallel_downloads=max(1, int(self.parallel_var.get() or 1))
                     )
                     to_download = result['resolved_items']
                     not_available = result['not_available']
@@ -7005,6 +7138,7 @@ Exemples:
     parser.add_argument('--sources', action='store_true', help='Afficher les sources de telechargement')
     parser.add_argument('--analyze', action='store_true', help='Afficher une pre-analyse DAT/dossier puis quitter')
     parser.add_argument('--diagnose', action='store_true', help='Afficher un diagnostic local de l application')
+    parser.add_argument('--diagnose-output', help='Exporter le diagnostic JSON vers ce fichier')
     parser.add_argument('--healthcheck-sources', action='store_true', help='Tester rapidement les sources configurees')
     parser.add_argument('--refresh-cache', action='store_true', help='Ignorer et reconstruire le cache de resolution provider')
 
@@ -7016,7 +7150,11 @@ Exemples:
         return
 
     if args.diagnose:
-        print_diagnostic_report(build_diagnostic_report())
+        report = build_diagnostic_report()
+        print_diagnostic_report(report)
+        if args.diagnose_output:
+            save_json_file(Path(args.diagnose_output), report)
+            print(f"Diagnostic exporte: {args.diagnose_output}")
         return
 
     if args.healthcheck_sources:
