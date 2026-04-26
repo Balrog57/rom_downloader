@@ -31,6 +31,7 @@ python main.py "dat\retool\Nintendo - Game Boy (20260405-031740).dat" "Roms\Game
 python main.py "dat\retool\Nintendo - Game Boy (20260405-031740).dat" "Roms\Game Boy" --analyze
 python main.py --sources
 python main.py --diagnose
+python main.py --diagnose --diagnose-output diagnostic.json
 python main.py --healthcheck-sources
 ```
 
@@ -48,11 +49,12 @@ Le depot ne contient plus de runtime externe ni de dossier de generation. Les fi
 
 ## Interface
 
-Le champ DAT de la GUI est un menu deroulant alimente par `dat/**/*.dat`.
+Le champ DAT de la GUI est un menu deroulant alimente par `dat/**/*.dat`, avec recherche texte et filtres par section.
 Les dossiers directs de `dat/` sont affiches comme titres de section en italique et ne sont pas selectionnables. Les fichiers DAT sous chaque section sont selectionnables.
 Le bouton `Parcourir` reste disponible comme secours pour choisir un DAT externe.
 Le bouton `Analyser` lance une pre-analyse sans telechargement: total DAT, presents, manquants, taille estimee et sources actives.
-La GUI retient localement le dernier DAT, le dernier dossier et les options ToSort/TorrentZip.
+La GUI retient localement le dernier DAT, le dernier dossier, les options ToSort/TorrentZip, le parallelisme et l'etat des logs.
+Le panneau `Logs` est repliable et affiche le detail des operations sans quitter la fenetre.
 
 Les sources de telechargement sont automatiques: les sources directes sont essayees avant Minerva, puis archive.org en dernier recours.
 La resolution des providers est mise en cache temporairement dans `.rom_downloader_resolution_cache.json` pour eviter de refaire les memes recherches pendant plusieurs essais; `--refresh-cache` force une reconstruction.
@@ -89,18 +91,18 @@ python main.py --diagnose
 
 ## Roadmap implementee
 
-- UI: bouton `Analyser`, resume de pre-analyse et preferences GUI locales.
+- UI: bouton `Analyser`, recherche/filtre DAT, logs repliables, resume de pre-analyse et preferences GUI locales.
 - Optimisation: cache de resolution provider et reprise HTTP via fichiers `.part`.
 - Sources: commande `--healthcheck-sources` pour verifier les sources actives.
-- Diagnostic: commande `--diagnose` pour exporter l'etat local utile au support.
+- Diagnostic: commande `--diagnose` et export JSON pour l'etat local utile au support.
 
 ## Roadmap
 
 ### 1. UI
 
-- Remplacer la GUI Tk monolithique par une UI plus structuree: panneau DAT avec recherche, filtres par famille, recherche systeme, statut detaille par jeu et logs repliables.
+- Remplacer la GUI Tk monolithique par une UI plus structuree avec composants separes.
 - Etendre la pre-analyse avec les sources candidates par jeu.
-- Ajouter une preference persistante pour le parallelisme.
+- Ajouter une recherche systeme plus avancee et un statut detaille par jeu.
 
 ### 2. Optimisation du telechargement
 
