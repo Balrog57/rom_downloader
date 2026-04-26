@@ -59,6 +59,7 @@ from urllib.parse import quote, unquote, urljoin
 
 from .pipeline import build_pipeline_summary, merge_provider_metrics
 from .progress import DownloadProgressMeter, format_duration
+from .version import APP_VERSION
 
 APP_ROOT = Path(__file__).resolve().parents[1]
 SCAN_CACHE_FILENAME = ".rom_downloader_scan_cache.json"
@@ -2697,6 +2698,7 @@ def build_diagnostic_report() -> dict:
             dependencies[module_name] = False
             dependency_errors[module_name] = traceback.format_exc(limit=1).strip().splitlines()[-1]
     return {
+        'app_version': APP_VERSION,
         'python': sys.version.split()[0],
         'executable': sys.executable,
         'platform': platform.platform(),
@@ -2729,6 +2731,7 @@ def print_diagnostic_report(report: dict) -> None:
     print("\n" + "=" * 70)
     print("DIAGNOSTIC ROM DOWNLOADER")
     print("=" * 70)
+    print(f"Version app: {report.get('app_version', APP_VERSION)}")
     print(f"Python: {report['python']} ({report['executable']})")
     print(f"Plateforme: {report['platform']}")
     print(f"Racine app: {report['app_root']}")
@@ -7296,7 +7299,7 @@ def gui_mode():
                 self.status_var = tk.StringVar(value="Pret a telecharger les jeux manquants")
                 self.log_visible = tk.BooleanVar(value=bool(self.preferences.get('logs_visible', False)))
                 self.hint_var = tk.StringVar(value="Selectionne un DAT du dossier dat, puis un dossier de sortie.")
-                self.root.title("ROM Downloader")
+                self.root.title(f"ROM Downloader {APP_VERSION}")
                 self.root.geometry("1040x760")
                 self.root.minsize(940, 660)
                 self.root.configure(bg=UI_COLOR_BG)
@@ -7408,7 +7411,7 @@ def gui_mode():
                 header = self.card(main, 0)
                 header.columnconfigure(1, weight=1)
                 tk.Frame(header, bg=UI_COLOR_ACCENT, width=6).grid(row=0, column=0, rowspan=2, sticky='ns', padx=(0, 14))
-                tk.Label(header, text="ROM Downloader", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 18, 'bold')).grid(row=0, column=1, sticky='w')
+                tk.Label(header, text=f"ROM Downloader {APP_VERSION}", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 18, 'bold')).grid(row=0, column=1, sticky='w')
                 tk.Label(header, text="Charge un DAT No-Intro ou Redump retraite avec Retool, compare le dossier cible et telecharge les ROMs manquantes en DDL, puis via Minerva, puis archive.org si besoin.", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, justify='left', wraplength=760, font=(self.font, 10)).grid(row=1, column=1, sticky='w', pady=(2, 0))
                 self.family_badge = None
                 self.mode_badge = None
@@ -8307,6 +8310,7 @@ Exemples:
     parser.add_argument('--clean-torrentzip', action='store_true', help='Recompresser les archives validees MD5 en ZIP TorrentZip/RomVault')
     parser.add_argument('--parallel', type=int, default=DEFAULT_PARALLEL_DOWNLOADS, help=f'Nombre de telechargements simultanes (defaut: {DEFAULT_PARALLEL_DOWNLOADS})')
     parser.add_argument('--sources', action='store_true', help='Afficher les sources de telechargement')
+    parser.add_argument('--version', action='version', version=f'ROM Downloader {APP_VERSION}', help='Afficher la version puis quitter')
     parser.add_argument('--analyze', action='store_true', help='Afficher une pre-analyse DAT/dossier puis quitter')
     parser.add_argument('--analyze-candidates', default='0', help="Pendant --analyze, resoudre les sources candidates des N premiers manquants, ou 'all'")
     parser.add_argument('--diagnose', action='store_true', help='Afficher un diagnostic local de l application')

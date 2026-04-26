@@ -32,6 +32,7 @@ jobs:
             --add-data "assets;assets" `
             --add-data "dat;dat" `
             --add-data "db;db" `
+            --add-data "VERSION;." `
             main.py
       - name: Upload executable
         uses: actions/upload-artifact@v4

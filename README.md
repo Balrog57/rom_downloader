@@ -4,6 +4,12 @@ Application Python pour comparer un DAT 1G1R a un dossier de ROMs, detecter les 
 
 ## Utilisation
 
+Installation Windows depuis GitHub Releases:
+
+```powershell
+powershell -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/Balrog57/rom_downloader/main/install.ps1 | iex"
+```
+
 Interface graphique:
 
 ```powershell
@@ -32,6 +38,7 @@ python main.py "dat\retool\Nintendo - Game Boy (20260405-031740).dat" "Roms\Game
 python main.py "dat\retool\Nintendo - Game Boy (20260405-031740).dat" "Roms\Game Boy" --analyze --analyze-candidates 10
 python main.py "dat\retool\Nintendo - Game Boy (20260405-031740).dat" "Roms\Game Boy" --analyze --analyze-candidates all
 python main.py --sources
+python main.py --version
 python main.py --healthcheck-sources
 python main.py --provider-registry
 python main.py --clear-listing-cache
@@ -41,6 +48,7 @@ python main.py --clear-cache-source Minerva
 ## Structure du depot
 
 - `main.py`: point d'entree de l'application.
+- `VERSION`: version applicative courante, utilisee par `--version`, la GUI et les releases.
 - `src/`: code Python de l'application.
 - `src/progress.py`: helpers de progression, debit et ETA des transferts.
 - `src/pipeline.py`: agregations testables du pipeline resolution/telechargement.
@@ -49,6 +57,8 @@ python main.py --clear-cache-source Minerva
 - `db/shard_*.zip`: shards SQLite compresses pour la recherche locale par MD5.
 - `.env.example`: exemple de configuration locale.
 - `requirements.txt`: dependances Python.
+- `install.ps1`: installateur Windows qui telecharge la derniere release GitHub.
+- `release.ps1`: helper mainteneur pour mettre a jour `VERSION`, commit, tag et pousser une release.
 - `PACKAGING_WINDOWS.md`: notes pour une archive Windows portable.
 
 Le depot ne contient plus de runtime externe ni de dossier de generation. Les fichiers temporaires, caches, rapports locaux et donnees extraites restent ignores par Git.
@@ -101,8 +111,23 @@ python -m py_compile @files
 python tests\smoke_checks.py
 python tests\core_helper_checks.py
 python main.py --sources
+python main.py --version
 python main.py --clear-listing-cache
 ```
+
+## Versioning et releases Windows
+
+Le depot utilise un versioning SemVer dans `VERSION` (`MAJOR.MINOR.PATCH`).
+
+Pour publier une version:
+
+```powershell
+.\release.ps1 -Version 0.1.0 -Push
+```
+
+Le workflow GitHub Actions `Release Windows` compile `ROMDownloader.exe`, cree `ROMDownloader-windows-<version>.zip`, publie le checksum SHA256 et attache les fichiers a la release GitHub.
+
+L'installateur Windows telecharge la derniere release publique, l'installe dans `%LOCALAPPDATA%\ROMDownloader`, cree les raccourcis Menu Demarrer/Bureau, et conserve `.env` ainsi que les preferences lors d'une reinstall avec `-Force`.
 
 ## Roadmap implementee
 

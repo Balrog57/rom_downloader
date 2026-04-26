@@ -25,6 +25,8 @@ jobs:
         run: python tests\smoke_checks.py
       - name: Core helper checks
         run: python tests\core_helper_checks.py
+      - name: Version command
+        run: python main.py --version
       - name: Obsolete reference guard
         shell: pwsh
         run: |
