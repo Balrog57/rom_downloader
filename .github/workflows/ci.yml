@@ -19,10 +19,12 @@ jobs:
       - name: Compile Python
         shell: pwsh
         run: |
-          $files = @("main.py") + (Get-ChildItem src -Recurse -Filter *.py | ForEach-Object { $_.FullName })
+          $files = @("main.py") + (Get-ChildItem src,tests -Recurse -Filter *.py | ForEach-Object { $_.FullName })
           python -m py_compile @files
       - name: Runtime smoke checks
         run: python tests\smoke_checks.py
+      - name: Core helper checks
+        run: python tests\core_helper_checks.py
       - name: Obsolete reference guard
         shell: pwsh
         run: |
