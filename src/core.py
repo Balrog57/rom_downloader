@@ -125,11 +125,15 @@ def install_python_packages(packages: list[str], quiet: bool = True) -> bool:
         return False
 
 
+OPTIONAL_IMPORT_ERRORS = {}
+
+
 def import_optional_package(import_name: str, pip_name: str | None = None, auto_install: bool = False):
     """Importe un package optionnel, avec installation automatique si demandee."""
     try:
         return importlib.import_module(import_name)
-    except ImportError:
+    except ImportError as e:
+        OPTIONAL_IMPORT_ERRORS[import_name] = str(e)
         if not auto_install:
             return None
     package_name = pip_name or import_name
@@ -138,6 +142,7 @@ def import_optional_package(import_name: str, pip_name: str | None = None, auto_
         try:
             return importlib.import_module(import_name)
         except ImportError as e:
+            OPTIONAL_IMPORT_ERRORS[import_name] = str(e)
             print(f"Avertissement: {package_name} installe mais import impossible: {e}")
     return None
 
@@ -460,6 +465,7 @@ SOURCE_FAMILY_MAP = {
 }
 MINERVA_TORRENT_AVAILABILITY = {}
 MINERVA_TORRENT_URL_CACHE = {}
+MINERVA_TORRENT_BACKEND_WARNING_SHOWN = False
 LOLROMS_SESSION = None
 
 # ============================================================================
@@ -485,6 +491,7 @@ DEFAULT_CONFIG_URLS = {
 }
 ROM_DATABASE = None
 ROM_DB_SHARD_CONNECTIONS = {}
+ROM_DB_SHARD_CONNECTIONS_LOCK = threading.Lock()
 
 
 def load_rom_database():
@@ -531,37 +538,41 @@ def load_rom_db_shard(shard_char: str):
     if not re.fullmatch(r'[0-9a-f]', shard_char):
         return None, set()
 
-    cached = ROM_DB_SHARD_CONNECTIONS.get(shard_char)
-    if cached:
-        return cached['conn'], cached['columns']
+    with ROM_DB_SHARD_CONNECTIONS_LOCK:
+        cached = ROM_DB_SHARD_CONNECTIONS.get(shard_char)
+        if cached:
+            return cached['conn'], cached['columns']
 
-    shard_zip = ROM_DATABASE_SHARDS_DIR / f"shard_{shard_char}.zip"
-    shard_db_name = f"shard_{shard_char}.db"
-    if not shard_zip.exists():
-        return None, set()
+        shard_zip = ROM_DATABASE_SHARDS_DIR / f"shard_{shard_char}.zip"
+        shard_db_name = f"shard_{shard_char}.db"
+        if not shard_zip.exists():
+            return None, set()
 
-    try:
-        import sqlite3
-        import zipfile
-        from tempfile import NamedTemporaryFile
+        try:
+            import sqlite3
+            import zipfile
+            from tempfile import NamedTemporaryFile
 
-        with zipfile.ZipFile(shard_zip, 'r') as zf:
-            with zf.open(shard_db_name) as db_file:
-                with NamedTemporaryFile(delete=False, suffix='.db') as tmp:
-                    tmp.write(db_file.read())
-                    tmp_path = tmp.name
+            with zipfile.ZipFile(shard_zip, 'r') as zf:
+                with zf.open(shard_db_name) as db_file:
+                    with NamedTemporaryFile(delete=False, suffix='.db') as tmp:
+                        tmp.write(db_file.read())
+                        tmp_path = tmp.name
 
-        conn = sqlite3.connect(tmp_path)
-        columns = {row[1] for row in conn.execute("PRAGMA table_info(roms)").fetchall()}
-        ROM_DB_SHARD_CONNECTIONS[shard_char] = {
-            'conn': conn,
-            'columns': columns,
-            'tmp_path': tmp_path
-        }
-        return conn, columns
-    except Exception as e:
-        print(f"Erreur ouverture shard {shard_char}: {e}")
-        return None, set()
+            conn = sqlite3.connect(tmp_path, check_same_thread=False)
+            lock = threading.RLock()
+            with lock:
+                columns = {row[1] for row in conn.execute("PRAGMA table_info(roms)").fetchall()}
+            ROM_DB_SHARD_CONNECTIONS[shard_char] = {
+                'conn': conn,
+                'columns': columns,
+                'tmp_path': tmp_path,
+                'lock': lock,
+            }
+            return conn, columns
+        except Exception as e:
+            print(f"Erreur ouverture shard {shard_char}: {e}")
+            return None, set()
 
 
 def build_minerva_torrent_url_from_path(torrent_path: str) -> str:
@@ -597,10 +608,18 @@ def search_by_md5(md5_hash: str) -> list:
         return []
 
     try:
-        cursor = conn.cursor()
+        shard_cache = ROM_DB_SHARD_CONNECTIONS.get(md5_hash[0]) or {}
+        shard_lock = shard_cache.get('lock') or threading.RLock()
+        with shard_lock:
+            cursor = conn.cursor()
+            if 'entries' in columns:
+                cursor.execute("SELECT entries, urls FROM roms WHERE md5 = ?", (md5_hash,))
+                row = cursor.fetchone()
+            else:
+                cursor.execute("SELECT urls FROM roms WHERE md5 = ?", (md5_hash,))
+                row = cursor.fetchone()
+
         if 'entries' in columns:
-            cursor.execute("SELECT entries, urls FROM roms WHERE md5 = ?", (md5_hash,))
-            row = cursor.fetchone()
             if not row:
                 return []
 
@@ -630,8 +649,6 @@ def search_by_md5(md5_hash: str) -> list:
                 })
             return results
 
-        cursor.execute("SELECT urls FROM roms WHERE md5 = ?", (md5_hash,))
-        row = cursor.fetchone()
         if not row:
             return []
 
@@ -789,7 +806,7 @@ def get_default_sources_legacy():
             'base_url': config.get('1fichier_free', ''),
             'type': 'free_host',
             'enabled': True,
-            'description': 'Mode gratuit avec attente (si lien dÃ©tectÃ©)',
+            'description': 'Mode gratuit avec attente (si lien detecte)',
             'priority': 3
         }
     ]
@@ -1101,7 +1118,7 @@ def get_default_sources():
             'base_url': config.get('1fichier_free', ''),
             'type': 'free_host',
             'enabled': True,
-            'description': 'Mode gratuit avec attente (si lien dÃƒÂ©tectÃƒÂ©)',
+            'description': 'Mode gratuit avec attente (si lien detecte)',
             'priority': 4
         }
     ]
@@ -1692,13 +1709,22 @@ def resolve_executable_path(candidates: tuple[str, ...], fallback_paths: tuple[s
 def download_from_minerva_torrent(torrent_url: str, target_filename: str, dest_path: str,
                                   progress_callback=None) -> bool:
     """Telecharge un fichier precis depuis un torrent Minerva avec libtorrent."""
+    global MINERVA_TORRENT_BACKEND_WARNING_SHOWN
+
     if not torrent_url or not target_filename:
         print("  Erreur: URL de torrent ou nom de fichier manquant")
         return False
 
-    lt = import_optional_package('libtorrent', auto_install=True)
+    lt = import_optional_package('libtorrent', auto_install=False)
     if lt is None:
-        print("  Erreur: libtorrent est requis pour le telechargement torrent Minerva")
+        if not MINERVA_TORRENT_BACKEND_WARNING_SHOWN:
+            py_version = f"{sys.version_info.major}.{sys.version_info.minor}"
+            import_error = OPTIONAL_IMPORT_ERRORS.get('libtorrent', 'module introuvable')
+            print("  Minerva torrent ignore: backend libtorrent indisponible.")
+            print(f"  Python courant: {py_version}; erreur import: {import_error}")
+            print("  Solution: installer un binding libtorrent compatible avec cet interpreteur,")
+            print("  ou utiliser les sources HTTP/DDL et archive.org qui continuent sans torrent.")
+            MINERVA_TORRENT_BACKEND_WARNING_SHOWN = True
         return False
 
     temp_dir = Path(tempfile.mkdtemp(prefix='minerva-torrent-'))
@@ -4858,15 +4884,15 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
         all_found.extend(found)
     
     # ========================================================================
-    # RÃ‰SUMÃ‰
+    # RESUME
     # ========================================================================
     print(f"\n{'=' * 70}")
-    print(f"RÃ‰SUMÃ‰ DE LA RECHERCHE")
+    print("RESUME DE LA RECHERCHE")
     print(f"{'=' * 70}")
-    print(f"  Jeux trouvÃ©s (base locale): {len(found_in_db)}")
-    print(f"  Jeux trouvÃ©s (Myrient direct): {len(all_found) - len(found_in_db)}")
-    print(f"  Total trouvÃ©s: {len(all_found)}")
-    print(f"  Jeux non trouvÃ©s: {len(still_missing)}")
+    print(f"  Jeux trouves (base locale): {len(found_in_db)}")
+    print(f"  Jeux trouves (Myrient direct): {len(all_found) - len(found_in_db)}")
+    print(f"  Total trouves: {len(all_found)}")
+    print(f"  Jeux non trouves: {len(still_missing)}")
     print(f"{'=' * 70}")
     
     return all_found, still_missing
@@ -4886,7 +4912,7 @@ def search_all_sources(
     Returns (found_games: list, not_found_games: list)
     """
     print("\n" + "=" * 70)
-    print(f"Recherche des jeux manquants pour le systÃƒÂ¨me: {system_name or 'Inconnu'}")
+    print(f"Recherche des jeux manquants pour le systeme: {system_name or 'Inconnu'}")
     print("=" * 70)
 
     load_rom_database()
@@ -4906,10 +4932,10 @@ def search_all_sources(
     mappings = SYSTEM_MAPPINGS.get(system_name, {}) if system_name else {}
 
     # ========================================================================
-    # Ã‰TAPE 1 : Recherche dans la base de donnÃ©es locale (shards + fallback)
+    # ETAPE 1 : Recherche dans la base de donnees locale (shards + fallback)
     # ========================================================================
     print(f"\n{'=' * 70}")
-    print("Ã‰TAPE 1: Recherche dans la base de donnÃ©es locale (MD5 shards + fallback)")
+    print("ETAPE 1: Recherche dans la base de donnees locale (MD5 shards + fallback)")
     print(f"{'=' * 70}")
 
     not_in_db = []
@@ -4935,8 +4961,8 @@ def search_all_sources(
     all_found.extend(found_in_db)
     still_missing = not_in_db
 
-    print(f"\n  TrouvÃƒÂ© dans la base: {len(found_in_db)} jeux")
-    print(f"  Non trouvÃƒÂ© dans la base: {len(still_missing)} jeux")
+    print(f"\n  Trouve dans la base: {len(found_in_db)} jeux")
+    print(f"  Non trouve dans la base: {len(still_missing)} jeux")
 
     # ========================================================================
     # ETAPE 2 : Recherche directe sur les sources DDL type listing HTML
@@ -4994,7 +5020,7 @@ def search_all_sources(
     print(f"  Restants apres DDL direct: {len(still_missing)} jeux")
 
     # ========================================================================
-    # Ã‰TAPE 3 : Recherche via scrapers secondaires
+    # ETAPE 3 : Recherche via scrapers secondaires
     # ========================================================================
     if still_missing and system_name:
         for source in sources:
@@ -5017,7 +5043,7 @@ def search_all_sources(
                                 game_info['source'] = 'EdgeEmu'
                                 game_info['download_filename'] = edge_match['filename']
                                 newly_found.append(game_info)
-                                print(f"  [EdgeEmu] {game_info['game_name']} trouvÃƒÂ©")
+                                print(f"  [EdgeEmu] {game_info['game_name']} trouve")
                             else:
                                 remaining.append(game_info)
                         all_found.extend(newly_found)
@@ -5038,7 +5064,7 @@ def search_all_sources(
                                 game_info['source'] = 'PlanetEmu'
                                 game_info['download_filename'] = f"{game_info['game_name']}.zip"
                                 newly_found.append(game_info)
-                                print(f"  [PlanetEmu] {game_info['game_name']} trouvÃƒÂ©")
+                                print(f"  [PlanetEmu] {game_info['game_name']} trouve")
                             else:
                                 remaining.append(game_info)
                         all_found.extend(newly_found)
@@ -5064,7 +5090,7 @@ def search_all_sources(
                                 game_info['source'] = 'LoLROMs'
                                 game_info['download_filename'] = matched['filename']
                                 newly_found.append(game_info)
-                                print(f"  [LoLROMs] {game_info['game_name']} trouvÃ©")
+                                print(f"  [LoLROMs] {game_info['game_name']} trouve")
                             else:
                                 remaining.append(game_info)
 
@@ -5083,7 +5109,7 @@ def search_all_sources(
                         game_info['source'] = 'CDRomance'
                         game_info['download_filename'] = f"{game_info['game_name']}.zip"
                         newly_found.append(game_info)
-                        print(f"  [CDRomance] {game_info['game_name']} trouvÃ©")
+                        print(f"  [CDRomance] {game_info['game_name']} trouve")
                     else:
                         remaining.append(game_info)
                 all_found.extend(newly_found)
@@ -5103,7 +5129,7 @@ def search_all_sources(
                             game_info['source'] = 'Vimm\'s Lair'
                             game_info['download_filename'] = f"{game_info['game_name']}.zip"
                             newly_found.append(game_info)
-                            print(f"  [Vimm] {game_info['game_name']} trouvÃ©")
+                            print(f"  [Vimm] {game_info['game_name']} trouve")
                         else:
                             remaining.append(game_info)
                     all_found.extend(newly_found)
@@ -5122,7 +5148,7 @@ def search_all_sources(
                             game_info['source'] = 'RetroGameSets'
                             game_info['download_filename'] = f"{game_info['game_name']}.zip"
                             newly_found.append(game_info)
-                            print(f"  [RetroGameSets] {game_info['game_name']} trouvÃ©")
+                            print(f"  [RetroGameSets] {game_info['game_name']} trouve")
                         else:
                             remaining.append(game_info)
                     all_found.extend(newly_found)
@@ -5191,14 +5217,14 @@ def search_all_sources(
         all_found.extend(found)
 
     print(f"\n{'=' * 70}")
-    print("RÃƒâ€°SUMÃƒâ€° DE LA RECHERCHE")
+    print("RESUME DE LA RECHERCHE")
     print(f"{'=' * 70}")
     print(f"  Jeux trouves (DDL direct): {len(direct_found)}")
     print(f"  Jeux trouves (base locale): {len(found_in_db)}")
     print(f"  Jeux trouves (Minerva torrent): {len(minerva_found)}")
     print(f"  Jeux trouves (archive.org dernier recours): {len(archive_found)}")
-    print(f"  Total trouvÃƒÂ©s: {len(all_found)}")
-    print(f"  Jeux non trouvÃƒÂ©s: {len(still_missing)}")
+    print(f"  Total trouves: {len(all_found)}")
+    print(f"  Jeux non trouves: {len(still_missing)}")
     print(f"{'=' * 70}")
 
     return all_found, still_missing
@@ -6632,10 +6658,10 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
     print_analysis_summary(build_analysis_summary(dat_file, rom_folder, dat_games, missing_games, dat_profile, sources))
 
     system_name = dat_profile.get('system_name') or detect_system_name(dat_file)
-    print(f"SystÃƒÂ¨me dÃƒÂ©tectÃƒÂ© : {system_name}")
+    print(f"Systeme detecte : {system_name}")
 
     if not missing_games:
-        print("\nAucun jeu manquant trouvÃƒÂ© !")
+        print("\nAucun jeu manquant trouve !")
     else:
         sources = [source.copy() for source in (custom_sources if custom_sources else get_default_sources())]
 
@@ -6670,14 +6696,14 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
 
         if not_available:
             print("\n" + "=" * 60)
-            print("Jeux NON trouvÃƒÂ©s sur aucune source:")
+            print("Jeux NON trouves sur aucune source:")
             print("=" * 60)
             for game_info in not_available:
                 print(f"  - {game_info['game_name']}")
             print()
 
         if False and to_download:
-            print(f"\n{'TÃƒÂ©lÃƒÂ©chargement' if not dry_run else 'Simulation'} de {len(to_download)} jeu(x)...")
+            print(f"\n{'Telechargement' if not dry_run else 'Simulation'} de {len(to_download)} jeu(x)...")
 
             downloaded = 0
             failed = 0
@@ -6691,7 +6717,7 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
                 print(f"\n[{i}/{len(to_download)}] {game_name} [{source}]")
 
                 if limit and downloaded >= limit:
-                    print("  IgnorÃƒÂ© (limite atteinte)")
+                    print("  Ignore (limite atteinte)")
                     skipped += 1
                     skipped_items.append(game_info.copy())
                     continue
@@ -6725,12 +6751,12 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
                 continue
 
             print("\n" + "=" * 60)
-            print("RÃƒÂ©sumÃƒÂ©:")
-            print(f"  TÃƒÂ©lÃƒÂ©chargÃƒÂ©s: {downloaded}")
-            print(f"  Ãƒâ€°checs: {failed}")
-            print(f"  IgnorÃƒÂ©s: {skipped}")
+            print("Resume:")
+            print(f"  Telecharges: {downloaded}")
+            print(f"  Echecs: {failed}")
+            print(f"  Ignores: {skipped}")
             if dry_run:
-                print("\n(Simulation - aucun fichier tÃƒÂ©lÃƒÂ©chargÃƒÂ©)")
+                print("\n(Simulation - aucun fichier telecharge)")
 
     if missing_games:
         print("\n" + "=" * 60)
@@ -6744,7 +6770,7 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
 
     if move_to_tosort:
         print("\n" + "=" * 60)
-        print("Recherche des fichiers ÃƒÂ  dÃƒÂ©placer vers ToSort...")
+        print("Recherche des fichiers a deplacer vers ToSort...")
         print("=" * 60)
 
         tosort_folder = os.path.join(rom_folder, "ToSort")
@@ -6752,15 +6778,15 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
         files_to_move = find_roms_not_in_dat(dat_games, local_roms, local_roms_normalized, rom_folder)
 
         if files_to_move:
-            print(f"\n{len(files_to_move)} fichiers ÃƒÂ  dÃƒÂ©placer vers: {tosort_folder}")
+            print(f"\n{len(files_to_move)} fichiers a deplacer vers: {tosort_folder}")
             moved, failed = move_files_to_tosort(files_to_move, rom_folder, tosort_folder, dry_run)
             tosort_moved = moved
             tosort_failed = failed
-            print(f"\nRÃƒÂ©sumÃƒÂ© ToSort:")
-            print(f"  DÃƒÂ©placÃƒÂ©s: {moved}")
-            print(f"  Ãƒâ€°checs: {failed}")
+            print("\nResume ToSort:")
+            print(f"  Deplaces: {moved}")
+            print(f"  Echecs: {failed}")
         else:
-            print("\nAucun fichier ÃƒÂ  dÃƒÂ©placer.")
+            print("\nAucun fichier a deplacer.")
 
     if clean_torrentzip:
         print("\n" + "=" * 60)
