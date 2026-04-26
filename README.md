@@ -31,12 +31,12 @@ python main.py <fichier.dat> <dossier_roms> [--dry-run] [--limit N] [--parallel 
 Exemples:
 
 ```powershell
-python main.py "dat\retool\Nintendo - Game Boy (20260405-031740).dat" "Roms\Game Boy"
-python main.py "dat\retool\Sony - PlayStation 2 (2026-04-05 01-38-25) (Retool 2026-04-06 18-57-20) (2,560) (-nz) [-AaBbcDdefkMmopPruv].dat" "Roms\PS2" --limit 10
-python main.py "dat\retool\Nintendo - Game Boy (20260405-031740).dat" "Roms\Game Boy" --tosort
-python main.py "dat\retool\Nintendo - Game Boy (20260405-031740).dat" "Roms\Game Boy" --analyze
-python main.py "dat\retool\Nintendo - Game Boy (20260405-031740).dat" "Roms\Game Boy" --analyze --analyze-candidates 10
-python main.py "dat\retool\Nintendo - Game Boy (20260405-031740).dat" "Roms\Game Boy" --analyze --analyze-candidates all
+python main.py "dat\retool - french no unl\Nintendo - Game Boy (20260405-031740) (Retool 2026-04-06 18-53-11) (602) (-nz) [-AaBbcDdefkMmopPruv].dat" "Roms\Game Boy"
+python main.py "dat\retool - french no unl\Sony - PlayStation 2 (2026-04-05 01-38-25) (Retool 2026-04-06 18-57-20) (2,560) (-nz) [-AaBbcDdefkMmopPruv].dat" "Roms\PS2" --limit 10
+python main.py "dat\retool - french no unl\Nintendo - Game Boy (20260405-031740) (Retool 2026-04-06 18-53-11) (602) (-nz) [-AaBbcDdefkMmopPruv].dat" "Roms\Game Boy" --tosort
+python main.py "dat\retool - french no unl\Nintendo - Game Boy (20260405-031740) (Retool 2026-04-06 18-53-11) (602) (-nz) [-AaBbcDdefkMmopPruv].dat" "Roms\Game Boy" --analyze
+python main.py "dat\retool - french no unl\Nintendo - Game Boy (20260405-031740) (Retool 2026-04-06 18-53-11) (602) (-nz) [-AaBbcDdefkMmopPruv].dat" "Roms\Game Boy" --analyze --analyze-candidates 10
+python main.py "dat\retool - french no unl\Nintendo - Game Boy (20260405-031740) (Retool 2026-04-06 18-53-11) (602) (-nz) [-AaBbcDdefkMmopPruv].dat" "Roms\Game Boy" --analyze --analyze-candidates all
 python main.py --sources
 python main.py --version
 python main.py --healthcheck-sources

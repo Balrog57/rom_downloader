@@ -45,7 +45,7 @@ Pour publier une release:
 .\release.ps1 -Version 0.1.0 -Push
 ```
 
-Le workflow `Release Windows` construit l'executable, cree une archive portable versionnee, publie un checksum `.sha256`, puis cree la release GitHub.
+Le workflow `Release Windows` construit l'executable, cree une archive portable versionnee, publie un checksum `.sha256`, puis cree la release GitHub. Il se lance sur les tags `v*` et rattache aussi l'archive a une release GitHub publiee manuellement.
 
 ## Archive portable
 

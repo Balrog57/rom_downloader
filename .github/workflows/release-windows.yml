@@ -4,6 +4,9 @@ on:
   push:
     tags:
       - "v*"
+  release:
+    types:
+      - published
   workflow_dispatch:
     inputs:
       version:
@@ -30,6 +33,8 @@ jobs:
         run: |
           if ("${{ github.ref }}" -like "refs/tags/v*") {
             $version = "${{ github.ref_name }}".TrimStart("v")
+          } elseif ("${{ github.event_name }}" -eq "release") {
+            $version = "${{ github.event.release.tag_name }}".TrimStart("v")
           } else {
             $version = "${{ inputs.version }}".TrimStart("v")
           }
@@ -128,3 +133,13 @@ jobs:
             "--notes", $notes
           )
           gh @args
+
+      - name: Attach archive to existing GitHub Release
+        if: github.event_name == 'release'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = "${{ steps.version.outputs.tag }}"
+          $archive = "${{ steps.archive.outputs.archive }}"
+          gh release upload $tag $archive "$archive.sha256" --clobber

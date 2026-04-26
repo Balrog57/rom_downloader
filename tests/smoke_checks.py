@@ -12,7 +12,7 @@ from src.providers import build_provider_registry
 def main() -> None:
     items = discover_dat_menu_items()
     sections = {item["label"].lower() for item in items if item.get("type") == "section"}
-    required = {"no-intro", "redump", "retool"}
+    required = {"no-intro", "redump", "retool - french no unl"}
     missing = required - sections
     if missing:
         raise SystemExit(f"missing DAT sections: {sorted(missing)}")
