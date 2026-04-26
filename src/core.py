@@ -6245,7 +6245,8 @@ def download_with_provider_retries(game_info: dict, sources: list, session: requ
                                    myrient_url: str = '', dry_run: bool = False,
                                    progress_callback=None, log_func=print,
                                    is_running=lambda: True, source_usage: dict | None = None,
-                                   source_usage_lock=None, progress_detail_callback=None) -> tuple[str, dict]:
+                                   source_usage_lock=None, progress_detail_callback=None,
+                                   circuit_breaker=None) -> tuple[str, dict]:
     """Essaie les providers un par un jusqu'a obtenir un fichier valide MD5 DAT."""
     original_game = clean_download_resolution(game_info)
     current_game = game_info.copy()
@@ -6261,6 +6262,26 @@ def download_with_provider_retries(game_info: dict, sources: list, session: requ
             log_func(f"  Provider deja teste: {source}")
             break
         attempted_source_labels.add(source_label)
+
+        if circuit_breaker and circuit_breaker.is_open(source):
+            log_func(f"  Circuit ouvert pour {source}: ignore pendant la session")
+            provider_attempts.append({
+                'source': source,
+                'status': 'skipped',
+                'duration_seconds': round(time.time() - attempt_started, 3),
+                'detail': 'circuit_open',
+            })
+            current_game = resolve_next_provider(
+                original_game,
+                sources,
+                session,
+                system_name,
+                dat_profile,
+                attempted_sources
+            )
+            if current_game:
+                log_func(f"  Retry avec: {current_game.get('source', 'unknown')}")
+            continue
         quota_ok, quota_detail = reserve_source_quota(source, sources, source_usage, source_usage_lock)
         if not quota_ok:
             attempted_sources.append(source)
@@ -6334,6 +6355,8 @@ def download_with_provider_retries(game_info: dict, sources: list, session: requ
             progress_detail_callback
         )
         if success:
+            if circuit_breaker:
+                circuit_breaker.record_success(source)
             item_copy = current_game.copy()
             item_copy['downloaded_path'] = downloaded_path
             item_copy['attempted_sources'] = attempted_sources.copy()
@@ -6350,6 +6373,8 @@ def download_with_provider_retries(game_info: dict, sources: list, session: requ
             'status': 'failed',
             'duration_seconds': round(time.time() - attempt_started, 3),
         })
+        if circuit_breaker:
+            circuit_breaker.record_failure(source)
         log_func(f"  Provider {source} invalide ou en echec, recherche d'un autre provider...")
         current_game = resolve_next_provider(
             original_game,
@@ -6382,7 +6407,8 @@ def download_missing_games_sequentially(
     log_func=print,
     status_callback=None,
     is_running=lambda: True,
-    parallel_downloads: int = 1
+    parallel_downloads: int = 1,
+    circuit_breaker=None,
 ) -> dict:
     """
     Traite les jeux un par un: resolution DDL, telechargement, validation MD5,
@@ -6456,7 +6482,8 @@ def download_missing_games_sequentially(
                 is_running=is_running,
                 source_usage=source_usage,
                 source_usage_lock=source_usage_lock,
-                progress_detail_callback=worker_progress_detail
+                progress_detail_callback=worker_progress_detail,
+                circuit_breaker=circuit_breaker
             )
 
         futures = {}
@@ -6603,7 +6630,8 @@ def download_missing_games_sequentially(
             is_running=is_running,
             source_usage=source_usage,
             source_usage_lock=source_usage_lock,
-            progress_detail_callback=progress_detail_callback
+            progress_detail_callback=progress_detail_callback,
+            circuit_breaker=circuit_breaker,
         )
 
         if status == 'downloaded':
@@ -6912,6 +6940,9 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
         clear_listing_cache()
 
     session = create_optimized_session()
+    circuit_breaker = SourceCircuitBreaker()
+    session_cache = RuntimeCache()
+    session_metrics = load_provider_metrics()
 
     dat_games = parse_dat_file(dat_file)
     local_roms, local_roms_normalized, local_game_names, signature_index = scan_local_roms(rom_folder, dat_games)
@@ -6962,7 +6993,8 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
             limit,
             None,
             print,
-            parallel_downloads=parallel_downloads
+            parallel_downloads=parallel_downloads,
+            circuit_breaker=circuit_breaker,
         )
         to_download = result['resolved_items']
         not_available = result['not_available']
