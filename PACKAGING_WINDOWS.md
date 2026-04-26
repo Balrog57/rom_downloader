@@ -1,31 +1,71 @@
-# Packaging Windows portable
+# Packaging et installation Windows
 
-Ce depot reste centre sur le runtime Python. Aucun script de generation n'est requis dans le repo pour utiliser l'application.
+Ce depot reste centre sur le runtime Python, mais il fournit aussi un circuit de versioning et de distribution Windows via GitHub Releases.
 
-## Option recommandee
+## Installation utilisateur
 
-Distribuer une archive portable contenant:
+Depuis PowerShell:
 
-- `main.py`
-- `src/`
-- `assets/`
-- `dat/`
-- `db/shard_*.zip`
+```powershell
+powershell -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/Balrog57/rom_downloader/main/install.ps1 | iex"
+```
+
+Options utiles:
+
+```powershell
+.\install.ps1 -Version 0.1.0
+.\install.ps1 -InstallDir "$env:LOCALAPPDATA\ROMDownloader" -Force
+.\install.ps1 -NoDesktopShortcut
+```
+
+L'installateur telecharge `ROMDownloader-windows-<version>.zip` depuis la derniere release GitHub, extrait l'application dans `%LOCALAPPDATA%\ROMDownloader`, cree les raccourcis, et genere `uninstall.ps1`.
+
+Pour desinstaller:
+
+```powershell
+& "$env:LOCALAPPDATA\ROMDownloader\uninstall.ps1"
+```
+
+Avec `-KeepConfig`, le desinstalleur conserve `.env` et `.rom_downloader_preferences.json`.
+
+## Versioning
+
+La version applicative est stockee dans `VERSION` et exposee par:
+
+```powershell
+python main.py --version
+ROMDownloader.exe --version
+```
+
+Format attendu: SemVer (`MAJOR.MINOR.PATCH`, par exemple `0.1.0`).
+
+Pour publier une release:
+
+```powershell
+.\release.ps1 -Version 0.1.0 -Push
+```
+
+Le workflow `Release Windows` construit l'executable, cree une archive portable versionnee, publie un checksum `.sha256`, puis cree la release GitHub.
+
+## Archive portable
+
+L'archive de release contient:
+
+- `ROMDownloader.exe`
+- `VERSION`
 - `.env.example`
-- `requirements.txt`
 - `README.md`
+- `PACKAGING_WINDOWS.md`
+- `install.ps1`
 
 Sur une machine Windows propre:
 
 ```powershell
-py -3.13 -m venv .venv
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-python main.py --diagnose
-python main.py --gui
+.\ROMDownloader.exe --version
+.\ROMDownloader.exe --gui
 ```
 
-Activez le venv avant les commandes `python`/`pip` si vous ne lancez pas l'interpreteur directement depuis votre outil d'environnement.
+Le binaire PyInstaller embarque `assets/`, `dat/` et `db/`.
 
 ## Points a verifier
 
@@ -42,23 +82,14 @@ $files = @("main.py") + (Get-ChildItem src,tests -Recurse -Filter *.py | ForEach
 python -m py_compile @files
 python tests\smoke_checks.py
 python tests\core_helper_checks.py
-python main.py --diagnose
+python main.py --version
+python main.py --sources
 ```
 
-## Executable
+## Workflows GitHub
 
-Un workflow GitHub Actions manuel `Windows Package` peut produire `ROMDownloader.exe` avec PyInstaller depuis l'onglet Actions du depot.
+- `CI`: compilation, smoke checks et garde anti-regression.
+- `Windows Package`: build manuel simple de `ROMDownloader.exe`.
+- `Release Windows`: publication versionnee sur tag `v*`.
 
-Le build inclut:
-
-- `assets/`
-- `dat/`
-- `db/`
-- `main.py` et `src/`
-
-Il faudra tester explicitement apres generation:
-
-- inclusion de `assets/`, `dat/` et `db/`;
-- import dynamique des dependances optionnelles;
-- acces en ecriture aux caches locaux `.rom_downloader_*.json`;
-- comportement de `libtorrent` et `tkinterdnd2` dans le bundle.
+Il faut tester explicitement apres generation l'acces en ecriture aux caches locaux `.rom_downloader_*.json`, le backend torrent `aria2c`, et le comportement de `tkinterdnd2` dans le bundle.
