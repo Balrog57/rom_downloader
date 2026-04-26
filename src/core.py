@@ -7656,13 +7656,64 @@ def gui_mode():
                         f"{format_bytes(summary['missing_size'])} estimes"
                     )
                     self._ui(lambda msg=status: self.status_var.set(msg))
-                    self._ui(lambda msg=message: messagebox.showinfo("Pre-analyse", msg))
+                    self._ui(lambda msg=message, data=summary: self.show_analysis_window(msg, data))
                 except Exception as e:
                     error_message = str(e)
                     self._ui(lambda msg=error_message: messagebox.showerror("Erreur", f"Analyse impossible:\n{msg}"))
                     self._ui(lambda: self.status_var.set("Erreur analyse"))
                 finally:
                     self._ui(lambda: self.analyze_button.configure(state=tk.NORMAL))
+
+            def show_analysis_window(self, message, summary):
+                samples = summary.get('candidate_samples') or []
+                if not samples:
+                    messagebox.showinfo("Pre-analyse", message)
+                    return
+
+                window = tk.Toplevel(self.root)
+                window.title("Pre-analyse")
+                window.configure(bg=UI_COLOR_CARD_BG)
+                window.geometry("760x520")
+                window.transient(self.root)
+                window.columnconfigure(0, weight=1)
+                window.rowconfigure(1, weight=1)
+
+                top = tk.Text(window, height=12, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, relief='flat', wrap='word', font=(self.font, 9))
+                top.insert('end', message)
+                top.configure(state='disabled')
+                top.grid(row=0, column=0, sticky='ew', padx=14, pady=(14, 10))
+
+                listbox = tk.Listbox(window, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, selectbackground=UI_COLOR_ACCENT, relief='flat', font=(self.font, 10), height=10)
+                listbox.grid(row=1, column=0, sticky='nsew', padx=14)
+
+                page_var = tk.IntVar(value=0)
+                page_size = 25
+                footer = tk.Frame(window, bg=UI_COLOR_CARD_BG)
+                footer.grid(row=2, column=0, sticky='ew', padx=14, pady=14)
+                footer.columnconfigure(1, weight=1)
+                page_label = tk.Label(footer, text="", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, font=(self.font, 9))
+                page_label.grid(row=0, column=1)
+
+                def render_page():
+                    page = max(0, page_var.get())
+                    start = page * page_size
+                    end = min(start + page_size, len(samples))
+                    listbox.delete(0, 'end')
+                    for sample in samples[start:end]:
+                        sources = ', '.join(sample.get('sources') or [])
+                        listbox.insert('end', f"{sample.get('game_name')}: {sources or 'aucune source'}")
+                    total_pages = max(1, (len(samples) + page_size - 1) // page_size)
+                    page_label.configure(text=f"Page {page + 1}/{total_pages} - {len(samples)} jeu(x)")
+
+                def move_page(delta):
+                    total_pages = max(1, (len(samples) + page_size - 1) // page_size)
+                    page_var.set(max(0, min(page_var.get() + delta, total_pages - 1)))
+                    render_page()
+
+                self.button(footer, "Precedent", lambda: move_page(-1), width=12).grid(row=0, column=0, sticky='w')
+                self.button(footer, "Suivant", lambda: move_page(1), width=12).grid(row=0, column=2, sticky='e', padx=(8, 0))
+                self.button(footer, "Fermer", window.destroy, kind='accent', width=10).grid(row=0, column=3, sticky='e', padx=(8, 0))
+                render_page()
 
             def start(self):
                 if not self.validate_paths():
