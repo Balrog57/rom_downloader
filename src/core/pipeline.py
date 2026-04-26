@@ -8,7 +8,7 @@ from ..pipeline import build_pipeline_summary, merge_provider_metrics
 from ..network.sessions import create_optimized_session
 from ..network.circuits import SourceCircuitBreaker
 from ..network.cache_runtime import RuntimeCache
-from ..network.metrics import load_provider_metrics, save_provider_metrics
+from ..network.metrics import load_provider_metrics, save_provider_metrics, prioritize_sources
 
 from .env import *
 from .constants import *
@@ -290,6 +290,7 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
             sources.insert(0, build_custom_source(myrient_url))
 
         sources = prepare_sources_for_profile(sources, dat_profile)
+        sources = prioritize_sources(sources, session_metrics)
         report_active_sources = [source['name'] for source in sources if source.get('enabled', True)]
 
         if parallel_downloads is None:
