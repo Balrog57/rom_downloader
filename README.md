@@ -63,8 +63,9 @@ L'ecran `Configurer les sources` permet aussi de changer l'ordre des sources, le
 Les sources de telechargement sont automatiques: les sources directes sont essayees avant Minerva, puis archive.org en dernier recours.
 La resolution des providers est mise en cache temporairement dans `.rom_downloader_resolution_cache.json` pour eviter de refaire les memes recherches pendant plusieurs essais; `--refresh-cache` force une reconstruction.
 Les listings distants scrapes sont mis en cache 24 h dans `.rom_downloader_listing_cache.json`; `--clear-listing-cache` ou le bouton `Vider cache` de la GUI les supprime.
-Les telechargements HTTP utilisent des fichiers `.part` et reprennent quand le serveur accepte les requetes `Range`.
+Les telechargements HTTP utilisent des fichiers `.part`, reprennent quand le serveur accepte les requetes `Range`, et journalisent debit/ETA pendant les gros transferts.
 Les quotas par source sont appliques pendant les retries: quand une source atteint sa limite de tentatives sur un run, le moteur passe au provider suivant.
+Avant d'ignorer un fichier deja present, l'application valide le MD5 DAT quand il existe, puis la taille DAT si aucun MD5 n'est disponible.
 
 ## Dependances
 
@@ -99,7 +100,7 @@ python main.py --clear-listing-cache
 ## Roadmap implementee
 
 - UI: bouton `Analyser`, recherche/filtre DAT, logs repliables, resume de pre-analyse et preferences GUI locales.
-- Optimisation: cache de resolution provider et reprise HTTP via fichiers `.part`.
+- Optimisation: cache de resolution provider, reprise HTTP via fichiers `.part`, validation MD5/taille avant skip et logs debit/ETA.
 - Analyse: sources candidates par echantillon et metriques provider dans les rapports.
 - Sources: commande `--healthcheck-sources`, configuration GUI activation/ordre/timeouts/quotas, cles API locales, cache de listings distants et registre provider commun.
 - Diagnostic: commande `--diagnose` et export JSON pour l'etat local utile au support.
@@ -116,9 +117,8 @@ python main.py --clear-listing-cache
 ### 2. Optimisation du telechargement
 
 - Separer davantage resolution et telechargement en pipeline testable.
-- Ajouter validation taille/hash avant skip pour toutes les sources.
-- Afficher debit, ETA, temps par provider et nombre d'echecs par cause.
-- Ajouter debit et ETA en temps reel dans la GUI.
+- Ajouter debit et ETA directement dans la barre de statut GUI.
+- Ajouter des graphiques simples de temps par provider et d'echecs par cause.
 
 ### 3. Gestion des sources
 
