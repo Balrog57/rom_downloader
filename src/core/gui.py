@@ -42,6 +42,8 @@ from .download_orchestrator import download_missing_games_sequentially
 from .verification import file_exists_in_folder, verify_downloaded_md5, cleanup_invalid_download
 from .interactive import create_download_session
 from .diagnostics import export_diagnostic_report
+from .cli import discover_dat_menu_items
+from .api_keys import load_api_keys, save_api_keys
 
 
 def detect_system_name(dat_file_path: str) -> str:
@@ -117,7 +119,7 @@ def gui_mode():
                 self.font = "Roboto" if "Roboto" in tkfont.families() else "Segoe UI"
                 self.session = requests.Session()
                 self.session.headers.update({'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'})
-                self.preferences = load_preferences()
+                self.preferences = _facade.load_preferences()
                 self.default_sources = [source.copy() for source in get_default_sources()]
                 self.source_enabled = dict(self.preferences.get('source_enabled', {}))
                 self.source_order = list(self.preferences.get('source_order', []))
@@ -242,7 +244,7 @@ def gui_mode():
                     'source_policies': self.source_policies,
                     'provider_stats': self.provider_stats,
                 })
-                save_preferences(self.preferences)
+                _facade.save_preferences(self.preferences)
 
             def build_ui(self):
                 main = tk.Frame(self.root, bg=UI_COLOR_BG)
