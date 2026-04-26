@@ -861,11 +861,11 @@ def get_default_sources_legacy():
             'priority': 2
         },
         {
-            'name': '1fichier (Gratuit)',
+            'name': 'Passerelle 1fichier',
             'base_url': config.get('1fichier_free', ''),
             'type': 'free_host',
             'enabled': True,
-            'description': 'Mode gratuit avec attente (si lien detecte)',
+            'description': 'Hebergeur utilise quand une source fournit un lien 1fichier',
             'priority': 3
         }
     ]
@@ -1173,11 +1173,11 @@ def get_default_sources():
             'priority': 2
         },
         {
-            'name': '1fichier (Gratuit)',
+            'name': 'Passerelle 1fichier',
             'base_url': config.get('1fichier_free', ''),
             'type': 'free_host',
             'enabled': True,
-            'description': 'Mode gratuit avec attente (si lien detecte)',
+            'description': 'Hebergeur utilise quand une source fournit un lien 1fichier',
             'priority': 4
         }
     ]
@@ -2112,7 +2112,9 @@ def load_api_keys() -> dict:
     keys = {
         '1fichier': os.environ.get('ONE_FICHIER_API_KEY', ''),
         'alldebrid': os.environ.get('ALLDEBRID_API_KEY', ''),
-        'realdebrid': os.environ.get('REALDEBRID_API_KEY', '')
+        'realdebrid': os.environ.get('REALDEBRID_API_KEY', ''),
+        'archive_access_key': os.environ.get('IA_S3_ACCESS_KEY', ''),
+        'archive_secret_key': os.environ.get('IA_S3_SECRET_KEY', ''),
     }
     
     # Si les clÃ©s du .env sont vides, on tente de charger depuis le fichier JSON
@@ -2144,7 +2146,9 @@ def save_api_keys(keys: dict) -> bool:
         mapping = {
             '1fichier': 'ONE_FICHIER_API_KEY',
             'alldebrid': 'ALLDEBRID_API_KEY',
-            'realdebrid': 'REALDEBRID_API_KEY'
+            'realdebrid': 'REALDEBRID_API_KEY',
+            'archive_access_key': 'IA_S3_ACCESS_KEY',
+            'archive_secret_key': 'IA_S3_SECRET_KEY',
         }
         
         # On met Ã  jour ou on ajoute les lignes
@@ -2156,7 +2160,7 @@ def save_api_keys(keys: dict) -> bool:
             handled = False
             for k, env_name in mapping.items():
                 if stripped.startswith(f"{env_name}="):
-                    new_lines.append(f"{env_name}={keys[k]}\n")
+                    new_lines.append(f"{env_name}={keys.get(k, '')}\n")
                     found_keys.add(k)
                     handled = True
                     break
@@ -2166,14 +2170,16 @@ def save_api_keys(keys: dict) -> bool:
         # On ajoute les clÃ©s manquantes
         for k, env_name in mapping.items():
             if k not in found_keys:
-                new_lines.append(f"{env_name}={keys[k]}\n")
+                new_lines.append(f"{env_name}={keys.get(k, '')}\n")
         
         with open(env_path, 'w', encoding='utf-8') as f:
             f.writelines(new_lines)
             
         # On met aussi Ã  jour l'os.environ actuel
         for k, env_name in mapping.items():
-            os.environ[env_name] = keys[k]
+            os.environ[env_name] = keys.get(k, '')
+        os.environ['IAS3_ACCESS_KEY'] = keys.get('archive_access_key', '')
+        os.environ['IAS3_SECRET_KEY'] = keys.get('archive_secret_key', '')
             
         return True
     except Exception as e:
@@ -7415,11 +7421,6 @@ def gui_mode():
                 parallel_spin = tk.Spinbox(parallel_row, from_=1, to=12, textvariable=self.parallel_var, width=5, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, buttonbackground=UI_COLOR_GHOST, relief='flat', font=(self.font, 10), command=self.persist_preferences)
                 parallel_spin.pack(side='left', padx=(10, 0))
                 parallel_spin.bind('<FocusOut>', lambda _event: self.persist_preferences())
-                tk.Label(parallel_row, text="Analyse sources", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 10)).pack(side='left', padx=(18, 0))
-                candidate_spin = tk.Spinbox(parallel_row, from_=0, to=9999, textvariable=self.analysis_candidate_var, width=7, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, buttonbackground=UI_COLOR_GHOST, relief='flat', font=(self.font, 10), command=self.persist_preferences)
-                candidate_spin.pack(side='left', padx=(10, 0))
-                tk.Label(parallel_row, text="0=aucune, 'all'=tout", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, font=(self.font, 9)).pack(side='left', padx=(8, 0))
-                candidate_spin.bind('<FocusOut>', lambda _event: self.persist_preferences())
 
                 progress = self.card(main, 3)
                 progress.columnconfigure(0, weight=1)
@@ -7429,16 +7430,14 @@ def gui_mode():
                 actions = tk.Frame(progress, bg=UI_COLOR_CARD_BG)
                 actions.grid(row=3, column=0, sticky='ew', pady=(16, 0))
                 actions.columnconfigure(0, weight=1)
-                self.analyze_button = self.button(actions, "Analyser", self.start_analysis, kind='ghost', width=12)
-                self.analyze_button.grid(row=0, column=0, sticky='w')
+                self.analyze_button = None
                 self.start_button = self.button(actions, "Lancer le telechargement", self.start, kind='accent', width=24)
-                self.start_button.grid(row=0, column=1, padx=(0, 10))
+                self.start_button.grid(row=0, column=0, sticky='w', padx=(0, 10))
                 self.stop_button = self.button(actions, "Arreter", self.stop, kind='danger', width=12)
-                self.stop_button.grid(row=0, column=2, padx=(0, 10))
+                self.stop_button.grid(row=0, column=1, padx=(0, 10))
                 self.stop_button.configure(state=tk.DISABLED)
-                self.button(actions, "Logs", self.toggle_logs, width=10).grid(row=0, column=3, padx=(0, 10))
-                self.button(actions, "Diagnostic", self.export_diagnostic, width=12).grid(row=0, column=4, padx=(0, 10))
-                self.button(actions, "Quitter", self.root.quit, width=12).grid(row=0, column=5)
+                self.button(actions, "Logs", self.toggle_logs, width=10).grid(row=0, column=2, padx=(0, 10))
+                self.button(actions, "Quitter", self.root.quit, width=12).grid(row=0, column=3)
                 self.log_frame = tk.Frame(progress, bg=UI_COLOR_CARD_BG)
                 self.log_frame.grid(row=4, column=0, sticky='nsew', pady=(12, 0))
                 self.log_frame.columnconfigure(0, weight=1)
@@ -7768,14 +7767,15 @@ def gui_mode():
                 enabled_var = tk.BooleanVar(value=True)
                 enabled_check = self.toggle(side, "Active", enabled_var)
                 enabled_check.pack(anchor='w', pady=(0, 10))
-                tk.Label(side, text="Timeout (s)", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, font=(self.font, 9)).pack(anchor='w', pady=(8, 2))
+                tk.Label(side, text="Timeout requetes (s)", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, font=(self.font, 9)).pack(anchor='w', pady=(8, 2))
                 timeout_var = tk.StringVar()
                 timeout_entry = tk.Entry(side, textvariable=timeout_var, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, insertbackground=UI_COLOR_TEXT_MAIN, relief='flat', width=10, font=(self.font, 10))
                 timeout_entry.pack(fill='x', pady=(0, 6), ipady=4)
-                tk.Label(side, text="Quota/run", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, font=(self.font, 9)).pack(anchor='w', pady=(4, 2))
+                tk.Label(side, text="Quota essais/run", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, font=(self.font, 9)).pack(anchor='w', pady=(4, 2))
                 quota_var = tk.StringVar()
                 quota_entry = tk.Entry(side, textvariable=quota_var, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, insertbackground=UI_COLOR_TEXT_MAIN, relief='flat', width=10, font=(self.font, 10))
                 quota_entry.pack(fill='x', pady=(0, 10), ipady=4)
+                tk.Label(side, text="Les passerelles servent uniquement quand une source renvoie un lien heberge.", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, justify='left', wraplength=155, font=(self.font, 8)).pack(anchor='w', pady=(0, 8))
                 current_policy_name = {'name': None}
 
                 def save_policy_fields():
@@ -7895,7 +7895,7 @@ def gui_mode():
                 window = tk.Toplevel(self.root)
                 window.title("Cles API")
                 window.configure(bg=UI_COLOR_CARD_BG)
-                window.geometry("520x250")
+                window.geometry("600x380")
                 window.transient(self.root)
                 window.columnconfigure(1, weight=1)
                 keys = load_api_keys()
@@ -7904,6 +7904,8 @@ def gui_mode():
                     ('1fichier', '1fichier'),
                     ('alldebrid', 'AllDebrid'),
                     ('realdebrid', 'RealDebrid'),
+                    ('archive_access_key', 'Archive.org access key'),
+                    ('archive_secret_key', 'Archive.org secret key'),
                 ]
                 tk.Label(window, text="Cles API locales (.env)", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 13, 'bold')).grid(row=0, column=0, columnspan=2, sticky='w', padx=14, pady=(14, 12))
                 for row, (key, label) in enumerate(labels, start=1):
@@ -7913,7 +7915,7 @@ def gui_mode():
                     tk.Entry(window, textvariable=var, show='*', bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, insertbackground=UI_COLOR_TEXT_MAIN, relief='flat', font=(self.font, 10)).grid(row=row, column=1, sticky='ew', padx=(8, 14), pady=6, ipady=5)
 
                 actions = tk.Frame(window, bg=UI_COLOR_CARD_BG)
-                actions.grid(row=5, column=0, columnspan=2, sticky='e', padx=14, pady=(16, 0))
+                actions.grid(row=len(labels) + 1, column=0, columnspan=2, sticky='e', padx=14, pady=(16, 0))
 
                 def save_keys():
                     new_keys = {key: var.get().strip() for key, var in variables.items()}
@@ -7962,7 +7964,6 @@ def gui_mode():
                     messagebox.showerror("Diagnostic", f"Export impossible:\n{e}")
 
             def log(self, message):
-                print(message, flush=True)
                 self._ui(lambda msg=message: self.append_log(msg))
 
             def validate_paths(self):
@@ -7979,7 +7980,8 @@ def gui_mode():
                     return
                 self.persist_preferences()
                 self.status_var.set("Analyse du DAT et du dossier...")
-                self.analyze_button.configure(state=tk.DISABLED)
+                if self.analyze_button is not None:
+                    self.analyze_button.configure(state=tk.DISABLED)
                 threading.Thread(target=self.run_analysis, daemon=True).start()
 
             def run_analysis(self):
@@ -8004,7 +8006,8 @@ def gui_mode():
                     self._ui(lambda msg=error_message: messagebox.showerror("Erreur", f"Analyse impossible:\n{msg}"))
                     self._ui(lambda: self.status_var.set("Erreur analyse"))
                 finally:
-                    self._ui(lambda: self.analyze_button.configure(state=tk.NORMAL))
+                    if self.analyze_button is not None:
+                        self._ui(lambda: self.analyze_button.configure(state=tk.NORMAL))
 
             def show_analysis_window(self, message, summary):
                 samples = summary.get('candidate_samples') or []

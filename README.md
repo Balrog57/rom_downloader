@@ -32,8 +32,6 @@ python main.py "dat\retool\Nintendo - Game Boy (20260405-031740).dat" "Roms\Game
 python main.py "dat\retool\Nintendo - Game Boy (20260405-031740).dat" "Roms\Game Boy" --analyze --analyze-candidates 10
 python main.py "dat\retool\Nintendo - Game Boy (20260405-031740).dat" "Roms\Game Boy" --analyze --analyze-candidates all
 python main.py --sources
-python main.py --diagnose
-python main.py --diagnose --diagnose-output diagnostic.json
 python main.py --healthcheck-sources
 python main.py --provider-registry
 python main.py --clear-listing-cache
@@ -60,11 +58,9 @@ Le depot ne contient plus de runtime externe ni de dossier de generation. Les fi
 Le champ DAT de la GUI est un menu deroulant alimente par `dat/**/*.dat`, avec recherche texte et filtres par section.
 Les dossiers directs de `dat/` sont affiches comme titres de section en italique et ne sont pas selectionnables. Les fichiers DAT sous chaque section sont selectionnables.
 Le bouton `Parcourir` reste disponible comme secours pour choisir un DAT externe.
-Le bouton `Analyser` lance une pre-analyse sans telechargement: total DAT, presents, manquants, taille estimee et sources actives.
-En GUI, l'analyse resout aussi les sources candidates selon la limite configuree (`0` pour aucune, `all` pour tout resoudre) et affiche les resultats detailles dans une fenetre paginee.
 La GUI retient localement le dernier DAT, le dernier dossier, les options ToSort/TorrentZip, le parallelisme et l'etat des logs.
 Le panneau `Logs` est repliable et affiche le detail des operations sans quitter la fenetre.
-L'ecran `Configurer les sources` permet aussi de changer l'ordre des sources, les activer/desactiver, fixer un timeout et un quota par run, saisir les cles API locales dans `.env`, voir l'etat des caches, vider tous les caches, invalider la source selectionnee et consulter les statistiques cumulees par provider.
+L'ecran `Configurer les sources` permet aussi de changer l'ordre des sources directes, les activer/desactiver, fixer un timeout et un quota par run, saisir les cles API locales dans `.env`, voir l'etat des caches, vider tous les caches, invalider la source selectionnee et consulter les statistiques cumulees par provider. `Passerelle 1fichier` represente l'hebergeur utilise quand un site renvoie un lien 1fichier; ce n'est pas un site de recherche.
 
 Les sources de telechargement sont automatiques: les sources directes sont essayees avant Minerva, puis archive.org en dernier recours.
 La resolution des providers est mise en cache temporairement dans `.rom_downloader_resolution_cache.json` pour eviter de refaire les memes recherches pendant plusieurs essais; `--refresh-cache` force une reconstruction.
@@ -87,7 +83,7 @@ Dependances Python principales:
 
 `charset_normalizer` n'est pas liste directement car il est installe comme dependance transitive de `requests`.
 Le programme tente encore d'installer certaines dependances optionnelles si elles manquent au moment d'une verification d'archive.
-Les torrents Minerva demandent un binding Python `libtorrent` fonctionnel, mais il n'est pas liste dans `requirements.txt` car les wheels disponibles dependent fortement de la version Python et de Windows. Si `--diagnose` indique `libtorrent` absent ou une erreur `DLL load failed`, seuls les telechargements Minerva torrent sont affectes; les sources HTTP, la DB locale, l'analyse DAT et la GUI restent fonctionnelles. Sous Windows, si `libtorrent` reclame OpenSSL 1.1, renseigner `LIBTORRENT_DLL_DIR` dans `.env` vers le dossier contenant `libcrypto-1_1-x64.dll` et `libssl-1_1-x64.dll`.
+Les torrents Minerva utilisent `aria2c` en priorite. Le binding Python `libtorrent` reste optionnel et n'est pas liste dans `requirements.txt` car les wheels disponibles dependent fortement de la version Python et de Windows. Si `libtorrent` est absent ou renvoie `DLL load failed`, seuls les telechargements Minerva via ce backend sont affectes; les sources HTTP, la DB locale, l'analyse DAT et la GUI restent fonctionnelles. Sous Windows, si `libtorrent` reclame OpenSSL 1.1, renseigner `LIBTORRENT_DLL_DIR` dans `.env` vers le dossier contenant `libcrypto-1_1-x64.dll` et `libssl-1_1-x64.dll`.
 Voir `PACKAGING_WINDOWS.md` pour preparer une archive portable.
 
 ## Base locale
@@ -105,17 +101,15 @@ python -m py_compile @files
 python tests\smoke_checks.py
 python tests\core_helper_checks.py
 python main.py --sources
-python main.py --diagnose
 python main.py --clear-listing-cache
 ```
 
 ## Roadmap implementee
 
-- UI: bouton `Analyser`, recherche/filtre DAT, logs repliables, resume de pre-analyse, limite de resolution candidate configurable, resultats de pre-analyse pagines et preferences GUI locales.
+- UI: recherche/filtre DAT, logs repliables, actions principales simplifiees et preferences GUI locales.
 - Optimisation: cache de resolution provider, reprise HTTP via fichiers `.part`, validation MD5/taille avant skip, logs debit/ETA et agregations pipeline testables.
 - Analyse: sources candidates par echantillon et metriques provider dans les rapports.
 - Sources: commandes `--healthcheck-sources` et `--provider-registry`, configuration GUI activation/ordre/timeouts/quotas, cles API locales, etat des caches, invalidation par source, statistiques provider, cache de listings distants et registre provider commun.
-- Diagnostic: commande `--diagnose` et export JSON pour l'etat local utile au support.
 - Qualite: CI GitHub Actions avec compilation, smoke checks, checks helpers, garde anti-regression, workflow packaging Windows et debut d'extraction des helpers runtime.
 
 ## Etat de la roadmap
