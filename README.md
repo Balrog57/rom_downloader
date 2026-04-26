@@ -41,6 +41,7 @@ python main.py --clear-listing-cache
 
 - `main.py`: point d'entree de l'application.
 - `src/`: code Python de l'application.
+- `src/progress.py`: helpers de progression, debit et ETA des transferts.
 - `assets/`: images et icones utilisees par l'interface.
 - `dat/`: fichiers DAT disponibles dans le menu de selection.
 - `db/shard_*.zip`: shards SQLite compresses pour la recherche locale par MD5.
@@ -108,7 +109,7 @@ python main.py --clear-listing-cache
 - Analyse: sources candidates par echantillon et metriques provider dans les rapports.
 - Sources: commande `--healthcheck-sources`, configuration GUI activation/ordre/timeouts/quotas, cles API locales, cache de listings distants et registre provider commun.
 - Diagnostic: commande `--diagnose` et export JSON pour l'etat local utile au support.
-- Qualite: CI GitHub Actions avec compilation, smoke checks, checks helpers et garde anti-regression.
+- Qualite: CI GitHub Actions avec compilation, smoke checks, checks helpers, garde anti-regression et debut d'extraction des helpers runtime.
 
 ## Roadmap
 
@@ -132,7 +133,7 @@ python main.py --clear-listing-cache
 
 ### 4. Qualite et architecture
 
-- Finir l'extraction de `src/core.py` vers des modules plus petits avec tests unitaires cibles.
+- Continuer l'extraction de `src/core.py` vers des modules plus petits avec tests unitaires cibles.
 - Ajouter plus de tests unitaires autour du pipeline de resolution et des providers reseau.
 - Ajouter un mode diagnostic exportable: versions, chemins, sources actives, DB presente et dependances disponibles.
 - Convertir la strategie portable en build `.exe` automatise si necessaire.

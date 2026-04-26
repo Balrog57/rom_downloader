@@ -56,6 +56,8 @@ from itertools import islice
 from pathlib import Path
 from urllib.parse import quote, unquote, urljoin
 
+from .progress import DownloadProgressMeter, format_duration
+
 APP_ROOT = Path(__file__).resolve().parents[1]
 SCAN_CACHE_FILENAME = ".rom_downloader_scan_cache.json"
 DEFAULT_PARALLEL_DOWNLOADS = 3
@@ -185,21 +187,6 @@ def format_bytes(size: int | float | None) -> str:
         if value < 1024 or unit == units[-1]:
             return f"{value:.1f} {unit}" if unit != 'o' else f"{int(value)} {unit}"
         value /= 1024
-
-
-def format_duration(seconds: int | float | None) -> str:
-    """Formate une duree courte pour les logs de progression."""
-    try:
-        total = max(0, int(seconds or 0))
-    except Exception:
-        total = 0
-    hours, remainder = divmod(total, 3600)
-    minutes, secs = divmod(remainder, 60)
-    if hours:
-        return f"{hours}h{minutes:02d}m"
-    if minutes:
-        return f"{minutes}m{secs:02d}s"
-    return f"{secs}s"
 
 
 def load_resolution_cache() -> dict:
@@ -5285,8 +5272,7 @@ def download_file(url: str, dest_path: str, session: requests.Session, progress_
                     resume_from = 0
 
                 downloaded = resume_from
-                started_at = time.time()
-                last_report_at = started_at
+                progress_meter = DownloadProgressMeter(total_size, resume_from)
                 mode = 'ab' if resume_from and response.status_code == 206 else 'wb'
                 with open(part_path, mode) as handle:
                     for chunk in response.iter_content(chunk_size=DOWNLOAD_CHUNK_SIZE):
@@ -5296,17 +5282,13 @@ def download_file(url: str, dest_path: str, session: requests.Session, progress_
                         downloaded += len(chunk)
                         if total_size > 0 and progress_callback:
                             progress_callback((downloaded / total_size) * 100)
-                        now = time.time()
-                        if total_size > 0 and now - last_report_at >= 5:
-                            elapsed = max(0.001, now - started_at)
-                            speed = max(0.0, (downloaded - resume_from) / elapsed)
-                            remaining = max(0, total_size - downloaded)
-                            eta = remaining / speed if speed > 0 else 0
+                        progress_snapshot = progress_meter.snapshot(downloaded)
+                        if progress_snapshot:
                             print(
-                                f"  Progression: {(downloaded / total_size) * 100:.1f}% "
-                                f"- {format_bytes(speed)}/s - ETA {format_duration(eta)}"
+                                f"  Progression: {progress_snapshot['percent']:.1f}% "
+                                f"- {format_bytes(progress_snapshot['speed'])}/s - "
+                                f"ETA {format_duration(progress_snapshot['eta'])}"
                             )
-                            last_report_at = now
 
                 if progress_callback:
                     progress_callback(100.0)
