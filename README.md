@@ -87,7 +87,7 @@ Dependances Python principales:
 
 `charset_normalizer` n'est pas liste directement car il est installe comme dependance transitive de `requests`.
 Le programme tente encore d'installer certaines dependances optionnelles si elles manquent au moment d'une verification d'archive.
-Les torrents Minerva demandent un binding Python `libtorrent` fonctionnel, mais il n'est pas liste dans `requirements.txt` car les wheels disponibles dependent fortement de la version Python et de Windows. Si `--diagnose` indique `libtorrent` absent ou une erreur `DLL load failed`, seuls les telechargements Minerva torrent sont affectes; les sources HTTP, la DB locale, l'analyse DAT et la GUI restent fonctionnelles.
+Les torrents Minerva demandent un binding Python `libtorrent` fonctionnel, mais il n'est pas liste dans `requirements.txt` car les wheels disponibles dependent fortement de la version Python et de Windows. Si `--diagnose` indique `libtorrent` absent ou une erreur `DLL load failed`, seuls les telechargements Minerva torrent sont affectes; les sources HTTP, la DB locale, l'analyse DAT et la GUI restent fonctionnelles. Sous Windows, si `libtorrent` reclame OpenSSL 1.1, renseigner `LIBTORRENT_DLL_DIR` dans `.env` vers le dossier contenant `libcrypto-1_1-x64.dll` et `libssl-1_1-x64.dll`.
 Voir `PACKAGING_WINDOWS.md` pour preparer une archive portable.
 
 ## Base locale
