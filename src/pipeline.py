@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from .network.exceptions import ChecksumMismatchError, SourceTimeoutError
+
 
 def aggregate_source_counts(items: list[dict]) -> dict[str, int]:
     """Compte les jeux resolus par source principale."""
@@ -44,21 +46,27 @@ def failure_cause_counts(failed_items: list[dict], not_available: list[dict]) ->
         causes["not_found"] = causes.get("not_found", 0) + 1
     for item in failed_items or []:
         cause = "download_failed"
-        attempts = item.get("provider_attempts") or []
-        if attempts:
-            last = attempts[-1]
-            status = last.get("status") or "failed"
-            detail = (last.get("detail") or item.get("error") or "").lower()
-            if status == "quota_skipped":
-                cause = "quota"
-            elif "md5" in detail or "taille" in detail or "checksum" in detail:
-                cause = "validation"
-            elif "timeout" in detail:
-                cause = "timeout"
-            elif status:
-                cause = status
-        elif item.get("error"):
-            cause = "exception"
+        error_obj = item.get("error")
+        if isinstance(error_obj, ChecksumMismatchError):
+            cause = "validation"
+        elif isinstance(error_obj, SourceTimeoutError):
+            cause = "timeout"
+        else:
+            attempts = item.get("provider_attempts") or []
+            if attempts:
+                last = attempts[-1]
+                status = last.get("status") or "failed"
+                detail = (last.get("detail") or item.get("error") or "").lower()
+                if status == "quota_skipped":
+                    cause = "quota"
+                elif "md5" in detail or "taille" in detail or "checksum" in detail or detail == "validation":
+                    cause = "validation"
+                elif "timeout" in detail:
+                    cause = "timeout"
+                elif status:
+                    cause = status
+            elif item.get("error"):
+                cause = "exception"
         causes[cause] = causes.get(cause, 0) + 1
     return causes
 

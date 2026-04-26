@@ -8,6 +8,7 @@ from ..network.sessions import create_optimized_session
 from ..network.circuits import SourceCircuitBreaker
 from ..network.cache_runtime import get_session_cache, clear_session_cache, RuntimeCache
 from ..network.metrics import load_provider_metrics, save_provider_metrics, prioritize_sources, record_provider_attempt
+from ..network.exceptions import ChecksumMismatchError, SourceTimeoutError, DownloadNetworkError
 from ..progress import DownloadProgressMeter, format_duration
 
 from .env import *
@@ -146,7 +147,7 @@ def attempt_download_from_resolved_provider(game_info: dict, output_folder: str,
         log_func(f"  {md5_message}")
         if not md5_ok:
             cleanup_invalid_download(downloaded_path)
-            success = False
+            raise ChecksumMismatchError(md5_message)
     else:
         cleanup_failed_download_outputs(dest_path, output_folder, before_download)
 
@@ -257,16 +258,99 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
             cleanup_invalid_download(existing_path)
             log_func("  Fichier existant supprime: MD5 incorrect")
 
-        success, downloaded_path = attempt_download_from_resolved_provider(
-            current_game,
-            output_folder,
-            sources,
-            session,
-            myrient_url,
-            progress_callback,
-            log_func,
-            progress_detail_callback
-        )
+        try:
+            success, downloaded_path = attempt_download_from_resolved_provider(
+                current_game,
+                output_folder,
+                sources,
+                session,
+                myrient_url,
+                progress_callback,
+                log_func,
+                progress_detail_callback
+            )
+        except ChecksumMismatchError as exc:
+            provider_attempts.append({
+                'source': source,
+                'status': 'failed',
+                'duration_seconds': round(time.time() - attempt_started, 3),
+                'detail': 'validation',
+            })
+            log_func(f"  Provider {source} checksum invalide, recherche d'un autre provider...")
+            current_game = resolve_next_provider(
+                original_game,
+                sources,
+                session,
+                system_name,
+                dat_profile,
+                attempted_sources
+            )
+            if current_game:
+                log_func(f"  Retry avec: {current_game.get('source', 'unknown')}")
+            continue
+        except SourceTimeoutError as exc:
+            provider_attempts.append({
+                'source': source,
+                'status': 'failed',
+                'duration_seconds': round(time.time() - attempt_started, 3),
+                'detail': 'timeout',
+            })
+            if circuit_breaker:
+                circuit_breaker.record_failure(source)
+            log_func(f"  Provider {source} timeout, recherche d'un autre provider...")
+            current_game = resolve_next_provider(
+                original_game,
+                sources,
+                session,
+                system_name,
+                dat_profile,
+                attempted_sources
+            )
+            if current_game:
+                log_func(f"  Retry avec: {current_game.get('source', 'unknown')}")
+            continue
+        except DownloadNetworkError as exc:
+            provider_attempts.append({
+                'source': source,
+                'status': 'failed',
+                'duration_seconds': round(time.time() - attempt_started, 3),
+                'detail': 'network_error',
+            })
+            if circuit_breaker:
+                circuit_breaker.record_failure(source)
+            log_func(f"  Provider {source} erreur reseau, recherche d'un autre provider...")
+            current_game = resolve_next_provider(
+                original_game,
+                sources,
+                session,
+                system_name,
+                dat_profile,
+                attempted_sources
+            )
+            if current_game:
+                log_func(f"  Retry avec: {current_game.get('source', 'unknown')}")
+            continue
+        except Exception as exc:
+            provider_attempts.append({
+                'source': source,
+                'status': 'failed',
+                'duration_seconds': round(time.time() - attempt_started, 3),
+                'detail': str(exc),
+            })
+            if circuit_breaker:
+                circuit_breaker.record_failure(source)
+            log_func(f"  Provider {source} invalide ou en echec, recherche d'un autre provider...")
+            current_game = resolve_next_provider(
+                original_game,
+                sources,
+                session,
+                system_name,
+                dat_profile,
+                attempted_sources
+            )
+            if current_game:
+                log_func(f"  Retry avec: {current_game.get('source', 'unknown')}")
+            continue
         if success:
             if circuit_breaker:
                 circuit_breaker.record_success(source)
@@ -280,25 +364,6 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
             })
             item_copy['provider_attempts'] = provider_attempts.copy()
             return 'downloaded', item_copy
-
-        provider_attempts.append({
-            'source': source,
-            'status': 'failed',
-            'duration_seconds': round(time.time() - attempt_started, 3),
-        })
-        if circuit_breaker:
-            circuit_breaker.record_failure(source)
-        log_func(f"  Provider {source} invalide ou en echec, recherche d'un autre provider...")
-        current_game = resolve_next_provider(
-            original_game,
-            sources,
-            session,
-            system_name,
-            dat_profile,
-            attempted_sources
-        )
-        if current_game:
-            log_func(f"  Retry avec: {current_game.get('source', 'unknown')}")
 
     item_copy = (current_game or game_info).copy()
     item_copy['attempted_sources'] = attempted_sources.copy()

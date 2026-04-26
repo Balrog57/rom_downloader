@@ -8,6 +8,7 @@ import requests
 from ..progress import DownloadProgressMeter, format_duration
 from ..network.sessions import create_optimized_session
 from ..network.utils import format_bytes
+from ..network.exceptions import SourceTimeoutError, DownloadNetworkError, ResumeNotSupportedError
 
 from .env import DOWNLOAD_CHUNK_SIZE
 from .constants import *
@@ -67,6 +68,20 @@ def download_file_legacy(url: str, dest_path: str, session: requests.Session, pr
                     progress_callback(100.0)
                 return True
 
+        except (requests.Timeout, requests.exceptions.ConnectTimeout,
+                requests.exceptions.ReadTimeout) as e:
+            print(f"  Tentative {attempt + 1}/{max_retries} echouee (timeout): {e}")
+            if os.path.exists(dest_path):
+                try:
+                    os.remove(dest_path)
+                except:
+                    pass
+            if attempt < max_retries - 1:
+                print(f"  Nouvelle tentative dans {retry_delay} secondes...")
+                time.sleep(retry_delay)
+                retry_delay *= 2
+            else:
+                raise SourceTimeoutError(str(e)) from e
         except Exception as e:
             print(f"  Tentative {attempt + 1}/{max_retries} echouee: {e}")
             if os.path.exists(dest_path):
@@ -137,11 +152,9 @@ def download_file(url: str, dest_path: str, session: requests.Session, progress_
                     total_size = content_length + resume_from
 
                 if resume_from and response.status_code != 206:
-                    try:
-                        os.remove(part_path)
-                    except FileNotFoundError:
-                        pass
-                    resume_from = 0
+                    raise ResumeNotSupportedError(
+                        f"Serveur retourne {response.status_code} au lieu de 206 pour Range bytes={resume_from}-"
+                    )
 
                 downloaded = resume_from
                 progress_meter = DownloadProgressMeter(total_size, resume_from)
@@ -169,6 +182,25 @@ def download_file(url: str, dest_path: str, session: requests.Session, progress_
                 os.replace(part_path, current_dest_path)
                 return True
 
+        except (requests.Timeout, requests.exceptions.ConnectTimeout,
+                requests.exceptions.ReadTimeout) as e:
+            print(f"  Tentative {attempt + 1}/{max_retries} echouee (timeout): {e}")
+            if attempt < max_retries - 1:
+                print(f"  Nouvelle tentative dans {retry_delay} secondes...")
+                time.sleep(retry_delay)
+                retry_delay *= 2
+            else:
+                raise SourceTimeoutError(str(e)) from e
+        except requests.exceptions.HTTPError as e:
+            print(f"  Tentative {attempt + 1}/{max_retries} echouee (HTTP): {e}")
+            if attempt < max_retries - 1:
+                print(f"  Nouvelle tentative dans {retry_delay} secondes...")
+                time.sleep(retry_delay)
+                retry_delay *= 2
+            else:
+                raise DownloadNetworkError(str(e)) from e
+        except (ResumeNotSupportedError, SourceTimeoutError, DownloadNetworkError):
+            raise
         except Exception as e:
             print(f"  Tentative {attempt + 1}/{max_retries} echouee: {e}")
             if attempt < max_retries - 1:

@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 from ..network.utils import format_bytes
+from ..network.exceptions import ChecksumMismatchError
 
 from .constants import *
 from .env import *
@@ -214,6 +215,14 @@ def clean_download_resolution(game_info: dict) -> dict:
     return cleaned
 
 
+def validate_download_checksum(game_info: dict, file_path: str) -> bool:
+    """Valide le checksum du fichier telecharge, leve ChecksumMismatchError si echec."""
+    ok, message = verify_downloaded_md5(game_info, file_path)
+    if not ok:
+        raise ChecksumMismatchError(message)
+    return True
+
+
 __all__ = [
     'file_exists_in_folder',
     'snapshot_folder_files',
@@ -223,6 +232,7 @@ __all__ = [
     'cleanup_invalid_download',
     'cleanup_failed_download_outputs',
     'verify_downloaded_md5',
+    'validate_download_checksum',
     'DOWNLOAD_RESOLUTION_KEYS',
     'clean_download_resolution',
 ]
