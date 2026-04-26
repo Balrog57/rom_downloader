@@ -5,3 +5,4 @@ cloudscraper
 py7zr
 rarfile
 tkinterdnd2
+aiohttp
