@@ -3054,7 +3054,7 @@ def build_analysis_summary(dat_file: str, rom_folder: str, dat_games: dict, miss
 
 
 def analyze_dat_folder(dat_file: str, rom_folder: str, include_tosort: bool = False,
-                       custom_sources: list | None = None) -> dict:
+                       custom_sources: list | None = None, candidate_limit: int = 0) -> dict:
     """Analyse un couple DAT/dossier avant tout telechargement."""
     dat_games = parse_dat_file(dat_file)
     dat_profile = finalize_dat_profile(detect_dat_profile(dat_file))
@@ -3067,7 +3067,48 @@ def analyze_dat_folder(dat_file: str, rom_folder: str, include_tosort: bool = Fa
     tosort_candidates = None
     if include_tosort:
         tosort_candidates = find_roms_not_in_dat(dat_games, local_roms, local_roms_normalized, rom_folder)
-    return build_analysis_summary(dat_file, rom_folder, dat_games, missing_games, dat_profile, sources, tosort_candidates)
+    summary = build_analysis_summary(dat_file, rom_folder, dat_games, missing_games, dat_profile, sources, tosort_candidates)
+    if candidate_limit:
+        system_name = dat_profile.get('system_name') or detect_system_name(dat_file)
+        summary.update(analyze_source_candidates(missing_games, sources, system_name, dat_profile, candidate_limit))
+    return summary
+
+
+def analyze_source_candidates(missing_games: list, sources: list, system_name: str,
+                              dat_profile: dict | None, candidate_limit: int = 10) -> dict:
+    """Resolve les sources candidates pour un echantillon de jeux manquants."""
+    session = create_download_session()
+    resolution_cache = load_resolution_cache()
+    dirty = False
+    samples = []
+    source_counts = {}
+    for game_info in list(missing_games)[:max(0, int(candidate_limit or 0))]:
+        found, unavailable, cache_hit = resolve_game_sources_with_cache(
+            game_info,
+            sources,
+            session,
+            system_name,
+            dat_profile,
+            cache=resolution_cache
+        )
+        dirty = dirty or not cache_hit
+        candidate_sources = [item.get('source', 'Inconnu') for item in found]
+        for source_name in candidate_sources:
+            source_counts[source_name] = source_counts.get(source_name, 0) + 1
+        samples.append({
+            'game_name': game_info.get('game_name', 'Jeu inconnu'),
+            'sources': candidate_sources,
+            'not_found': not bool(found),
+            'cache_hit': cache_hit,
+            'unavailable': len(unavailable),
+        })
+    if dirty:
+        save_resolution_cache(resolution_cache)
+    return {
+        'candidate_sample_size': len(samples),
+        'candidate_source_counts': source_counts,
+        'candidate_samples': samples,
+    }
 
 
 def format_analysis_summary(summary: dict) -> str:
@@ -3089,6 +3130,15 @@ def format_analysis_summary(summary: dict) -> str:
         lines.append(f"Tailles manquantes inconnues: {summary.get('missing_unknown_sizes')}")
     if summary.get('tosort_candidates') is not None:
         lines.append(f"Candidats ToSort: {summary.get('tosort_candidates')}")
+    if summary.get('candidate_sample_size'):
+        lines.append(f"Echantillon sources candidates: {summary.get('candidate_sample_size')} jeu(x)")
+        source_counts = summary.get('candidate_source_counts') or {}
+        if source_counts:
+            formatted = ', '.join(f"{name}: {count}" for name, count in sorted(source_counts.items()))
+            lines.append(f"Sources candidates: {formatted}")
+        for sample in summary.get('candidate_samples', [])[:8]:
+            sources = ', '.join(sample.get('sources') or [])
+            lines.append(f"  - {sample.get('game_name')}: {sources or 'aucune source'}")
     lines.append(f"Sources actives: {', '.join(summary.get('active_sources') or []) or 'Aucune'}")
     lines.append("=" * 60)
     return "\n".join(lines)
@@ -3512,9 +3562,23 @@ def write_download_report(output_folder: str, summary: dict) -> str:
     skipped_titles = [item['game_name'] for item in summary.get('skipped_items', [])]
 
     source_counts = {}
+    provider_metrics = {}
     for item in summary.get('resolved_items', []):
         source_name = item.get('source', 'Inconnu')
         source_counts[source_name] = source_counts.get(source_name, 0) + 1
+        for attempt in item.get('provider_attempts', []):
+            metric = provider_metrics.setdefault(attempt.get('source', 'Inconnu'), {
+                'attempts': 0,
+                'downloaded': 0,
+                'failed': 0,
+                'skipped': 0,
+                'dry_run': 0,
+                'seconds': 0.0,
+            })
+            status = attempt.get('status', 'failed')
+            metric['attempts'] += 1
+            metric[status] = metric.get(status, 0) + 1
+            metric['seconds'] += float(attempt.get('duration_seconds', 0) or 0)
 
     lines = [
         "ROM Downloader - Recapitulatif",
@@ -3558,6 +3622,17 @@ def write_download_report(output_folder: str, summary: dict) -> str:
             lines.append(f"- {source_name}: {count}")
     else:
         lines.append("- Aucun jeu resolu")
+
+    lines.extend(["", "Metriques providers", "-" * 72])
+    if provider_metrics:
+        for source_name, metric in sorted(provider_metrics.items(), key=lambda item: item[0].lower()):
+            lines.append(
+                f"- {source_name}: essais={metric['attempts']}, ok={metric.get('downloaded', 0)}, "
+                f"echecs={metric.get('failed', 0)}, ignores={metric.get('skipped', 0)}, "
+                f"dry-run={metric.get('dry_run', 0)}, temps={metric['seconds']:.1f}s"
+            )
+    else:
+        lines.append("- Aucune metrique provider")
 
     lines.extend(["", "Manquants non trouves", "-" * 72])
     if missing_titles:
@@ -5551,8 +5626,10 @@ def download_with_provider_retries(game_info: dict, sources: list, session: requ
     current_game = game_info.copy()
     attempted_sources = []
     attempted_source_labels = set()
+    provider_attempts = []
 
     while current_game and is_running():
+        attempt_started = time.time()
         source = current_game.get('source', 'unknown')
         source_label = normalize_source_label(source)
         if source_label in attempted_source_labels:
@@ -5570,6 +5647,11 @@ def download_with_provider_retries(game_info: dict, sources: list, session: requ
                 log_func(f"  Serait telecharge vers: {output_folder}")
             item_copy = current_game.copy()
             item_copy['attempted_sources'] = attempted_sources.copy()
+            item_copy['provider_attempts'] = [{
+                'source': source,
+                'status': 'dry_run',
+                'duration_seconds': round(time.time() - attempt_started, 3),
+            }]
             return 'dry_run', item_copy
 
         exists, existing_path = file_exists_in_folder(output_folder, filename)
@@ -5581,6 +5663,13 @@ def download_with_provider_retries(game_info: dict, sources: list, session: requ
                 item_copy = current_game.copy()
                 item_copy['downloaded_path'] = existing_path
                 item_copy['attempted_sources'] = attempted_sources.copy()
+                provider_attempts.append({
+                    'source': source,
+                    'status': 'skipped',
+                    'duration_seconds': round(time.time() - attempt_started, 3),
+                    'detail': 'existing_valid',
+                })
+                item_copy['provider_attempts'] = provider_attempts.copy()
                 return 'skipped', item_copy
             cleanup_invalid_download(existing_path)
             log_func("  Fichier existant supprime: MD5 incorrect")
@@ -5598,8 +5687,19 @@ def download_with_provider_retries(game_info: dict, sources: list, session: requ
             item_copy = current_game.copy()
             item_copy['downloaded_path'] = downloaded_path
             item_copy['attempted_sources'] = attempted_sources.copy()
+            provider_attempts.append({
+                'source': source,
+                'status': 'downloaded',
+                'duration_seconds': round(time.time() - attempt_started, 3),
+            })
+            item_copy['provider_attempts'] = provider_attempts.copy()
             return 'downloaded', item_copy
 
+        provider_attempts.append({
+            'source': source,
+            'status': 'failed',
+            'duration_seconds': round(time.time() - attempt_started, 3),
+        })
         log_func(f"  Provider {source} invalide ou en echec, recherche d'un autre provider...")
         current_game = resolve_next_provider(
             original_game,
@@ -5614,6 +5714,7 @@ def download_with_provider_retries(game_info: dict, sources: list, session: requ
 
     item_copy = (current_game or game_info).copy()
     item_copy['attempted_sources'] = attempted_sources.copy()
+    item_copy['provider_attempts'] = provider_attempts.copy()
     return ('stopped' if not is_running() else 'failed'), item_copy
 
 
@@ -7008,7 +7109,8 @@ def gui_mode():
                         self.dat_file.get().strip(),
                         self.rom_folder.get().strip(),
                         include_tosort=self.move_to_tosort_var.get(),
-                        custom_sources=self.selected_sources()
+                        custom_sources=self.selected_sources(),
+                        candidate_limit=8
                     )
                     message = format_analysis_summary(summary)
                     status = (
@@ -7241,6 +7343,7 @@ Exemples:
     parser.add_argument('--parallel', type=int, default=DEFAULT_PARALLEL_DOWNLOADS, help=f'Nombre de telechargements simultanes (defaut: {DEFAULT_PARALLEL_DOWNLOADS})')
     parser.add_argument('--sources', action='store_true', help='Afficher les sources de telechargement')
     parser.add_argument('--analyze', action='store_true', help='Afficher une pre-analyse DAT/dossier puis quitter')
+    parser.add_argument('--analyze-candidates', type=int, default=0, help='Pendant --analyze, resoudre les sources candidates des N premiers manquants')
     parser.add_argument('--diagnose', action='store_true', help='Afficher un diagnostic local de l application')
     parser.add_argument('--diagnose-output', help='Exporter le diagnostic JSON vers ce fichier')
     parser.add_argument('--healthcheck-sources', action='store_true', help='Tester rapidement les sources configurees')
@@ -7280,7 +7383,12 @@ Exemples:
         if args.refresh_cache:
             clear_resolution_cache()
         if args.analyze:
-            print_analysis_summary(analyze_dat_folder(args.dat_file, args.rom_folder, include_tosort=args.tosort))
+            print_analysis_summary(analyze_dat_folder(
+                args.dat_file,
+                args.rom_folder,
+                include_tosort=args.tosort,
+                candidate_limit=args.analyze_candidates
+            ))
             return
         cli_mode(args)
         return
