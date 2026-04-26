@@ -47,7 +47,16 @@ python main.py --diagnose
 
 ## Executable
 
-Un `.exe` PyInstaller est possible plus tard, mais il faudra tester explicitement:
+Un workflow GitHub Actions manuel `Windows Package` peut produire `ROMDownloader.exe` avec PyInstaller depuis l'onglet Actions du depot.
+
+Le build inclut:
+
+- `assets/`
+- `dat/`
+- `db/`
+- `main.py` et `src/`
+
+Il faudra tester explicitement apres generation:
 
 - inclusion de `assets/`, `dat/` et `db/`;
 - import dynamique des dependances optionnelles;
