@@ -29,7 +29,8 @@ Activez le venv avant les commandes `python`/`pip` si vous ne lancez pas l'inter
 
 ## Points a verifier
 
-- `libtorrent` peut ne pas etre disponible pour toutes les versions Python. Si l'installation echoue, Minerva torrent sera indisponible, mais les autres sources et la GUI restent utilisables.
+- `libtorrent` peut ne pas etre disponible ou echouer a l'import avec `DLL load failed` selon le wheel et l'environnement Windows. Si cela arrive, Minerva torrent sera indisponible, mais les autres sources et la GUI restent utilisables.
+- `py7zr` et `rarfile` sont inclus pour valider les archives `.7z` et `.rar`; la verification ZIP utilise la bibliotheque standard Python.
 - `tkinterdnd2` est optionnel. Si le backend DnD ne repond pas, la GUI demarre quand meme avec les boutons `Parcourir`.
 - `7-Zip` est utile pour verifier/repack les archives `.7z`. Le programme cherche `7z.exe` dans le PATH et dans les emplacements Windows courants.
 - `.env` doit rester local et ne doit pas etre inclus dans une archive publique.
