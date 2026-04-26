@@ -269,7 +269,8 @@ def _resolve_games_parallel(
         if cached is not None:
             return (game_info, cached)
         result = resolve_fn(game_info)
-        session_cache.set_resolution(resolve_key, result)
+        if result is not None:
+            session_cache.set_resolution(resolve_key, result)
         return (game_info, result)
 
     scraper_funcs = [("resolve", _resolve_one)]
@@ -495,8 +496,9 @@ def search_all_sources(
                         remaining = []
                         for game_info in still_missing:
                             name_lower = game_info['game_name'].lower()
-                            if name_lower in planet_files:
-                                game_info['page_url'] = planet_files[name_lower]['page_url']
+                            entry = planet_files.get(name_lower)
+                            if entry and isinstance(entry, dict):
+                                game_info['page_url'] = entry.get('page_url', '')
                                 game_info['source'] = 'PlanetEmu'
                                 game_info['download_filename'] = f"{game_info['game_name']}.zip"
                                 newly_found.append(game_info)
@@ -526,10 +528,10 @@ def search_all_sources(
                                 if matched:
                                     break
 
-                            if matched:
-                                game_info['download_url'] = matched['url']
+                            if matched and isinstance(matched, dict):
+                                game_info['download_url'] = matched.get('url', '')
                                 game_info['source'] = 'LoLROMs'
-                                game_info['download_filename'] = matched['filename']
+                                game_info['download_filename'] = matched.get('filename', f"{game_info['game_name']}.zip")
                                 newly_found.append(game_info)
                                 print(f"  [LoLROMs] {game_info['game_name']} trouve")
                             else:
