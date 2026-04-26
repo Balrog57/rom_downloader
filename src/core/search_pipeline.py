@@ -12,7 +12,7 @@ from .constants import *
 from .env import *
 from .dependencies import *
 from .dat_parser import strip_rom_extension, normalize_checksum
-from .rom_database import ROM_DATABASE, load_rom_database, database_result_filename
+from .rom_database import load_rom_database, database_result_filename
 from .sources import SYSTEM_MAPPINGS, normalize_source_label, source_is_excluded
 from .archive_org import search_archive_org_by_md5, search_archive_org_by_crc, search_archive_org_by_sha1, search_archive_org_by_name
 from .minerva import (
