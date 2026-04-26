@@ -6457,6 +6457,26 @@ def download_missing_games_sequentially(
     source_usage_lock = threading.Lock()
 
     total = len(missing_games)
+    total_work = min(total, limit) if limit else total
+    completed_work = 0
+
+    def report_overall_progress():
+        if not progress_callback:
+            return
+        if total_work <= 0:
+            progress_callback(100.0)
+            return
+        progress_callback(min(100.0, (completed_work / total_work) * 100.0))
+
+    def mark_game_handled():
+        nonlocal completed_work
+        completed_work = min(total_work, completed_work + 1)
+        report_overall_progress()
+        if status_callback:
+            status_callback(f"Progression globale: {completed_work}/{total_work} telechargement(s) traites")
+
+    report_overall_progress()
+
     if parallel_downloads > 1 and not dry_run:
         log_lock = threading.Lock()
 
@@ -6527,6 +6547,7 @@ def download_missing_games_sequentially(
                 if not found:
                     log_func("  Aucun provider disponible")
                     not_available.append((unavailable[0] if unavailable else original_game).copy())
+                    mark_game_handled()
                     continue
 
                 first_resolution = found[0]
@@ -6559,6 +6580,7 @@ def download_missing_games_sequentially(
                     safe_log(f"  Echec du telechargement: {game_name}")
                     failed += 1
                     failed_items.append(result_item.copy())
+                mark_game_handled()
 
         if resolution_cache_dirty:
             save_resolution_cache(resolution_cache)
@@ -6604,6 +6626,7 @@ def download_missing_games_sequentially(
             log_func("  Aucun provider disponible")
             not_available.append((unavailable[0] if unavailable else original_game).copy())
             handled += 1
+            mark_game_handled()
             continue
 
         first_resolution = found[0]
@@ -6628,7 +6651,7 @@ def download_missing_games_sequentially(
             output_folder,
             myrient_url,
             dry_run,
-            progress_callback,
+            None,
             log_func,
             is_running=is_running,
             source_usage=source_usage,
@@ -6657,10 +6680,14 @@ def download_missing_games_sequentially(
             failed += 1
             failed_items.append(result_item.copy())
             handled += 1
+            mark_game_handled()
             continue
 
         if status in {'downloaded', 'skipped'}:
             handled += 1
+            mark_game_handled()
+        elif status == 'dry_run':
+            mark_game_handled()
 
     if resolution_cache_dirty:
         save_resolution_cache(resolution_cache)
@@ -8224,7 +8251,7 @@ def gui_mode():
                     self._ui(lambda msg=error_message: messagebox.showerror("Erreur", f"Une erreur est survenue:\n{msg}"))
                 finally:
                     self.running = False
-                    self._ui(lambda: (self.start_button.configure(state=tk.NORMAL), self.stop_button.configure(state=tk.DISABLED), self.progress_var.set(0)))
+                    self._ui(lambda: (self.start_button.configure(state=tk.NORMAL), self.stop_button.configure(state=tk.DISABLED)))
 
         root = tk.Tk()
         tkinterdnd2 = enable_tkinterdnd(root)
