@@ -57,6 +57,7 @@ from itertools import islice
 from pathlib import Path
 from urllib.parse import quote, unquote, urljoin
 
+from .pipeline import build_pipeline_summary
 from .progress import DownloadProgressMeter, format_duration
 
 APP_ROOT = Path(__file__).resolve().parents[1]
@@ -3816,24 +3817,10 @@ def write_download_report(output_folder: str, summary: dict) -> str:
     downloaded_titles = [item['game_name'] for item in summary.get('downloaded_items', [])]
     skipped_titles = [item['game_name'] for item in summary.get('skipped_items', [])]
 
-    source_counts = {}
-    provider_metrics = {}
-    for item in summary.get('resolved_items', []):
-        source_name = item.get('source', 'Inconnu')
-        source_counts[source_name] = source_counts.get(source_name, 0) + 1
-        for attempt in item.get('provider_attempts', []):
-            metric = provider_metrics.setdefault(attempt.get('source', 'Inconnu'), {
-                'attempts': 0,
-                'downloaded': 0,
-                'failed': 0,
-                'skipped': 0,
-                'dry_run': 0,
-                'seconds': 0.0,
-            })
-            status = attempt.get('status', 'failed')
-            metric['attempts'] += 1
-            metric[status] = metric.get(status, 0) + 1
-            metric['seconds'] += float(attempt.get('duration_seconds', 0) or 0)
+    pipeline_summary = build_pipeline_summary(summary)
+    source_counts = pipeline_summary['source_counts']
+    provider_metrics = pipeline_summary['provider_metrics']
+    failure_causes = pipeline_summary['failure_causes']
 
     lines = [
         "ROM Downloader - Recapitulatif",
@@ -3884,10 +3871,18 @@ def write_download_report(output_folder: str, summary: dict) -> str:
             lines.append(
                 f"- {source_name}: essais={metric['attempts']}, ok={metric.get('downloaded', 0)}, "
                 f"echecs={metric.get('failed', 0)}, ignores={metric.get('skipped', 0)}, "
-                f"dry-run={metric.get('dry_run', 0)}, temps={metric['seconds']:.1f}s"
+                f"quotas={metric.get('quota_skipped', 0)}, dry-run={metric.get('dry_run', 0)}, "
+                f"temps={metric['seconds']:.1f}s"
             )
     else:
         lines.append("- Aucune metrique provider")
+
+    lines.extend(["", "Causes d'echec", "-" * 72])
+    if failure_causes:
+        for cause, count in sorted(failure_causes.items(), key=lambda item: (-item[1], item[0])):
+            lines.append(f"- {cause}: {count}")
+    else:
+        lines.append("- Aucune")
 
     lines.extend(["", "Manquants non trouves", "-" * 72])
     if missing_titles:
