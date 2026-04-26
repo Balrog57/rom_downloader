@@ -9,13 +9,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src.core import (  # noqa: E402
     expected_game_sizes,
-    format_duration,
     optional_positive_int,
     reserve_source_quota,
     source_quota_limit,
     source_timeout_seconds,
     verify_downloaded_md5,
 )
+from src.progress import DownloadProgressMeter, format_duration  # noqa: E402
 
 
 def assert_true(condition, message: str) -> None:
@@ -25,6 +25,8 @@ def assert_true(condition, message: str) -> None:
 
 def main() -> None:
     assert_true(format_duration(65) == "1m05s", "duration formatting failed")
+    meter = DownloadProgressMeter(total_size=100, resume_from=20, report_interval=0.1)
+    assert_true(meter.snapshot(50) is None, "progress meter reported too early")
     assert_true(optional_positive_int("12", maximum=10) == 10, "integer clamp failed")
     assert_true(optional_positive_int("0") is None, "zero should be ignored")
 
