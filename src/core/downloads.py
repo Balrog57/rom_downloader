@@ -51,11 +51,10 @@ def download_file_legacy(url: str, dest_path: str, session: requests.Session, pr
                     dest_path = os.path.join(os.path.dirname(dest_path), server_filename)
 
                 total_size = int(response.headers.get('content-length', 0))
-                block_size = 8192
                 downloaded = 0
 
                 with open(dest_path, 'wb') as f:
-                    for chunk in response.iter_content(chunk_size=block_size):
+                    for chunk in response.iter_content(chunk_size=DOWNLOAD_CHUNK_SIZE):
                         if chunk:
                             f.write(chunk)
                             downloaded += len(chunk)
