@@ -1,117 +1,74 @@
-# Plan d'amelioration ROM Downloader – Phases restantes
+# ROM Downloader – Phases d'amelioration
 
-## Historique (deja implante et pousse sur GitHub)
+## Historique des phases (toutes completees et poussees sur GitHub)
 
 | Phase | Statut | Description | Commit |
 |---|---|---|---|
-| **Phase 0** | Done | Creation modules `src/network/` (sessions, circuits, exceptions, cache_runtime, metrics, downloads, search, cache, utils) | `b0eb908` |
-| **Phase 1** | Done | Sessions HTTP optimisees : `create_optimized_session()` avec pooling urllib3 (20 connexions), retry 502/503/504, chunks 256KB | `8848f0d` |
-| **Phase 2** | Partial | Chunk size uniformise a 256KB dans tout core.py | `8848f0d` |
-| **Phase 3** | Partial | Structure `ParallelDownloadPool` et `ParallelSearchPool` crees | `b0eb908` |
-| **Phase 4** | Done | Circuit-breaker integre dans `download_with_provider_retries` et `download_missing_games_sequentially` (threshold=10, recovery=300s) | `ed9a6ea` |
-| **Phase 5** | Partial | Resume robuste deja present dans `download_file()` (fichiers `.part` + Range headers) ; reste a integrer le MD5 validator dans `ParallelDownloadPool` | – |
-| **Phase 6** | Partial | `RuntimeCache` crees, pas encore integre dans `search_all_sources` | – |
-| **Phase 7** | Pending | Async scraping avec aiohttp | – |
-| **Phase 8** | Done | Metriques persistantes : `load/save_provider_metrics()` integre en fin de `run_download()` | `521d71f` |
-| **Phase 9** | Partial | Exceptions custom crees ; reste a les utiliser dans le pipeline au lieu de `raise Exception` bruts | – |
+| **Phase 0** | Done | Eclatement `core.py` (8367 lignes) en 27 modules sous `src/core/` + facade `_facade.py` | `8cf29c9` |
+| **Phase 1** | Done | Sessions HTTP optimisees : `create_optimized_session()` avec pooling urllib3 (20 connexions), retry 502/503/504, chunks 256KB uniformes | `e17cc05` |
+| **Phase 2** | Done | `ParallelDownloadPool` remplace le `ThreadPoolExecutor` artisanal dans `download_orchestrator.py`. Accepte `download_fn` callback pour deleguer a `download_with_provider_retries` | `5dc130d` |
+| **Phase 3** | Done | `_resolve_games_parallel()` utilise `ParallelSearchPool` pour EdgeEmu/CDRomance/Vimm/RetroGameSets en parallel (5 workers). Listings (PlanetEmu/LoLROMs) restent sequentiels | `4d7fc1c` |
+| **Phase 4** | Done | Circuit-breaker `SourceCircuitBreaker(failure_threshold=10, recovery_timeout=300)` integre dans `download_orchestrator.py` et `pipeline.py` | `e4ff97a` |
+| **Phase 5** | Done | Resume robuste : fichiers `.part` preserves sur erreur transitoire, validation MD5 finale via `ChecksumMismatchError`, `cleanup_invalid_download()` si KO | `58ac64a` |
+| **Phase 6** | Done | RuntimeCache LRU integre dans `search_pipeline.py` pour listings (`get_listing/set_listing`) et resolutions (`get_resolution/set_resolution`). Singleton `get_session_cache()` | `05d697d` |
+| **Phase 7** | Done | Module `async_search.py` avec `aiohttp` + fallback synchrone. `async_fetch_url()`, `async_fetch_listing()`, `async_resolve_game()`, `run_async()`. `aiohttp` ajoute dans requirements.txt | `be5e888` |
+| **Phase 8** | Done | Metriques persistantes + `prioritize_sources()` appele dans `pipeline.py`. `_extract_session_metrics()` + `merge_provider_metrics()` + `save_provider_metrics()` en fin de run | `aaf85a5` |
+| **Phase 9** | Done | Exceptions custom : `SourceTimeoutError`, `DownloadNetworkError`, `ResumeNotSupportedError`, `ChecksumMismatchError`, `QuotaExceededError`, `SourceUnavailableError`, `TorrentDownloadError`. Utilisees dans `download_orchestrator.py`, `downloads.py`, `pipeline.py` | `e4ff97a` |
 
 ---
 
-## Phases restantes – Plan detaille
-
-### Phase 2 – Telechargements paralleles (completion)
-**Objectif** : Remplacer le `ThreadPoolExecutor` artisanal de `download_missing_games_sequentially` par `ParallelDownloadPool`.
-
-**Actions** :
-1. `ParallelDownloadPool` implementer `_download_torrent()` avec delegation a `download_from_minerva_torrent()`
-2. `run_download()` : instancier `download_pool = ParallelDownloadPool(max_workers=parallel_downloads, circuit_breaker=circuit_breaker, metrics=session_metrics)`
-3. remplacer le bloc `worker_download()` + `futures` par `download_pool.submit_download()` et `as_completed()`
-4. fallback sequentiel garde pour le cas `parallel_downloads == 1`
-
----
-
-### Phase 3 – Recherche parallele (completion)
-**Objectif** : Pre-fetcher les listings DDL et paralleler les scrapers.
-
-**Actions** :
-1. `search_all_sources()` : instancier `search_pool = ParallelSearchPool(max_workers=10, circuit_breaker=circuit_breaker, runtime_cache=session_cache)`
-2. Etape 2 (DDL direct) : `search_pool.search_listings_parallel(direct_sources, list_func=list_myrient_directory)` pour pre-fetcher tous les listings
-3. Etape 3 (scrapers) : `search_pool.search_scrapers_parallel(still_missing, scraper_funcs)`
-4. Etape 4 (archive.org) : conserver sequentiel car API rate-limitee
-5. `session_cache` mis a jour avec les resultats
-
----
-
-### Phase 5 – Resume robuste + MD5 final (completion)
-**Objectif** : Valider MD5 sur le fichier final, meme pour archives et torrents.
-
-**Actions** :
-1. `verify_downloaded_md5()` deja present dans core.py ; l'utiliser comme `md5_validator` de `ParallelDownloadPool.download_game()`
-2. Si torrent => extraction obligatoire avant validation (impossible avant)
-3. Si archive (zip/7z/rar) => extraire le contenu, valider le MD5 de l'interieur
-4. `cleanup_invalid_download()` appele si MD5 KO
-5. Ne jamais supprimer le `.part` en cas d'erreur transitoire ; seulement apres validation finale KO
-
----
-
-### Phase 6 – Cache runtime (completion)
-**Objectif** : Eviter les requetes HTTP redondantes pendant la session.
-
-**Actions** :
-1. `list_myrient_directory(url)` : wrapper avec cache LRU via `session_cache`
-2. `resolve_edgeemu_game()`, `resolve_planetemu_game()` : cache par `(game_name, system_name)`
-3. Resultats `archive.org` par checksum : cache via `session_cache.set_resolution()`
-
----
-
-### Phase 7 – Async scraping avec aiohttp
-**Objectif** : Paralleler le scraping avec des milliers de connexions I/O.
-
-**Actions** :
-1. Ajouter `aiohttp` dans `requirements.txt`
-2. `src/network/async_search.py` : `AsyncScraperSession` avec `aiohttp.ClientSession`
-3. Wrapper pour les fonctions de scraping (EdgeEmu, PlanetEmu, LoLROMs)
-4. Fallback synchrone transparent si aiohttp manque
-5. **Uniquement** le search/resolution devient async ; garder `requests` pour les downloads lourds
-
----
-
-### Phase 9 – Exceptions custom + rapports fins (completion)
-**Objectif** : Remplacer `Exception` generiques par types precis.
-
-**Actions** :
-1. Dans `download_file()` : lever `SourceTimeoutError` sur timeout, `DownloadNetworkError` sur HTTP KO, `ResumeNotSupportedError` si serveur refuse 206
-2. Dans le torrent handler : lever `TorrentDownloadError`
-3. Mettre a jour `failure_cause_counts()` dans `pipeline.py` pour capturer les nouveaux types
-4. Adapter les tests `tests/core_helper_checks.py` si besoin
-
----
-
-## Prochaines etapes recommandees
-
-1. **Finaliser Phase 2** (ParallelDownloadPool) – impact performance maximal
-2. **Finaliser Phase 3** (ParallelSearchPool) – accelere la resolution
-3. **Finaliser Phase 5** (MD5 final + resume) – securite des downloads
-4. **Phase 9** (exceptions) – fiabilite du reporting
-5. **Phase 6** (cache runtime) – optimisation secondaire
-6. **Phase 7** (aiohttp) – si besoin de plus de concurrence I/O
-
----
-
-## Architecture cible
+## Architecture finale
 
 ```
 src/network/
-  sessions.py       # HTTP pooling + retry (Phase 1 Done)
-  circuits.py       # Circuit-breaker (Phase 4 Done)
-  exceptions.py     # Custom exceptions (Phase 9 Started)
-  cache_runtime.py  # LRU memoire (Phase 6 Started)
-  cache.py          # Cache persistant JSON (Phase 0 Done)
-  metrics.py        # Stats + prioritisation (Phase 8 Done)
-  downloads.py      # ParallelDownloadPool (Phase 2 Started)
-  search.py         # ParallelSearchPool (Phase 3 Started)
-  async_search.py   # aiohttp wrapper (Phase 7 Pending)
-  utils.py          # Utilitaires purs (Phase 0 Done)
+  sessions.py       # create_optimized_session() + timed_request() + safe_stream_write()
+  circuits.py       # SourceCircuitBreaker (failure_threshold, recovery_timeout)
+  exceptions.py     # RomDownloaderError + 7 sous-classes
+  cache_runtime.py  # RuntimeCache LRU thread-safe (get/set_listing, get/set_resolution)
+  cache.py          # Cache persistant JSON (7 jours)
+  metrics.py        # load/save_provider_metrics(), prioritize_sources(), record_provider_attempt()
+  downloads.py      # ParallelDownloadPool (download_fn callback, circuit_breaker, metrics)
+  search.py         # ParallelSearchPool (search_listings_parallel, search_scrapers_parallel)
+  async_search.py   # aiohttp async + fallback synchrone
+  utils.py          # Utilitaires purs
 
-src/core.py         # Facade minimale (progressivement videe)
+src/core/           # 27 modules extrait de core.py
+  _facade.py        # Re-exports pour compatibilite (from .module import *)
+  pipeline.py       # run_download() orchestrateur principal
+  download_orchestrator.py  # download_with_provider_retries() + download_missing_games_sequentially()
+  search_pipeline.py        # search_all_sources() avec _resolve_games_parallel()
+  downloads.py      # download_file() + download_from_archive_org() avec resume .part
+  verification.py   # verify_downloaded_md5() + validate_download_checksum()
+  scrapers.py       # EdgeEmu/PlanetEmu/LoLROMs/CDRomance/Vimm/RetroGameSets
+  ...               # 20+ autres modules (env, constants, sources, dat_parser, etc.)
+
+src/pipeline.py     # build_pipeline_summary() + failure_cause_counts()
 ```
+
+---
+
+## Tests de validation
+
+- `tests/smoke_checks.py` : DAT discovery + DB shards + providers
+- `tests/core_helper_checks.py` : format_duration, DownloadProgressMeter, source_timeout_seconds, verify_downloaded_md5, etc.
+- `tests/test_integration_gw.py` : Integration test avec DAT "Nintendo - Game & Watch"
+- `tests/test_network_modules.py` : Verification de tous les modules network
+
+DAT de test : **Nintendo - Game & Watch (20241105-120946)** (53 jeux, petit systeme)
+DAT alternative : **Nintendo - Game Boy (20260405-031740)**
+
+---
+
+## Gain estime par phase
+
+| Phase | Impact Rapidite | Impact Fiabilite |
+|---|---|---|
+| 1 (HTTP sessions) | ** | ** |
+| 2 (Downloads paralleles) | *** | * |
+| 3 (Search parallele) | *** | * |
+| 4 (Circuit-breaker) | ** | *** |
+| 5 (Resume + MD5) | * | *** |
+| 6 (Cache runtime) | ** | ** |
+| 7 (aiohttp) | *** | * |
+| 8 (Metriques/priorisation) | ** | ** |
+| 9 (Exceptions custom) | * | *** |
