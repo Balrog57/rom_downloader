@@ -50,8 +50,10 @@ python main.py --clear-cache-source Minerva
 - `main.py`: point d'entree de l'application.
 - `VERSION`: version applicative courante, utilisee par `--version`, la GUI et les releases.
 - `src/`: code Python de l'application.
-- `src/progress.py`: helpers de progression, debit et ETA des transferts.
 - `src/pipeline.py`: agregations testables du pipeline resolution/telechargement.
+- `src/progress.py`: helpers de progression, debit et ETA des transferts.
+- `src/core/`: 27 modules extraits de l'ancien monolithe `core.py`.
+- `src/network/`: modules reseau (sessions, circuits, exceptions, cache, metrics, downloads, search, async_search).
 - `assets/`: images et icones utilisees par l'interface.
 - `dat/`: fichiers DAT disponibles dans le menu de selection.
 - `db/shard_*.zip`: shards SQLite compresses pour la recherche locale par MD5.
@@ -79,17 +81,62 @@ Les telechargements HTTP utilisent des fichiers `.part`, reprennent quand le ser
 Les quotas par source sont appliques pendant les retries: quand une source atteint sa limite de tentatives sur un run, le moteur passe au provider suivant.
 Avant d'ignorer un fichier deja present, l'application valide le MD5 DAT quand il existe, puis la taille DAT si aucun MD5 n'est disponible.
 
+## Architecture reseau (`src/network/`)
+
+Le module `src/network/` contient les composants reseau isoles et testables :
+
+| Module | Role |
+|--------|------|
+| `sessions.py` | `create_optimized_session()` avec pooling urllib3 (20 connexions), retry 502/503/504, chunks 256KB |
+| `circuits.py` | `SourceCircuitBreaker` - exclut les sources defaillantes (threshold=10, recovery=300s) |
+| `exceptions.py` | Exceptions custom : `SourceTimeoutError`, `ChecksumMismatchError`, `DownloadNetworkError`, `ResumeNotSupportedError`, etc. |
+| `cache_runtime.py` | `RuntimeCache` LRU thread-safe (listings + resolutions en memoire) |
+| `cache.py` | Cache persistant JSON (7 jours) |
+| `metrics.py` | `load/save_provider_metrics()`, `prioritize_sources()`, `record_provider_attempt()` |
+| `downloads.py` | `ParallelDownloadPool` avec callback `download_fn`, circuit-breaker, metrics |
+| `search.py` | `ParallelSearchPool` pour recherche/listings paralleles |
+| `async_search.py` | Pre-fetch async via `aiohttp` + fallback synchrone transparent |
+| `utils.py` | Utilitaires purs |
+
+## Architecture pipeline (`src/core/`)
+
+L'ancien monolithe `core.py` (8367 lignes) a ete eclate en 27 modules :
+
+- `pipeline.py` : orchestrateur principal `run_download()`
+- `download_orchestrator.py` : `download_with_provider_retries()` + `download_missing_games_sequentially()` avec ParallelDownloadPool
+- `search_pipeline.py` : `search_all_sources()` avec `_resolve_games_parallel()` (5 workers)
+- `downloads.py` : `download_file()` avec resume `.part` + Range headers
+- `verification.py` : `verify_downloaded_md5()` + `validate_download_checksum()`
+- `scrapers.py` : EdgeEmu, PlanetEmu, LoLROMs, CDRomance, Vimm, RetroGameSets
+- Et 21 autres modules (env, constants, sources, dat_parser, minerva, etc.)
+
+## Optimisations implementees
+
+| Optimisation | Impact rapidite | Impact fiabilite |
+|---|---|---|
+| Sessions HTTP optimisees (pooling, retry, 256KB chunks) | ** | ** |
+| Telechargements paralleles (ParallelDownloadPool) | *** | * |
+| Recherche parallele (ParallelSearchPool, 5 workers) | *** | * |
+| Pre-fetch async des listings (aiohttp) | *** | * |
+| Circuit-breaker (10 echecs = source ignoree 5 min) | ** | *** |
+| Resume robuste (`.part` + Range headers) | * | *** |
+| Validation MD5 finale obligatoire | - | *** |
+| Cache LRU runtime (listings + resolutions) | ** | ** |
+| Metriques persistantes + prioritisation dynamique des sources | ** | ** |
+| Exceptions custom (7 types hierarchises) | * | *** |
+
 ## Dependances
 
 Dependances Python principales:
 
-- `requests`
-- `beautifulsoup4`
-- `internetarchive`
-- `cloudscraper`
-- `py7zr` pour lire/verifier les archives `.7z`
-- `rarfile` pour lire/verifier les archives `.rar`
-- `tkinterdnd2` optionnel pour le glisser-deposer GUI
+- `requests` - sessions HTTP avec pooling et retry
+- `beautifulsoup4` - parsing HTML des scrapers
+- `internetarchive` - recherche et telechargement archive.org
+- `cloudscraper` - contournement Cloudflare
+- `py7zr` - lecture/verification des archives `.7z`
+- `rarfile` - lecture/verification des archives `.rar`
+- `tkinterdnd2` - glisser-deposer GUI (optionnel)
+- `aiohttp` - pre-fetch async des listings (fallback synchrone si absent)
 
 `charset_normalizer` n'est pas liste directement car il est installe comme dependance transitive de `requests`.
 Le programme tente encore d'installer certaines dependances optionnelles si elles manquent au moment d'une verification d'archive.
@@ -110,6 +157,8 @@ $files = @("main.py") + (Get-ChildItem src,tests -Recurse -Filter *.py | ForEach
 python -m py_compile @files
 python tests\smoke_checks.py
 python tests\core_helper_checks.py
+python tests\test_integration_gw.py
+python tests\test_network_modules.py
 python main.py --sources
 python main.py --version
 python main.py --clear-listing-cache
@@ -128,41 +177,3 @@ Pour publier une version:
 Le workflow GitHub Actions `Release Windows` compile `ROMDownloader.exe`, cree `ROMDownloader-windows-<version>.zip`, publie le checksum SHA256 et attache les fichiers a la release GitHub.
 
 L'installateur Windows telecharge la derniere release publique, l'installe dans `%LOCALAPPDATA%\ROMDownloader`, cree les raccourcis Menu Demarrer/Bureau, et conserve `.env` ainsi que les preferences lors d'une reinstall avec `-Force`.
-
-## Roadmap implementee
-
-- UI: recherche/filtre DAT, logs repliables, actions principales simplifiees et preferences GUI locales.
-- Optimisation: cache de resolution provider, reprise HTTP via fichiers `.part`, validation MD5/taille avant skip, logs debit/ETA et agregations pipeline testables.
-- Analyse: sources candidates par echantillon et metriques provider dans les rapports.
-- Sources: commandes `--healthcheck-sources` et `--provider-registry`, configuration GUI activation/ordre/timeouts/quotas, cles API locales, etat des caches, invalidation par source, statistiques provider, cache de listings distants et registre provider commun.
-- Qualite: CI GitHub Actions avec compilation, smoke checks, checks helpers, garde anti-regression, workflow packaging Windows et debut d'extraction des helpers runtime.
-
-## Etat de la roadmap
-
-- 1. UI: socle operationnel fait; restent surtout la decomposition de la GUI Tk en composants et une recherche systeme plus avancee.
-- 2. Optimisation telechargement: reprise, cache, validation, metriques, agregations pipeline testables et ETA dans la barre de statut GUI sont en place; restent les vues statistiques.
-- 3. Sources: ordre, activation, cles API, timeouts, quotas, healthcheck, cache, invalidation par source, statistiques provider et registre commun inspectable sont en place; reste le branchement complet resolution/download de chaque provider sur l'interface commune.
-- 4. Qualite/architecture: CI, checks, packaging portable et workflow `.exe` manuel sont en place; restent extraction progressive de `src/core.py` et tests providers reseau.
-
-## Roadmap
-
-### 1. UI
-
-- Remplacer la GUI Tk monolithique par une UI plus structuree avec composants separes.
-- Ajouter une recherche systeme plus avancee.
-
-### 2. Optimisation du telechargement
-
-- Extraire la resolution effective et l'orchestration de telechargement hors `src/core.py`.
-- Ajouter des graphiques simples de temps par provider et d'echecs par cause.
-
-### 3. Gestion des sources
-
-- Brancher progressivement chaque source sur l'interface provider commune: `resolve()`, `download()`, `healthcheck()` et `priority()`.
-- Brancher les statistiques provider sur une vue graphique dediee.
-
-### 4. Qualite et architecture
-
-- Continuer l'extraction de `src/core.py` vers des modules plus petits avec tests unitaires cibles.
-- Ajouter plus de tests unitaires autour du pipeline de resolution et des providers reseau.
-- Tester et durcir le `.exe` genere dans GitHub Actions sur une machine Windows propre.
