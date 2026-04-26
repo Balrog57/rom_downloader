@@ -217,29 +217,15 @@ def import_optional_package(import_name: str, pip_name: str | None = None, auto_
 
 
 def load_json_file(path: Path, default):
-    """Charge un JSON local en tolerant les fichiers absents ou corrompus."""
-    try:
-        if not path.exists():
-            return default
-        with open(path, 'r', encoding='utf-8') as handle:
-            data = json.load(handle)
-        return data if isinstance(data, type(default)) else default
-    except Exception:
-        return default
+    """DEPRECATED - Utilisez network.utils.load_json_file."""
+    from .network.utils import load_json_file as _impl
+    return _impl(path, default)
 
 
 def save_json_file(path: Path, data) -> bool:
-    """Ecrit un JSON local de facon atomique."""
-    try:
-        path.parent.mkdir(parents=True, exist_ok=True)
-        tmp_path = path.with_suffix(path.suffix + '.tmp')
-        with open(tmp_path, 'w', encoding='utf-8') as handle:
-            json.dump(data, handle, indent=2, ensure_ascii=False)
-        os.replace(tmp_path, path)
-        return True
-    except Exception as e:
-        print(f"Avertissement: impossible d'ecrire {path.name}: {e}")
-        return False
+    """DEPRECATED - Utilisez network.utils.save_json_file."""
+    from .network.utils import save_json_file as _impl
+    return _impl(path, data)
 
 
 def load_preferences() -> dict:
@@ -253,74 +239,45 @@ def save_preferences(preferences: dict) -> bool:
 
 
 def format_bytes(size: int | float | None) -> str:
-    """Formate une taille en unite lisible."""
-    try:
-        value = float(size or 0)
-    except Exception:
-        value = 0.0
-    units = ('o', 'Ko', 'Mo', 'Go', 'To')
-    for unit in units:
-        if value < 1024 or unit == units[-1]:
-            return f"{value:.1f} {unit}" if unit != 'o' else f"{int(value)} {unit}"
-        value /= 1024
+    """DEPRECATED - Utilisez network.utils.format_bytes."""
+    from .network.utils import format_bytes as _impl
+    return _impl(size)
 
 
 def load_resolution_cache() -> dict:
-    """Charge le cache persistant de resolution provider."""
-    data = load_json_file(RESOLUTION_CACHE_FILE, {'version': 1, 'entries': {}})
-    if not isinstance(data, dict):
-        return {'version': 1, 'entries': {}}
-    data.setdefault('version', 1)
-    data.setdefault('entries', {})
-    if not isinstance(data['entries'], dict):
-        data['entries'] = {}
-    return data
+    """DEPRECATED - Utilisez network.cache.load_resolution_cache_file."""
+    from .network.cache import load_resolution_cache_file as _impl
+    return _impl()
 
 
 def save_resolution_cache(cache: dict) -> bool:
-    """Sauvegarde le cache persistant de resolution provider."""
-    cache = cache or {'version': 1, 'entries': {}}
-    cache['version'] = 1
-    cache.setdefault('entries', {})
-    return save_json_file(RESOLUTION_CACHE_FILE, cache)
+    """DEPRECATED - Utilisez network.cache.save_resolution_cache_file."""
+    from .network.cache import save_resolution_cache_file as _impl
+    return _impl(cache)
 
 
 def clear_resolution_cache() -> None:
-    """Supprime le cache de resolution si present."""
-    try:
-        if RESOLUTION_CACHE_FILE.exists():
-            RESOLUTION_CACHE_FILE.unlink()
-    except Exception as e:
-        print(f"Avertissement: cache de resolution non supprime: {e}")
+    """DEPRECATED - Utilisez network.cache.clear_resolution_cache_file."""
+    from .network.cache import clear_resolution_cache_file as _impl
+    return _impl()
 
 
 def load_listing_cache() -> dict:
-    """Charge le cache des listings distants."""
-    data = load_json_file(LISTING_CACHE_FILE, {'version': 1, 'entries': {}})
-    if not isinstance(data, dict):
-        return {'version': 1, 'entries': {}}
-    data.setdefault('version', 1)
-    data.setdefault('entries', {})
-    if not isinstance(data['entries'], dict):
-        data['entries'] = {}
-    return data
+    """DEPRECATED - Utilisez network.cache.load_listing_cache_file."""
+    from .network.cache import load_listing_cache_file as _impl
+    return _impl()
 
 
 def save_listing_cache(cache: dict) -> bool:
-    """Sauvegarde le cache des listings distants."""
-    cache = cache or {'version': 1, 'entries': {}}
-    cache['version'] = 1
-    cache.setdefault('entries', {})
-    return save_json_file(LISTING_CACHE_FILE, cache)
+    """DEPRECATED - Utilisez network.cache.save_listing_cache_file."""
+    from .network.cache import save_listing_cache_file as _impl
+    return _impl(cache)
 
 
 def clear_listing_cache() -> None:
-    """Supprime le cache des listings distants."""
-    try:
-        if LISTING_CACHE_FILE.exists():
-            LISTING_CACHE_FILE.unlink()
-    except Exception as e:
-        print(f"Avertissement: cache de listings non supprime: {e}")
+    """DEPRECATED - Utilisez network.cache.clear_listing_cache_file."""
+    from .network.cache import clear_listing_cache_file as _impl
+    return _impl()
 
 
 def listing_cache_prefixes_for_source(source_name: str) -> set[str]:
@@ -388,23 +345,9 @@ def clear_caches_for_source(source_name: str) -> dict:
 
 
 def describe_cache_file(path: Path, ttl_seconds: int | None = None) -> dict:
-    """Retourne un etat compact pour un cache local."""
-    if not path.exists():
-        return {
-            'path': str(path),
-            'present': False,
-            'size': 0,
-            'age_seconds': None,
-            'fresh': False,
-        }
-    age_seconds = max(0, int(time.time() - path.stat().st_mtime))
-    return {
-        'path': str(path),
-        'present': True,
-        'size': path.stat().st_size,
-        'age_seconds': age_seconds,
-        'fresh': bool(ttl_seconds and age_seconds <= ttl_seconds),
-    }
+    """DEPRECATED - Utilisez network.cache.describe_cache_file."""
+    from .network.cache import describe_cache_file as _impl
+    return _impl(path, ttl_seconds)
 
 
 def format_cache_status(label: str, status: dict) -> str:
@@ -417,19 +360,15 @@ def format_cache_status(label: str, status: dict) -> str:
 
 
 def listing_cache_get(cache: dict, key: str):
-    entry = (cache or {}).get('entries', {}).get(key)
-    if not entry:
-        return None
-    if time.time() - float(entry.get('created_at', 0)) > LISTING_CACHE_TTL_SECONDS:
-        return None
-    return entry.get('value')
+    """DEPRECATED - Utilisez network.cache.listing_cache_get."""
+    from .network.cache import listing_cache_get as _impl
+    return _impl(cache, key)
 
 
 def listing_cache_set(cache: dict, key: str, value) -> None:
-    cache.setdefault('entries', {})[key] = {
-        'created_at': time.time(),
-        'value': value,
-    }
+    """DEPRECATED - Utilisez network.cache.listing_cache_set."""
+    from .network.cache import listing_cache_set as _impl
+    return _impl(cache, key, value)
 
 
 try:
