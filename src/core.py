@@ -944,6 +944,18 @@ def optional_positive_int(value, *, minimum: int = 1, maximum: int | None = None
     return number
 
 
+def parse_candidate_limit(value, missing_count: int | None = None, default: int = 0) -> int:
+    """Convertit une limite de pre-analyse; 'all' signifie tous les manquants."""
+    if value is None or value == '':
+        return default
+    if isinstance(value, str) and value.strip().lower() in {'all', 'tout', 'tous', '*'}:
+        return max(0, int(missing_count or 0))
+    try:
+        return max(0, int(value))
+    except (TypeError, ValueError):
+        return default
+
+
 def source_timeout_seconds(source: dict | None, default: int = 120) -> int:
     """Timeout reseau effectif pour une source."""
     return optional_positive_int((source or {}).get('timeout_seconds'), minimum=3, maximum=1800) or default
@@ -3324,6 +3336,7 @@ def analyze_dat_folder(dat_file: str, rom_folder: str, include_tosort: bool = Fa
     if include_tosort:
         tosort_candidates = find_roms_not_in_dat(dat_games, local_roms, local_roms_normalized, rom_folder)
     summary = build_analysis_summary(dat_file, rom_folder, dat_games, missing_games, dat_profile, sources, tosort_candidates)
+    candidate_limit = parse_candidate_limit(candidate_limit, len(missing_games), 0)
     if candidate_limit:
         system_name = dat_profile.get('system_name') or detect_system_name(dat_file)
         summary.update(analyze_source_candidates(missing_games, sources, system_name, dat_profile, candidate_limit))
@@ -3338,7 +3351,7 @@ def analyze_source_candidates(missing_games: list, sources: list, system_name: s
     dirty = False
     samples = []
     source_counts = {}
-    for game_info in list(missing_games)[:max(0, int(candidate_limit or 0))]:
+    for game_info in list(missing_games)[:parse_candidate_limit(candidate_limit, len(missing_games), 0)]:
         found, unavailable, cache_hit = resolve_game_sources_with_cache(
             game_info,
             sources,
@@ -6902,6 +6915,7 @@ def gui_mode():
                 self.rom_folder = tk.StringVar()
                 self.myrient_url = tk.StringVar()
                 self.parallel_var = tk.IntVar(value=max(1, int(self.preferences.get('parallel_downloads', DEFAULT_PARALLEL_DOWNLOADS) or DEFAULT_PARALLEL_DOWNLOADS)))
+                self.analysis_candidate_var = tk.StringVar(value=str(self.preferences.get('analysis_candidate_limit', '8') or '8'))
                 self.progress_var = tk.DoubleVar(value=0)
                 self.clean_torrentzip_var = tk.BooleanVar(value=False)
                 self.status_var = tk.StringVar(value="Pret a telecharger les jeux manquants")
@@ -7001,6 +7015,7 @@ def gui_mode():
                     'move_to_tosort': bool(getattr(self, 'move_to_tosort_var', tk.BooleanVar(value=False)).get()),
                     'clean_torrentzip': bool(self.clean_torrentzip_var.get()),
                     'parallel_downloads': max(1, int(self.parallel_var.get() or 1)),
+                    'analysis_candidate_limit': self.analysis_candidate_var.get().strip() or '8',
                     'logs_visible': bool(self.log_visible.get()),
                     'source_enabled': self.source_enabled,
                     'source_order': self.source_order,
@@ -7058,6 +7073,11 @@ def gui_mode():
                 parallel_spin = tk.Spinbox(parallel_row, from_=1, to=12, textvariable=self.parallel_var, width=5, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, buttonbackground=UI_COLOR_GHOST, relief='flat', font=(self.font, 10), command=self.persist_preferences)
                 parallel_spin.pack(side='left', padx=(10, 0))
                 parallel_spin.bind('<FocusOut>', lambda _event: self.persist_preferences())
+                tk.Label(parallel_row, text="Analyse sources", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 10)).pack(side='left', padx=(18, 0))
+                candidate_spin = tk.Spinbox(parallel_row, from_=0, to=9999, textvariable=self.analysis_candidate_var, width=7, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, buttonbackground=UI_COLOR_GHOST, relief='flat', font=(self.font, 10), command=self.persist_preferences)
+                candidate_spin.pack(side='left', padx=(10, 0))
+                tk.Label(parallel_row, text="0=aucune, 'all'=tout", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, font=(self.font, 9)).pack(side='left', padx=(8, 0))
+                candidate_spin.bind('<FocusOut>', lambda _event: self.persist_preferences())
 
                 progress = self.card(main, 3)
                 progress.columnconfigure(0, weight=1)
@@ -7627,7 +7647,7 @@ def gui_mode():
                         self.rom_folder.get().strip(),
                         include_tosort=self.move_to_tosort_var.get(),
                         custom_sources=self.selected_sources(),
-                        candidate_limit=8
+                        candidate_limit=self.analysis_candidate_var.get().strip()
                     )
                     message = format_analysis_summary(summary)
                     status = (
@@ -7865,7 +7885,7 @@ Exemples:
     parser.add_argument('--parallel', type=int, default=DEFAULT_PARALLEL_DOWNLOADS, help=f'Nombre de telechargements simultanes (defaut: {DEFAULT_PARALLEL_DOWNLOADS})')
     parser.add_argument('--sources', action='store_true', help='Afficher les sources de telechargement')
     parser.add_argument('--analyze', action='store_true', help='Afficher une pre-analyse DAT/dossier puis quitter')
-    parser.add_argument('--analyze-candidates', type=int, default=0, help='Pendant --analyze, resoudre les sources candidates des N premiers manquants')
+    parser.add_argument('--analyze-candidates', default='0', help="Pendant --analyze, resoudre les sources candidates des N premiers manquants, ou 'all'")
     parser.add_argument('--diagnose', action='store_true', help='Afficher un diagnostic local de l application')
     parser.add_argument('--diagnose-output', help='Exporter le diagnostic JSON vers ce fichier')
     parser.add_argument('--healthcheck-sources', action='store_true', help='Tester rapidement les sources configurees')

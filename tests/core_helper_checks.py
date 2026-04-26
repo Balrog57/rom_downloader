@@ -12,6 +12,7 @@ from src.core import (  # noqa: E402
     expected_game_sizes,
     listing_cache_prefixes_for_source,
     optional_positive_int,
+    parse_candidate_limit,
     reserve_source_quota,
     source_quota_limit,
     source_timeout_seconds,
@@ -32,6 +33,8 @@ def main() -> None:
     assert_true(meter.snapshot(50) is None, "progress meter reported too early")
     assert_true(optional_positive_int("12", maximum=10) == 10, "integer clamp failed")
     assert_true(optional_positive_int("0") is None, "zero should be ignored")
+    assert_true(parse_candidate_limit("all", 42) == 42, "candidate limit all failed")
+    assert_true(parse_candidate_limit("7", 42) == 7, "candidate limit number failed")
 
     source = {"name": "EdgeEmu", "type": "edgeemu", "timeout_seconds": "45", "quota_per_run": "2"}
     assert_true(source_timeout_seconds(source) == 45, "source timeout failed")
