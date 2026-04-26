@@ -61,6 +61,15 @@ from .pipeline import build_pipeline_summary, merge_provider_metrics
 from .progress import DownloadProgressMeter, format_duration
 from .version import APP_VERSION
 
+# Nouveaux modules network (Phases 0-9)
+# Phase 0: imports modules network (activation progressive Phases 1-9)
+# from .network.sessions import create_optimized_session
+# from .network.circuits import SourceCircuitBreaker
+# from .network.cache_runtime import get_session_cache, clear_session_cache
+# from .network.metrics import load_provider_metrics, save_provider_metrics, prioritize_sources
+# from .network.downloads import ParallelDownloadPool
+# from .network.search import ParallelSearchPool
+
 APP_ROOT = Path(__file__).resolve().parents[1]
 SCAN_CACHE_FILENAME = ".rom_downloader_scan_cache.json"
 DEFAULT_PARALLEL_DOWNLOADS = 3
