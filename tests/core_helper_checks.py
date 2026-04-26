@@ -8,7 +8,9 @@ import zipfile
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src.core import (  # noqa: E402
+    cache_entry_matches_source,
     expected_game_sizes,
+    listing_cache_prefixes_for_source,
     optional_positive_int,
     reserve_source_quota,
     source_quota_limit,
@@ -39,6 +41,11 @@ def main() -> None:
     assert_true(reserve_source_quota("EdgeEmu", [source], usage)[0], "second quota reservation failed")
     quota_ok, quota_detail = reserve_source_quota("EdgeEmu", [source], usage)
     assert_true(not quota_ok and "quota atteint" in quota_detail, "quota limit not enforced")
+    assert_true(listing_cache_prefixes_for_source("Minerva No-Intro") == {"minerva"}, "listing cache prefix failed")
+    assert_true(
+        cache_entry_matches_source({"sources": ["minerva no-intro"], "found_sources": []}, "Minerva"),
+        "resolution cache source match failed",
+    )
 
     game = {"roms": [{"size": "4"}]}
     assert_true(expected_game_sizes(game) == {4}, "expected size extraction failed")

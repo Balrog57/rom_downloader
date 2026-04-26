@@ -248,6 +248,70 @@ def clear_listing_cache() -> None:
         print(f"Avertissement: cache de listings non supprime: {e}")
 
 
+def listing_cache_prefixes_for_source(source_name: str) -> set[str]:
+    """Retourne les prefixes de cache listing lies a une source."""
+    label = normalize_source_label(source_name)
+    prefixes = set()
+    for token in ('minerva', 'lolroms', 'edgeemu', 'planetemu'):
+        if token in label:
+            prefixes.add(token)
+    return prefixes
+
+
+def cache_entry_matches_source(entry: dict, source_name: str) -> bool:
+    """Indique si une entree de cache resolution concerne une source."""
+    target = normalize_source_label(source_name)
+    if not target:
+        return False
+    labels = set()
+    for value in entry.get('sources', []) + entry.get('found_sources', []):
+        normalized = normalize_source_label(value)
+        if normalized:
+            labels.add(normalized)
+    return any(target == label or target in label or label in target for label in labels)
+
+
+def clear_resolution_cache_for_source(source_name: str) -> int:
+    """Supprime les entrees de resolution qui mentionnent une source."""
+    cache = load_resolution_cache()
+    entries = cache.setdefault('entries', {})
+    before = len(entries)
+    cache['entries'] = {
+        key: value for key, value in entries.items()
+        if not cache_entry_matches_source(value, source_name)
+    }
+    removed = before - len(cache['entries'])
+    if removed:
+        save_resolution_cache(cache)
+    return removed
+
+
+def clear_listing_cache_for_source(source_name: str) -> int:
+    """Supprime les listings caches associes a une source."""
+    prefixes = listing_cache_prefixes_for_source(source_name)
+    if not prefixes:
+        return 0
+    cache = load_listing_cache()
+    entries = cache.setdefault('entries', {})
+    before = len(entries)
+    cache['entries'] = {
+        key: value for key, value in entries.items()
+        if not any(key.startswith(f"{prefix}:") for prefix in prefixes)
+    }
+    removed = before - len(cache['entries'])
+    if removed:
+        save_listing_cache(cache)
+    return removed
+
+
+def clear_caches_for_source(source_name: str) -> dict:
+    """Invalide les caches runtime pour une source precise."""
+    return {
+        'resolution': clear_resolution_cache_for_source(source_name),
+        'listing': clear_listing_cache_for_source(source_name),
+    }
+
+
 def describe_cache_file(path: Path, ttl_seconds: int | None = None) -> dict:
     """Retourne un etat compact pour un cache local."""
     if not path.exists():
@@ -816,6 +880,12 @@ def resolve_game_sources_with_cache(game_info: dict, sources: list, session: req
     )
     entries[key] = {
         'created_at': now,
+        'sources': active_source_labels(sources),
+        'found_sources': sorted({
+            normalize_source_label(item.get('source', ''))
+            for item in found
+            if item.get('source')
+        }),
         'found': [item.copy() for item in found],
         'unavailable': [item.copy() for item in unavailable],
     }
@@ -7392,13 +7462,26 @@ def gui_mode():
                     self.clear_remote_caches()
                     cache_status_var.set(self.cache_status_text())
 
+                def clear_selected_source_cache():
+                    name, _index = selected_name()
+                    if not name:
+                        self.status_var.set("Selectionnez une source a invalider")
+                        return
+                    removed = clear_caches_for_source(name)
+                    cache_status_var.set(self.cache_status_text())
+                    self.status_var.set(
+                        f"Cache {name}: {removed.get('resolution', 0)} resolution, "
+                        f"{removed.get('listing', 0)} listing supprime(s)"
+                    )
+
                 enabled_check.configure(command=sync_enabled)
                 timeout_entry.bind('<FocusOut>', lambda _event: save_policy_fields())
                 quota_entry.bind('<FocusOut>', lambda _event: save_policy_fields())
                 self.button(side, "Monter", lambda: move(-1), width=10).pack(fill='x', pady=(0, 8))
                 self.button(side, "Descendre", lambda: move(1), width=10).pack(fill='x', pady=(0, 8))
                 self.button(side, "Cles API", self.open_api_settings, width=10).pack(fill='x', pady=(8, 8))
-                self.button(side, "Vider cache", clear_caches_and_refresh, width=10).pack(fill='x', pady=(0, 8))
+                self.button(side, "Vider source", clear_selected_source_cache, width=10).pack(fill='x', pady=(0, 8))
+                self.button(side, "Vider tout", clear_caches_and_refresh, width=10).pack(fill='x', pady=(0, 8))
                 self.button(side, "Sauver", save_and_close, kind='accent', width=10).pack(fill='x', pady=(16, 8))
                 self.button(side, "Annuler", window.destroy, width=10).pack(fill='x')
                 tk.Label(window, textvariable=cache_status_var, bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, justify='left', wraplength=640, font=(self.font, 9)).grid(row=2, column=0, sticky='ew', padx=14, pady=(10, 14))
@@ -7742,6 +7825,7 @@ Exemples:
     parser.add_argument('--healthcheck-sources', action='store_true', help='Tester rapidement les sources configurees')
     parser.add_argument('--refresh-cache', action='store_true', help='Ignorer et reconstruire le cache de resolution provider')
     parser.add_argument('--clear-listing-cache', action='store_true', help='Vider le cache des listings distants puis quitter')
+    parser.add_argument('--clear-cache-source', help='Vider les caches lies a une source precise puis quitter')
 
     args = parser.parse_args()
 
@@ -7753,6 +7837,15 @@ Exemples:
     if args.clear_listing_cache:
         clear_listing_cache()
         print("Cache des listings distants vide.")
+        return
+
+    if args.clear_cache_source:
+        removed = clear_caches_for_source(args.clear_cache_source)
+        print(
+            f"Cache {args.clear_cache_source}: "
+            f"{removed.get('resolution', 0)} resolution, "
+            f"{removed.get('listing', 0)} listing supprime(s)."
+        )
         return
 
     if args.diagnose:

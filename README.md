@@ -35,6 +35,7 @@ python main.py --diagnose
 python main.py --diagnose --diagnose-output diagnostic.json
 python main.py --healthcheck-sources
 python main.py --clear-listing-cache
+python main.py --clear-cache-source Minerva
 ```
 
 ## Structure du depot
@@ -60,11 +61,11 @@ Le bouton `Analyser` lance une pre-analyse sans telechargement: total DAT, prese
 En GUI, l'analyse resout aussi un petit echantillon de sources candidates pour les premiers jeux manquants.
 La GUI retient localement le dernier DAT, le dernier dossier, les options ToSort/TorrentZip, le parallelisme et l'etat des logs.
 Le panneau `Logs` est repliable et affiche le detail des operations sans quitter la fenetre.
-L'ecran `Configurer les sources` permet aussi de changer l'ordre des sources, les activer/desactiver, fixer un timeout et un quota par run, saisir les cles API locales dans `.env`, voir l'etat des caches et les vider.
+L'ecran `Configurer les sources` permet aussi de changer l'ordre des sources, les activer/desactiver, fixer un timeout et un quota par run, saisir les cles API locales dans `.env`, voir l'etat des caches, vider tous les caches ou invalider la source selectionnee.
 
 Les sources de telechargement sont automatiques: les sources directes sont essayees avant Minerva, puis archive.org en dernier recours.
 La resolution des providers est mise en cache temporairement dans `.rom_downloader_resolution_cache.json` pour eviter de refaire les memes recherches pendant plusieurs essais; `--refresh-cache` force une reconstruction.
-Les listings distants scrapes sont mis en cache 24 h dans `.rom_downloader_listing_cache.json`; `--clear-listing-cache` ou le bouton `Vider cache` de la GUI les supprime.
+Les listings distants scrapes sont mis en cache 24 h dans `.rom_downloader_listing_cache.json`; `--clear-listing-cache` supprime tous les listings et `--clear-cache-source <source>` invalide les caches associes a une source.
 Les telechargements HTTP utilisent des fichiers `.part`, reprennent quand le serveur accepte les requetes `Range`, et journalisent debit/ETA pendant les gros transferts.
 Les quotas par source sont appliques pendant les retries: quand une source atteint sa limite de tentatives sur un run, le moteur passe au provider suivant.
 Avant d'ignorer un fichier deja present, l'application valide le MD5 DAT quand il existe, puis la taille DAT si aucun MD5 n'est disponible.
@@ -111,7 +112,7 @@ python main.py --clear-listing-cache
 - UI: bouton `Analyser`, recherche/filtre DAT, logs repliables, resume de pre-analyse et preferences GUI locales.
 - Optimisation: cache de resolution provider, reprise HTTP via fichiers `.part`, validation MD5/taille avant skip et logs debit/ETA.
 - Analyse: sources candidates par echantillon et metriques provider dans les rapports.
-- Sources: commande `--healthcheck-sources`, configuration GUI activation/ordre/timeouts/quotas, cles API locales, etat des caches, cache de listings distants et registre provider commun.
+- Sources: commande `--healthcheck-sources`, configuration GUI activation/ordre/timeouts/quotas, cles API locales, etat des caches, invalidation par source, cache de listings distants et registre provider commun.
 - Diagnostic: commande `--diagnose` et export JSON pour l'etat local utile au support.
 - Qualite: CI GitHub Actions avec compilation, smoke checks, checks helpers, garde anti-regression et debut d'extraction des helpers runtime.
 
@@ -119,7 +120,7 @@ python main.py --clear-listing-cache
 
 - 1. UI: socle operationnel fait; restent la decomposition de la GUI Tk en composants, une pre-analyse paginee complete et un statut detaille par jeu.
 - 2. Optimisation telechargement: reprise, cache, validation et metriques sont en place; restent pipeline resolution/telechargement plus testable, affichage ETA dans la barre de statut et vues statistiques.
-- 3. Sources: ordre, activation, cles API, timeouts, quotas, healthcheck et cache sont en place; restent invalidation par source et branchement complet de chaque provider sur l'interface commune.
+- 3. Sources: ordre, activation, cles API, timeouts, quotas, healthcheck, cache et invalidation par source sont en place; reste le branchement complet de chaque provider sur l'interface commune.
 - 4. Qualite/architecture: CI, checks et packaging portable sont en place; restent extraction progressive de `src/core.py`, tests providers reseau et eventuel build `.exe`.
 
 ## Roadmap
@@ -140,7 +141,7 @@ python main.py --clear-listing-cache
 
 - Brancher progressivement chaque source sur l'interface provider commune: `resolve()`, `download()`, `healthcheck()` et `priority()`.
 - Ajouter des statistiques visuelles par source dans l'ecran de configuration.
-- Ajouter une invalidation de cache par source.
+- Ajouter des statistiques par source persistantes entre deux sessions.
 
 ### 4. Qualite et architecture
 
