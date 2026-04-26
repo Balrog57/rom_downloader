@@ -121,7 +121,7 @@ python main.py --clear-listing-cache
 
 ## Etat de la roadmap
 
-- 1. UI: socle operationnel fait; restent la decomposition de la GUI Tk en composants et un statut detaille par jeu.
+- 1. UI: socle operationnel fait; restent surtout la decomposition de la GUI Tk en composants et une recherche systeme plus avancee.
 - 2. Optimisation telechargement: reprise, cache, validation, metriques, agregations pipeline testables et ETA dans la barre de statut GUI sont en place; restent les vues statistiques.
 - 3. Sources: ordre, activation, cles API, timeouts, quotas, healthcheck, cache, invalidation par source, statistiques provider et registre commun inspectable sont en place; reste le branchement complet resolution/download de chaque provider sur l'interface commune.
 - 4. Qualite/architecture: CI, checks, packaging portable et workflow `.exe` manuel sont en place; restent extraction progressive de `src/core.py` et tests providers reseau.
@@ -131,8 +131,7 @@ python main.py --clear-listing-cache
 ### 1. UI
 
 - Remplacer la GUI Tk monolithique par une UI plus structuree avec composants separes.
-- Ajouter une vue detaillee par jeu pendant le telechargement.
-- Ajouter une recherche systeme plus avancee et un statut detaille par jeu.
+- Ajouter une recherche systeme plus avancee.
 
 ### 2. Optimisation du telechargement
 
@@ -142,12 +141,10 @@ python main.py --clear-listing-cache
 ### 3. Gestion des sources
 
 - Brancher progressivement chaque source sur l'interface provider commune: `resolve()`, `download()`, `healthcheck()` et `priority()`.
-- Ajouter des statistiques visuelles par source dans l'ecran de configuration.
 - Brancher les statistiques provider sur une vue graphique dediee.
 
 ### 4. Qualite et architecture
 
 - Continuer l'extraction de `src/core.py` vers des modules plus petits avec tests unitaires cibles.
 - Ajouter plus de tests unitaires autour du pipeline de resolution et des providers reseau.
-- Ajouter un mode diagnostic exportable: versions, chemins, sources actives, DB presente et dependances disponibles.
 - Tester et durcir le `.exe` genere dans GitHub Actions sur une machine Windows propre.
