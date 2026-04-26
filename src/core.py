@@ -247,6 +247,35 @@ def clear_listing_cache() -> None:
         print(f"Avertissement: cache de listings non supprime: {e}")
 
 
+def describe_cache_file(path: Path, ttl_seconds: int | None = None) -> dict:
+    """Retourne un etat compact pour un cache local."""
+    if not path.exists():
+        return {
+            'path': str(path),
+            'present': False,
+            'size': 0,
+            'age_seconds': None,
+            'fresh': False,
+        }
+    age_seconds = max(0, int(time.time() - path.stat().st_mtime))
+    return {
+        'path': str(path),
+        'present': True,
+        'size': path.stat().st_size,
+        'age_seconds': age_seconds,
+        'fresh': bool(ttl_seconds and age_seconds <= ttl_seconds),
+    }
+
+
+def format_cache_status(label: str, status: dict) -> str:
+    """Formate un etat cache pour affichage CLI/GUI."""
+    if not status.get('present'):
+        return f"{label}: absent"
+    age = format_duration(status.get('age_seconds') or 0)
+    freshness = "frais" if status.get('fresh') else "expire"
+    return f"{label}: {format_bytes(status.get('size'))}, age {age}, {freshness}"
+
+
 def listing_cache_get(cache: dict, key: str):
     entry = (cache or {}).get('entries', {}).get(key)
     if not entry:
@@ -2246,6 +2275,10 @@ def build_diagnostic_report() -> dict:
         'preferences_file': str(PREFERENCES_FILE),
         'resolution_cache_file': str(RESOLUTION_CACHE_FILE),
         'listing_cache_file': str(LISTING_CACHE_FILE),
+        'caches': {
+            'resolution': describe_cache_file(RESOLUTION_CACHE_FILE, RESOLUTION_CACHE_TTL_SECONDS),
+            'listing': describe_cache_file(LISTING_CACHE_FILE, LISTING_CACHE_TTL_SECONDS),
+        },
         'dependencies': dependencies,
         'env': {
             'IA_credentials': bool(os.environ.get('IAS3_ACCESS_KEY') and os.environ.get('IAS3_SECRET_KEY')),
@@ -2269,6 +2302,10 @@ def print_diagnostic_report(report: dict) -> None:
     print(f"Assets presents: {'oui' if report['assets_present'] else 'non'}")
     print(f"Cache resolution: {report['resolution_cache_file']}")
     print(f"Cache listings: {report['listing_cache_file']}")
+    if report.get('caches'):
+        print("Caches:")
+        print(f"  - {format_cache_status('resolution', report['caches'].get('resolution', {}))}")
+        print(f"  - {format_cache_status('listings', report['caches'].get('listing', {}))}")
     print("Dependances:")
     for name, ok in report['dependencies'].items():
         print(f"  - {name}: {'ok' if ok else 'absent'}")
@@ -7226,6 +7263,7 @@ def gui_mode():
                 body.grid(row=1, column=0, sticky='nsew', padx=14)
                 body.columnconfigure(0, weight=1)
                 body.rowconfigure(0, weight=1)
+                cache_status_var = tk.StringVar(value=self.cache_status_text())
 
                 order = self.source_order or [source['name'] for source in self.default_sources]
                 known = {source['name']: source for source in self.default_sources}
@@ -7343,15 +7381,20 @@ def gui_mode():
                     window.destroy()
                     self.status_var.set("Configuration des sources enregistree")
 
+                def clear_caches_and_refresh():
+                    self.clear_remote_caches()
+                    cache_status_var.set(self.cache_status_text())
+
                 enabled_check.configure(command=sync_enabled)
                 timeout_entry.bind('<FocusOut>', lambda _event: save_policy_fields())
                 quota_entry.bind('<FocusOut>', lambda _event: save_policy_fields())
                 self.button(side, "Monter", lambda: move(-1), width=10).pack(fill='x', pady=(0, 8))
                 self.button(side, "Descendre", lambda: move(1), width=10).pack(fill='x', pady=(0, 8))
                 self.button(side, "Cles API", self.open_api_settings, width=10).pack(fill='x', pady=(8, 8))
-                self.button(side, "Vider cache", self.clear_remote_caches, width=10).pack(fill='x', pady=(0, 8))
+                self.button(side, "Vider cache", clear_caches_and_refresh, width=10).pack(fill='x', pady=(0, 8))
                 self.button(side, "Sauver", save_and_close, kind='accent', width=10).pack(fill='x', pady=(16, 8))
                 self.button(side, "Annuler", window.destroy, width=10).pack(fill='x')
+                tk.Label(window, textvariable=cache_status_var, bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, justify='left', wraplength=640, font=(self.font, 9)).grid(row=2, column=0, sticky='ew', padx=14, pady=(10, 14))
                 listbox.bind('<<ListboxSelect>>', on_select)
                 render_list(0)
 
@@ -7394,6 +7437,15 @@ def gui_mode():
                 clear_resolution_cache()
                 clear_listing_cache()
                 self.status_var.set("Caches de resolution et listings vides")
+
+            def cache_status_text(self):
+                resolution_status = describe_cache_file(RESOLUTION_CACHE_FILE, RESOLUTION_CACHE_TTL_SECONDS)
+                listing_status = describe_cache_file(LISTING_CACHE_FILE, LISTING_CACHE_TTL_SECONDS)
+                return (
+                    format_cache_status("Resolution", resolution_status)
+                    + " | "
+                    + format_cache_status("Listings", listing_status)
+                )
 
             def export_diagnostic(self):
                 base_folder = self.rom_folder.get().strip() if self.rom_folder.get().strip() else str(APP_ROOT)
