@@ -29,6 +29,7 @@ python main.py "dat\retool\Nintendo - Game Boy (20260405-031740).dat" "Roms\Game
 python main.py "dat\retool\Sony - PlayStation 2 (2026-04-05 01-38-25) (Retool 2026-04-06 18-57-20) (2,560) (-nz) [-AaBbcDdefkMmopPruv].dat" "Roms\PS2" --limit 10
 python main.py "dat\retool\Nintendo - Game Boy (20260405-031740).dat" "Roms\Game Boy" --tosort
 python main.py "dat\retool\Nintendo - Game Boy (20260405-031740).dat" "Roms\Game Boy" --analyze
+python main.py "dat\retool\Nintendo - Game Boy (20260405-031740).dat" "Roms\Game Boy" --analyze --analyze-candidates 10
 python main.py --sources
 python main.py --diagnose
 python main.py --diagnose --diagnose-output diagnostic.json
@@ -53,6 +54,7 @@ Le champ DAT de la GUI est un menu deroulant alimente par `dat/**/*.dat`, avec r
 Les dossiers directs de `dat/` sont affiches comme titres de section en italique et ne sont pas selectionnables. Les fichiers DAT sous chaque section sont selectionnables.
 Le bouton `Parcourir` reste disponible comme secours pour choisir un DAT externe.
 Le bouton `Analyser` lance une pre-analyse sans telechargement: total DAT, presents, manquants, taille estimee et sources actives.
+En GUI, l'analyse resout aussi un petit echantillon de sources candidates pour les premiers jeux manquants.
 La GUI retient localement le dernier DAT, le dernier dossier, les options ToSort/TorrentZip, le parallelisme et l'etat des logs.
 Le panneau `Logs` est repliable et affiche le detail des operations sans quitter la fenetre.
 
@@ -93,6 +95,7 @@ python main.py --diagnose
 
 - UI: bouton `Analyser`, recherche/filtre DAT, logs repliables, resume de pre-analyse et preferences GUI locales.
 - Optimisation: cache de resolution provider et reprise HTTP via fichiers `.part`.
+- Analyse: sources candidates par echantillon et metriques provider dans les rapports.
 - Sources: commande `--healthcheck-sources`, configuration GUI activation/ordre et registre provider commun.
 - Diagnostic: commande `--diagnose` et export JSON pour l'etat local utile au support.
 - Qualite: CI GitHub Actions avec compilation, smoke checks et garde anti-regression.
@@ -102,7 +105,7 @@ python main.py --diagnose
 ### 1. UI
 
 - Remplacer la GUI Tk monolithique par une UI plus structuree avec composants separes.
-- Etendre la pre-analyse avec les sources candidates par jeu.
+- Etendre la pre-analyse candidate a tous les jeux avec pagination et cache visible.
 - Ajouter une recherche systeme plus avancee et un statut detaille par jeu.
 
 ### 2. Optimisation du telechargement
@@ -110,6 +113,7 @@ python main.py --diagnose
 - Separer davantage resolution et telechargement en pipeline testable.
 - Ajouter validation taille/hash avant skip pour toutes les sources.
 - Afficher debit, ETA, temps par provider et nombre d'echecs par cause.
+- Ajouter debit et ETA en temps reel dans la GUI.
 
 ### 3. Gestion des sources
 
