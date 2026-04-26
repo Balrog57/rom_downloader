@@ -7107,6 +7107,8 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
             print
         )
 
+    session_metrics = save_provider_metrics(merge_provider_metrics(load_provider_metrics(), _extract_session_metrics(result)))
+
     report_path = write_download_report(output_folder, {
         'dat_file': dat_file,
         'system_name': system_name,
