@@ -43,6 +43,7 @@ python main.py --clear-cache-source Minerva
 - `main.py`: point d'entree de l'application.
 - `src/`: code Python de l'application.
 - `src/progress.py`: helpers de progression, debit et ETA des transferts.
+- `src/pipeline.py`: agregations testables du pipeline resolution/telechargement.
 - `assets/`: images et icones utilisees par l'interface.
 - `dat/`: fichiers DAT disponibles dans le menu de selection.
 - `db/shard_*.zip`: shards SQLite compresses pour la recherche locale par MD5.
@@ -110,7 +111,7 @@ python main.py --clear-listing-cache
 ## Roadmap implementee
 
 - UI: bouton `Analyser`, recherche/filtre DAT, logs repliables, resume de pre-analyse et preferences GUI locales.
-- Optimisation: cache de resolution provider, reprise HTTP via fichiers `.part`, validation MD5/taille avant skip et logs debit/ETA.
+- Optimisation: cache de resolution provider, reprise HTTP via fichiers `.part`, validation MD5/taille avant skip, logs debit/ETA et agregations pipeline testables.
 - Analyse: sources candidates par echantillon et metriques provider dans les rapports.
 - Sources: commande `--healthcheck-sources`, configuration GUI activation/ordre/timeouts/quotas, cles API locales, etat des caches, invalidation par source, cache de listings distants et registre provider commun.
 - Diagnostic: commande `--diagnose` et export JSON pour l'etat local utile au support.
@@ -119,7 +120,7 @@ python main.py --clear-listing-cache
 ## Etat de la roadmap
 
 - 1. UI: socle operationnel fait; restent la decomposition de la GUI Tk en composants, une pre-analyse paginee complete et un statut detaille par jeu.
-- 2. Optimisation telechargement: reprise, cache, validation et metriques sont en place; restent pipeline resolution/telechargement plus testable, affichage ETA dans la barre de statut et vues statistiques.
+- 2. Optimisation telechargement: reprise, cache, validation, metriques et agregations pipeline testables sont en place; restent affichage ETA dans la barre de statut et vues statistiques.
 - 3. Sources: ordre, activation, cles API, timeouts, quotas, healthcheck, cache et invalidation par source sont en place; reste le branchement complet de chaque provider sur l'interface commune.
 - 4. Qualite/architecture: CI, checks et packaging portable sont en place; restent extraction progressive de `src/core.py`, tests providers reseau et eventuel build `.exe`.
 
@@ -133,7 +134,7 @@ python main.py --clear-listing-cache
 
 ### 2. Optimisation du telechargement
 
-- Separer davantage resolution et telechargement en pipeline testable.
+- Extraire la resolution effective et l'orchestration de telechargement hors `src/core.py`.
 - Ajouter debit et ETA directement dans la barre de statut GUI.
 - Ajouter des graphiques simples de temps par provider et d'echecs par cause.
 

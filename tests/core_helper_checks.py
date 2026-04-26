@@ -17,6 +17,7 @@ from src.core import (  # noqa: E402
     source_timeout_seconds,
     verify_downloaded_md5,
 )
+from src.pipeline import build_pipeline_summary  # noqa: E402
 from src.progress import DownloadProgressMeter, format_duration  # noqa: E402
 
 
@@ -46,6 +47,19 @@ def main() -> None:
         cache_entry_matches_source({"sources": ["minerva no-intro"], "found_sources": []}, "Minerva"),
         "resolution cache source match failed",
     )
+    pipeline_summary = build_pipeline_summary({
+        "resolved_items": [{
+            "source": "Minerva",
+            "provider_attempts": [{"source": "Minerva", "status": "dry_run", "duration_seconds": 1.25}],
+        }],
+        "failed_items": [{
+            "provider_attempts": [{"source": "EdgeEmu", "status": "quota_skipped", "detail": "quota atteint"}],
+        }],
+        "not_available": [{"game_name": "Missing"}],
+    })
+    assert_true(pipeline_summary["source_counts"]["Minerva"] == 1, "pipeline source count failed")
+    assert_true(pipeline_summary["provider_metrics"]["EdgeEmu"]["quota_skipped"] == 1, "pipeline quota metric failed")
+    assert_true(pipeline_summary["failure_causes"]["not_found"] == 1, "pipeline not_found cause failed")
 
     game = {"roms": [{"size": "4"}]}
     assert_true(expected_game_sizes(game) == {4}, "expected size extraction failed")
