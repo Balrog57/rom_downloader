@@ -42,16 +42,20 @@ $releaseUri = if ($Version -eq "latest") {
 Write-Step "Lecture de la release GitHub ($Repo / $Version)"
 $release = Invoke-GitHubApi $releaseUri
 $asset = $release.assets | Where-Object {
-    $_.name -match '^ROMDownloader-windows-.+\.zip$'
+    $_.name -eq "ROMDownloader.exe"
 } | Select-Object -First 1
 
 if (-not $asset) {
-    throw "Aucune archive ROMDownloader-windows-*.zip trouvee dans la release $($release.tag_name)."
+    throw "Aucun asset ROMDownloader.exe trouve dans la release $($release.tag_name)."
 }
+
+$checksumAsset = $release.assets | Where-Object {
+    $_.name -eq "ROMDownloader.exe.sha256"
+} | Select-Object -First 1
 
 $targetDir = [Environment]::ExpandEnvironmentVariables($InstallDir)
 $tempDir = Join-Path ([IO.Path]::GetTempPath()) ("ROMDownloader-install-" + [Guid]::NewGuid().ToString("N"))
-$zipPath = Join-Path $tempDir $asset.name
+$exePath = Join-Path $tempDir "ROMDownloader.exe"
 
 try {
     New-Item -ItemType Directory -Path $tempDir | Out-Null
@@ -61,9 +65,24 @@ try {
         throw "Le dossier d'installation existe deja: $targetDir. Relance avec -Force pour remplacer les fichiers applicatifs."
     }
 
-    Write-Step "Telechargement de $($asset.name)"
-    Invoke-WebRequest -Uri $asset.browser_download_url -OutFile $zipPath -Headers @{
+    Write-Step "Telechargement de ROMDownloader.exe"
+    Invoke-WebRequest -Uri $asset.browser_download_url -OutFile $exePath -Headers @{
         "User-Agent" = "ROMDownloader-Windows-Installer"
+    }
+
+    if ($checksumAsset) {
+        Write-Step "Verification SHA-256"
+        $sha256File = Join-Path $tempDir "ROMDownloader.exe.sha256"
+        Invoke-WebRequest -Uri $checksumAsset.browser_download_url -OutFile $sha256File -Headers @{
+            "User-Agent" = "ROMDownloader-Windows-Installer"
+        }
+        $expectedLine = (Get-Content -LiteralPath $sha256File -Raw).Trim()
+        $expectedHash = ($expectedLine -split '\s+')[0].ToLower()
+        $actualHash = (Get-FileHash -LiteralPath $exePath -Algorithm SHA256).Hash.ToLower()
+        if ($actualHash -ne $expectedHash) {
+            throw "Verification SHA-256 echouee. Attendu: $expectedHash, Obtenu: $actualHash"
+        }
+        Write-Host "  SHA-256 OK" -ForegroundColor Green
     }
 
     Write-Step "Installation dans $targetDir"
@@ -72,11 +91,11 @@ try {
             $_.Name -notin @(".env", ".rom_downloader_preferences.json")
         } | Remove-Item -Recurse -Force
     }
-    Expand-Archive -LiteralPath $zipPath -DestinationPath $targetDir -Force
+    Copy-Item -LiteralPath $exePath -Destination (Join-Path $targetDir "ROMDownloader.exe") -Force
 
     $exe = Join-Path $targetDir "ROMDownloader.exe"
     if (-not (Test-Path -LiteralPath $exe)) {
-        throw "ROMDownloader.exe est absent apres extraction."
+        throw "ROMDownloader.exe est absent apres copie."
     }
 
     $startMenu = Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs\ROM Downloader"

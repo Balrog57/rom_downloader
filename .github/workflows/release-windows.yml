@@ -77,34 +77,22 @@ jobs:
             --add-data "VERSION;." `
             main.py
 
-      - name: Build release archive
-        id: archive
+      - name: Generate SHA-256 checksum
+        id: checksum
         shell: pwsh
         run: |
-          $version = "${{ steps.version.outputs.version }}"
-          $stage = "release\ROMDownloader"
-          New-Item -ItemType Directory -Path $stage | Out-Null
-          Copy-Item dist\ROMDownloader.exe $stage\
-          Copy-Item VERSION $stage\
-          Copy-Item README.md $stage\
-          Copy-Item PACKAGING_WINDOWS.md $stage\
-          Copy-Item .env.example $stage\
-          Copy-Item install.ps1 $stage\
-          $archive = "ROMDownloader-windows-$version.zip"
-          if (Test-Path $archive) { Remove-Item $archive -Force }
-          Compress-Archive -Path "$stage\*" -DestinationPath $archive -CompressionLevel Optimal
-          Get-FileHash $archive -Algorithm SHA256 | ForEach-Object {
-            "$($_.Hash)  $archive" | Set-Content "$archive.sha256" -Encoding ASCII
+          $exe = "dist\ROMDownloader.exe"
+          Get-FileHash $exe -Algorithm SHA256 | ForEach-Object {
+            "$($_.Hash)  ROMDownloader.exe" | Set-Content "ROMDownloader.exe.sha256" -Encoding ASCII
           }
-          "archive=$archive" >> $env:GITHUB_OUTPUT
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v6
         with:
           name: ROMDownloader-windows-${{ steps.version.outputs.version }}
           path: |
-            ${{ steps.archive.outputs.archive }}
-            ${{ steps.archive.outputs.archive }}.sha256
+            dist/ROMDownloader.exe
+            ROMDownloader.exe.sha256
 
       - name: Publish GitHub Release
         if: startsWith(github.ref, 'refs/tags/v')
@@ -113,33 +101,35 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           $tag = "${{ steps.version.outputs.tag }}"
-          $archive = "${{ steps.archive.outputs.archive }}"
           $notes = @"
           ROM Downloader $tag
 
-          Installation Windows:
+          Portable Windows executable:
+
+          - ROMDownloader.exe
+          - ROMDownloader.exe.sha256
+
+          Installation rapide:
 
           ````powershell
           irm https://raw.githubusercontent.com/${{ github.repository }}/main/install.ps1 | iex
-          ````
+          ```
 
-          Archive portable:
-          - $archive
-          - $archive.sha256
+          Ou telecharger directement ROMDownloader.exe.
           "@
           $args = @(
-            "release", "create", $tag, $archive, "$archive.sha256",
+            "release", "create", $tag,
+            "dist\ROMDownloader.exe", "ROMDownloader.exe.sha256",
             "--title", "ROM Downloader $tag",
             "--notes", $notes
           )
           gh @args
 
-      - name: Attach archive to existing GitHub Release
+      - name: Attach assets to existing GitHub Release
         if: github.event_name == 'release'
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           $tag = "${{ steps.version.outputs.tag }}"
-          $archive = "${{ steps.archive.outputs.archive }}"
-          gh release upload $tag $archive "$archive.sha256" --clobber
+          gh release upload $tag dist\ROMDownloader.exe ROMDownloader.exe.sha256 --clobber
