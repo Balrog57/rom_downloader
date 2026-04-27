@@ -1,8 +1,9 @@
-requests
-beautifulsoup4
-internetarchive
-cloudscraper
-py7zr
-rarfile
-tkinterdnd2
-aiohttp
+requests>=2.31,<3
+beautifulsoup4>=4.12,<5
+internetarchive>=5.0,<6
+cloudscraper>=1.2,<2
+py7zr>=1.0,<2
+rarfile>=4.0,<5
+tkinterdnd2>=0.4,<1
+aiohttp>=3.9,<4
+libtorrent>=2.0,<3
