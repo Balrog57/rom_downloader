@@ -46,8 +46,10 @@ api_keys.json
 *.log
 rom_downloader_gui_error.log
 
-# Test files
-test_*.py
+# Test files (debug/ad-hoc scripts, not real pytest tests)
+tests/trace_*.py
+tests/test_integration_*.py
+tests/test_network_modules.py
 run_test.py
 
 # PowerShell scripts (local only)
