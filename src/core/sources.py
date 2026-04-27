@@ -416,6 +416,12 @@ SYSTEM_MAPPINGS = {
         'vimm': 'GBA',
         'retrogamesets': 'Game Boy Advance (Archive)'
     },
+    'Nintendo - Game Boy Advance (Multiboot)': {
+        'lolroms': 'Nintendo - Game Boy Advance/Multi-Boot',
+    },
+    'Nintendo - Game Boy Advance (eReader)': {
+        'lolroms': 'Nintendo - Game Boy Advance/eReader',
+    },
     'Nintendo - Nintendo Entertainment System': {
         'edgeemu': 'nintendo-nes',
         'planetemu': 'nintendo-entertainment-system',
