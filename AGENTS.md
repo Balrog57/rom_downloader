@@ -32,14 +32,14 @@ There is no pytest. Tests are plain scripts that call `main()` and raise `System
 - `libtorrent` and `tkinterdnd2` are optional but listed in `requirements.txt`. `libtorrent` may fail to import on Windows if OpenSSL 1.1 DLLs are missing (`LIBTORRENT_DLL_DIR` in `.env`). The app degrades gracefully — only Minerva torrent downloads are affected.
 - Integration/network test files are **gitignored** (`test_integration_*.py`, `test_network_modules.py`). Don't try to add them to CI.
 - **ROM_DATABASE global**: Never do `from .rom_database import ROM_DATABASE` — that captures a stale `None` binding. Always use `from . import rom_database as _rom_db` and access `_rom_db.ROM_DATABASE` live. Guard with `if _rom_db.ROM_DATABASE is None: load_rom_database()` before `.get()` calls.
-- `requirements.txt` has **no version pins**. Each `pip install -r requirements.txt` is non-deterministic. TODO: add pins or a lock file for reproducible CI.
+- `requirements.txt` uses **compatible-release pins** (e.g. `requests>=2.31,<3`). `requirements-lock.txt` is a `pip freeze` snapshot for reproducible CI. Regenerate with `pip freeze > requirements-lock.txt` after any dependency change.
 
 ## Runtime requirements
 
 - `db/shard_*.zip` must exist for local MD5 search. Smoke checks verify this.
 - `dat/` subdirectories (`no-intro/`, `redump/`, `retool - french no unl/`) are section headers in the GUI DAT selector, not selectable items.
 - `.env` holds API keys (1fichier, AllDebrid, RealDebrid, IA S3, `LIBTORRENT_DLL_DIR`). Copy from `.env.example`. Never commit `.env`.
-- `aiohttp` is optional with transparent sync fallback for async listing pre-fetch.
+- `aiohttp` is required for async listing pre-fetch. If missing, the app falls back to sync scraping transparently.
 
 ## Versioning
 
