@@ -47,7 +47,6 @@ from .downloads import download_file, download_file_legacy, download_from_archiv
 from .premium_downloads import download_from_premium_source
 from .api_keys import load_api_keys
 from .torrent import download_from_minerva_torrent
-from .search_pipeline import search_all_sources
 
 
 def _extract_session_metrics(result: dict) -> dict:

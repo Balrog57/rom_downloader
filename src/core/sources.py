@@ -15,10 +15,11 @@ from .env import RESOLUTION_CACHE_TTL_SECONDS
 
 
 def get_default_sources_legacy():
-    from .rom_database import ROM_DATABASE, load_rom_database, DEFAULT_CONFIG_URLS
-    if ROM_DATABASE is None:
+    from . import rom_database as _rom_db
+    from .rom_database import load_rom_database, DEFAULT_CONFIG_URLS
+    if _rom_db.ROM_DATABASE is None:
         load_rom_database()
-    config = ROM_DATABASE.get('config_urls', {})
+    config = _rom_db.ROM_DATABASE.get('config_urls', {})
     return [
         {
             'name': 'archive.org',
@@ -284,8 +285,9 @@ def reserve_source_quota(source_label: str, sources: list, usage: dict | None, l
 
 
 def get_default_sources():
-    from .rom_database import ROM_DATABASE as _db, load_rom_database
-    rom_db = _db
+    from . import rom_database as _rom_db
+    from .rom_database import load_rom_database
+    rom_db = _rom_db.ROM_DATABASE
     if rom_db is None:
         rom_db = load_rom_database()
     config = rom_db.get('config_urls', {})

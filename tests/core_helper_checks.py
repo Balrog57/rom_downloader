@@ -85,6 +85,14 @@ def main() -> None:
         zip_ok, zip_message = verify_downloaded_md5(game, str(zip_path))
         assert_true(zip_ok and "Taille DAT OK" in zip_message, "archive size validation failed")
 
+    # ROM_DATABASE stale-binding guard: verify module-level attribute access works
+    from src.core import rom_database as _rd_mod
+    _rd_mod.ROM_DATABASE
+    assert_true(
+        not isinstance(_rd_mod.ROM_DATABASE, dict) or 'config_urls' in _rd_mod.ROM_DATABASE,
+        "ROM_DATABASE should be None or a dict with config_urls after module load",
+    )
+
     print("core helper checks ok")
 
 

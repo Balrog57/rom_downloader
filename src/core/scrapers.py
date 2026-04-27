@@ -270,7 +270,8 @@ def list_edgeemu_directory(system_slug: str, session: requests.Session) -> dict:
     """Scrape EdgeEmu pour un système donné et retourne un dict {nom_normalisé: url_téléchargement}."""
     if not system_slug:
         return {}
-        
+    if _rom_db.ROM_DATABASE is None:
+        load_rom_database()
     config = _rom_db.ROM_DATABASE.get('config_urls', {})
     url = f"{config.get('edgeemu_browse', '')}{system_slug}"
     print(f"Scraping EdgeEmu: {url}")
@@ -375,7 +376,8 @@ def list_planetemu_directory(system_slug: str, session: requests.Session) -> dic
     """Scrape PlanetEmu pour un système donné."""
     if not system_slug:
         return {}
-        
+    if _rom_db.ROM_DATABASE is None:
+        load_rom_database()
     config = _rom_db.ROM_DATABASE.get('config_urls', {})
     base = config.get('planetemu_roms', '')
     if not base:
@@ -425,6 +427,8 @@ def download_planetemu(page_url: str, dest_path: str, session: requests.Session,
             
         rom_id = id_match.group(1)
         
+        if _rom_db.ROM_DATABASE is None:
+            load_rom_database()
         config = _rom_db.ROM_DATABASE.get('config_urls', {})
         download_api = config.get('planetemu_download_api', '')
         if not download_api:

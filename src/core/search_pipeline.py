@@ -522,16 +522,19 @@ def search_all_sources(
                     if resolved:
                         lolroms_paths.append(resolved)
                 if lolroms_paths:
+                    lolroms_files = None
                     for lolroms_path in lolroms_paths:
                         if not still_missing:
                             break
                         print(f"\n--- Recherche sur LoLROMs ({lolroms_path}) ---")
                         listing_key = f"listing:lolroms:{lolroms_path}"
                         session_cache = get_session_cache()
-                        lolroms_files = session_cache.get_listing(listing_key)
-                        if lolroms_files is None:
-                            lolroms_files = list_lolroms_directory(lolroms_path, include_subdirs=True)
-                            session_cache.set_listing(listing_key, lolroms_files)
+                        path_files = session_cache.get_listing(listing_key)
+                        if path_files is None:
+                            path_files = list_lolroms_directory(lolroms_path, include_subdirs=True)
+                            session_cache.set_listing(listing_key, path_files)
+                        if path_files:
+                            lolroms_files = path_files
                     if lolroms_files:
                         newly_found = []
                         remaining = []
