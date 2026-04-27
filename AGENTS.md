@@ -31,6 +31,8 @@ There is no pytest. Tests are plain scripts that call `main()` and raise `System
 - `src/core/__init__.py` star-imports every sub-module. Adding a new public function in a `src/core/` module makes it available as `from src.core import func` — no extra wiring needed.
 - `libtorrent` and `tkinterdnd2` are optional but listed in `requirements.txt`. `libtorrent` may fail to import on Windows if OpenSSL 1.1 DLLs are missing (`LIBTORRENT_DLL_DIR` in `.env`). The app degrades gracefully — only Minerva torrent downloads are affected.
 - Integration/network test files are **gitignored** (`test_integration_*.py`, `test_network_modules.py`). Don't try to add them to CI.
+- **ROM_DATABASE global**: Never do `from .rom_database import ROM_DATABASE` — that captures a stale `None` binding. Always use `from . import rom_database as _rom_db` and access `_rom_db.ROM_DATABASE` live. Guard with `if _rom_db.ROM_DATABASE is None: load_rom_database()` before `.get()` calls.
+- `requirements.txt` has **no version pins**. Each `pip install -r requirements.txt` is non-deterministic. TODO: add pins or a lock file for reproducible CI.
 
 ## Runtime requirements
 
