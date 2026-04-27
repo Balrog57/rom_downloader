@@ -61,7 +61,6 @@ python main.py --clear-cache-source Minerva
 - `requirements.txt`: dependances Python.
 - `install.ps1`: installateur Windows qui telecharge la derniere release GitHub.
 - `release.ps1`: helper mainteneur pour mettre a jour `VERSION`, commit, tag et pousser une release.
-- `PACKAGING_WINDOWS.md`: notes pour une archive Windows portable.
 
 Le depot ne contient plus de runtime externe ni de dossier de generation. Les fichiers temporaires, caches, rapports locaux et donnees extraites restent ignores par Git.
 
@@ -141,7 +140,6 @@ Dependances Python principales:
 `charset_normalizer` n'est pas liste directement car il est installe comme dependance transitive de `requests`.
 Le programme tente encore d'installer certaines dependances optionnelles si elles manquent au moment d'une verification d'archive.
 Les torrents Minerva utilisent `aria2c` en priorite. Le binding Python `libtorrent` reste optionnel et n'est pas liste dans `requirements.txt` car les wheels disponibles dependent fortement de la version Python et de Windows. Si `libtorrent` est absent ou renvoie `DLL load failed`, seuls les telechargements Minerva via ce backend sont affectes; les sources HTTP, la DB locale, l'analyse DAT et la GUI restent fonctionnelles. Sous Windows, si `libtorrent` reclame OpenSSL 1.1, renseigner `LIBTORRENT_DLL_DIR` dans `.env` vers le dossier contenant `libcrypto-1_1-x64.dll` et `libssl-1_1-x64.dll`.
-Voir `PACKAGING_WINDOWS.md` pour preparer une archive portable.
 
 ## Base locale
 
