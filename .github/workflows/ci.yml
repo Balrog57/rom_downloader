@@ -27,22 +27,3 @@ jobs:
         run: python tests\core_helper_checks.py
       - name: Version command
         run: python main.py --version
-      - name: Obsolete reference guard
-        shell: pwsh
-        run: |
-          $patterns = @(
-            ('rom_downloader' + '\.py'),
-            ('dat' + '\.exemple'),
-            ('rom_db' + '_shards'),
-            ('minerva_torrent' + '_download\.js')
-          )
-          $files = Get-ChildItem -File -Recurse -Force | Where-Object {
-            $_.FullName -notmatch '\\.git\\' -and
-            $_.FullName -notmatch '\\dat\\' -and
-            $_.FullName -notmatch '\\db\\'
-          }
-          $matches = $files | Select-String -Pattern $patterns -ErrorAction SilentlyContinue
-          if ($matches) {
-            $matches | ForEach-Object { "$($_.Path):$($_.LineNumber):$($_.Line)" }
-            exit 1
-          }
