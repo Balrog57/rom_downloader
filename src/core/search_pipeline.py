@@ -31,6 +31,7 @@ from .scrapers import (
     get_lolroms_session,
     resolve_lolroms_system_path,
     list_lolroms_directory,
+    _lolroms_subdir_for_system,
     iter_game_candidate_names,
     resolve_edgeemu_game,
     list_planetemu_directory,
@@ -509,15 +510,28 @@ def search_all_sources(
                         still_missing = remaining
 
             elif source['type'] == 'lolroms' and source.get('enabled', True):
-                lolroms_path = resolve_lolroms_system_path(system_name)
-                if lolroms_path:
-                    print(f"\n--- Recherche sur LoLROMs ({lolroms_path}) ---")
-                    listing_key = f"listing:lolroms:{lolroms_path}"
-                    session_cache = get_session_cache()
-                    lolroms_files = session_cache.get_listing(listing_key)
-                    if lolroms_files is None:
-                        lolroms_files = list_lolroms_directory(lolroms_path)
-                        session_cache.set_listing(listing_key, lolroms_files)
+                lolroms_paths = []
+                subdir = _lolroms_subdir_for_system(system_name)
+                if subdir:
+                    base_system = re.sub(r'\s*\(.+?\)\s*$', '', system_name).strip()
+                    base_path = resolve_lolroms_system_path(base_system)
+                    if base_path:
+                        lolroms_paths.append(f"{base_path}/{subdir}")
+                else:
+                    resolved = resolve_lolroms_system_path(system_name)
+                    if resolved:
+                        lolroms_paths.append(resolved)
+                if lolroms_paths:
+                    for lolroms_path in lolroms_paths:
+                        if not still_missing:
+                            break
+                        print(f"\n--- Recherche sur LoLROMs ({lolroms_path}) ---")
+                        listing_key = f"listing:lolroms:{lolroms_path}"
+                        session_cache = get_session_cache()
+                        lolroms_files = session_cache.get_listing(listing_key)
+                        if lolroms_files is None:
+                            lolroms_files = list_lolroms_directory(lolroms_path, include_subdirs=True)
+                            session_cache.set_listing(listing_key, lolroms_files)
                     if lolroms_files:
                         newly_found = []
                         remaining = []

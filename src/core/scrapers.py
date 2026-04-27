@@ -111,8 +111,52 @@ def resolve_lolroms_system_path(system_name: str) -> str:
     return ''
 
 
-def list_lolroms_directory(system_path: str) -> dict:
-    """Scrape LoLROMs pour un système donné et retourne un mapping par nom normalisé."""
+LOLROMS_SUBDIR_ALIASES = {
+    'Nintendo - Game Boy Advance': {
+        'multiboot': 'Multi-Boot',
+        'ereader': 'eReader',
+        'play-yan': 'Play-Yan',
+        'video': 'Video',
+        'hacks (color)': 'Hacks (Color)',
+        't-en': 'T-En',
+    },
+    'Nintendo - Game Boy': {},
+    'Nintendo - Game Boy Color': {},
+    'Nintendo - Nintendo Entertainment System': {},
+    'Nintendo - Super Nintendo Entertainment System': {},
+    'Nintendo - Nintendo 64': {},
+    'Sega - Mega Drive - Genesis': {},
+    'Sega - Master System - Mark III': {},
+    'Sega - Game Gear': {},
+    'SNK - Neo Geo Pocket Color': {},
+    'Sony - PlayStation': {},
+    'Sony - PlayStation Portable': {},
+    'Nintendo - DS': {},
+    'Nintendo - 3DS': {},
+    'Nintendo - GameCube': {},
+    'Nintendo - Wii': {},
+    'Nintendo - Wii U': {},
+    'Nintendo - Virtual Boy': {},
+    'Nintendo - Pokémon Mini': {},
+}
+
+
+def _lolroms_subdir_for_system(system_name: str) -> str | None:
+    """Extrait le sous-repertoire LoLROMs si le nom du systeme contient un qualificateur de sous-ensemble."""
+    base = re.sub(r'\s*\(.+?\)\s*$', '', system_name).strip()
+    qualifier_match = re.search(r'\(([^)]+)\)\s*$', system_name)
+    if not qualifier_match:
+        return None
+    qualifier = qualifier_match.group(1).strip().lower()
+    aliases = LOLROMS_SUBDIR_ALIASES.get(base, {})
+    return aliases.get(qualifier)
+
+
+def list_lolroms_directory(system_path: str, include_subdirs: bool = True) -> dict:
+    """Scrape LoLROMs pour un systeme donne et retourne un mapping par nom normalise.
+    Si include_subdirs=True, scrape aussi les sous-repertoires (Multi-Boot, eReader, etc.)
+    et fusionne leurs fichiers dans le listing principal.
+    """
     if not system_path:
         return {}
 
@@ -127,6 +171,7 @@ def list_lolroms_directory(system_path: str) -> dict:
         return dict(cached)
 
     mapping = {}
+    subdirs = []
     try:
         response = get_lolroms_session().get(url, timeout=60)
         if response.status_code != 200 or 'Just a moment...' in response.text:
@@ -140,9 +185,15 @@ def list_lolroms_directory(system_path: str) -> dict:
 
             if not href or not text or text in {'RSS', 'Donate', 'Main', '../'}:
                 continue
-            if href.endswith('/') or href.lower().endswith('/feed'):
+            if href.lower().endswith('/feed'):
                 continue
             if '/.' in href:
+                continue
+
+            if href.endswith('/'):
+                subdir_name = text.strip()
+                if subdir_name and include_subdirs:
+                    subdirs.append(subdir_name)
                 continue
 
             full_url = urljoin(LOLROMS_BASE, href)
@@ -157,6 +208,54 @@ def list_lolroms_directory(system_path: str) -> dict:
                 'filename': filename,
                 'url': full_url
             }
+
+        if subdirs:
+            print(f"  Sous-repertoires LoLROMs detectes: {', '.join(subdirs)}")
+            for subdir_name in subdirs:
+                subdir_path = f"{system_path}/{subdir_name}"
+                subdir_url = build_lolroms_url(subdir_path)
+                subdir_cache_key = f"lolroms:{subdir_url}"
+                subdir_cached = _facade.listing_cache_get(cache, subdir_cache_key)
+                if subdir_cached:
+                    print(f"  Sous-repertoire {subdir_name} depuis le cache ({len(subdir_cached)} fichiers)")
+                    mapping.update(subdir_cached)
+                    continue
+                try:
+                    subdir_resp = get_lolroms_session().get(subdir_url, timeout=60)
+                    if subdir_resp.status_code != 200 or 'Just a moment...' in subdir_resp.text:
+                        continue
+                    subdir_soup = BeautifulSoup(subdir_resp.text, 'html.parser')
+                    subdir_count = 0
+                    for link in subdir_soup.find_all('a', href=True):
+                        href = html_module.unescape(link.get('href', '')).strip()
+                        text = html_module.unescape(link.get_text().strip())
+                        if not href or not text or text in {'RSS', 'Donate', 'Main', '../'}:
+                            continue
+                        if href.endswith('/') or href.lower().endswith('/feed'):
+                            continue
+                        if '/.' in href:
+                            continue
+                        full_url = urljoin(LOLROMS_BASE, href)
+                        parsed_name = os.path.basename(unquote(href))
+                        filename = parsed_name if any(parsed_name.lower().endswith(ext) for ext in ROM_EXTENSIONS) else ''
+                        if not filename:
+                            continue
+                        display_name = strip_rom_extension(filename)
+                        mapping[display_name.lower()] = {
+                            'full_name': display_name,
+                            'filename': filename,
+                            'url': full_url
+                        }
+                        subdir_count += 1
+                    if subdir_count:
+                        print(f"  Sous-repertoire {subdir_name}: {subdir_count} fichiers")
+                        subdir_mapping = {
+                            k: v for k, v in mapping.items()
+                            if v['url'].startswith(subdir_url)
+                        }
+                        _facade.listing_cache_set(cache, subdir_cache_key, subdir_mapping)
+                except Exception as e:
+                    print(f"  Erreur sous-repertoire LoLROMs {subdir_name}: {e}")
 
         print(f"Found {len(mapping)} files on LoLROMs")
         _facade.listing_cache_set(cache, cache_key, mapping)
@@ -754,6 +853,8 @@ __all__ = [
     'get_vimm_session',
     'build_lolroms_url',
     'resolve_lolroms_system_path',
+    'LOLROMS_SUBDIR_ALIASES',
+    '_lolroms_subdir_for_system',
     'list_lolroms_directory',
     'list_edgeemu_directory',
     'iter_game_candidate_names',

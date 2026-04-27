@@ -107,6 +107,8 @@ L'ancien monolithe `core.py` (8367 lignes) a ete eclate en 27 modules :
 - `downloads.py` : `download_file()` avec resume `.part` + Range headers
 - `verification.py` : `verify_downloaded_md5()` + `validate_download_checksum()`
 - `scrapers.py` : EdgeEmu, PlanetEmu, LoLROMs, CDRomance, Vimm, RetroGameSets
+  - LoLROMs scrape recursivement les sous-repertoires (Multi-Boot, eReader, Video, etc.) et les fusionne dans le listing principal
+  - Les DATs avec sous-ensemble comme `Nintendo - Game Boy Advance (Multiboot)` resolvent automatiquement vers le sous-repertoire LoLROMs correspondant (`Multi-Boot`)
 - Et 21 autres modules (env, constants, sources, dat_parser, minerva, etc.)
 
 ## Optimisations implementees
