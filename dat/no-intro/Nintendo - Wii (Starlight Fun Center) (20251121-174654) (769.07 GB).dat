@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<id>461</id>
+		<name>Nintendo - Wii (Starlight Fun Center)</name>
+		<description>Nintendo - Wii (Starlight Fun Center)</description>
+		<version>20251121-174654</version>
+		<author>NovaAurora</author>
+		<homepage>No-Intro</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"/>
+	</header>
+	<game name="[BIOS] Starlight Fun Center HDD (USA) (Le Parker Meridien)" id="0002">
+		<description>[BIOS] Starlight Fun Center HDD (USA) (Le Parker Meridien)</description>
+		<rom name="[BIOS] Starlight Fun Center HDD (USA) (Le Parker Meridien).img" size="120034123776" crc="6be9591f" md5="c22451b86dc96ab78f15226b348a02f0" sha1="9ad3d83f1001c3fa5c75bd7b7b8439eb655f1636" sha256="a16288a9b4141c2e2afce95e3839b585d0feec9fd8dd92767d15e4662510edcb"/>
+	</game>
+	<game name="[BIOS] Starlight Fun Center HDD (USA) (001443)" id="0019">
+		<description>[BIOS] Starlight Fun Center HDD (USA) (001443)</description>
+		<rom name="[BIOS] Starlight Fun Center HDD (USA) (001443).img" size="250059350016" crc="364f86b9" md5="8e876697793be8b072e6df9f5cda7ea5" sha1="6f80e8d5bb564e1b7b151b9df559e4a4767c043c" sha256="f535d409e34b3bce7d0cd25e728d7d8e18999d81ced85877c5566c0276f05c5c"/>
+	</game>
+	<game name="[BIOS] Starlight Fun Center HDD (USA) (002463)" id="0021">
+		<description>[BIOS] Starlight Fun Center HDD (USA) (002463)</description>
+		<rom name="[BIOS] Starlight Fun Center HDD (USA) (002463).img" size="160041885696" crc="25a996d7" md5="76728d89e201bfe79b0757f16f0c13ef" sha1="7b3b6a44fee05462fc287ce3f60f47f19ec6ba69" sha256="e98b8a37aeba9fbf9fff1fe5d40ebf74309bf3e62bc546c63a9418d40bd8a679"/>
+	</game>
+	<game name="[BIOS] Starlight Fun Center HDD (USA) (000056, 000175, 000535)" id="0022">
+		<description>[BIOS] Starlight Fun Center HDD (USA) (000056, 000175, 000535)</description>
+		<rom name="[BIOS] Starlight Fun Center HDD (USA) (000056, 000175, 000535).img" size="120034123776" crc="72076258" md5="2fb7fd9c9329269d2217a89230234a02" sha1="7ad05d863b7581a226e5c05eea2c16cafe6ec140" sha256="ab21c8e60a77989c3ff7ded3716841374e1617fe87cf6c0fb070aad12ab40b15"/>
+	</game>
+	<game name="[BIOS] Starlight Fun Center HDD (USA) (001284)" id="0001">
+		<description>[BIOS] Starlight Fun Center HDD (USA) (001284)</description>
+		<rom name="[BIOS] Starlight Fun Center HDD (USA) (001284).img" size="120034123776" crc="95574663" md5="ec9e9def4f8b4b36b4211136731a6556" sha1="437e4acd283dfb107c018f29aac5a2e974c777d6" sha256="873c7baa28e5d6bba330f44af71298a1297163044b3709fecf6f529976a69cfa"/>
+	</game>
+	<game name="[BIOS] Starlight Fun Center NAND (USA) (001192) (RUA200022277)" id="0003">
+		<description>[BIOS] Starlight Fun Center NAND (USA) (001192) (RUA200022277)</description>
+		<rom name="keys.bin" size="1024" crc="58bef405" md5="473ffd34c2a7d27f451099adbbb693c1" sha1="1176e8975350a783f3b3167a21f1476f27a930d3"/>
+		<rom name="nand.bin" size="553648128" crc="9126c5fd" md5="dd29d4fcae34c1eb6c4f6251c05c9861" sha1="0ed50ece20906d7f4b30ad1bea58c74042dffca5"/>
+	</game>
+	<game name="[BIOS] Starlight Fun Center NAND (USA) (001192) (RUA200022277) (Alt)" id="0013">
+		<description>[BIOS] Starlight Fun Center NAND (USA) (001192) (RUA200022277) (Alt)</description>
+		<rom name="keys.bin" size="1024" crc="58bef405" md5="473ffd34c2a7d27f451099adbbb693c1" sha1="1176e8975350a783f3b3167a21f1476f27a930d3"/>
+		<rom name="nand.bin" size="553648128" crc="5c20281d" md5="0ca7f2f28dcbef1e515915cc61f86556" sha1="f22a332b5059238c2d02f826aa9e2b90f5994145"/>
+	</game>
+	<game name="[BIOS] Starlight Fun Center NAND (USA) (000175) (RUA200019598)" id="0014">
+		<description>[BIOS] Starlight Fun Center NAND (USA) (000175) (RUA200019598)</description>
+		<rom name="keys.bin" size="1024" crc="aa9a7ce3" md5="b2aa94b9a9df091c15b17b520d5304bf" sha1="f6465abfcc0e396503de901b9f6d0826bcd32b01"/>
+		<rom name="nand.bin" size="553648128" crc="2269323f" md5="98b030944b03687d06c6200fc834236f" sha1="f16c1574e2fcd07fc1ade70dc3d9904c0734f498"/>
+	</game>
+	<game name="[BIOS] Starlight Fun Center NAND (USA) (000056) (RUA200013602)" id="0015">
+		<description>[BIOS] Starlight Fun Center NAND (USA) (000056) (RUA200013602)</description>
+		<rom name="keys.bin" size="1024" crc="edca1d7e" md5="b40681ff726986b221c34467850e9e98" sha1="8c43aa943c0dcad25b33037d50ecf205e87e7074"/>
+		<rom name="nand.bin" size="553649152" crc="a9b2f9a7" md5="cf1469176b90a092a800a219a36540bf" sha1="993f4445992fe0004eea501336c12623dc677ff7"/>
+	</game>
+	<game name="[BIOS] Starlight Fun Center NAND (USA) (000895) (RUA200025568)" id="0016">
+		<description>[BIOS] Starlight Fun Center NAND (USA) (000895) (RUA200025568)</description>
+		<rom name="keys.bin" size="1024" crc="5617a1b6" md5="1d2751d37436f1b0a3aff3865b365319" sha1="f80e15602a78e46e9b194bf8c9fe9c1bcda98761"/>
+		<rom name="nand.bin" size="553648128" crc="f823d286" md5="a453d9f16822b7b45428e96c27751d3a" sha1="f5a9679b21e6d03820defaeba73beb3412df49cd"/>
+	</game>
+	<game name="[BIOS] Starlight Fun Center NAND (USA) (001327) (RUA200102825)" id="0017">
+		<description>[BIOS] Starlight Fun Center NAND (USA) (001327) (RUA200102825)</description>
+		<rom name="keys.bin" size="1024" crc="d7a5bc65" md5="e198a7f76b3fbb41e43c847d4fd4ab29" sha1="779047248db3350e5a0137a1747c9237bf913765"/>
+		<rom name="nand.bin" size="553649152" crc="2816667d" md5="13e2578da96adf96f547a83613717f33" sha1="1fcab657bd5957813848be91a5e35be424c4ae91"/>
+	</game>
+	<game name="[BIOS] Starlight Fun Center NAND (USA) (001443) (RUA200100715)" id="0018">
+		<description>[BIOS] Starlight Fun Center NAND (USA) (001443) (RUA200100715)</description>
+		<rom name="keys.bin" size="1024" crc="944c4f99" md5="469d9435d15ae121f8475c6a8f743261" sha1="525968ff5886dfea4c31d84c29310256b0d626b7"/>
+		<rom name="nand.bin" size="553648128" crc="e8080e24" md5="6f3e529869397ecade0146a18615a4c0" sha1="ef37018c63b20b61f0726fc063433ade9ce7e33a"/>
+	</game>
+	<game name="Big Brain Academy - Wii Degree (USA) (Starlight) (Big Brain Academy 0.0 ENG)" id="0007">
+		<description>Big Brain Academy - Wii Degree (USA) (Starlight) (Big Brain Academy 0.0 ENG)</description>
+		<rom name="Big Brain Academy - Wii Degree (USA) (Starlight) (Big Brain Academy 0.0 ENG).iso" size="4700110848" crc="e5a451ce" md5="ff4adc41fb01a5b821e66ce6edb7b4c7" sha1="89a13a36a3739fdf7246eb0e47960b73f9650cb4"/>
+	</game>
+	<game name="Carnival Games (USA) (Starlight) (Carnival Games 1.1)" id="0008">
+		<description>Carnival Games (USA) (Starlight) (Carnival Games 1.1)</description>
+		<rom name="Carnival Games (USA) (Starlight) (Carnival Games 1.1).iso" size="4700110848" crc="9abe70d1" md5="95bf51945e0c29e9aff4d66cd4fe55c5" sha1="c95403df92920ffa146d1f6d19f179f6894a4f37"/>
+	</game>
+	<game name="Disney-Pixar Cars - Mater-National Championship (USA) (Starlight) (Cars Mater-National 0.1)" id="0009">
+		<description>Disney-Pixar Cars - Mater-National Championship (USA) (Starlight) (Cars Mater-National 0.1)</description>
+		<rom name="Disney-Pixar Cars - Mater-National Championship (USA) (Starlight) (Cars Mater-National 0.1).iso" size="4700110848" crc="b1603639" md5="e7e4c5a742991b1c430e337480b68695" sha1="66d075f2503ed4fa15673eb89f2dce6469b3f626"/>
+	</game>
+	<game name="Elebits (USA) (Starlight) (Elebits 0.1)" id="0010">
+		<description>Elebits (USA) (Starlight) (Elebits 0.1)</description>
+		<rom name="Elebits (USA) (Starlight) (Elebits 0.1).iso" size="4700110848" crc="e598ada3" md5="f50e0c0d77610b27a9efc2793af810cc" sha1="656446c7c3030913478690e05bbbd6811d4a2aed"/>
+	</game>
+	<game name="Excite Truck (USA) (Starlight) (Excite Truck 0.0)" id="0011">
+		<description>Excite Truck (USA) (Starlight) (Excite Truck 0.0)</description>
+		<rom name="Excite Truck (USA) (Starlight) (Excite Truck 0.0).iso" size="4700110848" crc="657cde9e" md5="85fed110570bd58e7c6a1812cb560a6d" sha1="ca996267002e6999950c9685e8552d1b3a36c3d3"/>
+	</game>
+	<game name="Fire Emblem - Radiant Dawn (USA) (Starlight) (Fire Emblem 10)" id="0012">
+		<description>Fire Emblem - Radiant Dawn (USA) (Starlight) (Fire Emblem 10)</description>
+		<rom name="Fire Emblem - Radiant Dawn (USA) (Starlight) (Fire Emblem 10).iso" size="4700110848" crc="4dac4423" md5="44ca8769b122050eff90c3e0ce5c13dd" sha1="5709ed651472471b66e7e1a17de1ffcda56fae79"/>
+	</game>
+	<game name="Starlight Fun Center Menu (USA) (Funmenu Version 2.00 20080515) (000056, 000175, 000535)" id="0023">
+		<description>Starlight Fun Center Menu (USA) (Funmenu Version 2.00 20080515) (000056, 000175, 000535)</description>
+		<rom name="Starlight Fun Center Menu (USA) (Funmenu Version 2.00 20080515) (000056, 000175, 000535).iso" size="4700110848" crc="44d12d34" md5="ba431f34b6358d56949e8245d32069f3" sha1="76293aa08e73383b70b222e594b1cfa9e81fd0ac"/>
+	</game>
+	<game name="Starlight Fun Center Menu (USA) (Hotel Menu LPM 1.01 20080624)" id="0020">
+		<description>Starlight Fun Center Menu (USA) (Hotel Menu LPM 1.01 20080624)</description>
+		<rom name="Starlight Fun Center Menu (USA) (Hotel Menu LPM 1.01 20080624).iso" size="4700110848" crc="ba47df41" md5="9a55157363813f66c3fd2f1841afd7e7" sha1="6d017bcc99aab93713bfb061f5fc1553a8e5d6ed" sha256="2be9e679bc3cb93e240351f0c75f195c44c0f2a22ce966f437a6a9506f8cbb08" serial="RABAZZ"/>
+	</game>
+	<game name="Starlight Fun Center Menu (USA) (FunCenter Menu wArt Ver 4.02 20090325) (001443)" id="0024">
+		<description>Starlight Fun Center Menu (USA) (FunCenter Menu wArt Ver 4.02 20090325) (001443)</description>
+		<rom name="Starlight Fun Center Menu (USA) (FunCenter Menu wArt Ver 4.02 20090325) (001443).iso" size="4700110848" crc="2261cf1d" md5="ea20a6499c4811abcf9968e0478c9011" sha1="16dce6efba9a97a63820b4f59913e092fad0b5a2"/>
+	</game>
+	<game name="Starlight Fun Center Menu (USA) (FunCenter Menu wArt Ver 4.02 20090325) (002463)" id="0006">
+		<description>Starlight Fun Center Menu (USA) (FunCenter Menu wArt Ver 4.02 20090325) (002463)</description>
+		<rom name="Starlight Fun Center Menu (USA) (FunCenter Menu wArt Ver 4.02 20090325) (002463).iso" size="4700110848" crc="2dc84355" md5="6f8f9830a1c6ad98d623fce3c5fde433" sha1="e11c283bbbd3a464af26bcde6f659260453087a4" sha256="c8d7a904f55e182063ac2b8b3acea647151f9699c0fc6a2a071c3f9148fb25f4" serial="RABAZZ"/>
+	</game>
+	<game name="Starlight Fun Center Menu (USA) (FunCenter Menu 3.0 20080813) (001284)" id="0004">
+		<description>Starlight Fun Center Menu (USA) (FunCenter Menu 3.0 20080813) (001284)</description>
+		<rom name="Starlight Fun Center Menu (USA) (FunCenter Menu 3.0 20080813) (001284).iso" size="4700110848" crc="50e4d170" md5="0c763584bd6dfc89cf651bf80581bc29" sha1="dc92adc5eff3a2645660a77dfcc8a9a5c030fa60" sha256="8c3159032660887a6d661cbbb6cd768ac4d262df39a29b58626a3abd1588d675" serial="RABAZZ"/>
+	</game>
+</datafile>

@@ -1,0 +1,317 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<name>Non-Redump - Sony - PlayStation (Retool)</name>
+		<description>Non-Redump - Sony - PlayStation (22) (-nz) [-AaBbcDdefkMmopPruv] (20251225-195142) (Retool)</description>
+		<version>20251225-195142</version>
+		<date>2026-04-06 18-53-46</date>
+		<author>baldjared, bikerspade, Deterous, Gefflon, Hiccup, MeguCocoa, norkmetnoil577, NovaAurora, rarenight, Seventy7, UnlockerPT</author>
+		<homepage>http://www.github.com/unexpectedpanda/retool</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"></clrmamepro>
+		<retool>Created by Retool 2.4.8</retool>
+	</header>
+	<game name="40 Winks (USA) (Evercade)" id="0344">
+		<category>Games</category>
+		<description>40 Winks (USA) (Evercade)</description>
+		<rom name="40 Winks (USA) (Evercade).bin" size="540854160" crc="78744507" md5="d7e79dcf253f6084b0563cb19fc31063" sha1="1d5dabc150eeabe25197346b673c378b6edc633e"/>
+		<rom name="40 Winks (USA) (Evercade).cue" size="91" crc="837242fb" sha1="03425dee212497154633b62f961dd1d6d52e71f4"/>
+	</game>
+	<game name="Biohazard 1.5 (Japan) (En,Ja) (40% PVB) (1996-11-06)" id="0016">
+		<category>Games</category>
+		<description>Biohazard 1.5 (Japan) (En,Ja) (40% PVB) (1996-11-06)</description>
+		<rom name="Biohazard 1.5 (Japan) (En,Ja) (40% PVB) (1996-11-06).iso" size="124300848" crc="598a6bfd" md5="c85420b3bac2081fc87c2f333ef10d24" sha1="ecac141d16ee0c8cfa946fb3860cf9dae75b6752"/>
+	</game>
+	<game name="Blood Omen - Legacy of Kain (USA) (Evercade)" id="0345">
+		<category>Games</category>
+		<description>Blood Omen - Legacy of Kain (USA) (Evercade)</description>
+		<rom name="Blood Omen - Legacy of Kain (USA) (Evercade).bin" size="694385664" crc="c49b8623" md5="85f3ab83389223fe6c8157e5056a2275" sha1="079849f855cb29be3b211be665252dbd3b198ded"/>
+		<rom name="Blood Omen - Legacy of Kain (USA) (Evercade).cue" size="110" crc="e8fd2e26" sha1="1954ffd8a34e015d7c1af34f580e59147592bcc9"/>
+	</game>
+	<game name="Broken Sword - The Shadow of the Templars (USA) (Evercade)" id="0346">
+		<category>Games</category>
+		<description>Broken Sword - The Shadow of the Templars (USA) (Evercade)</description>
+		<rom name="Broken Sword - The Shadow of the Templars (USA) (Evercade).bin" size="536387712" crc="c9dac8f7" md5="25f78cded9aac051a08b5f2c42e4b3a0" sha1="ee695ab12d39f2b40c8278ffc3aca47a580d58eb"/>
+		<rom name="Broken Sword - The Shadow of the Templars (USA) (Evercade).cue" size="124" crc="86f4f470" sha1="cf29f710eadbf13218091367bf56f15760e7dbd9"/>
+	</game>
+	<game name="Broken Sword II - The Smoking Mirror (USA) (Evercade)" id="0347">
+		<category>Games</category>
+		<description>Broken Sword II - The Smoking Mirror (USA) (Evercade)</description>
+		<rom name="Broken Sword II - The Smoking Mirror (USA) (Evercade) (Track 1).bin" size="550132800" crc="1c613145" md5="326500f85a0bac38f350bf45ba92e676" sha1="24f9e32ce05e1413edbdc2b35183f686b67709fb"/>
+		<rom name="Broken Sword II - The Smoking Mirror (USA) (Evercade) (Track 2).bin" size="28235760" crc="4c92893d" md5="a8da46913b4725625eb9c1b8ce11e932" sha1="21ace05e7f6d32ab41ccc0c2042ea222a7f0af55"/>
+		<rom name="Broken Sword II - The Smoking Mirror (USA) (Evercade).cue" size="276" crc="19d88428" sha1="d694a315cc9e636b57f8eb5e3db320059efe0686"/>
+	</game>
+	<game name="Bubsy 3D - Furbitten Planet (USA) (Purrfect Collection)" id="0363">
+		<category>Games</category>
+		<description>Bubsy 3D - Furbitten Planet (USA) (Purrfect Collection)</description>
+		<rom name="Bubsy 3D - Furbitten Planet (USA) (Purrfect Collection).bin" size="742658112" crc="0a5e646c" md5="9ca7ad7f64c462fe51e816b732a34c01" sha1="2d8ee0d6e7c2bd0364451e2c8c98fd57f7fd3994" sha256="be92db74facd8983b1fc5d8cad83fb5790d86959ec9bdf59ec579d165c89a7e6"/>
+		<rom name="Bubsy 3D - Furbitten Planet (USA) (Purrfect Collection).cue" size="121" crc="494de371" sha1="19191bc126ad3b2221788fcfe369567a3425dcd2"/>
+	</game>
+	<game name="Duke Nukem - Land of the Babes (USA) (Evercade)" id="0348">
+		<category>Games</category>
+		<description>Duke Nukem - Land of the Babes (USA) (Evercade)</description>
+		<rom name="Duke Nukem - Land of the Babes (USA) (Evercade).bin" size="707460432" crc="7d8a4856" md5="ba79a3efdf3510507e0978bb4a9d1d96" sha1="bc809c5f94de1c4d88d4a982ed03b8323b82339e"/>
+		<rom name="Duke Nukem - Land of the Babes (USA) (Evercade).cue" size="113" crc="12f6f15b" sha1="d8e3283099180da59693083e16e08a6d5c7f8b9b"/>
+	</game>
+	<game name="Duke Nukem - Time to Kill (USA) (Evercade)" id="0349">
+		<category>Games</category>
+		<description>Duke Nukem - Time to Kill (USA) (Evercade)</description>
+		<rom name="Duke Nukem - Time to Kill (USA) (Evercade).bin" size="449420160" crc="b96b9d4f" md5="969ff5054298798b14dc59d463fd9a62" sha1="837aee1d281858de5a94116b6e76fe1cf9e90d47"/>
+		<rom name="Duke Nukem - Time to Kill (USA) (Evercade).cue" size="108" crc="7f5e786d" sha1="2533166cd94761d9f235feac05ece38f789fe1ff"/>
+	</game>
+	<game name="Duke Nukem - Total Meltdown (USA) (Evercade)" id="0350">
+		<category>Games</category>
+		<description>Duke Nukem - Total Meltdown (USA) (Evercade)</description>
+		<rom name="Duke Nukem - Total Meltdown (USA) (Evercade).bin" size="564004896" crc="ae6c3286" md5="bf4e1cb5109830e87d77d1d446ee4c9d" sha1="73ec1644176a85754761b42a854270e8aa3ceb23"/>
+		<rom name="Duke Nukem - Total Meltdown (USA) (Evercade).cue" size="110" crc="ace0b246" sha1="9211042671e0bf3dd0b4837aa919a17960b8fc1b"/>
+	</game>
+	<game name="Hogs of War (USA) (Evercade)" id="0351">
+		<category>Games</category>
+		<description>Hogs of War (USA) (Evercade)</description>
+		<rom name="Hogs of War (USA) (Evercade) (Track 1).bin" size="472695552" crc="a0f1dfe8" md5="95fabf80a05b1bc13a682c2251f464dc" sha1="5f05e87bc49ec8d8e658f1d966c095760e6b2d79"/>
+		<rom name="Hogs of War (USA) (Evercade) (Track 2).bin" size="29806896" crc="069c1edf" md5="720054aad2b3bb16b54e1de78938a6c8" sha1="36f0917854904815e048a12f31b446ae1a982bbe"/>
+		<rom name="Hogs of War (USA) (Evercade) (Track 3).bin" size="12691392" crc="3f329179" md5="b82c482ecc72be5eda37fbf9ab8de5d6" sha1="014a29e1da240dc52a177f05221d56d409918b5a"/>
+		<rom name="Hogs of War (USA) (Evercade) (Track 4).bin" size="32104800" crc="9b94ea54" md5="65aea234c174ee35fb574d981fe3fc4f" sha1="bd1fde88c2b79e3cf8821c969373460d51f3155a"/>
+		<rom name="Hogs of War (USA) (Evercade).cue" size="470" crc="a8e58b56" sha1="aef44e4813663feb5a4aacb583f15fef13be3e73"/>
+	</game>
+	<game name="Legacy of Kain - Soul Reaver (USA) (Evercade)" id="0352">
+		<category>Games</category>
+		<description>Legacy of Kain - Soul Reaver (USA) (Evercade)</description>
+		<rom name="Legacy of Kain - Soul Reaver (USA) (Evercade).bin" size="678784848" crc="abc9c775" md5="28d8c0727fbbf086a4e321a21a5c1acf" sha1="1ca4157a144f2bfd38dcab30ae5e82a766609e9c"/>
+		<rom name="Legacy of Kain - Soul Reaver (USA) (Evercade).cue" size="111" crc="6aaec96f" sha1="3d1ca0955c0c4671d574dd607673477660f19d3e"/>
+	</game>
+	<game name="Loaded (USA) (En,Fr) (Evercade)" id="0353">
+		<category>Games</category>
+		<description>Loaded (USA) (En,Fr) (Evercade)</description>
+		<rom name="Loaded (USA) (En,Fr) (Evercade) (Track 01).bin" size="612552528" crc="d3233cff" md5="82dbe3919f6753237ed45833780ac1f8" sha1="b7653d3898bd0ba810614e2d3c77841b32300ee3"/>
+		<rom name="Loaded (USA) (En,Fr) (Evercade) (Track 02).bin" size="22786176" crc="68c36372" md5="8f9481c9bd43a92de1526f21f56779b0" sha1="6c92ccf70bbd6e0890573f55f54211fbe59f58a4"/>
+		<rom name="Loaded (USA) (En,Fr) (Evercade) (Track 03).bin" size="53303376" crc="bd0e3eff" md5="c4ef40bb7bcd25525396822cae4a853f" sha1="d7c46b278a77490571543475d64d524b17a8de79"/>
+		<rom name="Loaded (USA) (En,Fr) (Evercade) (Track 04).bin" size="39240768" crc="105bf91b" md5="bf4c66df4a128fb7e26c2e46fa2ec7b1" sha1="b966676d0184ea046cb2a4616715dbb85de12261"/>
+		<rom name="Loaded (USA) (En,Fr) (Evercade) (Track 05).bin" size="37453248" crc="5899cfe2" md5="c07b138966f0187696c1b17f6ed47865" sha1="284d3b4ac3e03e76a8195261bb6b88f69827f9ba"/>
+		<rom name="Loaded (USA) (En,Fr) (Evercade) (Track 06).bin" size="59801952" crc="e00d7749" md5="139e4391286cb4ebd0a795411f09a021" sha1="bcbd038933330a96c4e558cb2c869b16d62c300b"/>
+		<rom name="Loaded (USA) (En,Fr) (Evercade) (Track 07).bin" size="55020336" crc="532b8dfb" md5="a5b2bab85d7ea7127fe36e1d2230e228" sha1="d47d54e830cd6fb2428732dbb5e5cb1e9763cf4c"/>
+		<rom name="Loaded (USA) (En,Fr) (Evercade) (Track 08).bin" size="35907984" crc="f72c41e5" md5="931ef550328a989d8a2397d79aa9e696" sha1="737c1d410b206ba68fcf6e9f5d6bcfe343cadf46"/>
+		<rom name="Loaded (USA) (En,Fr) (Evercade) (Track 09).bin" size="37403856" crc="8338491f" md5="8fccd6b6669c41a074344a3a06a6621f" sha1="2d8a4f81ab30055dc43d8e896c9c1ffc3af056f4"/>
+		<rom name="Loaded (USA) (En,Fr) (Evercade) (Track 10).bin" size="9932496" crc="cb7557ca" md5="8d4e635d5cedf0beb0bac46a4dfaec77" sha1="ca4a4d8c9feb2075e34e97dee4fa73aa3cfe6f7e"/>
+		<rom name="Loaded (USA) (En,Fr) (Evercade) (Track 11).bin" size="10104192" crc="2bba6e3a" md5="879945afbc463e92543167a4bbe82c8b" sha1="1cb0241c748d48b2ef2219641fe079052264fb3f"/>
+		<rom name="Loaded (USA) (En,Fr) (Evercade) (Track 12).bin" size="8836464" crc="42769a50" md5="26e5220fbe858a97c2e8f7daef949d16" sha1="42c48d848fcd72dab900c79fc49ab63e91888320"/>
+		<rom name="Loaded (USA) (En,Fr) (Evercade) (Track 13).bin" size="8702400" crc="fa923b22" md5="3ee41c9b266d5d13f9aecfb33dfb6996" sha1="1852adfc1e6d02ce9ff64e40260218ef321b69a8"/>
+		<rom name="Loaded (USA) (En,Fr) (Evercade) (Track 14).bin" size="8189664" crc="8327cc09" md5="25aaf03915414fac85581ddf813ddb2f" sha1="cee29ac0f236f724cc9e84249b28d35e9f24b1ee"/>
+		<rom name="Loaded (USA) (En,Fr) (Evercade) (Track 15).bin" size="10614576" crc="14c7eda3" md5="e1b3c533442132587e87ff2c966e911c" sha1="192ab6280bd4316d0517fc5a99d32567702240ef"/>
+		<rom name="Loaded (USA) (En,Fr) (Evercade) (Track 16).bin" size="10144176" crc="95c36d92" md5="ac64fce908720a2bbed102c8e2fcf777" sha1="a781a61ef665f13b99d9dd05324c05001cc1fb60"/>
+		<rom name="Loaded (USA) (En,Fr) (Evercade) (Track 17).bin" size="8034432" crc="f8c5c8b9" md5="64af92ce90af4d8943ca3e5e73c41053" sha1="562ad256fa9fe7a8df0f15026e178e78c5ecf164"/>
+		<rom name="Loaded (USA) (En,Fr) (Evercade) (Track 18).bin" size="13060656" crc="87beb7d8" md5="5c31b178329664480f1e6334ca404c47" sha1="f9fca8c6c4fa76de39c806a420dfcbc846e71983"/>
+		<rom name="Loaded (USA) (En,Fr) (Evercade) (Track 19).bin" size="6110496" crc="4b519427" md5="1ca24947c1f93994d1219e6a1733d5ba" sha1="631ded9cb0a6e9b43904894b1404bfa44d78ec2e"/>
+		<rom name="Loaded (USA) (En,Fr) (Evercade) (Track 20).bin" size="8147328" crc="ebfb4dba" md5="612aa3a107a436ffd1d84855b0deff1d" sha1="82edd263bc5cb0a2bda886601a7a644075c55a95"/>
+		<rom name="Loaded (USA) (En,Fr) (Evercade) (Track 21).bin" size="10125360" crc="9199d1e9" md5="945b1c9f4b2884ae8158a9962f18eeb2" sha1="ed503a47f4ea04b67038009831463c1bbd7ef376"/>
+		<rom name="Loaded (USA) (En,Fr) (Evercade) (Track 22).bin" size="12966576" crc="3316dcc9" md5="715b8c6b7a57b8f0b3e2bcd258ea3130" sha1="b74053ca1d87ec3277300b8f6212cd26b9560e3b"/>
+		<rom name="Loaded (USA) (En,Fr) (Evercade) (Track 23).bin" size="12599664" crc="42c92714" md5="8a7626c6892b0f76e97b2a625d559650" sha1="77556f718ef4929ea2b4703b7ee3106d485144da"/>
+		<rom name="Loaded (USA) (En,Fr) (Evercade) (Track 24).bin" size="9868992" crc="bc5e9fe7" md5="5d78ce65fc3b103c640d75c4e1c0aa04" sha1="37de007dff49f15bc9cff325ca735f340f30fdd5"/>
+		<rom name="Loaded (USA) (En,Fr) (Evercade) (Track 25).bin" size="13018320" crc="a9ceb405" md5="a291963d7139062362570eb92f4f4fec" sha1="ccabecf26bb33a19647eeffccd6d6cf34360c7f9"/>
+		<rom name="Loaded (USA) (En,Fr) (Evercade) (Track 26).bin" size="16459296" crc="adb37daf" md5="64abd3d8f50f8b1f5a424c3ec0fde149" sha1="5eb419f177c0ab3b77b90d681b41c305d7e2e5fd"/>
+		<rom name="Loaded (USA) (En,Fr) (Evercade) (Track 27).bin" size="9356256" crc="58e2c744" md5="d7ea903e92d4441a37f36071e73f094f" sha1="da0e9b02721e291f1d3e5469e7ecf8119450b7e0"/>
+		<rom name="Loaded (USA) (En,Fr) (Evercade) (Track 28).bin" size="5212032" crc="447b4acc" md5="c0dfa0a98c39033f4ce8593c4452084e" sha1="1cd33ddb6e697cb7ae109065d97ca7d7831689b1"/>
+		<rom name="Loaded (USA) (En,Fr) (Evercade) (Track 29).bin" size="6101088" crc="e370f416" md5="ca3b00834fbb1943abe6e9c0982de87a" sha1="0c73a5c92c3c70b8280a8f5c48810dc737eed85b"/>
+		<rom name="Loaded (USA) (En,Fr) (Evercade) (Track 30).bin" size="6580896" crc="a6d96078" md5="c36e9570e04fe13740ad67793af19c30" sha1="504760bcffc89add10f94222482a79ce0ee73d8a"/>
+		<rom name="Loaded (USA) (En,Fr) (Evercade).cue" size="3762" crc="15db0a22" sha1="b02d53e71aebf2ce8fcdc8faf149eb09228758a7"/>
+	</game>
+	<game name="Re-Loaded - The Hardcore Sequel (USA) (Evercade)" id="0354">
+		<category>Games</category>
+		<description>Re-Loaded - The Hardcore Sequel (USA) (Evercade)</description>
+		<rom name="Re-Loaded - The Hardcore Sequel (USA) (Evercade) (Track 01).bin" size="717534048" crc="82e836f7" md5="6c14dbb0b44e8cc5b2de2eeebacc2bc5" sha1="e14b0bcdbd121185b3d2bb525bb577bf2e5641cc"/>
+		<rom name="Re-Loaded - The Hardcore Sequel (USA) (Evercade) (Track 02).bin" size="43208592" crc="e4bd41b8" md5="297fa3fd9e36679796c09bed4ccff78f" sha1="7c8f34c006834ef8a64bdc2f110748ab1bde5153"/>
+		<rom name="Re-Loaded - The Hardcore Sequel (USA) (Evercade) (Track 03).bin" size="43199184" crc="fd7f33c8" md5="34969d1ffe738463eb42959b7835bcee" sha1="1ed4f28141faa86f2eaff55f733827009640e81c"/>
+		<rom name="Re-Loaded - The Hardcore Sequel (USA) (Evercade) (Track 04).bin" size="49730688" crc="97accfc3" md5="1343b4b7ac8af1b5a4a10304d04b1d03" sha1="eb4934f60ddeee7cbdbf310e4f1161f845fd551d"/>
+		<rom name="Re-Loaded - The Hardcore Sequel (USA) (Evercade) (Track 05).bin" size="56085792" crc="bc5d7ad7" md5="03c937ee93325388c975a7ac6c7a9ee0" sha1="9ef259d87ac1563d889346e51d555e972463cc5c"/>
+		<rom name="Re-Loaded - The Hardcore Sequel (USA) (Evercade) (Track 06).bin" size="49610736" crc="73d4e261" md5="d9eaf9f68f820a4890f696a679f47b4f" sha1="4506fa6e0aa3e0c2603e10b37762794a98f74077"/>
+		<rom name="Re-Loaded - The Hardcore Sequel (USA) (Evercade) (Track 07).bin" size="48778128" crc="9823ed35" md5="60ee0291e2432385fd9d80c3bfb352c9" sha1="101186ffffcfa2b03a4a2220d179ce2bb9a8fac8"/>
+		<rom name="Re-Loaded - The Hardcore Sequel (USA) (Evercade) (Track 08).bin" size="43295616" crc="1b70bd2d" md5="9a144d4038de04da5d4e7eff326882df" sha1="4680ce91cfd6fae22b45e49c8836016a5eb947f4"/>
+		<rom name="Re-Loaded - The Hardcore Sequel (USA) (Evercade) (Track 09).bin" size="50059968" crc="f5587cf9" md5="445e867e8d12722e95805077326ed3f0" sha1="b10570d1f2ca93a5664248234adb22219ad11070"/>
+		<rom name="Re-Loaded - The Hardcore Sequel (USA) (Evercade) (Track 10).bin" size="49201488" crc="c9342170" md5="dad8d23ce22bf45ee656a4e8bf35eec9" sha1="8372833d43612c716dabe884fe7e698bdd9f3d06"/>
+		<rom name="Re-Loaded - The Hardcore Sequel (USA) (Evercade) (Track 11).bin" size="43135680" crc="944e3646" md5="c8f42e21a7209efc03c994f5dd8d9e4d" sha1="30843f7a67ee5233582e6e16c47038596068a047"/>
+		<rom name="Re-Loaded - The Hardcore Sequel (USA) (Evercade) (Track 12).bin" size="48253632" crc="b6b26991" md5="4785867aefce92a195c098ad2f05c39a" sha1="62786653b44736af8d543cbb391a06afc7e9e250"/>
+		<rom name="Re-Loaded - The Hardcore Sequel (USA) (Evercade) (Track 13).bin" size="53035248" crc="fc7a0881" md5="f8e376f66b5abd83b29bd1a996974c85" sha1="0af15167233c94c54a186b3e87d523c2e305e3f3"/>
+		<rom name="Re-Loaded - The Hardcore Sequel (USA) (Evercade).cue" size="1841" crc="338de56d" sha1="2cc1567c06be52641bb9264f0be0bea98da6864a"/>
+	</game>
+	<game name="Team Losi RC Racer (USA) (Evercade)" id="0355">
+		<category>Games</category>
+		<description>Team Losi RC Racer (USA) (Evercade)</description>
+		<rom name="Team Losi RC Racer (USA) (Evercade) (Track 01).bin" size="565077408" crc="575aa063" md5="506f2f878e3c21f81c9dda8143981def" sha1="a7eda504fbef9c3eeae3a6d70a7ce5091af4c505"/>
+		<rom name="Team Losi RC Racer (USA) (Evercade) (Track 02).bin" size="23496480" crc="5b8bb940" md5="5b205305280c3c3dfcd92cf77d78539d" sha1="05eafed8dfedcff2f37650b81958abf8d4811194"/>
+		<rom name="Team Losi RC Racer (USA) (Evercade) (Track 03).bin" size="47458656" crc="585137d8" md5="b738f634a05e6fbbf6c6766ec4d6f54f" sha1="7245d3d77b607c33edba1c9156483b5a4ada7e41"/>
+		<rom name="Team Losi RC Racer (USA) (Evercade) (Track 04).bin" size="49497840" crc="e0fa6052" md5="9ede01264b201cde7e290ddce7868aa9" sha1="de7c80d879b56728f40d0d78d6c71ac24d13c9b4"/>
+		<rom name="Team Losi RC Racer (USA) (Evercade) (Track 05).bin" size="49537824" crc="6e3c6414" md5="31f79c4a0322d0704b1d77e9a0a9974f" sha1="bfc734951276f156b438d612ecf0f3055797ca91"/>
+		<rom name="Team Losi RC Racer (USA) (Evercade) (Track 06).bin" size="48867504" crc="0fc15e88" md5="91de34341e350284d1978d808a266ec8" sha1="3d4486f0c43dddaf3592ab6ae4444e019afc71ba"/>
+		<rom name="Team Losi RC Racer (USA) (Evercade) (Track 07).bin" size="41411664" crc="0cea8705" md5="9cdea5619e36e0b84dbd17281b00b3ed" sha1="cba01559a2c9a95fbb269188e6cfda1b9cab50e4"/>
+		<rom name="Team Losi RC Racer (USA) (Evercade) (Track 08).bin" size="48206592" crc="d215b2e6" md5="09061aa7c2b144fce75c14b9a5d3922e" sha1="0ff9be252aeb6bc22025ed0d45d52d890358fb85"/>
+		<rom name="Team Losi RC Racer (USA) (Evercade) (Track 09).bin" size="42891072" crc="bddd8cef" md5="3c4a35ea429e0f05d2684433b03b7d5f" sha1="c7d1488589e7b796d158d9e7ee2a07c9c0fc6d95"/>
+		<rom name="Team Losi RC Racer (USA) (Evercade) (Track 10).bin" size="49707168" crc="93d13a7b" md5="3faa2f3766a1078466ce31d7dfcb0c02" sha1="f912c4c998d67d36882ba47ee28375910373cacc"/>
+		<rom name="Team Losi RC Racer (USA) (Evercade) (Track 11).bin" size="47809104" crc="6dad51b5" md5="941860a759fa199820efa9d0a4672cc1" sha1="566ecbcd56a319a0725f94d91c56bec896308c99"/>
+		<rom name="Team Losi RC Racer (USA) (Evercade).cue" size="1412" crc="ae231229" sha1="033b3e12ead9c6925602b6933c942640c2b13861"/>
+	</game>
+	<game name="Tomb Raider (USA) (Evercade)" id="0356">
+		<category>Games</category>
+		<description>Tomb Raider (USA) (Evercade)</description>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 01).bin" size="291130560" crc="e936e5c8" md5="adbef20ada73d6896ef25559afb25a88" sha1="3ed27924db2288bbefb898af483fcff80c276230"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 02).bin" size="34675536" crc="fa057cad" md5="c8af25a92512689808646e624a67be71" sha1="70353faa1df4fa465c1bb06e264e63b0452ecf49"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 03).bin" size="11284896" crc="1889b899" md5="f304d765cf1ee4efaaf81489cf683816" sha1="07d11bafa9d13e6e2b3652285ce365365f5723c6"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 04).bin" size="21788928" crc="bcb7e11d" md5="2f7fc775f500a5b0a5f71a966cc8bcaa" sha1="81a7010d2a236eeff938c6704d6e6c3e03c03c2f"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 05).bin" size="21193872" crc="9867edd8" md5="da131b98fcb251d761e42a71ed60410d" sha1="1680988b46726e6667cf3007f2361820f7ce6894"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 06).bin" size="13580448" crc="e3841b82" md5="4e4a4d99986a7223bffab519dfe4c2bc" sha1="5f0870bae1db460b0f663cae1c696c9ae55db4cd"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 07).bin" size="9857232" crc="c4b4403c" md5="084a7c7ea315d839c5aa75604d710000" sha1="f36e89416036171a0cd682120af13d93dc797da3"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 08).bin" size="12039888" crc="61626b7e" md5="d40b296a6dfd0c6820800cf48b9b9ae9" sha1="710ae3fbe8686432cbba0c1e5d332f218091e036"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 09).bin" size="7070112" crc="e5727d76" md5="2d3e1134e3c3adc55180b79f5e3b6e74" sha1="f1519945e9f8498c6791eb14bdd55335ea87fc8d"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 10).bin" size="13984992" crc="bb253bba" md5="5f0bd7da1866d5e715bc17a86bca4c47" sha1="8ad01106583baa15cbe3de367a2ec70cdd8880e4"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 11).bin" size="1498224" crc="36215b2a" md5="be73f68cc0252c9f4117c21c167b0c80" sha1="d7d76d828434cc7eaeb0d6bd930c34d022f1a077"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 12).bin" size="2643648" crc="ad45a1a9" md5="12258b510257b87181ef542eedd0c4b0" sha1="abe4f9984552a106b7d4f8e74ec68aaf0196f1a1"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 13).bin" size="1241856" crc="126807e1" md5="0d4e5ae0e8f64d85502983c313ed0795" sha1="3c50f105d3b6d9ca8aef849d9041ca68cde6215d"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 14).bin" size="2128560" crc="1e4b59af" md5="8d32287f74eb060d5aa5c1ec4db3a526" sha1="e1154c6dcfe8229508594bcc05cc5869c88617ee"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 15).bin" size="1947456" crc="08570885" md5="8484904d3244d4378c7077a173358b24" sha1="f8ce3e5f05f83a7e6866959d3b8c602f00494a5c"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 16).bin" size="6851376" crc="5a083a3d" md5="5d44f139c0cde32690bf126252d2d335" sha1="dff2c2a2a1a1b71d579bfbc88dc23f85e534ebbc"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 17).bin" size="7559328" crc="c2e6f9f9" md5="51bc928de9e02fc171e4b5fe5e5f706f" sha1="1dd18b6eb553ca98b0571fe7144e760911e60509"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 18).bin" size="4466448" crc="3bd58ad7" md5="14fe4631c6c5966fb0099c5cfea5ce94" sha1="c63507b31f3311f3545ccaaacee7924bdb295bb8"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 19).bin" size="15629040" crc="efa6736d" md5="82774e47d0ca8eefa03d840c8595af9e" sha1="3148c40781cac79a60b7bcf9729c6c05b4775c33"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 20).bin" size="9565584" crc="8defd3d9" md5="69703b43a3e215e6df4526dbbe43c1ff" sha1="8f2ce40b3a40a62bb34dfc1fb30310a5b489b077"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 21).bin" size="7272384" crc="a44b2027" md5="744c78c14df92b736730bef90deb5edb" sha1="51790858d2edcd6e346609425346882eb5f0472e"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 22).bin" size="11202576" crc="d4779c92" md5="d58db6af3173bbbf4368019eafab7533" sha1="3ea2a56b144bdef934b3dda5b473eeeb60a90463"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 23).bin" size="10158288" crc="0e421719" md5="65818a4b785b5952cbe89ec9388aba1b" sha1="a0f43057580d41ee7b3f12e07ba7eb2ba7cb0dbd"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 24).bin" size="2711856" crc="7f373dcd" md5="ff1f771433b7502cc66b32a33ba1b6a7" sha1="6aeb4679cbfa66f8487c62735f440b9245983e5f"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 25).bin" size="6498576" crc="1df91d5e" md5="cea1451789e95003e7a68a05b828b024" sha1="7c346c6de80b669d58958dcb882f2f77fa101f14"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 26).bin" size="1237152" crc="e9b38c4f" md5="6cf94d2d5916b069b823aac539b43634" sha1="c6530ce2901e17bd6a79024fb78d776ea5b2d214"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 27).bin" size="1237152" crc="44c7546e" md5="7ad97d078a508a2438f67380db347dbe" sha1="e9c25b34e9dbe179177682aac0c501161d08b170"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 28).bin" size="1234800" crc="dcd007de" md5="37bb56df45e55d2c68af691607e0d8b0" sha1="5b1c0cc9696d3d8ea730ed3d8a297615e03adca4"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 29).bin" size="1237152" crc="ac857ff6" md5="075cb9270b3d291ddde694027ac63145" sha1="b6fa9ae563aa6a80cabe071c057a04864826cffe"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 30).bin" size="1406496" crc="242c2d53" md5="b25b4d4b5416a1b62d3b7c0e7dff82cc" sha1="cda473470de4cd3670f70c25ffac906147176f16"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 31).bin" size="1237152" crc="b912b8db" md5="d52a912f896188b19f8be08db7fc055c" sha1="1e13c33a7eaba1d65e2c92e393d42ba57fb0be88"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 32).bin" size="1676976" crc="47255caf" md5="6a31bff9c3b88de73fb1ec0a2a5aa223" sha1="9b8aad87a69d39cf1271ca4168ddb9fff4969a9c"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 33).bin" size="1686384" crc="4aed2231" md5="82cfc2622ac3dcdb3f8955cf72c22e67" sha1="ec2492db02ca94420d6afcdfc7a503ca7a907e43"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 34).bin" size="1345344" crc="b93a2acf" md5="f2b196e0254260d7ec439ce10bd442b2" sha1="c06028d1b5b5b2a00b860baf549da26c78f975c2"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 35).bin" size="1267728" crc="225df319" md5="b3f0481c22ac0bd5196f71bf3997974e" sha1="6090c32a23c946d21495c29ebb9e77ab2c806aae"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 36).bin" size="2989392" crc="d7d8f256" md5="01da829022ebb83e3daaf92cc82ce2fe" sha1="93ed1c33548ccae05ba6f2a92dbd749d353eecaf"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 37).bin" size="1237152" crc="866700e3" md5="5e4285ec49c74c7329b3a8bb6574eb13" sha1="c7e2534a27f795d35e0de9e21963057b52984e87"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 38).bin" size="1237152" crc="d6258411" md5="d609250575ef6a40a5f0d56e4de1b712" sha1="719f1965f8b60a82811fd03d4a965d39c368fc83"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 39).bin" size="2836512" crc="eb43b9a6" md5="052eb9e38310dbf4c2effaed9b167651" sha1="ae928e29260108ab6e6a961df68327e62e8537d6"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 40).bin" size="1858080" crc="2d0b6945" md5="092bb2eca6f81db57d9d0cda0940ab14" sha1="807f51b5f977a957df5edc04d6b83cc519983659"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 41).bin" size="1237152" crc="9fb42809" md5="08d6126e3bb45f4ed02d9df6bb8eae75" sha1="63d785b48030fb0440be3b7e04f9850ed6949218"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 42).bin" size="1234800" crc="d6ff9b59" md5="82a69cf5eb89c6ee831915ab16cbafc2" sha1="b185313c53ce8b25ded60254c5b90c8bf8311e74"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 43).bin" size="1618176" crc="8cdea680" md5="755f7192a36290bf9976dc7208e2efd5" sha1="279d6d927fc03153215ccfd9caf042170a2b0f89"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 44).bin" size="1467648" crc="597632f8" md5="c90955dec0c8bf03ecaf9f301ce28828" sha1="66f6ce3a58ca769662d10010b50fef21375d87a4"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 45).bin" size="1742832" crc="3d4c025f" md5="26c80815fecca32be912f00f7ea65b24" sha1="244474bc1acc75c0855006141d891dfc89478331"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 46).bin" size="1237152" crc="e0dca05f" md5="a57dbab51f5b6105aaff0afb138c1181" sha1="cb5863a1d12f45a72c867dc9981858b155df5842"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 47).bin" size="1237152" crc="fd5905f7" md5="9110f7f8a71926a42f8e697b67b8d3b7" sha1="df5982ae60103db5562d21cf9be0bef984a9c067"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 48).bin" size="1237152" crc="4f8a9bd0" md5="fe26986e94dfbc601d0d64854a3b948a" sha1="32667caa8e08e0eccc5082903403c50aa3f8f7c8"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 49).bin" size="2812992" crc="0f316d85" md5="4a79b3ba6d3cb84e761b3c8e7fcbf4e4" sha1="5eb18f6fc9a29331c7ec25ea799a7203e826786b"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 50).bin" size="1234800" crc="2a827f91" md5="309ba4cf1baf289c45edfbc2f9b76f33" sha1="c3b93379124704391e962c6f2e3ebf8a3ce61003"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 51).bin" size="1234800" crc="9cb609ff" md5="a986cb8507cff32827c0db13257532b7" sha1="8d28b0254f2d1a621aabdbc27de69ae0c9afbfe0"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 52).bin" size="1237152" crc="e4c65b82" md5="4ac4bee8733270ceed3ff54866286d7c" sha1="717696525fc27e6f81bb85350537c73ec1c7567b"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 53).bin" size="1634640" crc="59f77850" md5="64dd81027ebae220f3c93f6ed7d590a4" sha1="e8d2912e0c16574097c82ea1d141a3a1a21c102a"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 54).bin" size="1237152" crc="e08a7783" md5="cb6602bdf83e471f77558000ca455c6e" sha1="694a8e9459dd4229ff49f0ab7a2c8ba437d7d710"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 55).bin" size="1714608" crc="c67f5681" md5="764f99045c89c8d9c429145bd2edcbc3" sha1="6fdf704f8b41f3a17f0a4ddc44f086f09615262d"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 56).bin" size="1237152" crc="c6001d80" md5="09898b888697539ac0a1d2ae1d2d651d" sha1="c788d6dc917e9102cece8a4327de38bc26e4ce7d"/>
+		<rom name="Tomb Raider (USA) (Evercade) (Track 57).bin" size="35103600" crc="7d46743f" md5="ece4ee4bd7df81a2b2fe09926ab9b67f" sha1="67f6e8792b15f581d256f99eed66cb724dddb329"/>
+		<rom name="Tomb Raider (USA) (Evercade).cue" size="6993" crc="3e389f9b" sha1="8799bd2fae679be37b9e517271b3f3141800c3eb"/>
+	</game>
+	<game name="Tomb Raider - The Last Revelation (USA) (Evercade)" id="0357">
+		<category>Games</category>
+		<description>Tomb Raider - The Last Revelation (USA) (Evercade)</description>
+		<rom name="Tomb Raider - The Last Revelation (USA) (Evercade).bin" size="676200000" crc="128eaa0b" md5="60244d0b6ec505d26aa0c4e3b6a8c198" sha1="6226fbc05e9e87ea8ad90fbd8cf2398736fe7c2e"/>
+		<rom name="Tomb Raider - The Last Revelation (USA) (Evercade).cue" size="116" crc="268699d7" sha1="d09aea849460edbd644412f9a7f9cacad263570f"/>
+	</game>
+	<game name="Tomb Raider Chronicles (USA) (Evercade)" id="0358">
+		<category>Games</category>
+		<description>Tomb Raider Chronicles (USA) (Evercade)</description>
+		<rom name="Tomb Raider Chronicles (USA) (Evercade).bin" size="650607888" crc="efe05c36" md5="0da99cf58bc3b1e456038b0f7e7119f0" sha1="945589760699a2a1f248903deabbf119c2a4453e"/>
+		<rom name="Tomb Raider Chronicles (USA) (Evercade).cue" size="105" crc="c150559f" sha1="77ccc4d9a33898e054ae3e91087bac4ced78165c"/>
+	</game>
+	<game name="Tomb Raider II - Starring Lara Croft (USA) (Evercade)" id="0359">
+		<category>Games</category>
+		<description>Tomb Raider II - Starring Lara Croft (USA) (Evercade)</description>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 01).bin" size="240757776" crc="3f11cb58" md5="6df588330fde058561f18cd894e41104" sha1="f4255baa872b6b2ac2b6d4ddb2c0536e40a5fdd2"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 02).bin" size="15426768" crc="2432a592" md5="73329bb04d50aed11d62b2e29a893f1e" sha1="32f9b588f78ca566e4191ff3933b6fa6a7282c69"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 03).bin" size="20521200" crc="28fc27d3" md5="7e47c573911f00e69ed608f279d029dd" sha1="657eceb0988ee7396c4bd11afc9b6cf16d160666"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 04).bin" size="24307920" crc="aa734c91" md5="5f63fa873e340ca19ceb1166fa5cdff4" sha1="8015184e54fb507f21cbee07dfc7cc03aeaf5226"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 05).bin" size="1728720" crc="ddf2f9d3" md5="31c0148a160cc9a23198d9397ffd5d9c" sha1="368ad33dd340c4926b5d4d72ed139a2ad88d6682"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 06).bin" size="1580544" crc="617d4357" md5="cda4e4aad6a8aa64ceab203c008b6ed8" sha1="21c0bee579409b7d1f9d4c4e47ac1d398399e9dc"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 07).bin" size="1237152" crc="c9ede574" md5="32040236f9704550414fe136e040768b" sha1="b9d2e2f0f442c72ed79c5a1cbf80d72919218602"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 08).bin" size="1239504" crc="2d232822" md5="e8e561052253379c675a7c34371028ce" sha1="95a48f5d1bc5e394a32d1566c0b8a6a5be7477e0"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 09).bin" size="1411200" crc="0c913fce" md5="6548eebbe7d77d693a287233bb2b8be7" sha1="a5ed3d42d4ae948560b7fc1630101df6705a9733"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 10).bin" size="2349648" crc="2337f9ad" md5="14e61f245233b60ca3b0c81385e2ac26" sha1="285e9cc4fc119ab4468404048cb5f6cf9fe03d79"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 11).bin" size="3139920" crc="7dbd26d3" md5="cdf950d35d03e3df94968e37d36ecc2e" sha1="2e1a1efc85ad86b73beec42a6e067cb80cde4689"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 12).bin" size="1853376" crc="e2494c58" md5="de9938a667f9a2e729643d909c0d85e9" sha1="79b099da333dc3d16f97a5356dd151b04c5ae7bd"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 13).bin" size="1961568" crc="661081bb" md5="54bbae36948bc70b88a9fe7110cae617" sha1="879f2b0f260c741f604993c8036619797e135c3e"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 14).bin" size="1237152" crc="4cff8fb9" md5="25e6631db4edce91205e0c0724ad7b0e" sha1="1adcef43625d9703dd906face459d532b5464ad1"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 15).bin" size="1237152" crc="484eee5a" md5="8f476e87cb650af2d814c094a80afd33" sha1="5d35d2a04c6ac0ee8164b70a598e0df45af31293"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 16).bin" size="1239504" crc="80a7ba25" md5="737f1e480f3388a8a2be0482cba57a60" sha1="da9483996bd3f5f6d516987b30d646f5bac6b8a0"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 17).bin" size="1945104" crc="0e2ec1df" md5="b66b7eec509d1a65f87c4a49e464e7ab" sha1="36aab120de3eb520ab4955cbe7fa6835d4bbb162"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 18).bin" size="1237152" crc="75467c64" md5="ce1222bd9013ae0fc2dc9d384a09e796" sha1="ff407e86688944aeef2b3ab5cd615ce87f6b4e7a"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 19).bin" size="1237152" crc="51d1c81d" md5="83c6d499667e78d67ba2656f677e43b1" sha1="f3316bbcea6b5a1442108e6d6688bf21796002d6"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 20).bin" size="1237152" crc="4f07f45e" md5="56fba09e8a6e3854bbc3de88d572b049" sha1="c5f6a585ab252ca8070a74a3d3908ee93dcb82dd"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 21).bin" size="1237152" crc="a8475f42" md5="34c9440558e3298b0eb95c5129872404" sha1="0363462866f87c73cccaa964e8f8bedd91ea14ea"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 22).bin" size="1237152" crc="691449cf" md5="ac79b0636460cd675b0c1664c232d734" sha1="c6ed2cee894bfc93925752fbb097653ef33158ff"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 23).bin" size="3290448" crc="c0672f9c" md5="1e6f3edd7ae2ba74cb3f94dd84cc5fc3" sha1="528b6b1ad8535203e75d1b7cc6e002b6def0e13e"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 24).bin" size="1942752" crc="4644fb0b" md5="1fbe27f137d1cb356d9a870ef642fbf7" sha1="13eeed312c2836384792b64435a0d628e6288bce"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 25).bin" size="1237152" crc="c81321ab" md5="39fe7faed7e84c04e740cf4071de6186" sha1="73cd2a7afcd6a0251ec9ae6ee0101ec97f46d97e"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 26).bin" size="9502080" crc="59b08c12" md5="dad3afc2fda6d85822304cd5ea6e971f" sha1="274386b54f4210f0bab9d1b0231fe64e04cb320a"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 27).bin" size="21193872" crc="87f583d6" md5="43ff01063960de2aa8a2a2c065f2949c" sha1="9aa7609472b375007736eeecc192ee125aa885a0"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 28).bin" size="21128016" crc="df7f0dae" md5="174723b039d71d67932db4ebfb58542a" sha1="17adb990687b7059337e39ef61410012774e44e9"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 29).bin" size="29715168" crc="e4bebe98" md5="e624b209aa1be35c08cbe5b7692fe258" sha1="429c19c7df6ee3182cee9af8d82d4ed1e7706002"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 30).bin" size="32775120" crc="5372ba41" md5="1c4ee528f7c5c7393f60bc1587b77fb9" sha1="f6ec6b85f976ebef7cb06236f88295e5b5e93932"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 31).bin" size="1721664" crc="b530468c" md5="0065ca394bb8bc3bf03de8310422b4e1" sha1="9c87a3d26b349d392f0b43d954137ea486d2700f"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 32).bin" size="1171296" crc="f7e3c795" md5="cc3976e2a0facb322bfb9d412e14aecf" sha1="f956acaf98cbc3165ef79200dc6a7b04054d0182"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 33).bin" size="3257520" crc="68f59a80" md5="92c5691769dffdd5162a3594277e55ca" sha1="0c8837b96beb5b5d21611684b061988585afd60f"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 34).bin" size="9958368" crc="4ce00c0f" md5="509c2917fea13e09a1a062656558bb63" sha1="b9cae7e6c0b8f71aa9b11f31e3f800838be7509c"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 35).bin" size="3859632" crc="a57cc325" md5="df17101ccbb4653186ef1d9c453b9424" sha1="8b2d3e2492e6dc7e5052083c3465bf483c142b36"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 36).bin" size="28386288" crc="673c7622" md5="898f093cbeaa0efc130e1ff782bd27de" sha1="4fe01aac2501417173eb5fff0449dc0b3012b0c9"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 37).bin" size="2500176" crc="a1eded19" md5="5931b6c3867dc97ead26cc78ab2b1576" sha1="4bcac42213f172e3c63da5bd58beb3c8f5750486"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 38).bin" size="2368464" crc="b0e74067" md5="b9481bcc32a09ccbf760d7ba86b233c9" sha1="91413759ecd8720fbe32027f7aec6039dd5af933"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 39).bin" size="2970576" crc="4aa290a3" md5="a2ce0baa4ddc06ab7cad7e39b709ea32" sha1="3b532e87b7683540e3798816eee64fa5fc462fc1"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 40).bin" size="3499776" crc="21a11067" md5="83c858f84cbd955bf8dfae3da15a432a" sha1="9c880b4e53e55ce7798de01ca450fc34b665ec1c"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 41).bin" size="10774512" crc="f8d27816" md5="cbbc45d9d51eb3de5c9215c58f370299" sha1="f9ac50e26e98899f129e64807766f10139ea39c4"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 42).bin" size="6244560" crc="94288c77" md5="94c454691edb9bac1969d6d92fe3e117" sha1="2f5ae687c754d64db15cbab9ccb9dcf3c1ecb49f"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 43).bin" size="1126608" crc="6946b4b4" md5="22a4418599a266c809b9c198a0b7294d" sha1="4a28f96307d54410e23e3e0128d8d3ccf27334ea"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 44).bin" size="2820048" crc="4093b25f" md5="0a933f2f72ac633a229466c8a01539c6" sha1="46bda01ab0564488066ed74c3bec1a3fff20e0e7"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 45).bin" size="2112096" crc="03e82da5" md5="6c4f4388b1653761cf2b14083c13fd34" sha1="9cf34eafd96e127eddba19c7625a88b7d1504007"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 46).bin" size="2533104" crc="9add47e8" md5="f872c5764f0c7a8d9e3d8d4e52026599" sha1="0a68d9c44675ade88608976c4d804dc9205730d5"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 47).bin" size="1841616" crc="e8fd8096" md5="424cea410239bc51d3d72db4ecef6955" sha1="6f178512ec1946541538f9af9c1184b372c49633"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 48).bin" size="29124816" crc="5f9df744" md5="b43c82163631284f513cfb00f6b67330" sha1="06a464a1bf320dd467af9a30365afc95ca9725a3"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 49).bin" size="12936000" crc="8f15ac83" md5="10ea1dd4b36caa237e038b4f44002a07" sha1="53551f43cb5458f40448d5406441440545129a83"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 50).bin" size="1698144" crc="f6f986bd" md5="dbb2e2face80b36fe89d18653cd4c3cd" sha1="c07a5724345d9b577291205ab2fd30c09d5adf7c"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 51).bin" size="7780416" crc="41d906cb" md5="f93042f58875c613756fd4d50af87ee7" sha1="c901f5de4524b87772d466efc8ab995182240794"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 52).bin" size="2081520" crc="9df23c0c" md5="ac0fcde6ea46a5ed4dab48b30e74a1b9" sha1="5f63f8d446224db8a835b953a8ac18c978548f43"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 53).bin" size="9010512" crc="b7ce0b37" md5="754b9ff5e6a80494c9b86794f5dd524e" sha1="bed7eddd1188edb07062cb32602b5dcfc26f1195"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 54).bin" size="37323888" crc="96caca15" md5="6cebc275f79b5a98e13b5d75f93d3aac" sha1="a0f262748bcc22721069cb3a084690bb821aeb6b"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 55).bin" size="37354464" crc="b981a2b8" md5="da76e4231f96a2b1a1e8481e9dfb24de" sha1="780e3971d7d550d5039a23cd5ef21655427bdaea"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 56).bin" size="18999456" crc="a8936afb" md5="96c033abf6182a7d03d7ac344a6d0a26" sha1="75535d0dde3b8c323bd566d355fd7ff5944ba81e"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 57).bin" size="4515840" crc="29f534b2" md5="64a825d4863c1d02941bc0ce5124cee1" sha1="b1a8dad0a33e2163159e470ae83ab39dca167e39"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 58).bin" size="4172448" crc="f7ea4381" md5="8b20b23acd81f21b9c76f22eef32e4b5" sha1="3ebe916ab7c466832b042c872906a83c7ff53f84"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 59).bin" size="3478608" crc="3d1c4418" md5="652625ecff65b33c5c05d9da1b50f07e" sha1="ab473feb5e9b942b8f9f7a750717200ac85f02e6"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 60).bin" size="29745744" crc="631fd234" md5="8ef3e58e4d150077983b3810643c4838" sha1="00a392316af45c9968b57f3146a5542627ba4832"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade) (Track 61).bin" size="3478608" crc="3d1c4418" md5="652625ecff65b33c5c05d9da1b50f07e" sha1="ab473feb5e9b942b8f9f7a750717200ac85f02e6"/>
+		<rom name="Tomb Raider II - Starring Lara Croft (USA) (Evercade).cue" size="9010" crc="dc2d0174" sha1="984b3d8a69d9767c5bc0d7c0093ef6871025515b"/>
+	</game>
+	<game name="Tomb Raider III - Adventures of Lara Croft (USA) (Evercade)" id="0360">
+		<category>Games</category>
+		<description>Tomb Raider III - Adventures of Lara Croft (USA) (Evercade)</description>
+		<rom name="Tomb Raider III - Adventures of Lara Croft (USA) (Evercade).bin" size="661892784" crc="b06483a5" md5="40939f49bcbedd0fafd9667aac05ab01" sha1="bb1a9bd5f5659c69234c11184a7aaf78f486ddeb"/>
+		<rom name="Tomb Raider III - Adventures of Lara Croft (USA) (Evercade).cue" size="125" crc="4b940270" sha1="99c59a1f2afad28f249e73b019205d72d66d1ade"/>
+	</game>
+	<game name="Tony Hawk's Pro Skater 2 (USA) (2000-05-09)" id="0270">
+		<category>Games</category>
+		<description>Tony Hawk's Pro Skater 2 (USA) (2000-05-09)</description>
+		<rom name="Tony Hawk's Pro Skater 2 (USA) (2000-05-09).bin" size="159256272" crc="4e65111b" md5="12c36fd696ae9d9e573b393ce3db283d" sha1="ba7790ae797cfbd9c62e28d5a65cd19aad6e6110"/>
+		<rom name="Tony Hawk's Pro Skater 2 (USA) (2000-05-09).cue" size="111" crc="232382db" md5="61af5f56dc48fd355d9b081822ff24af" sha1="ed7d0cb1482de3007a223dc6c1910bde7216ed7d"/>
+	</game>
+	<game name="Worms Armageddon (USA) (Evercade)" id="0361">
+		<category>Games</category>
+		<description>Worms Armageddon (USA) (Evercade)</description>
+		<rom name="Worms Armageddon (USA) (Evercade).bin" size="548248848" crc="392dbdf0" md5="3df351af05304b9f7abca84121d7a472" sha1="4ea51258374223378c8e1d6bedbaee4517264943"/>
+		<rom name="Worms Armageddon (USA) (Evercade).cue" size="99" crc="1b25d9c9" sha1="db8d7b37a2ad800d3cdbc5053a0b63bbedd238df"/>
+	</game>
+	<game name="Z (Europe) (Evercade)" id="0362">
+		<category>Games</category>
+		<description>Z (Europe) (Evercade)</description>
+		<rom name="Z (Europe) (Evercade) (Track 1).bin" size="665898240" crc="fb1893f6" md5="d9d35f4b0e53eb66d6ef29fa4258b7c7" sha1="9e29222893264d3f87bb3fd4889ac740af35620f"/>
+		<rom name="Z (Europe) (Evercade) (Track 2).bin" size="32354112" crc="e49b3127" md5="ee83e17e16bca73cd5438462de6883d2" sha1="01de730b1e7a8f18f9effe9341266681c2145db8"/>
+		<rom name="Z (Europe) (Evercade).cue" size="212" crc="a95f223c" sha1="00abd5db4a23d09781ffdd88a260407471313b44"/>
+	</game>
+</datafile>

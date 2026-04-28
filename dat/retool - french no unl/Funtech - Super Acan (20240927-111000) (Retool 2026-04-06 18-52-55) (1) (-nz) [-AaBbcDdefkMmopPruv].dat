@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<name>Funtech - Super Acan (Retool)</name>
+		<description>Funtech - Super Acan (1) (-nz) [-AaBbcDdefkMmopPruv] (20240927-111000) (Retool)</description>
+		<version>20240927-111000</version>
+		<date>2026-04-06 18-52-55</date>
+		<author>BitLooter, ElBarto, relax, TeamEurope</author>
+		<homepage>http://www.github.com/unexpectedpanda/retool</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"></clrmamepro>
+		<retool>Created by Retool 2.4.8</retool>
+	</header>
+	<game name="Rebel Star (Taiwan) (En)" id="0013">
+		<category>Games</category>
+		<description>Rebel Star (Taiwan) (En)</description>
+		<game_id>F-012</game_id>
+		<rom name="Rebel Star (Taiwan) (En).bin" size="2097152" crc="a3469172" md5="1f141c905d771a95e929c109b5ab6ba0" sha1="3a1b093d7aee6d5b1f260723499d4c283a2a0169" sha256="2aa8b3afbc858af13ca1bdac73506b69afa844cc5d9142b5f30c70e9afb37214"/>
+	</game>
+</datafile>

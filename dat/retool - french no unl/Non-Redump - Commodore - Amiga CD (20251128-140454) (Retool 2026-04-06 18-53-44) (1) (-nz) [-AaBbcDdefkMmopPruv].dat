@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<name>Non-Redump - Commodore - Amiga CD (Retool)</name>
+		<description>Non-Redump - Commodore - Amiga CD (1) (-nz) [-AaBbcDdefkMmopPruv] (20251128-140454) (Retool)</description>
+		<version>20251128-140454</version>
+		<date>2026-04-06 18-53-44</date>
+		<author>Gefflon, NovaAurora</author>
+		<homepage>http://www.github.com/unexpectedpanda/retool</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"></clrmamepro>
+		<retool>Created by Retool 2.4.8</retool>
+	</header>
+	<game name="Sixth Sense Investigations (Europe)" id="0003">
+		<category>Games</category>
+		<description>Sixth Sense Investigations (Europe)</description>
+		<rom name="Sixth Sense Investigations (Europe).bin" size="278276880" crc="7925c4ec" md5="9fc030f338f01990b8efb0aa0f5a1c75" sha1="4371de2c32e111e0f63111ea3c19f469eec0fe30" sha256="cafb0e12dbdceef50053da6c114b5a11bb8fc578deebb12a26713fcbc73085b4"/>
+		<rom name="Sixth Sense Investigations (Europe).cue" size="101" crc="896d4304" sha1="633db19ac2c87eba33a95e6252fdae200d867c64"/>
+	</game>
+</datafile>

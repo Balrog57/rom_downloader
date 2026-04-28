@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<id>460</id>
+		<name>Nintendo - Wii U (Development Kit Hard Drives)</name>
+		<description>Nintendo - Wii U (Development Kit Hard Drives)</description>
+		<version>20250424-141246</version>
+		<author>NovaAurora</author>
+		<homepage>No-Intro</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"/>
+	</header>
+	<game name="[BIOS] Uji Factory SD Card (World)" id="0003">
+		<description>[BIOS] Uji Factory SD Card (World)</description>
+		<rom name="[BIOS] Uji Factory SD Card (World).img" size="1967058432" crc="8c87e318" md5="2ddba3563f8335f16a008637cc29f873" sha1="93216b0bf46aaad0816cbea48bae8818925c9202" sha256="38326252c64f56db23eb2e4f92faae8c7845476c75b76ec978395ad8df0c2f52"/>
+	</game>
+	<game name="CAT-DEV HDD (World)" id="0001">
+		<description>CAT-DEV HDD (World)</description>
+		<rom name="CAT-DEV HDD (World).img" size="320072933376" crc="fa4d24fd" md5="ca73cace1a76dfe1642cec2b5e54ac92" sha1="d9436623c357dffd760d798ddea39eb9c7b71678" sha256="61d9b2611979d33e45935de0ad0ec8011a1840abb886bbd0e40a8900cc4c0968"/>
+	</game>
+	<game name="CAT-SES HDD (World)" id="0002">
+		<description>CAT-SES HDD (World)</description>
+		<rom name="CAT-SES HDD (World).img" size="500107861504" crc="5e71c91c" md5="40bb964db1522048c16f061ada76037e" sha1="66ac951adddabde8592cfad0099a9f273ed27413" sha256="3596b32932515954c02579256e443d829ada2cf518f7bc3c5da93643c3938a73"/>
+		<rom name="otp.bin" size="1024" crc="4fd014c8" md5="5e0abe05d8baa3c1692c16a5223a7d6a" sha1="1faff3c64cdb44516c6d49b1db7402f1a83a9302"/>
+		<rom name="seeprom.bin" size="512" crc="f8defea2" md5="17d7b998c2d3dc65dc7d24fecfc70e23" sha1="3614a62e3a0daa20843f60601b05684a241990af"/>
+	</game>
+</datafile>

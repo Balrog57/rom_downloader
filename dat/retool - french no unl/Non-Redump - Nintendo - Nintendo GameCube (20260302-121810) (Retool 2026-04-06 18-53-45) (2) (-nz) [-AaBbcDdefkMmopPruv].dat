@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<name>Non-Redump - Nintendo - Nintendo GameCube (Retool)</name>
+		<description>Non-Redump - Nintendo - Nintendo GameCube (2) (-nz) [-AaBbcDdefkMmopPruv] (20260302-121810) (Retool)</description>
+		<version>20260302-121810</version>
+		<date>2026-04-06 18-53-45</date>
+		<author>bikerspade, Gefflon, Hiccup, NovaAurora, rarenight, relax, Seventy7, togemet2</author>
+		<homepage>http://www.github.com/unexpectedpanda/retool</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"></clrmamepro>
+		<retool>Created by Retool 2.4.8</retool>
+	</header>
+	<game name="Super Mario Sunshine (World) (En,Ja,Fr,De,Es,It) (Super Mario 3D All-Stars)" id="0037">
+		<category>Games</category>
+		<description>Super Mario Sunshine (World) (En,Ja,Fr,De,Es,It) (Super Mario 3D All-Stars)</description>
+		<rom name="Super Mario Sunshine (World) (En,Ja,Fr,De,Es,It) (Super Mario 3D All-Stars).iso" size="404324352" crc="f968261a" md5="1bb45c2ffb0360d3d8d8eb87c6771a2f" sha1="651af1295d6874102b276a264b0da37ab38303f7" sha256="c79005cd08ecd4b537a86993a1d39bfc7d89f30bedcc4115feded81a8e8c1576"/>
+	</game>
+	<game name="Wireless Receiver Test (World) (v1.3.2)" id="0081">
+		<category>Games</category>
+		<description>Wireless Receiver Test (World) (v1.3.2)</description>
+		<rom name="Wireless Receiver Test (World) (v1.3.2).iso" size="1459978240" crc="ee5fc0c9" md5="88ffa9e178129f397d9dfa5f2b8b3c79" sha1="50d005288dc7f8ce739cde346e4c4da118d8daeb" sha256="9dc7da2233d87f339334a952b6f1c0cb72aae53bf0dc60192269ba620fcd01c8"/>
+	</game>
+</datafile>

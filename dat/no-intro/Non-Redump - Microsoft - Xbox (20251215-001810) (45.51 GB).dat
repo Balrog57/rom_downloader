@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<id>156</id>
+		<name>Non-Redump - Microsoft - Xbox</name>
+		<description>Non-Redump - Microsoft - Xbox</description>
+		<subset>Non-Redump</subset>
+		<version>20251215-001810</version>
+		<author>Deterous, Hiccup, rarenight</author>
+		<homepage>No-Intro</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"/>
+	</header>
+	<game name="007 - Everything or Nothing (Asia) (En)" id="0022">
+		<category>Games</category>
+		<description>James.Bond.007.Everything.Or.Nothing.XBOX-WAM</description>
+		<rom name="007 - Everything or Nothing (Asia) (En).iso" size="2058092544" crc="852f881f" md5="6be129bd4dec03425eb97f1a399d7843" sha1="00f17cb9ed67a77f1be7ae4bbcc3b60f8b7fbb02"/>
+	</game>
+	<game name="007 - From Russia with Love (Asia) (En)" id="0023">
+		<category>Games</category>
+		<description>James_Bond_007_From_Russia_With_Love_Usa_Xbox-RiOT</description>
+		<rom name="007 - From Russia with Love (Asia) (En).iso" size="2121596928" crc="bebb0971" md5="7f5fcb908a27b518ba90504ed2d3686c" sha1="df31bfc03c45e92d8b0f69fe78e7779942f93d3f"/>
+	</game>
+	<game name="007 - Nightfire (Europe) (En,Fr,De,Es,It)" id="0007">
+		<category>Games</category>
+		<description>James_Bond_007_Nightfire_PAL_MULTI5_XBOXDVD-SOULX</description>
+		<rom name="007 - Nightfire (Europe) (En,Fr,De,Es,It).iso" size="3318743040" crc="15cd4e43" md5="69f650fcd738ac1e2ab825903aaba27c" sha1="d87ee9a7a3c262a3e8bd99b4bafe59bf3c4ba461"/>
+	</game>
+	<game name="Broken Sword - The Sleeping Dragon (Europe) (En,Fr,De,Es,It) (Rev 1)" id="0003">
+		<category>Games</category>
+		<description>Broken_Sword_3_The_Sleeping_Dragon_Pal_Xbox-RiOT</description>
+		<rom name="Broken Sword - The Sleeping Dragon (Europe) (En,Fr,De,Es,It) (Rev 1).iso" size="4444782592" crc="f7699e06" md5="6c3a86780f8ee3d01149e134e18494d6" sha1="87637be95c6f4cb0243c1f4941cd9b5268b38d30"/>
+	</game>
+	<game name="Elder Scrolls III, The - Morrowind - Game of the Year Edition (Europe) (En,Fr,De)" id="0018">
+		<category>Games</category>
+		<description>The_Elder_Scrolls_III_Morrowind_Game_Of_The_Year_Edition_PAL_MULTI_REPACK_XBOX-WAR3X</description>
+		<rom name="Elder Scrolls III, The - Morrowind - Game of the Year Edition (Europe) (En,Fr,De).iso" size="3444506624" crc="1240f3f2" md5="cc8d7225b460b534612ce0729e860a76" sha1="462c355894fb53f1eb49b14607aeef2b8b64f4c3"/>
+	</game>
+	<game name="Fable - The Lost Chapters (Asia) (En,Zh-Hant)" id="0004">
+		<category>Games</category>
+		<description>Fable_The_Lost_Chapters_NTSC_MULTi2_XBOXDVD-XWaR</description>
+		<rom name="Fable - The Lost Chapters (Asia) (En,Zh-Hant).iso" size="3478388736" crc="2ed1fd22" md5="713d9d0617baa0fa98533660d563eaa9" sha1="3313649acbffbcaa0bf011961a1622457a6a3ac2"/>
+	</game>
+	<game name="Juiced (Europe) (En,Fr,De,Es,It) (Beta) (2004-07-13)" id="0008">
+		<category>Preproduction</category>
+		<description>Juiced.PAL.FULLDVD.RETAIL.XBOX-GGS</description>
+		<rom name="Juiced (Europe) (En,Fr,De,Es,It) (Beta) (2004-07-13).iso" size="1968439296" crc="591b3d2d" md5="572ec4ca06232b4498be664bcfa69e38" sha1="0700abab1bedfff14e636be43df85da6407e9ab8"/>
+	</game>
+	<game name="King Of Fighters '94 Re-Bout (Unknown) (Proto) (2006-07-01)" id="0001">
+		<category>Preproduction</category>
+		<description>King Of Fighters '94 Re-Bout (Unknown) (Proto) (2006-07-01)</description>
+		<rom name="King Of Fighters '94 Re-Bout (Unknown) (Proto) (2006-07-01).iso" size="1755854848" crc="5348f05e" md5="c8d4469d470dd6836b5aadae9a00deef" sha1="40e7a56f617679c5f2c5a0fb9aed5badc1a481fd"/>
+	</game>
+	<game name="Lord of the Rings, The - The Return of the King (Asia) (En)" id="0009">
+		<category>Games</category>
+		<description>Lord.Of.The.Rings.Return.Of.The.King.XBOX-WAM</description>
+		<rom name="Lord of the Rings, The - The Return of the King (Asia) (En).iso" size="2341666816" crc="a29fd001" md5="e2351e0473835cd7aaa201b77b201a60" sha1="84720342702f2e928ffb78a7e1f420d00069dcfe"/>
+	</game>
+	<game name="Medal of Honor - European Assault (Asia) (En)" id="0010">
+		<category>Games</category>
+		<description>Medal_Of_Honor_Euporean_Assault_USA_XBOXDVD-XWaR</description>
+		<rom name="Medal of Honor - European Assault (Asia) (En).iso" size="1757609984" crc="e92b97bd" md5="9f1ed3e4c04dfe78f6b14631d7594e60" sha1="6c4e0232e7dfd58f890fac39860bbc22d8c198e6"/>
+	</game>
+	<game name="Metal Gear Solid 2 - Subsistence (Europe) (En,Fr,De,Es,It) (Beta) (2002-11-21)" id="0011">
+		<category>Preproduction</category>
+		<description>Metal_Gear_Solid2_Substance_PAL_Multi5_DVD_XBOX-GeNiuS</description>
+		<rom name="Metal Gear Solid 2 - Subsistence (Europe) (En,Fr,De,Es,It) (Beta) (2002-11-21) (Disc 1).iso" size="3446996992" crc="a0f7d580" md5="198bec2545b8e376bea10c4d530c33ed" sha1="91e896bc0927aad160958d4ce1d06d4f7d3ae914"/>
+		<rom name="Metal Gear Solid 2 - Subsistence (Europe) (En,Fr,De,Es,It) (Beta) (2002-11-21) (Disc 2).iso" size="3453747200" crc="6ab7da2a" md5="dac7a8257194e9df391acb95dc44a338" sha1="473b144fa94b0c85ea006225bb08449ebb6be136"/>
+	</game>
+	<game name="NBA Live 06 (Asia) (En)" id="0014">
+		<category>Games</category>
+		<description>NBA_Live_06_USA_XBOXDVD-GANT</description>
+		<rom name="NBA Live 06 (Asia) (En).iso" size="2880307200" crc="317e9b41" md5="7635a4312aceee6706bf4b3d4fbe4c4e" sha1="4c837c80f2210f13e504cc304b217a09b0499ea8"/>
+	</game>
+	<game name="Outlaw Volleyball (Europe) (Beta) (Alt)" id="0016">
+		<category>Games</category>
+		<description>Outlaw Volleyball (Europe) (Beta) (Alt)</description>
+		<rom name="dnl-ovm3.iso" size="1577844736" crc="8444acf6" md5="03ddd4fa8c2a7f0fae7fbc8b5badb301" sha1="4ade41c09ae0d420989c0197a1084f464cb8ad78"/>
+	</game>
+	<game name="Outlaw Volleyball (Europe) (Beta)" id="0015">
+		<category>Games</category>
+		<description>Outlaw Volleyball (Europe) (Beta)</description>
+		<rom name="dnl-ovp.iso" size="1577844736" crc="b3bbe9b6" md5="070580e101c6c742ece2986f00303811" sha1="6ba9af8e745524e1fb766023a9b302c7696402db"/>
+	</game>
+	<game name="Rent a Hero No.1 (USA) (Proto) (2003-05-23)" id="0002">
+		<category>Preproduction</category>
+		<description>Rent_A_Hero_ENG-XBOXiSOZONE</description>
+		<rom name="Rent a Hero No.1 (USA) (Proto) (2003-05-23).iso" size="2515292160" crc="7916df8e" md5="16461b0cefeada72442f8d033dcce6ac" sha1="afbe17822c76295eeca81a65754998f7d4fee817" sha256="904b9807e1b1871d171b498946b0950ab5b180505765e1d9792e064d1323cb6b"/>
+	</game>
+	<game name="Sims 2, The (Asia) (En)" id="0019">
+		<category>Games</category>
+		<description>The_Sims_2_Usa_Xbox-RiOT</description>
+		<rom name="Sims 2, The (Asia) (En).iso" size="1986920448" crc="951bfb27" md5="26402d9b1222c708c0a06172f4fcf52b" sha1="2d044b72919ebd15b8694409b6ad9cc3fa125064"/>
+	</game>
+	<game name="True Crime - Streets of LA (Europe) (Beta)" id="0020">
+		<category>Games</category>
+		<description>True Crime - Streets of LA (Europe) (Beta)</description>
+		<rom name="gp-tcrime.iso" size="2515236864" crc="03275a78" md5="ab372ae31acf1c84b097371e0267607c" sha1="12b7c1950b8a1a2ef0a9de73907013b11951d3c1"/>
+	</game>
+	<game name="Unreal Championship 2 - The Liandri Conflict (USA) (En,Fr,De,Es,It) (Beta) (2005-03-03)" id="0021">
+		<category>Preproduction</category>
+		<description>Unreal.Championship.2.XBOX-Allstars</description>
+		<rom name="all-unr2.iso" size="2223112192" crc="70395ddd" md5="ab0d34f40144c8993e781c716537cb3f" sha1="1b34a084cb89907985ec19294b7b6da3c9f7b426"/>
+	</game>
+</datafile>

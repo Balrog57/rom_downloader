@@ -1,0 +1,1349 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<name>Unofficial - Nintendo - Wii (Digital) (Split DLC) (Deprecated) (WAD) (Retool)</name>
+		<description>Unofficial - Nintendo - Wii (Digital) (Split DLC) (Deprecated) (WAD) (267) (-nz) [-AaBbcDdefkMmopPruv] (20190825-031431) (Retool)</description>
+		<version>20190825-031431</version>
+		<date>2026-04-06 18-54-30</date>
+		<author>xuom2</author>
+		<homepage>http://www.github.com/unexpectedpanda/retool</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"></clrmamepro>
+		<retool>Created by Retool 2.4.8</retool>
+	</header>
+	<game name="Guitar Hero 5 - 30 Seconds to Mars - Attack (Europe) (GH 5)" id="0057">
+		<category>Games</category>
+		<description>Guitar Hero 5 - 30 Seconds to Mars - Attack (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - 30 Seconds to Mars - Attack (Europe) (GH 5).wad" size="26254656" crc="46911935" md5="73dc10795171448b40b7840871b6641a" sha1="44a6c1aa9c8969b414d3d88919fdff8fe45503a8"/>
+	</game>
+	<game name="Guitar Hero 5 - 30 Seconds to Mars - From Yesterday (Europe) (GH 5)" id="0059">
+		<category>Games</category>
+		<description>Guitar Hero 5 - 30 Seconds to Mars - From Yesterday (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - 30 Seconds to Mars - From Yesterday (Europe) (GH 5).wad" size="34650560" crc="ca556f07" md5="65c929bea265066203e378011b7672cd" sha1="93f5538f081bf362081a5d1c25bfd1cb8e03d46a"/>
+	</game>
+	<game name="Guitar Hero 5 - 30 Seconds to Mars - Kings and Queens (Europe) (GH 5)" id="0061">
+		<category>Games</category>
+		<description>Guitar Hero 5 - 30 Seconds to Mars - Kings and Queens (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - 30 Seconds to Mars - Kings and Queens (Europe) (GH 5).wad" size="40263360" crc="36d7ba2e" md5="cbc5d19bf49868061cadd21f263213a4" sha1="a88dca188a6d5a09940ee309ff25d63ee66d11aa"/>
+	</game>
+	<game name="Guitar Hero 5 - AFI - Beautiful Thieves (Europe) (GH 5)" id="0063">
+		<category>Games</category>
+		<description>Guitar Hero 5 - AFI - Beautiful Thieves (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - AFI - Beautiful Thieves (Europe) (GH 5).wad" size="33238144" crc="c5b9d2a7" md5="e39198c66883ba68f10bd13809991eba" sha1="8243025ea11c008488e5acdcb69005fec1d3d207"/>
+	</game>
+	<game name="Guitar Hero 5 - AFI - Girl's Not Grey (Europe) (GH 5)" id="0065">
+		<category>Games</category>
+		<description>Guitar Hero 5 - AFI - Girl's Not Grey (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - AFI - Girl's Not Grey (Europe) (GH 5).wad" size="29823424" crc="2923b855" md5="7c5b65bea22eaea353f3e0516057dabd" sha1="700c28c16dc842b43aae4d7b9652dea584babd99"/>
+	</game>
+	<game name="Guitar Hero 5 - AFI - The Missing Frame (Europe) (GH 5)" id="0067">
+		<category>Games</category>
+		<description>Guitar Hero 5 - AFI - The Missing Frame (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - AFI - The Missing Frame (Europe) (GH 5).wad" size="41560064" crc="47b89aeb" md5="613e03f9a915c4cd66f921efd4a075c1" sha1="0f2816945e0bce87eb98a591e34ac7bf5dce55e9"/>
+	</game>
+	<game name="Guitar Hero 5 - Amon Amarth - Twilight of the Thunder God (Europe) (GH 5)" id="0069">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Amon Amarth - Twilight of the Thunder God (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Amon Amarth - Twilight of the Thunder God (Europe) (GH 5).wad" size="38697088" crc="634abbf2" md5="3542a15a0b32b2542c7a36850fc70af2" sha1="fdc25f1c41c0aa0750f5c977751a828c9b5d3af9"/>
+	</game>
+	<game name="Guitar Hero 5 - Billy Squier - Everybody Wants You (Europe) (GH 5)" id="0071">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Billy Squier - Everybody Wants You (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Billy Squier - Everybody Wants You (Europe) (GH 5).wad" size="36681216" crc="6950e1e7" md5="d622901f180a75eb3345b9e988da6ae3" sha1="9fc7075cac892b0904525db734959ce560fab26f"/>
+	</game>
+	<game name="Guitar Hero 5 - Billy Squier - The Stroke (Europe) (GH 5)" id="0073">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Billy Squier - The Stroke (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Billy Squier - The Stroke (Europe) (GH 5).wad" size="28300096" crc="a0ec6d92" md5="6bdfa903a9bb602aab2e1a080872a1c5" sha1="d342a640cdebb48f6d629354ba110018859ba1b3"/>
+	</game>
+	<game name="Guitar Hero 5 - Billy Squier - When She Comes To Me (Europe) (GH 5)" id="0075">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Billy Squier - When She Comes To Me (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Billy Squier - When She Comes To Me (Europe) (GH 5).wad" size="30049344" crc="661e3d8a" md5="37b5487cbc8962bb68f37d07d6690e9f" sha1="5db83d6f620cd590ecae52e065ef4ec46b2588e9"/>
+	</game>
+	<game name="Guitar Hero 5 - Black Sabbath - After Forever (Europe) (GH 5)" id="0077">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Black Sabbath - After Forever (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Black Sabbath - After Forever (Europe) (GH 5).wad" size="36237440" crc="41eabbee" md5="a3366b78c40005191db224fd04322377" sha1="e731f541034d91950b357ca4c068aefb067df4ec"/>
+	</game>
+	<game name="Guitar Hero 5 - Black Sabbath - Into the Void (Europe) (GH 5)" id="0079">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Black Sabbath - Into the Void (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Black Sabbath - Into the Void (Europe) (GH 5).wad" size="37944192" crc="c32d332d" md5="b0bf890cd0db7667f3eed693db110852" sha1="996c15d11274e3dde36dd10bf2b59792305fb099"/>
+	</game>
+	<game name="Guitar Hero 5 - Black Sabbath - Sweet Loaf (Europe) (GH 5)" id="0081">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Black Sabbath - Sweet Loaf (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Black Sabbath - Sweet Loaf (Europe) (GH 5).wad" size="40416256" crc="b54e575d" md5="bb65e195c5b7c2ec07c0fd0deb1e2225" sha1="3fbaab8ad22453e9a6e9d95404eb4479cfa7028d"/>
+	</game>
+	<game name="Guitar Hero 5 - Blink 182 - Adam's Song (Europe) (GH 5)" id="0083">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Blink 182 - Adam's Song (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Blink 182 - Adam's Song (Europe) (GH 5).wad" size="32343872" crc="bd321c5f" md5="fb7a1b4d241484cf9bf626ea562fb010" sha1="32166b90c4fa30b2622624adbae5050cef07d2e0"/>
+	</game>
+	<game name="Guitar Hero 5 - Blink 182 - All the Small Things (Europe) (GH 5)" id="0085">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Blink 182 - All the Small Things (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Blink 182 - All the Small Things (Europe) (GH 5).wad" size="27319872" crc="506e1688" md5="80de46b06a3d00dd5a5d03f0d4ef62da" sha1="f82384e49fd7f2569a274ed660433bcdd5f8e29e"/>
+	</game>
+	<game name="Guitar Hero 5 - Blink 182 - First Date (Europe) (GH 5)" id="0087">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Blink 182 - First Date (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Blink 182 - First Date (Europe) (GH 5).wad" size="25031104" crc="69855ec7" md5="84bc7c5ec66e6324ff6504b087846b27" sha1="c7fb0e26c5c5817959d2f6d67bf82c7a7ce21624"/>
+	</game>
+	<game name="Guitar Hero 5 - Breaking Benjamin - Give me a Sign (Europe) (GH 5)" id="0089">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Breaking Benjamin - Give me a Sign (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Breaking Benjamin - Give me a Sign (Europe) (GH 5).wad" size="36747584" crc="281a9db4" md5="c475fd317dc5805815c0aab6e1040866" sha1="babf2f04fbc8766ccc4e29ceac780a1b438a444e"/>
+	</game>
+	<game name="Guitar Hero 5 - Breaking Benjamin - Sooner or Later (Europe) (GH 5)" id="0091">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Breaking Benjamin - Sooner or Later (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Breaking Benjamin - Sooner or Later (Europe) (GH 5).wad" size="30084416" crc="bbe1a1b3" md5="547fd3d035b71d0338e47af3f4a69ef1" sha1="03c106f4583f3e3eae44efc574722b97a5770f7c"/>
+	</game>
+	<game name="Guitar Hero 5 - Breaking Benjamin - Until the End (Europe) (GH 5)" id="0093">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Breaking Benjamin - Until the End (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Breaking Benjamin - Until the End (Europe) (GH 5).wad" size="36719744" crc="eb2e39c0" md5="d5d9be3388fb754d9c79bcab1edddafe" sha1="91b0f3498f16b07693ffb383e950000809373b04"/>
+	</game>
+	<game name="Guitar Hero 5 - Creedence Clearwater Revival - Bad Moon Rising (Europe) (GH 5)" id="0095">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Creedence Clearwater Revival - Bad Moon Rising (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Creedence Clearwater Revival - Bad Moon Rising (Europe) (GH 5).wad" size="21376192" crc="00b9a465" md5="96b9723f892c30314b9f6e9cf7e07386" sha1="022e7e7180cff409c14df26d1235180434253180"/>
+	</game>
+	<game name="Guitar Hero 5 - Creedence Clearwater Revival - Proud Mary (Europe) (GH 5)" id="0097">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Creedence Clearwater Revival - Proud Mary (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Creedence Clearwater Revival - Proud Mary (Europe) (GH 5).wad" size="24607104" crc="271b6fb5" md5="22661c9671ec6c3e07489c46c0129109" sha1="216f02014468c143aa74555f79d8c3cc3f3fefbb"/>
+	</game>
+	<game name="Guitar Hero 5 - Creedence Clearwater Revival - Travelin' Band (Europe) (GH 5)" id="0099">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Creedence Clearwater Revival - Travelin' Band (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Creedence Clearwater Revival - Travelin' Band (Europe) (GH 5).wad" size="19060800" crc="3bd963b6" md5="77b4040f257e0eac6288cb0a85033186" sha1="cdef9917514f0a59dfcacd660620b6478d1016f1"/>
+	</game>
+	<game name="Guitar Hero 5 - Dethklok - Laser Cannon Death Sentence (Europe) (GH 5)" id="0101">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Dethklok - Laser Cannon Death Sentence (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Dethklok - Laser Cannon Death Sentence (Europe) (GH 5).wad" size="37587392" crc="506bbaf2" md5="f773c04ddc29f63435a1a7cdffa2757f" sha1="203473272d8e334d99a51cbfccb8bf0920535bee"/>
+	</game>
+	<game name="Guitar Hero 5 - Editors - Munich (Europe) (GH 5)" id="0103">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Editors - Munich (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Editors - Munich (Europe) (GH 5).wad" size="33965696" crc="45aa8b75" md5="50e7f6ab3475bd5096e0fc8390fc931e" sha1="17f893d07ed128c27b613647f2021cc22980e6f3"/>
+	</game>
+	<game name="Guitar Hero 5 - Fall Out Boy - The Take Over, the Breaks Over (Europe) (GH 5)" id="0105">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Fall Out Boy - The Take Over, the Breaks Over (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Fall Out Boy - The Take Over, the Breaks Over (Europe) (GH 5).wad" size="30816896" crc="4c1ba2a0" md5="52b8c95d18f0073773d8ffd38f8efae8" sha1="8881c8a9a00668b8e56158553147b57a7c3de2de"/>
+	</game>
+	<game name="Guitar Hero 5 - Fall Out Boy - This Ain't a Scene, It's an Arms Race (Europe) (GH 5)" id="0107">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Fall Out Boy - This Ain't a Scene, It's an Arms Race (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Fall Out Boy - This Ain't a Scene, It's an Arms Race (Europe) (GH 5).wad" size="29732160" crc="fce3dad3" md5="aca10cf8a95485c4501219eb94153775" sha1="6d3d483ff3734c47b15bf85ac3b0c586082ac54f"/>
+	</game>
+	<game name="Guitar Hero 5 - Fall Out Boy - Thnks fr th Mmrs (Europe) (GH 5)" id="0109">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Fall Out Boy - Thnks fr th Mmrs (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Fall Out Boy - Thnks fr th Mmrs (Europe) (GH 5).wad" size="25813568" crc="462c512c" md5="60503daa0fae738df5a78fa9cb0e05e9" sha1="3217ebbff9b963f8d75180fcf645252d9c4395f3"/>
+	</game>
+	<game name="Guitar Hero 5 - Flogging Molly - No More Paddy's Lament (Europe) (GH 5)" id="0111">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Flogging Molly - No More Paddy's Lament (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Flogging Molly - No More Paddy's Lament (Europe) (GH 5).wad" size="30182464" crc="2f029f36" md5="7d189d8f352293108a4b858315e68684" sha1="2e476a01be1ab9dbbde709479fc5a56d5f069f04"/>
+	</game>
+	<game name="Guitar Hero 5 - Flogging Molly - Requiem for a Dying Song (Europe) (GH 5)" id="0113">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Flogging Molly - Requiem for a Dying Song (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Flogging Molly - Requiem for a Dying Song (Europe) (GH 5).wad" size="32754432" crc="b06bd95c" md5="b110e3348b938d3085db0d54806c75ed" sha1="6b78a49c5c924e4f788d0bd28fbd63a30ffe594d"/>
+	</game>
+	<game name="Guitar Hero 5 - Flogging Molly - The Seven Deadly Sins (Europe) (GH 5)" id="0115">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Flogging Molly - The Seven Deadly Sins (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Flogging Molly - The Seven Deadly Sins (Europe) (GH 5).wad" size="25760896" crc="6ffe69db" md5="2b79704804fe1660547ee1f36b342160" sha1="fe826451f31179da1da1a50983335fc4de4ba964"/>
+	</game>
+	<game name="Guitar Hero 5 - GWAR - Gor-Gor (Europe) (GH 5)" id="0117">
+		<category>Games</category>
+		<description>Guitar Hero 5 - GWAR - Gor-Gor (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - GWAR - Gor-Gor (Europe) (GH 5).wad" size="38740672" crc="b5b8bdd5" md5="6a81e2d1427e6cc13b9426ec86882640" sha1="6471f89b2f663e2dc14868c85a9dcd9501ed0476"/>
+	</game>
+	<game name="Guitar Hero 5 - Joe Bonamassa - Lonesome Road Blues (Europe) (GH 5)" id="0119">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Joe Bonamassa - Lonesome Road Blues (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Joe Bonamassa - Lonesome Road Blues (Europe) (GH 5).wad" size="24930112" crc="35129204" md5="f0300a0641ae2bb5941f925c7491228b" sha1="1ca03ce02f5c52a167f62f44b773d8314f3496d4"/>
+	</game>
+	<game name="Guitar Hero 5 - Kiss - I Was Made for Lovin' You (Europe) (GH 5)" id="0121">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Kiss - I Was Made for Lovin' You (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Kiss - I Was Made for Lovin' You (Europe) (GH 5).wad" size="39955968" crc="859ea96b" md5="55f0b00b16e174510b6fe5dffcc85277" sha1="89f9245b1961c42710e57322473f9a198fc16ace"/>
+	</game>
+	<game name="Guitar Hero 5 - Kiss - Lick It Up (Europe) (GH 5)" id="0123">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Kiss - Lick It Up (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Kiss - Lick It Up (Europe) (GH 5).wad" size="35942336" crc="fa3f759b" md5="5546787ffe69aa8c283bf5f2117d31b0" sha1="32ff3af307ecd769bfa3d32d9b07a5c2754708cb"/>
+	</game>
+	<game name="Guitar Hero 5 - Kiss - Modern Day Delilah (Europe) (GH 5)" id="0125">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Kiss - Modern Day Delilah (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Kiss - Modern Day Delilah (Europe) (GH 5).wad" size="33030272" crc="eeaa4607" md5="84f32376ed790feb05ec0993afb087a3" sha1="222329d284af9b5b15ce61ebb25ac1f72c7e2492"/>
+	</game>
+	<game name="Guitar Hero 5 - Lenny Kravitz - Fly Away (Europe) (GH 5)" id="0127">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Lenny Kravitz - Fly Away (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Lenny Kravitz - Fly Away (Europe) (GH 5).wad" size="31623744" crc="4a27babc" md5="abc42e72ff768341a92fd75ab56b9586" sha1="c05d2c9b0c50bb35ae9f2b00c213dd6e591ebf38"/>
+	</game>
+	<game name="Guitar Hero 5 - Lenny Kravitz - Lady (Europe) (GH 5)" id="0129">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Lenny Kravitz - Lady (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Lenny Kravitz - Lady (Europe) (GH 5).wad" size="32079488" crc="1055cfa4" md5="dca9ff7d5854469b314c5e9fc451a44c" sha1="77f4e5b87afc4063b7bad66b8d22d49ff8e47cb4"/>
+	</game>
+	<game name="Guitar Hero 5 - Lenny Kravitz - Let Love Rule (Europe) (GH 5)" id="0131">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Lenny Kravitz - Let Love Rule (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Lenny Kravitz - Let Love Rule (Europe) (GH 5).wad" size="41968896" crc="8bda0a4a" md5="83dbbdd1fc517afb1f0aba393a63c574" sha1="1a1872ae881c913fa6f16e64f24768e5e2997340"/>
+	</game>
+	<game name="Guitar Hero 5 - Lynyrd Skynyrd - Free Bird (Europe) (GH 5)" id="0133">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Lynyrd Skynyrd - Free Bird (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Lynyrd Skynyrd - Free Bird (Europe) (GH 5).wad" size="36225920" crc="bfa03ac2" md5="236f3a61ecf4ac4828e8fa42ec2bac05" sha1="487da69507762f95bd590add739f29f98877033b"/>
+	</game>
+	<game name="Guitar Hero 5 - Lynyrd Skynyrd - Gimme Three Steps (Europe) (GH 5)" id="0135">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Lynyrd Skynyrd - Gimme Three Steps (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Lynyrd Skynyrd - Gimme Three Steps (Europe) (GH 5).wad" size="34092672" crc="49799e00" md5="f618cc8617fb38d0520606717c0ddce0" sha1="9deb82506dbe50c1900f5db925aacf5f91f53a2d"/>
+	</game>
+	<game name="Guitar Hero 5 - Lynyrd Skynyrd - Simple Man (Europe) (GH 5)" id="0137">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Lynyrd Skynyrd - Simple Man (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Lynyrd Skynyrd - Simple Man (Europe) (GH 5).wad" size="40072128" crc="79d9195f" md5="a697c15e1af6dfc5883b60d761f5aa4a" sha1="03deb7935f30b192af7c5830b137b421bb0d34c8"/>
+	</game>
+	<game name="Guitar Hero 5 - Marilyn Manson - The Beautiful People (Europe) (GH 5)" id="0139">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Marilyn Manson - The Beautiful People (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Marilyn Manson - The Beautiful People (Europe) (GH 5).wad" size="34826624" crc="16fd6c8e" md5="18e56b7ad4bb6ac0c89b70555950a360" sha1="6ed55e47b2978a51cc33de4cc87711ff9b34b831"/>
+	</game>
+	<game name="Guitar Hero 5 - Maroon 5 - Harder to Breathe (Europe) (GH 5)" id="0141">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Maroon 5 - Harder to Breathe (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Maroon 5 - Harder to Breathe (Europe) (GH 5).wad" size="22660096" crc="3da55cfa" md5="caf4b061eca6a52e8a5ff231815add6a" sha1="4940d3f447f936563f55f36c9b94e0217d3495eb"/>
+	</game>
+	<game name="Guitar Hero 5 - Metallica - All Nightmare Long (Europe) (GH 5)" id="0143">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Metallica - All Nightmare Long (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Metallica - All Nightmare Long (Europe) (GH 5).wad" size="39988992" crc="6be90169" md5="e9d4a48a107136a1c891255af8e97745" sha1="ad1c182313a32108ce9d620364df8a8007ed34f6"/>
+	</game>
+	<game name="Guitar Hero 5 - Metallica - Suicide &amp; Redemption JH (Europe) (GH 5)" id="0145">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Metallica - Suicide &amp; Redemption JH (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Metallica - Suicide &amp; Redemption JH (Europe) (GH 5).wad" size="40367168" crc="912ebeaf" md5="d64f726d08368523781623a5a4a40161" sha1="87c5e3b1b809da79cb0dd4336f67246ef7576755"/>
+	</game>
+	<game name="Guitar Hero 5 - Metallica - Suicide &amp; Redemption KH (Europe) (GH 5)" id="0147">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Metallica - Suicide &amp; Redemption KH (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Metallica - Suicide &amp; Redemption KH (Europe) (GH 5).wad" size="40243136" crc="af4ad8f5" md5="57379c9104f65d7ce2c18c7e88c6ec04" sha1="c9804a471884d05468ee1649852af9f9a5b81a41"/>
+	</game>
+	<game name="Guitar Hero 5 - Metallica - That Was Just Your Life (Europe) (GH 5)" id="0149">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Metallica - That Was Just Your Life (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Metallica - That Was Just Your Life (Europe) (GH 5).wad" size="39784832" crc="b8372cd0" md5="638ab1f49a849e3291bd7d2ad68bbaeb" sha1="b6846ecf105d4f402f0ada1d59bd5d3cf8fcacec"/>
+	</game>
+	<game name="Guitar Hero 5 - Metallica - The Day That Never Comes (Europe) (GH 5)" id="0151">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Metallica - The Day That Never Comes (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Metallica - The Day That Never Comes (Europe) (GH 5).wad" size="39705024" crc="170ceb6f" md5="10a2f86c4615ab6ff525c4bbc4e4a4c9" sha1="a2a0ad2e044d75911d9f71c13bb8784e6fe0c305"/>
+	</game>
+	<game name="Guitar Hero 5 - Metallica - The End Of the Line (Europe) (GH 5)" id="0153">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Metallica - The End Of the Line (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Metallica - The End Of the Line (Europe) (GH 5).wad" size="40102976" crc="8a3f9a46" md5="ebfe34dab7a7f55d4367c3cbbb66a089" sha1="0e4ec7bcb50a0a5b52f919e58c1748c01cc0707b"/>
+	</game>
+	<game name="Guitar Hero 5 - Metallica - The Judas Kiss (Europe) (GH 5)" id="0155">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Metallica - The Judas Kiss (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Metallica - The Judas Kiss (Europe) (GH 5).wad" size="38745088" crc="8d7da274" md5="b0788238e2abc2e2dcec92ead66bb15b" sha1="083aa6ea634f8b503e09ae4ae69b1f152649c550"/>
+	</game>
+	<game name="Guitar Hero 5 - Metallica - The Unforgiven III (Europe) (GH 5)" id="0157">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Metallica - The Unforgiven III (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Metallica - The Unforgiven III (Europe) (GH 5).wad" size="38492800" crc="1318c640" md5="07988c4b1282f3c1a68ec5aa5b873294" sha1="3eb2c88a56b4614a9ec5368b824d15816fb02b2c"/>
+	</game>
+	<game name="Guitar Hero 5 - Motley Crue - Girls, Girls, Girls (Europe) (GH 5)" id="0159">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Motley Crue - Girls, Girls, Girls (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Motley Crue - Girls, Girls, Girls (Europe) (GH 5).wad" size="37840384" crc="cb0b7b09" md5="374534170a46c2ea89dcbddd9e0c14bd" sha1="597129290e24bac169b439a5d7f6c2a93704dcc0"/>
+	</game>
+	<game name="Guitar Hero 5 - Nada Surf - HiSpeed Soul (Europe) (GH 5)" id="0161">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Nada Surf - HiSpeed Soul (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Nada Surf - HiSpeed Soul (Europe) (GH 5).wad" size="40532352" crc="b5d3e98c" md5="f94dcae3b98e0aef334c9f9b61493c55" sha1="1ac6769050b0142585e0b32322cec79d4639ce25"/>
+	</game>
+	<game name="Guitar Hero 5 - Night Ranger - Sister Christian (Europe) (GH 5)" id="0163">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Night Ranger - Sister Christian (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Night Ranger - Sister Christian (Europe) (GH 5).wad" size="32469760" crc="aa32b07c" md5="cb38728e66f4e0ec9de77ed4f283a5be" sha1="3d2133284027d6bbc52557decf335ff09767c309"/>
+	</game>
+	<game name="Guitar Hero 5 - No Doubt - New (Europe) (GH 5)" id="0165">
+		<category>Games</category>
+		<description>Guitar Hero 5 - No Doubt - New (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - No Doubt - New (Europe) (GH 5).wad" size="34946496" crc="488eb2d0" md5="c8879c8a8c8cd690e5921db5dc67d551" sha1="075968461ddb309123ce82e14a205610d5fec082"/>
+	</game>
+	<game name="Guitar Hero 5 - Ok Go - Do What You Want (Europe) (GH 5)" id="0167">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Ok Go - Do What You Want (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Ok Go - Do What You Want (Europe) (GH 5).wad" size="27460096" crc="7330fa61" md5="f7416020511685fa4a915edcfec534d5" sha1="8d8f0b202a32d070be75bcad9b34d0c09235fe21"/>
+	</game>
+	<game name="Guitar Hero 5 - Ok Go - Get Over It (Europe) (GH 5)" id="0169">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Ok Go - Get Over It (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Ok Go - Get Over It (Europe) (GH 5).wad" size="26521280" crc="b1ae37e0" md5="11f9e73931c97e9d5c8a32e8c75d63cd" sha1="121188bab54606f349a0ca66f4c17e18800d9a77"/>
+	</game>
+	<game name="Guitar Hero 5 - Ok Go - Here It Goes Again (Europe) (GH 5)" id="0171">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Ok Go - Here It Goes Again (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Ok Go - Here It Goes Again (Europe) (GH 5).wad" size="26445824" crc="fa357029" md5="c100743a3324253b2af4b384128331b4" sha1="ee074db5b88bb13560a706a7a1456f2bd765d392"/>
+	</game>
+	<game name="Guitar Hero 5 - OneRepublic - All the Right Moves (Europe) (GH 5)" id="0173">
+		<category>Games</category>
+		<description>Guitar Hero 5 - OneRepublic - All the Right Moves (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - OneRepublic - All the Right Moves (Europe) (GH 5).wad" size="32304256" crc="e875848e" md5="d34101de5576ec0e6f0da9ac8ec0b20f" sha1="01d62956eeb5abff49573547aa3d275aba3a4bd1"/>
+	</game>
+	<game name="Guitar Hero 5 - OneRepublic - Everybody Loves Me (Europe) (GH 5)" id="0175">
+		<category>Games</category>
+		<description>Guitar Hero 5 - OneRepublic - Everybody Loves Me (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - OneRepublic - Everybody Loves Me (Europe) (GH 5).wad" size="27766784" crc="e3a4bccf" md5="713a00a19e459f0a24917a90a03c388e" sha1="a703fa8d6d6e112a254f474a77ad0d4caa60610b"/>
+	</game>
+	<game name="Guitar Hero 5 - OneRepublic - Mercy (Europe) (GH 5)" id="0177">
+		<category>Games</category>
+		<description>Guitar Hero 5 - OneRepublic - Mercy (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - OneRepublic - Mercy (Europe) (GH 5).wad" size="32366144" crc="d6494f3c" md5="f440f164e8179516c8ee5694facd5281" sha1="d0aebd6c8d06da1066e3fa8267a3e16b87013534"/>
+	</game>
+	<game name="Guitar Hero 5 - Pavement - Cut Your Hair (Europe) (GH 5)" id="0179">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Pavement - Cut Your Hair (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Pavement - Cut Your Hair (Europe) (GH 5).wad" size="26327744" crc="b338f2dc" md5="bdb12383335b80197fa77e0bef0cd2aa" sha1="547a4e94154ed746afada5bbe81cf662ae01c238"/>
+	</game>
+	<game name="Guitar Hero 5 - Peter Frampton - Show Me the Way (Europe) (GH 5)" id="0181">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Peter Frampton - Show Me the Way (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Peter Frampton - Show Me the Way (Europe) (GH 5).wad" size="41569536" crc="5ceea8fb" md5="37da4e5f52aa9cad286ae9da59b2e4ba" sha1="ada58018d28fc212ef2913523ff63fbee6a41da3"/>
+	</game>
+	<game name="Guitar Hero 5 - Queens of the Stone Age - Avon (Europe) (GH 5)" id="0183">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Queens of the Stone Age - Avon (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Queens of the Stone Age - Avon (Europe) (GH 5).wad" size="31437056" crc="da3fa22b" md5="996200ef36dbc7e498278f7e1181f3d3" sha1="6b57ef28e0112830583496d9f59225f007ad3cec"/>
+	</game>
+	<game name="Guitar Hero 5 - Queens of the Stone Age - How to Handle a Rope (Europe) (GH 5)" id="0185">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Queens of the Stone Age - How to Handle a Rope (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Queens of the Stone Age - How to Handle a Rope (Europe) (GH 5).wad" size="26669184" crc="cf4d744b" md5="eb44da5df68e61907d983596d03370a2" sha1="af2925c5758aa6cdcb0d16fba5080b35f0e9210a"/>
+	</game>
+	<game name="Guitar Hero 5 - Queens of the Stone Age - Mexicola (Europe) (GH 5)" id="0187">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Queens of the Stone Age - Mexicola (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Queens of the Stone Age - Mexicola (Europe) (GH 5).wad" size="37022144" crc="764f6bad" md5="53db6c1607fcd1a537d2ccf9b0a26566" sha1="dbc37ff8550e36c234044092bcccff1605a8d3e8"/>
+	</game>
+	<game name="Guitar Hero 5 - Scott McKeon - Broken Man (Europe) (GH 5)" id="0189">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Scott McKeon - Broken Man (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Scott McKeon - Broken Man (Europe) (GH 5).wad" size="33723520" crc="f4e6101a" md5="dd7ae221b0a70189b4acd0bd237ff9b1" sha1="5b82b0821f9a745598f4fb599944e34e5aee9ebf"/>
+	</game>
+	<game name="Guitar Hero 5 - Shadows Fall - Still I Rise (Europe) (GH 5)" id="0191">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Shadows Fall - Still I Rise (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Shadows Fall - Still I Rise (Europe) (GH 5).wad" size="33539712" crc="3964cc3e" md5="ff3b5633feb9a25a773e8370497aa91e" sha1="8fd8bcd27a66f9c480106b70aa6dcbc28af2b177"/>
+	</game>
+	<game name="Guitar Hero 5 - Spoon - Sister Jack (Europe) (GH 5)" id="0193">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Spoon - Sister Jack (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Spoon - Sister Jack (Europe) (GH 5).wad" size="36308416" crc="1227f1fe" md5="3c2192f59d08d2a45c1cb9d33bc896a0" sha1="458e3420a15b94c6053926307f9421485527be3b"/>
+	</game>
+	<game name="Guitar Hero 5 - Street Sweeper Social Club - 100 Little Curses (Europe) (GH 5)" id="0195">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Street Sweeper Social Club - 100 Little Curses (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Street Sweeper Social Club - 100 Little Curses (Europe) (GH 5).wad" size="37337408" crc="90f4352a" md5="e7bda36ba84ad9dbaf0b5ec8518cd475" sha1="1a0fc461035b764698fbdb9e47df5a14cc8debcc"/>
+	</game>
+	<game name="Guitar Hero 5 - Street Sweeper Social Club - Fight! Smash! Win! (Europe) (GH 5)" id="0197">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Street Sweeper Social Club - Fight! Smash! Win! (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Street Sweeper Social Club - Fight! Smash! Win! (Europe) (GH 5).wad" size="29651136" crc="00b11aa9" md5="6298b12eefb9d1a418b5b33f71a5bbf8" sha1="5fb6040e606c01de49b280fc7a3339382b033d4a"/>
+	</game>
+	<game name="Guitar Hero 5 - Street Sweeper Social Club - Somewhere in the World It's Midnight (Europe) (GH 5)" id="0199">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Street Sweeper Social Club - Somewhere in the World It's Midnight (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Street Sweeper Social Club - Somewhere in the World It's Midnight (Europe) (GH 5).wad" size="29776256" crc="9e910b27" md5="6ded664be8b79211345afa43f68694ed" sha1="895fedceb9dce81e68a151ac727b9ff45660c4cc"/>
+	</game>
+	<game name="Guitar Hero 5 - Taylor Swift - Our Song (Europe) (GH 5)" id="0201">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Taylor Swift - Our Song (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Taylor Swift - Our Song (Europe) (GH 5).wad" size="30202496" crc="8ae12adf" md5="85a03495bcc9d1444e3ceb8fdc21976d" sha1="c636c673739bb7a40c5377918e8d6950ace2f0be"/>
+	</game>
+	<game name="Guitar Hero 5 - The Faint - The Geeks Were Right (Europe) (GH 5)" id="0203">
+		<category>Games</category>
+		<description>Guitar Hero 5 - The Faint - The Geeks Were Right (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - The Faint - The Geeks Were Right (Europe) (GH 5).wad" size="16292096" crc="d5613d09" md5="6f3e8496532359836cc5a9a9bc17738b" sha1="c20eff8207f291e8a7a3c4c93ddc3d06904cd611"/>
+	</game>
+	<game name="Guitar Hero 5 - The Fall of Troy - A Classic Case of Transference (Europe) (GH 5)" id="0205">
+		<category>Games</category>
+		<description>Guitar Hero 5 - The Fall of Troy - A Classic Case of Transference (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - The Fall of Troy - A Classic Case of Transference (Europe) (GH 5).wad" size="41257024" crc="7ee73d6a" md5="88105d54bc2daf1ba826be4f3caa0a06" sha1="95f9b6c4b4670985318efdf19170750d53de1624"/>
+	</game>
+	<game name="Guitar Hero 5 - The Fall of Troy - Panic Attack! (Europe) (GH 5)" id="0207">
+		<category>Games</category>
+		<description>Guitar Hero 5 - The Fall of Troy - Panic Attack! (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - The Fall of Troy - Panic Attack! (Europe) (GH 5).wad" size="33867712" crc="c9c76085" md5="4aaf1dab9a2c26a08304c0db11706ece" sha1="8400c70df54a38ff70102598f86a2148da2a722f"/>
+	</game>
+	<game name="Guitar Hero 5 - The Fall of Troy - Single (Europe) (GH 5)" id="0209">
+		<category>Games</category>
+		<description>Guitar Hero 5 - The Fall of Troy - Single (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - The Fall of Troy - Single (Europe) (GH 5).wad" size="27152256" crc="233e0410" md5="8a57cfdf54d4e7c12d16a945ec476f93" sha1="63b26b3f70a3787f17662f7c0a55122cb36be7ad"/>
+	</game>
+	<game name="Guitar Hero 5 - The Go-Go's - We Got the Beat (Europe) (GH 5)" id="0211">
+		<category>Games</category>
+		<description>Guitar Hero 5 - The Go-Go's - We Got the Beat (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - The Go-Go's - We Got the Beat (Europe) (GH 5).wad" size="18227328" crc="e97f8644" md5="edcb18283ed86677df2e92747de658a1" sha1="8ec4b3d2d156a8a963b640f46bec57a0dcaecbbd"/>
+	</game>
+	<game name="Guitar Hero 5 - The J. Geils Band - Freeze Frame (Europe) (GH 5)" id="0213">
+		<category>Games</category>
+		<description>Guitar Hero 5 - The J. Geils Band - Freeze Frame (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - The J. Geils Band - Freeze Frame (Europe) (GH 5).wad" size="34561792" crc="8ef14454" md5="3408a340fac2ebdde1b01650cb6d1c47" sha1="d2ea1187ca6b0a8590672ee652ba1b36fda9c3b6"/>
+	</game>
+	<game name="Guitar Hero 5 - The Misfits - Astro Zombies (Europe) (GH 5)" id="0215">
+		<category>Games</category>
+		<description>Guitar Hero 5 - The Misfits - Astro Zombies (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - The Misfits - Astro Zombies (Europe) (GH 5).wad" size="20542208" crc="69ef10a1" md5="c7f80f86d02403537412ea2b20905901" sha1="6b9400306cb984976034b1b1b453692a1789a567"/>
+	</game>
+	<game name="Guitar Hero 5 - The Rolling Stones - I Can't Get No Satisfaction (Europe) (GH 5)" id="0217">
+		<category>Games</category>
+		<description>Guitar Hero 5 - The Rolling Stones - I Can't Get No Satisfaction (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - The Rolling Stones - I Can't Get No Satisfaction (Europe) (GH 5).wad" size="36124736" crc="466861ce" md5="b92c0dff61da15ac7ea68bf503c3b137" sha1="b3bfba4fa4289a6b527d497b1fff113068ab4091"/>
+	</game>
+	<game name="Guitar Hero 5 - The Rolling Stones - I'm Free (Europe) (GH 5)" id="0219">
+		<category>Games</category>
+		<description>Guitar Hero 5 - The Rolling Stones - I'm Free (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - The Rolling Stones - I'm Free (Europe) (GH 5).wad" size="22742144" crc="09b73222" md5="ba51bde0fbc026931a9f771d4b327da1" sha1="18221df9e90913a9f4f8bb3b12a4983f969032da"/>
+	</game>
+	<game name="Guitar Hero 5 - The Rolling Stones - Prodigal Son (Europe) (GH 5)" id="0221">
+		<category>Games</category>
+		<description>Guitar Hero 5 - The Rolling Stones - Prodigal Son (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - The Rolling Stones - Prodigal Son (Europe) (GH 5).wad" size="27808064" crc="a4064d4d" md5="18269f4fbb2133a31f4d1bf26ab98178" sha1="8e13f6e107f63483194f02f4c25520d1ca17b512"/>
+	</game>
+	<game name="Guitar Hero 5 - The Rolling Stones - Under My Thumb (Europe) (GH 5)" id="0223">
+		<category>Games</category>
+		<description>Guitar Hero 5 - The Rolling Stones - Under My Thumb (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - The Rolling Stones - Under My Thumb (Europe) (GH 5).wad" size="31102272" crc="d265ec37" md5="29e91c7529447cc982d47aa635748bbc" sha1="eb94018e778f99dbe6819e28fc38a929e45271e6"/>
+	</game>
+	<game name="Guitar Hero 5 - The Rolling Stones - You Gotta Move (Europe) (GH 5)" id="0225">
+		<category>Games</category>
+		<description>Guitar Hero 5 - The Rolling Stones - You Gotta Move (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - The Rolling Stones - You Gotta Move (Europe) (GH 5).wad" size="12520576" crc="fe1db65f" md5="e2f7e70dd129d7853f94545edb985348" sha1="9738af0d7acbffa2b942abbb8881d1bfd09b6d03"/>
+	</game>
+	<game name="Guitar Hero 5 - Third Eye Blind - Can You Take Me (Europe) (GH 5)" id="0227">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Third Eye Blind - Can You Take Me (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Third Eye Blind - Can You Take Me (Europe) (GH 5).wad" size="30426880" crc="7af1dd43" md5="d43abbbb1690850ad2365a47a2e2c48f" sha1="696e53383cfd987fbde6f616736e89e021cb1eb8"/>
+	</game>
+	<game name="Guitar Hero 5 - Third Eye Blind - Losing a Whole Year (Europe) (GH 5)" id="0229">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Third Eye Blind - Losing a Whole Year (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Third Eye Blind - Losing a Whole Year (Europe) (GH 5).wad" size="25723776" crc="0121d45d" md5="82e8cc5c6a439321a18bd4d6af329213" sha1="7fe19ad84cc618f664e1799119e706ab32350584"/>
+	</game>
+	<game name="Guitar Hero 5 - Third Eye Blind - Never Let You Go (Europe) (GH 5)" id="0231">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Third Eye Blind - Never Let You Go (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Third Eye Blind - Never Let You Go (Europe) (GH 5).wad" size="32052096" crc="9eb210f9" md5="ba2f159309f33bac0c4f37d7eabf1a41" sha1="1ec3deff9431055b22cf1f9c05d174a13808e842"/>
+	</game>
+	<game name="Guitar Hero 5 - Triumph - Lay It on the Line (Europe) (GH 5)" id="0233">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Triumph - Lay It on the Line (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Triumph - Lay It on the Line (Europe) (GH 5).wad" size="34591360" crc="fb065d2c" md5="395690cdb7f3b9570d84f160eeeaae1f" sha1="2f39f9622bc6320be3b1f9b10e1ca04b9e1d45c2"/>
+	</game>
+	<game name="Guitar Hero 5 - Tyler Bryant - Who I Am (Europe) (GH 5)" id="0235">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Tyler Bryant - Who I Am (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Tyler Bryant - Who I Am (Europe) (GH 5).wad" size="37996928" crc="fb07c10f" md5="6c801c1ad72b8860f40e412d8816d92c" sha1="454a5b55553be2156af2732f585097f5b436cc90"/>
+	</game>
+	<game name="Guitar Hero 5 - Vampire Weekend - Cousins (Europe) (GH 5)" id="0237">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Vampire Weekend - Cousins (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Vampire Weekend - Cousins (Europe) (GH 5).wad" size="17601088" crc="856d6ac5" md5="77a09f3c6b4e85137617990e132608e1" sha1="38e5b3472405fb7a8df745a74d8b1d3f6b126b86"/>
+	</game>
+	<game name="Guitar Hero 5 - Vampire Weekend - Holiday (Europe) (GH 5)" id="0239">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Vampire Weekend - Holiday (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Vampire Weekend - Holiday (Europe) (GH 5).wad" size="16003008" crc="f032335b" md5="00e2e38b6b8611bed7fd0951635e25b4" sha1="620e2641f9b4e0a9e4a86cdc025ae9a0d34d7f69"/>
+	</game>
+	<game name="Guitar Hero 5 - Vampire Weekend - The Kids Don't Stand a Chance (Europe) (GH 5)" id="0241">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Vampire Weekend - The Kids Don't Stand a Chance (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Vampire Weekend - The Kids Don't Stand a Chance (Europe) (GH 5).wad" size="25641280" crc="14215182" md5="89179032ad17fe30b751c335e15e4260" sha1="20ee3eb981b5ed8b54dc757575c9cf48c6fc41af"/>
+	</game>
+	<game name="Guitar Hero 5 - Wolfmother - California Queen (Europe) (GH 5)" id="0243">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Wolfmother - California Queen (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Wolfmother - California Queen (Europe) (GH 5).wad" size="30351360" crc="fb3e023d" md5="33a6db9606b4f764508ad36e013b9f31" sha1="22792f93ffb15f974ac606332649b8f0d3477d1e"/>
+	</game>
+	<game name="Guitar Hero 5 - Wolfmother - Cosmic Egg (Europe) (GH 5)" id="0245">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Wolfmother - Cosmic Egg (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Wolfmother - Cosmic Egg (Europe) (GH 5).wad" size="30472256" crc="6b984e5a" md5="ab42e2ba63963c2839cc9c5f6317177c" sha1="073aff26eb537b103ab8e75ae0f3d3206aa13ef6"/>
+	</game>
+	<game name="Guitar Hero 5 - Wolfmother - Pilgrim (Europe) (GH 5)" id="0247">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Wolfmother - Pilgrim (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Wolfmother - Pilgrim (Europe) (GH 5).wad" size="37668608" crc="ff83e9f7" md5="b9a281183e7594bfe9f9468e40515ee0" sha1="3a4d52d2c18381c848ebca957f4d870b9b83da88"/>
+	</game>
+	<game name="Guitar Hero 5 - Yeah Yeah Yeahs - Dull Life (Europe) (GH 5)" id="0249">
+		<category>Games</category>
+		<description>Guitar Hero 5 - Yeah Yeah Yeahs - Dull Life (Europe) (GH 5)</description>
+		<rom name="Guitar Hero 5 - Yeah Yeah Yeahs - Dull Life (Europe) (GH 5).wad" size="30406336" crc="920cc737" md5="e3cf99b59de9198012342e463fb60731" sha1="60b13fd37d5c00f7da60c95695ef0ae3512208b5"/>
+	</game>
+	<game name="Guitar Hero World Tour - +44 - Lycanthrope (Europe) (GHWT)" id="0251">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - +44 - Lycanthrope (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - +44 - Lycanthrope (Europe) (GHWT).wad" size="24941696" crc="8c47d931" md5="f4278453970a8639d2c27166ec9beda2" sha1="50dcf89a1506d9a8212880db421baeb885106096"/>
+	</game>
+	<game name="Guitar Hero World Tour - A Day to Remember - NJ Legion Iced Tea (Europe) (GHWT)" id="0253">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - A Day to Remember - NJ Legion Iced Tea (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - A Day to Remember - NJ Legion Iced Tea (Europe) (GHWT).wad" size="24472448" crc="8cd75314" md5="fe1d2e3a9056460be289f752fd8682af" sha1="7beaa325e612678841a8ac91c442c87a40cca1db"/>
+	</game>
+	<game name="Guitar Hero World Tour - A Day to Remember - NJ Legion Iced Tea (Europe) (Update) (GHWT)" id="0254">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - A Day to Remember - NJ Legion Iced Tea (Europe) (Update) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - A Day to Remember - NJ Legion Iced Tea (Europe) (Update) (GHWT).wad" size="24628928" crc="a8ccedee" md5="c81a4b3b1720192220804370b3b813fd" sha1="c752d630b91d95e0157314ba00369c75e3d061ac"/>
+	</game>
+	<game name="Guitar Hero World Tour - Against Me! - New Wave (Europe) (GHWT)" id="0256">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Against Me! - New Wave (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Against Me! - New Wave (Europe) (GHWT).wad" size="23754944" crc="f475368e" md5="70115c3c99766bd4c315368295fe0dc0" sha1="3c637bd256852c5ec19da2c3423d879daa3b314b"/>
+	</game>
+	<game name="Guitar Hero World Tour - Alexisonfire - Young Cardinals (Europe) (Update) (GHWT)" id="0258">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Alexisonfire - Young Cardinals (Europe) (Update) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Alexisonfire - Young Cardinals (Europe) (Update) (GHWT).wad" size="24686400" crc="7c76d0ff" md5="3810c3b97d619c8677b093ef35be3eb5" sha1="b002ca335551f844bf388365ae7d500f661795a5"/>
+	</game>
+	<game name="Guitar Hero World Tour - Alexisonfire - Young Cardinals (USA) (GHWT)" id="0259">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Alexisonfire - Young Cardinals (USA) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Alexisonfire - Young Cardinals (USA) (GHWT).wad" size="24686400" crc="42d04ed8" md5="e8b9820436487a1a53cad7b91cf362b9" sha1="e99d07bc87c617393a7c47c8e9af35618f58da37"/>
+	</game>
+	<game name="Guitar Hero World Tour - An Endless Sporadic - Anything (Europe) (GHWT)" id="0260">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - An Endless Sporadic - Anything (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - An Endless Sporadic - Anything (Europe) (GHWT).wad" size="24487616" crc="b4f18dae" md5="3b280c1cd8ff29dc88e3cbce5ac0fed3" sha1="3293743d1a2bdb6695e57e5600cf56a5979d7c1a"/>
+	</game>
+	<game name="Guitar Hero World Tour - Angels &amp; Airwaves - Everything's Magic (Europe) (GHWT)" id="0262">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Angels &amp; Airwaves - Everything's Magic (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Angels &amp; Airwaves - Everything's Magic (Europe) (GHWT).wad" size="25230080" crc="44219c28" md5="acd6c384c826ff828cd783c9b486b54e" sha1="fae4bb8881991df296d92d7b86348cad2920a80c"/>
+	</game>
+	<game name="Guitar Hero World Tour - Awaken - The Silence is Deafening (Europe) (GHWT)" id="0264">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Awaken - The Silence is Deafening (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Awaken - The Silence is Deafening (Europe) (GHWT).wad" size="25181120" crc="3123cdab" md5="6936317db987044adcdcba189266c39e" sha1="b1e58cfaa2beb2b16bdd923f7adc340c0ca64b10"/>
+	</game>
+	<game name="Guitar Hero World Tour - BB Brunes - Dis-Moi (Europe) (GHWT)" id="0271">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - BB Brunes - Dis-Moi (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - BB Brunes - Dis-Moi (Europe) (GHWT).wad" size="20127936" crc="e5ca2db5" md5="0f16ba183089cf2762f93618f1f11c6c" sha1="a873d609a55054897e5c03efef0e5ea472efd30d"/>
+	</game>
+	<game name="Guitar Hero World Tour - Backyard Babies - Degenerated (Europe) (GHWT)" id="0266">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Backyard Babies - Degenerated (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Backyard Babies - Degenerated (Europe) (GHWT).wad" size="24096256" crc="69c0e8dc" md5="13d1ef4e499a130e2b6a22f4fe2a6209" sha1="f0f6f611f6863ddcbdb779a0d935ed8b8b6a095f"/>
+	</game>
+	<game name="Guitar Hero World Tour - Bad Religion - 21st Century Digital Boy (Europe) (GHWT)" id="0268">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Bad Religion - 21st Century Digital Boy (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Bad Religion - 21st Century Digital Boy (Europe) (GHWT).wad" size="24935744" crc="541a172b" md5="b35174ab69e3a72b3a803d8b74b1b19e" sha1="39fb274ba7cd50d25d08deb85abd2bbbe87bc1af"/>
+	</game>
+	<game name="Guitar Hero World Tour - Bad Religion - 21st Century Digital Boy (Europe) (Update) (GHWT)" id="0269">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Bad Religion - 21st Century Digital Boy (Europe) (Update) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Bad Religion - 21st Century Digital Boy (Europe) (Update) (GHWT).wad" size="24940608" crc="0133f9be" md5="76676a2c5301b14d0a84db290bda8d14" sha1="4871df2afe8b434f5afcc6916dce67ea92c0183c"/>
+	</game>
+	<game name="Guitar Hero World Tour - Ben Harper and Relentless7 - Fly One Time (Europe) (GHWT)" id="0273">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Ben Harper and Relentless7 - Fly One Time (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Ben Harper and Relentless7 - Fly One Time (Europe) (GHWT).wad" size="24074624" crc="b54e57e3" md5="d85205ddc82d234e7d07c74d5f2ec206" sha1="c50c0341f17d1eef99918058e09cc3523d65406f"/>
+	</game>
+	<game name="Guitar Hero World Tour - Ben Harper and Relentless7 - Number with No Name (Europe) (GHWT)" id="0275">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Ben Harper and Relentless7 - Number with No Name (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Ben Harper and Relentless7 - Number with No Name (Europe) (GHWT).wad" size="24937472" crc="34fe5619" md5="752fe6e9cf5feaf354692b8f4ab79f65" sha1="a8394f53074469034a4da671dfa65e6d93b439ef"/>
+	</game>
+	<game name="Guitar Hero World Tour - Ben Harper and Relentless7 - Shimmer &amp; Shine (Europe) (GHWT)" id="0277">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Ben Harper and Relentless7 - Shimmer &amp; Shine (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Ben Harper and Relentless7 - Shimmer &amp; Shine (Europe) (GHWT).wad" size="24609984" crc="70c0f698" md5="1048704c13af8aabe6836113f860272b" sha1="d0c7570c6954c984299cfabd4265f25278f874c7"/>
+	</game>
+	<game name="Guitar Hero World Tour - Blind Melon - No Rain (Europe) (GHWT)" id="0279">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Blind Melon - No Rain (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Blind Melon - No Rain (Europe) (GHWT).wad" size="23553152" crc="18d82bbd" md5="63e722a8abf0a45f31ce22e0a4a32bf7" sha1="e8a3552759f01d1475cd1bc8b52cb504c94b47b8"/>
+	</game>
+	<game name="Guitar Hero World Tour - Blink-182 - What's My Age Again (Europe) (GHWT)" id="0281">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Blink-182 - What's My Age Again (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Blink-182 - What's My Age Again (Europe) (GHWT).wad" size="21380224" crc="2485e443" md5="e7deb003823cb5b2a32a7e96e19e658e" sha1="48b34c2db2e2476896134b207e33a0a02df7f2a3"/>
+	</game>
+	<game name="Guitar Hero World Tour - Bob Seger &amp; the Silver Bullet Band - Her Strut (Europe) (GHWT)" id="0283">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Bob Seger &amp; the Silver Bullet Band - Her Strut (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Bob Seger &amp; the Silver Bullet Band - Her Strut (Europe) (GHWT).wad" size="24711168" crc="78829c62" md5="ff0f91816cff7c561b10dda87c263ae7" sha1="2af886e4f7075aad0d32a083ce8c20f55b1ad226"/>
+	</game>
+	<game name="Guitar Hero World Tour - Bob Seger &amp; the Silver Bullet Band - Old Time Rock and Roll (Europe) (GHWT)" id="0285">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Bob Seger &amp; the Silver Bullet Band - Old Time Rock and Roll (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Bob Seger &amp; the Silver Bullet Band - Old Time Rock and Roll (Europe) (GHWT).wad" size="24046016" crc="b1d91854" md5="d41b1b88ea08515a6bec6696793efae6" sha1="7bc7ac935caea42651f08ff5ee96b463397b67ab"/>
+	</game>
+	<game name="Guitar Hero World Tour - Bob Seger - Get Out of Denver (Europe) (GHWT)" id="0287">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Bob Seger - Get Out of Denver (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Bob Seger - Get Out of Denver (Europe) (GHWT).wad" size="22149504" crc="c2adb3f3" md5="e7cc422955839e76f52ce59c707abcff" sha1="99977816c71387c393f0a4cc202d434dfd7e963a"/>
+	</game>
+	<game name="Guitar Hero World Tour - Boston - Rock and Roll Band (Europe) (GHWT)" id="0289">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Boston - Rock and Roll Band (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Boston - Rock and Roll Band (Europe) (GHWT).wad" size="24421632" crc="bee877dd" md5="88f01ef599c6005d67fce69ca15669d5" sha1="a4f391155777af123430015f223cfc20c0efee3b"/>
+	</game>
+	<game name="Guitar Hero World Tour - Brad Paisley - Ticks (Europe) (GHWT)" id="0291">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Brad Paisley - Ticks (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Brad Paisley - Ticks (Europe) (GHWT).wad" size="23791680" crc="6ab90a1f" md5="00181f2c684849ffcde731876f56ce74" sha1="a7ff9d00e44cc443b64448ae7b306cd35e65bf51"/>
+	</game>
+	<game name="Guitar Hero World Tour - Brooks &amp; Dunn - Hillbilly Deluxe (Europe) (GHWT)" id="0293">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Brooks &amp; Dunn - Hillbilly Deluxe (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Brooks &amp; Dunn - Hillbilly Deluxe (Europe) (GHWT).wad" size="24557888" crc="1a24b427" md5="300382474895dda1a1ccb8c8bd1b9766" sha1="7634592db52a4fa5ee44da0f19b13bad3b04d1e3"/>
+	</game>
+	<game name="Guitar Hero World Tour - Bruce Springsteen - Born to Run (Europe) (GHWT)" id="0295">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Bruce Springsteen - Born to Run (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Bruce Springsteen - Born to Run (Europe) (GHWT).wad" size="24397760" crc="cb4f4289" md5="43a8e93db44ee8e3234016f994458ecd" sha1="30c0323406f948a0d290004d92b1bd245507014e"/>
+	</game>
+	<game name="Guitar Hero World Tour - Bruce Springsteen - My Lucky Day (Europe) (GHWT)" id="0297">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Bruce Springsteen - My Lucky Day (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Bruce Springsteen - My Lucky Day (Europe) (GHWT).wad" size="23333120" crc="0dc29603" md5="50a34bdb5507956fff83e8b4f6ba1c0d" sha1="e95c89daf60fb98cc02d4e35a35122178c8f9443"/>
+	</game>
+	<game name="Guitar Hero World Tour - Chimaira - On Broken Glass (Europe) (GHWT)" id="0299">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Chimaira - On Broken Glass (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Chimaira - On Broken Glass (Europe) (GHWT).wad" size="23696704" crc="bd7ead9b" md5="954588d6a1a936e9f8e2430d83c99aea" sha1="3f00e35cb9ccbb15ca79e55c83341220c6b8df8f"/>
+	</game>
+	<game name="Guitar Hero World Tour - Cody ChesnuTT - Look Good in Leather (Europe) (GHWT)" id="0301">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Cody ChesnuTT - Look Good in Leather (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Cody ChesnuTT - Look Good in Leather (Europe) (GHWT).wad" size="24549760" crc="49d7e2ce" md5="f5c6601f291ce68fc398e0017a785800" sha1="ba281cb4b01c4aca6ba4c33d6ae240ea27c17030"/>
+	</game>
+	<game name="Guitar Hero World Tour - Creedence Clearwater Revival - Commotion (Europe) (GHWT)" id="0303">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Creedence Clearwater Revival - Commotion (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Creedence Clearwater Revival - Commotion (Europe) (GHWT).wad" size="23242176" crc="1e284aff" md5="b9af2d6cedb20cee8e0107ddc3d35cc4" sha1="9a38aad156290afee3908eb388af8e1d4bce5968"/>
+	</game>
+	<game name="Guitar Hero World Tour - DLC Installer (World) (GHWT)" id="0309">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - DLC Installer (World) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - DLC Installer (World) (GHWT).wad" size="4074048" crc="079553dc" md5="6426d5930a36eae8bf48bc9774cf6107" sha1="b4151c53a4f4e982af29ebf06e318f9130eca4fe"/>
+	</game>
+	<game name="Guitar Hero World Tour - Di-Rect - Johnny (Europe) (GHWT)" id="0305">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Di-Rect - Johnny (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Di-Rect - Johnny (Europe) (GHWT).wad" size="21668480" crc="1e20b0d2" md5="daaa3d9310f616161472397064cf74b8" sha1="4c03b8354cb69a1ceeff3a493884490d02b85d02"/>
+	</game>
+	<game name="Guitar Hero World Tour - Die Toten Hosen - Hier kommt Alex (Europe) (GHWT)" id="0307">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Die Toten Hosen - Hier kommt Alex (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Die Toten Hosen - Hier kommt Alex (Europe) (GHWT).wad" size="23793728" crc="85eb8669" md5="0c4a26747055f9c7c84d13920afcaf37" sha1="e40a52688d29881791e484e7f6c3af834da251ea"/>
+	</game>
+	<game name="Guitar Hero World Tour - Dropkick Murphys - I'm Shipping Up to Boston (Europe) (GHWT)" id="0310">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Dropkick Murphys - I'm Shipping Up to Boston (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Dropkick Murphys - I'm Shipping Up to Boston (Europe) (GHWT).wad" size="19508288" crc="a318e960" md5="c63bbeeabb03c74daac6eaae0454fe53" sha1="262f9cb98c2d7713f4c334f279f9f65c3415848f"/>
+	</game>
+	<game name="Guitar Hero World Tour - Eagles - Frail Grasp on the Big Picture (Europe) (GHWT)" id="0312">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Eagles - Frail Grasp on the Big Picture (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Eagles - Frail Grasp on the Big Picture (Europe) (GHWT).wad" size="24997376" crc="b52a3143" md5="61746fcf7348804218196bea45a86164" sha1="93919b086253b867eefd34fe8316c6e38c86138b"/>
+	</game>
+	<game name="Guitar Hero World Tour - Eagles - Life in the Fast Line (Europe) (GHWT)" id="0314">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Eagles - Life in the Fast Line (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Eagles - Life in the Fast Line (Europe) (GHWT).wad" size="24500224" crc="6401897a" md5="a3231a02a18cf6ede19e69423b55269b" sha1="870d9c2777d37e3297fa28dfe4139fbf73d04180"/>
+	</game>
+	<game name="Guitar Hero World Tour - Eagles - One of These Nights (Europe) (GHWT)" id="0316">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Eagles - One of These Nights (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Eagles - One of These Nights (Europe) (GHWT).wad" size="24266368" crc="92add8d2" md5="b5c562f569a6e9237a95442df46c5fca" sha1="09bf54f9b0679d1d956cc2172ff18b15056be4d0"/>
+	</game>
+	<game name="Guitar Hero World Tour - Eagles of Death Metal - Anything 'Cept the Truth (Europe) (GHWT)" id="0318">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Eagles of Death Metal - Anything 'Cept the Truth (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Eagles of Death Metal - Anything 'Cept the Truth (Europe) (GHWT).wad" size="24851392" crc="964eee76" md5="4e2a41ccd030b733d45bfc2ffe3e036b" sha1="c0c4d6d45ee8156bc6ed107c102dd406a3f83dad"/>
+	</game>
+	<game name="Guitar Hero World Tour - Eagles of Death Metal - Cherry Cola (Europe) (GHWT)" id="0320">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Eagles of Death Metal - Cherry Cola (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Eagles of Death Metal - Cherry Cola (Europe) (GHWT).wad" size="23940928" crc="93955a08" md5="d4cf05b650cb702913725e3663e1cfe8" sha1="9ce640dbcaee0a75efc48865224f1027478b47ca"/>
+	</game>
+	<game name="Guitar Hero World Tour - Eagles of Death Metal - I Only Want You (Europe) (GHWT)" id="0322">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Eagles of Death Metal - I Only Want You (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Eagles of Death Metal - I Only Want You (Europe) (GHWT).wad" size="20416896" crc="04a77f4a" md5="3800ba81a455f80a32a83287a78221a6" sha1="60ae7f3dd4c1543bfbeeba545ad991c6e8854b0b"/>
+	</game>
+	<game name="Guitar Hero World Tour - Eric Johnson - Camel's Night Out (Europe) (GHWT)" id="0324">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Eric Johnson - Camel's Night Out (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Eric Johnson - Camel's Night Out (Europe) (GHWT).wad" size="22591104" crc="14b82209" md5="09482573afcb7f623d14e9f11c946429" sha1="67b33f877f64180b14c3bbcebe9a5f0a6d714644"/>
+	</game>
+	<game name="Guitar Hero World Tour - Expendables - Sacrifice (Europe) (GHWT)" id="0326">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Expendables - Sacrifice (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Expendables - Sacrifice (Europe) (GHWT).wad" size="23943872" crc="c74e5be1" md5="f8c8a31aa644e17f5389d58a023ee05b" sha1="4dc2c4ac4b0fc59dac063fd805ac2872708cfc82"/>
+	</game>
+	<game name="Guitar Hero World Tour - Finley - Adrenalina (Europe) (GHWT)" id="0328">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Finley - Adrenalina (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Finley - Adrenalina (Europe) (GHWT).wad" size="24326912" crc="7bb726bd" md5="8acb3bdf3a94b41629f82ef44d3ce064" sha1="c7bb31e4b738036b0be4e38fe124944e9a52e2ea"/>
+	</game>
+	<game name="Guitar Hero World Tour - Fito &amp; Fitipaldis - Por La Boca Vive El Pez (Europe) (GHWT)" id="0330">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Fito &amp; Fitipaldis - Por La Boca Vive El Pez (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Fito &amp; Fitipaldis - Por La Boca Vive El Pez (Europe) (GHWT).wad" size="24041600" crc="f6076542" md5="14aa630fb908da5100822d9ce7b8f9c1" sha1="bb474ed73ccbc0b369f11b726fcffeee0d48dc85"/>
+	</game>
+	<game name="Guitar Hero World Tour - Flo Rida featuring T-Pain - Low Travis Barker Remix (Europe) (GHWT)" id="0332">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Flo Rida featuring T-Pain - Low Travis Barker Remix (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Flo Rida featuring T-Pain - Low Travis Barker Remix (Europe) (GHWT).wad" size="25095360" crc="cb466866" md5="609d5804711ad9bdd054aa4a857f3b44" sha1="ac908c478909940cd4eccc9a28339fa8eddae488"/>
+	</game>
+	<game name="Guitar Hero World Tour - Foreigner - Hot Blooded (Europe) (GHWT)" id="0334">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Foreigner - Hot Blooded (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Foreigner - Hot Blooded (Europe) (GHWT).wad" size="24510272" crc="a3ce0af3" md5="4685107412cfb743734e6f6dd9e3282f" sha1="de43787786ea15ea9f0f787e0e029c7716517621"/>
+	</game>
+	<game name="Guitar Hero World Tour - H Is Orange - Nothing All the Time (Europe) (GHWT)" id="0336">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - H Is Orange - Nothing All the Time (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - H Is Orange - Nothing All the Time (Europe) (GHWT).wad" size="22576320" crc="d014d322" md5="5fd778fcd62dd9879cfa219c247f8259" sha1="4e661d9cdf6781b2dae737bfc27d85c1afcb06cd"/>
+	</game>
+	<game name="Guitar Hero World Tour - Hinder - Use Me (Europe) (GHWT)" id="0338">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Hinder - Use Me (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Hinder - Use Me (Europe) (GHWT).wad" size="24520128" crc="e98d08cd" md5="358bee01cb37c196fa7019d7f1a55cdb" sha1="f99e11d1021de50f3198629f1686d8f2bdbaa3a4"/>
+	</game>
+	<game name="Guitar Hero World Tour - Housse de Racket - Oh Yeah! (Europe) (GHWT)" id="0340">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Housse de Racket - Oh Yeah! (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Housse de Racket - Oh Yeah! (Europe) (GHWT).wad" size="23585920" crc="5bc92952" md5="712a51b6d4a40c9641cc2651f8c63f89" sha1="114e97c32ecf8151fcdf6020409019f7567f0267"/>
+	</game>
+	<game name="Guitar Hero World Tour - Hundred Reasons - I'll Never Know (Europe) (GHWT)" id="0342">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Hundred Reasons - I'll Never Know (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Hundred Reasons - I'll Never Know (Europe) (GHWT).wad" size="23512192" crc="d1150977" md5="9e7f42a15eb8c02b2bfe94e005c935c7" sha1="7bab53b6f4d25c62c17edeb5eb7881c05ad10e02"/>
+	</game>
+	<game name="Guitar Hero World Tour - In Flames - Disconnected (Europe) (GHWT)" id="0344">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - In Flames - Disconnected (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - In Flames - Disconnected (Europe) (GHWT).wad" size="23486720" crc="31e2d146" md5="e866bdf3206a30b333676c610545ba9b" sha1="01d87f25b196a5592b4c26f33aec0877436a6a20"/>
+	</game>
+	<game name="Guitar Hero World Tour - Incubus - Drive (Europe) (GHWT)" id="0346">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Incubus - Drive (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Incubus - Drive (Europe) (GHWT).wad" size="24575040" crc="5f764101" md5="13bcc7a16d78a57231da39db51924ff2" sha1="1b2d54f312d929830a549d98053330e905d65fd0"/>
+	</game>
+	<game name="Guitar Hero World Tour - Jack White &amp; Alicia Keys - Another Way to Die (Europe) (GHWT)" id="0348">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Jack White &amp; Alicia Keys - Another Way to Die (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Jack White &amp; Alicia Keys - Another Way to Die (Europe) (GHWT).wad" size="24400192" crc="ce153f56" md5="7a054993b96baac8337694c6e58d6dd6" sha1="2b3f97a050e7e3c64bf996c3683447ce59fc28b8"/>
+	</game>
+	<game name="Guitar Hero World Tour - Jimi Hendrix - Angel (Europe) (GHWT)" id="0350">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Jimi Hendrix - Angel (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Jimi Hendrix - Angel (Europe) (GHWT).wad" size="23775296" crc="813032ae" md5="3ce75d0c103c1481d33a3b718c447496" sha1="a46edf5578eefae2700b1cf98d3a977a14b2dbef"/>
+	</game>
+	<game name="Guitar Hero World Tour - Jimi Hendrix - Fire Live at Woodstock (Europe) (GHWT)" id="0352">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Jimi Hendrix - Fire Live at Woodstock (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Jimi Hendrix - Fire Live at Woodstock (Europe) (GHWT).wad" size="24537920" crc="f257320e" md5="7c5bb9eea2260b5ebd1e94231110d652" sha1="a5465413d3f27c89c099334366587c395cf92363"/>
+	</game>
+	<game name="Guitar Hero World Tour - Jimi Hendrix - Foxey Lady Live at Woodstock (Europe) (GHWT)" id="0354">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Jimi Hendrix - Foxey Lady Live at Woodstock (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Jimi Hendrix - Foxey Lady Live at Woodstock (Europe) (GHWT).wad" size="24463808" crc="3c95f629" md5="9b4a49840287ac62ce00004501b71062" sha1="e09833b0355a979237bef6074666e60c14c0f556"/>
+	</game>
+	<game name="Guitar Hero World Tour - Jimi Hendrix - Freedom (Europe) (GHWT)" id="0356">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Jimi Hendrix - Freedom (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Jimi Hendrix - Freedom (Europe) (GHWT).wad" size="24056256" crc="6ab4a47d" md5="76943e70c17f9188f3e0321bffa47a00" sha1="b49c3039f8a73ba8781cb5d8fb8eb76811b01fc8"/>
+	</game>
+	<game name="Guitar Hero World Tour - Jimi Hendrix - If 6 Was 9 (Europe) (GHWT)" id="0358">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Jimi Hendrix - If 6 Was 9 (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Jimi Hendrix - If 6 Was 9 (Europe) (GHWT).wad" size="24892864" crc="180c4595" md5="54ff7c63f48c44c89db4e4d167ccb9f8" sha1="33bf18cea29e723e6e60e73246880f26408366ce"/>
+	</game>
+	<game name="Guitar Hero World Tour - Jimi Hendrix - Little Wing (Europe) (GHWT)" id="0360">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Jimi Hendrix - Little Wing (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Jimi Hendrix - Little Wing (Europe) (GHWT).wad" size="22667712" crc="d756171f" md5="d823e39c73b8c9b9614bbcaab4823c4b" sha1="30c756fc39e24b57a9ae4ccb8a29e55c3072be67"/>
+	</game>
+	<game name="Guitar Hero World Tour - Les Rita Mitsouko - C'est Comme Ca (Europe) (GHWT)" id="0362">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Les Rita Mitsouko - C'est Comme Ca (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Les Rita Mitsouko - C'est Comme Ca (Europe) (GHWT).wad" size="24026176" crc="fef5ac09" md5="a76cf1b3ba35eba1a343de4414fdad7e" sha1="0d24211c74f4eea7d09a2c3083a8cdc0ec1c87b9"/>
+	</game>
+	<game name="Guitar Hero World Tour - Loquillo y Trogloditas - Cadillac Solitario Live (Europe) (GHWT)" id="0364">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Loquillo y Trogloditas - Cadillac Solitario Live (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Loquillo y Trogloditas - Cadillac Solitario Live (Europe) (GHWT).wad" size="25401792" crc="c719a64f" md5="2a7b9134860eab45516a86f577b55196" sha1="c7f63e5e05773f24bc0fec99530a9b352beb0f8c"/>
+	</game>
+	<game name="Guitar Hero World Tour - M-Clan - Carolina Live (Europe) (GHWT)" id="0366">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - M-Clan - Carolina Live (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - M-Clan - Carolina Live (Europe) (GHWT).wad" size="23577472" crc="876062ec" md5="a99c3611bad0a74ce4b3e79eefd1b640" sha1="75792d9948a4a572f515052b97dadbe025f92759"/>
+	</game>
+	<game name="Guitar Hero World Tour - Metallica - Broken, Beat &amp; Scarred (Europe) (GHWT)" id="0368">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Metallica - Broken, Beat &amp; Scarred (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Metallica - Broken, Beat &amp; Scarred (Europe) (GHWT).wad" size="24155264" crc="5e6052b3" md5="70b8e5db112ee998fe1df5ce5b361a50" sha1="4834aa3beb71c9a926bbc966dd3da3a06b50939d"/>
+	</game>
+	<game name="Guitar Hero World Tour - Metallica - Cyanide (Europe) (GHWT)" id="0370">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Metallica - Cyanide (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Metallica - Cyanide (Europe) (GHWT).wad" size="24512960" crc="03b6fedc" md5="0246f7eac4b363fedddf8fc0d1399187" sha1="aa52a583548f6f8d840b79c731d0169485974f56"/>
+	</game>
+	<game name="Guitar Hero World Tour - Metallica - My Apocalypse (Europe) (GHWT)" id="0372">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Metallica - My Apocalypse (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Metallica - My Apocalypse (Europe) (GHWT).wad" size="23828480" crc="240223b3" md5="c67bf541995f72e6b544b3df69550113" sha1="c7dfd8fd14ecf924b01b3d642990a53f452191b5"/>
+	</game>
+	<game name="Guitar Hero World Tour - Motorhead - Iron Fist (Europe) (GHWT)" id="0374">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Motorhead - Iron Fist (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Motorhead - Iron Fist (Europe) (GHWT).wad" size="23188928" crc="096c05d0" md5="efaab48a0cb01fa2580de8ea68b3ba2f" sha1="6643084bd7614796cd2022d7302f80e2b771318b"/>
+	</game>
+	<game name="Guitar Hero World Tour - Motorhead - Jailbait (Europe) (GHWT)" id="0376">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Motorhead - Jailbait (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Motorhead - Jailbait (Europe) (GHWT).wad" size="24592896" crc="9bdcb086" md5="47bce5a89d279d3f870128d99df39f5f" sha1="8b7f514e0d81300f109dc33d691ff76f2b000833"/>
+	</game>
+	<game name="Guitar Hero World Tour - Motorhead - Love Me Like a Reptile (Europe) (GHWT)" id="0378">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Motorhead - Love Me Like a Reptile (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Motorhead - Love Me Like a Reptile (Europe) (GHWT).wad" size="23906944" crc="57b8a2bb" md5="3f25649c1fdd0c63e3b2a9213ab7488e" sha1="121f118bc61fc2d3f80583758e002b91e93f11df"/>
+	</game>
+	<game name="Guitar Hero World Tour - NOFX - Linoleum (Europe) (GHWT)" id="0396">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - NOFX - Linoleum (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - NOFX - Linoleum (Europe) (GHWT).wad" size="14045504" crc="3b4495bc" md5="010264d7e571bb2601ddc44222a97c8b" sha1="9b515005a5d5ccb3d003c998e6adf9365068bf87"/>
+	</game>
+	<game name="Guitar Hero World Tour - NOFX - Linoleum (Europe) (Update) (GHWT)" id="0397">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - NOFX - Linoleum (Europe) (Update) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - NOFX - Linoleum (Europe) (Update) (GHWT).wad" size="14050176" crc="826171aa" md5="f8311be51a21b9029684d191b7a4f50b" sha1="fa0d9b6a709df13ff5c7170c4e3baf522e9b8d55"/>
+	</game>
+	<game name="Guitar Hero World Tour - Negrita - Mama Mae (Europe) (GHWT)" id="0380">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Negrita - Mama Mae (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Negrita - Mama Mae (Europe) (GHWT).wad" size="24976256" crc="85d5a092" md5="906bbb65b0ca215f9c12ba9277775511" sha1="bd7235d91ce30074357a9c68a71aa5c686c0f0db"/>
+	</game>
+	<game name="Guitar Hero World Tour - Nickelback - Because of You (Europe) (GHWT)" id="0382">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Nickelback - Because of You (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Nickelback - Because of You (Europe) (GHWT).wad" size="24150080" crc="29972b2a" md5="73c933af7001cd9730dbd54286dda5fd" sha1="1a059d0acde93a9b9ab6d5a8ae4c8a583f915e3a"/>
+	</game>
+	<game name="Guitar Hero World Tour - Nirvana - Negative Creep (Europe) (GHWT)" id="0384">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Nirvana - Negative Creep (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Nirvana - Negative Creep (Europe) (GHWT).wad" size="23626624" crc="a3d6b486" md5="f4f6b7aca9a5e280ee2cd850bb14bf25" sha1="62ef6362ad403be32f783c07ca663585cd0819d8"/>
+	</game>
+	<game name="Guitar Hero World Tour - Nirvana - Sappy (Europe) (GHWT)" id="0386">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Nirvana - Sappy (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Nirvana - Sappy (Europe) (GHWT).wad" size="24755584" crc="3064fd61" md5="acd50b38e562d9b73035ad0ecfc1d96e" sha1="39d427aa1804dc990dff27a1eec078ee01922f7b"/>
+	</game>
+	<game name="Guitar Hero World Tour - Nirvana - Sliver (Europe) (GHWT)" id="0388">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Nirvana - Sliver (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Nirvana - Sliver (Europe) (GHWT).wad" size="19047168" crc="993e5954" md5="202ca38d934e92f672780dc3aa6ddbcc" sha1="b4af7f833de29ea4b13c627f78e7554088c379bf"/>
+	</game>
+	<game name="Guitar Hero World Tour - Nirvana - Stay Away (Europe) (GHWT)" id="0390">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Nirvana - Stay Away (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Nirvana - Stay Away (Europe) (GHWT).wad" size="23775616" crc="fa69a73c" md5="9b1b42135aa4bfc0cbdac506108d664c" sha1="2128c0ddb15b06151ee267108b5538fbc1bc0261"/>
+	</game>
+	<game name="Guitar Hero World Tour - Nirvana - Very Ape (Europe) (GHWT)" id="0392">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Nirvana - Very Ape (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Nirvana - Very Ape (Europe) (GHWT).wad" size="17280320" crc="aa6660b8" md5="7df77ac228f560dad5b7f645cd5e3cb4" sha1="563af24fe4de80f3a611f252e5bbe9389abb88e0"/>
+	</game>
+	<game name="Guitar Hero World Tour - Nirvana - You Know You're Right (Europe) (GHWT)" id="0394">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Nirvana - You Know You're Right (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Nirvana - You Know You're Right (Europe) (GHWT).wad" size="23088896" crc="0d0681dc" md5="a6c2e9800851475ad3ce07b159522c12" sha1="16e0a62c0500ead80ec5e25dc65893da282852a7"/>
+	</game>
+	<game name="Guitar Hero World Tour - Oasis - Ain't Got Nothin' (Europe) (GHWT)" id="0399">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Oasis - Ain't Got Nothin' (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Oasis - Ain't Got Nothin' (Europe) (GHWT).wad" size="17368128" crc="8ba1b64e" md5="7ec52123a1bd31e1689dc03a5c6fe6bb" sha1="e613b8853da68548966c37c7cd9ef5b2a1deedc6"/>
+	</game>
+	<game name="Guitar Hero World Tour - Oasis - Bag It Up (Europe) (GHWT)" id="0401">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Oasis - Bag It Up (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Oasis - Bag It Up (Europe) (GHWT).wad" size="24389568" crc="867470f0" md5="de2359dd5e1dc53a9cc767d55798aa52" sha1="770ce2dd6a848b0794ed31963ec8ca5432479c3c"/>
+	</game>
+	<game name="Guitar Hero World Tour - Oasis - Falling Down (Europe) (GHWT)" id="0403">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Oasis - Falling Down (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Oasis - Falling Down (Europe) (GHWT).wad" size="24190656" crc="9099e2e8" md5="5e552543f45326de41f194271437befe" sha1="5700bb6c93432de78af8a5729fd209cfe4c918a1"/>
+	</game>
+	<game name="Guitar Hero World Tour - Oasis - Get Off Your High Horse Lady (Europe) (GHWT)" id="0405">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Oasis - Get Off Your High Horse Lady (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Oasis - Get Off Your High Horse Lady (Europe) (GHWT).wad" size="24113920" crc="7081d51f" md5="630bd49f77525539c6ea994b3d7978ae" sha1="625790bd4e45552cb389ade4b7a55d15ada6dab1"/>
+	</game>
+	<game name="Guitar Hero World Tour - Oasis - I'm Outta Time (Europe) (GHWT)" id="0407">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Oasis - I'm Outta Time (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Oasis - I'm Outta Time (Europe) (GHWT).wad" size="24734592" crc="e9346cea" md5="3da937343c05d254436295f8ca50d9b5" sha1="143263fa13c5d7212a3085cb084f2d1b3124836c"/>
+	</game>
+	<game name="Guitar Hero World Tour - Oasis - Soldier On (Europe) (GHWT)" id="0409">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Oasis - Soldier On (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Oasis - Soldier On (Europe) (GHWT).wad" size="24620032" crc="9fff095f" md5="449838b59ebd8541330ffbab359d1339" sha1="aea25845cf6499f7b6537949dd91695355bbc566"/>
+	</game>
+	<game name="Guitar Hero World Tour - Oasis - The Nature of Reality (Europe) (GHWT)" id="0411">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Oasis - The Nature of Reality (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Oasis - The Nature of Reality (Europe) (GHWT).wad" size="24391680" crc="9a855c5d" md5="3cf5c489ad50123585fd45114f6345a8" sha1="462ddb3c385a1cb00de71d1dc31966fd7dddf6d2"/>
+	</game>
+	<game name="Guitar Hero World Tour - Oasis - The Shock of the Lightning (Europe) (GHWT)" id="0413">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Oasis - The Shock of the Lightning (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Oasis - The Shock of the Lightning (Europe) (GHWT).wad" size="23707712" crc="99884266" md5="12da23f60184fb1963c6eb2af87e1da3" sha1="54e98b727e82a7e163a3efd3870ff6711a2671a9"/>
+	</game>
+	<game name="Guitar Hero World Tour - Oasis - The Turning (Europe) (GHWT)" id="0415">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Oasis - The Turning (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Oasis - The Turning (Europe) (GHWT).wad" size="24119296" crc="a1094de5" md5="75d586a9bf867753804ecea2392ff5bf" sha1="399951f9ec92a3b7d118b6cfa0caacdd51b62304"/>
+	</game>
+	<game name="Guitar Hero World Tour - Oasis - To Be Where There's Life (Europe) (GHWT)" id="0417">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Oasis - To Be Where There's Life (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Oasis - To Be Where There's Life (Europe) (GHWT).wad" size="24438848" crc="8e4156bd" md5="04f1e3e8eb5bf06044271b8c6695e772" sha1="912e5f44c7aa1967fc22000ce7734048e3d16443"/>
+	</game>
+	<game name="Guitar Hero World Tour - Oasis - Waiting for the Rapture (Europe) (GHWT)" id="0419">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Oasis - Waiting for the Rapture (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Oasis - Waiting for the Rapture (Europe) (GHWT).wad" size="23233920" crc="325f82f6" md5="786ada317f8de69fd55e46766211d0cc" sha1="949acb865d1042f1ae82044e219a6154beabf653"/>
+	</game>
+	<game name="Guitar Hero World Tour - OneRepublic - Stop and Stare (Europe) (GHWT)" id="0421">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - OneRepublic - Stop and Stare (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - OneRepublic - Stop and Stare (Europe) (GHWT).wad" size="23670720" crc="4fce5cf0" md5="e9132661c1ca49885db71cb1872d2ddf" sha1="5211f2c24b393f3f7c5d08da216b4677b01d5796"/>
+	</game>
+	<game name="Guitar Hero World Tour - Pepper - Your Face (Europe) (GHWT)" id="0423">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Pepper - Your Face (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Pepper - Your Face (Europe) (GHWT).wad" size="24242304" crc="ba95818e" md5="adef76b54ad83c5a5dae9a7bb8714501" sha1="f996541ff32034d406da0ce70d8737f0269571e3"/>
+	</game>
+	<game name="Guitar Hero World Tour - Phish - Chalkdust Torture Live (Europe) (GHWT)" id="0425">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Phish - Chalkdust Torture Live (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Phish - Chalkdust Torture Live (Europe) (GHWT).wad" size="24241600" crc="7677dbd6" md5="384d062ee9afc350f0388aa12a0bbe05" sha1="2e4cbcf4628e46fbc37722f4421dfc808054a40b"/>
+	</game>
+	<game name="Guitar Hero World Tour - Phish - Down with Disease Live (Europe) (GHWT)" id="0427">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Phish - Down with Disease Live (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Phish - Down with Disease Live (Europe) (GHWT).wad" size="24386560" crc="3703a10b" md5="6885cb8f443969e4873205067e3bb59c" sha1="7224349f8d85197eed5478f6c9290b103d028881"/>
+	</game>
+	<game name="Guitar Hero World Tour - Phish - Sample in a Jar Live (Europe) (GHWT)" id="0429">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Phish - Sample in a Jar Live (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Phish - Sample in a Jar Live (Europe) (GHWT).wad" size="25399616" crc="041eafb2" md5="daaaabe605a5367571766daf093f0332" sha1="0527d085721e9900327fd8020aee139488520d4f"/>
+	</game>
+	<game name="Guitar Hero World Tour - Phish - Sample in a Jar Live (Europe) (Update) (GHWT)" id="0430">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Phish - Sample in a Jar Live (Europe) (Update) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Phish - Sample in a Jar Live (Europe) (Update) (GHWT).wad" size="25404288" crc="262276c1" md5="b4405b2435e76c08ebc5ef3ec6935d6c" sha1="e35ec5328b5c1b9bc9de8f62f959f454fa877cb3"/>
+	</game>
+	<game name="Guitar Hero World Tour - Pink - So What (Europe) (GHWT)" id="0432">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Pink - So What (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Pink - So What (Europe) (GHWT).wad" size="24534592" crc="4c1d28aa" md5="7eb259d7b7019c0d38a24b9a3c703340" sha1="b03e06e3a56a65804a7328fa182b83f31b236751"/>
+	</game>
+	<game name="Guitar Hero World Tour - Pixies - Debaser (Europe) (GHWT)" id="0434">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Pixies - Debaser (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Pixies - Debaser (Europe) (GHWT).wad" size="23876800" crc="7f52a2c7" md5="cac07c332060f754749a7bbcc56c91a3" sha1="77981685d865c7a41b6dec64cf7ab8ca13c40b4f"/>
+	</game>
+	<game name="Guitar Hero World Tour - Pixies - Monkey Gone to Heaven (Europe) (GHWT)" id="0436">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Pixies - Monkey Gone to Heaven (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Pixies - Monkey Gone to Heaven (Europe) (GHWT).wad" size="24936576" crc="fc207b72" md5="899c0e391e8e8d3d1c18b0f7c46feda1" sha1="2d6476c179f82cf59fa69b3a283e9683aa17fb1c"/>
+	</game>
+	<game name="Guitar Hero World Tour - Pixies - The Sad Punk (Europe) (GHWT)" id="0438">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Pixies - The Sad Punk (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Pixies - The Sad Punk (Europe) (GHWT).wad" size="22969920" crc="500e4ed9" md5="011b0f6a81b32e43576e811436ad5215" sha1="5c93a493d975495b8b5c825577951e32dc219e50"/>
+	</game>
+	<game name="Guitar Hero World Tour - Placebo - The Bitter End (Europe) (GHWT)" id="0440">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Placebo - The Bitter End (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Placebo - The Bitter End (Europe) (GHWT).wad" size="25213440" crc="f796383d" md5="a179d884f6d8fc90def4a0197bbccfb6" sha1="f5054605eb211e5feb70c974f49384b5403aaa5e"/>
+	</game>
+	<game name="Guitar Hero World Tour - Protest the Hero - Bloodmeat (Europe) (GHWT)" id="0442">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Protest the Hero - Bloodmeat (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Protest the Hero - Bloodmeat (Europe) (GHWT).wad" size="24952320" crc="7039bbd3" md5="a7c4f81e50b439317396dff543512792" sha1="6cd5dfa346954ef08f075f93e7bcca4255523325"/>
+	</game>
+	<game name="Guitar Hero World Tour - Queen + Paul Rodgers - C-lebrity (Europe) (GHWT)" id="0444">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Queen + Paul Rodgers - C-lebrity (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Queen + Paul Rodgers - C-lebrity (Europe) (GHWT).wad" size="23612736" crc="114897ce" md5="cc3f6a6f676fb9a553db581efed68e20" sha1="e5f849d8ab55ba9cd3ea722c883a635cb335609e"/>
+	</game>
+	<game name="Guitar Hero World Tour - Queen - Fat Bottomed Girls (Europe) (GHWT)" id="0446">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Queen - Fat Bottomed Girls (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Queen - Fat Bottomed Girls (Europe) (GHWT).wad" size="23660416" crc="be239ec6" md5="5969c606e43a01070c8b81f71504fcb4" sha1="46f43f71c5ff004d9452b194915669a40834a490"/>
+	</game>
+	<game name="Guitar Hero World Tour - Queen - We Are the Champions (Europe) (GHWT)" id="0448">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Queen - We Are the Champions (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Queen - We Are the Champions (Europe) (GHWT).wad" size="23679936" crc="235d8a0e" md5="fe67bc4cb89c0cedd608ba29a28b4694" sha1="490449cb5804dd3299d1dda1f2c00f62c04d6491"/>
+	</game>
+	<game name="Guitar Hero World Tour - R.E.M. - Horse to Water (Europe) (GHWT)" id="0450">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - R.E.M. - Horse to Water (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - R.E.M. - Horse to Water (Europe) (GHWT).wad" size="19246656" crc="dc0432ee" md5="be327da65235324269191787b474f2ed" sha1="42c4436b365f6f13acfa579d8ccb7087495a3dd4"/>
+	</game>
+	<game name="Guitar Hero World Tour - R.E.M. - Man-Sized Wreath (Europe) (GHWT)" id="0452">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - R.E.M. - Man-Sized Wreath (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - R.E.M. - Man-Sized Wreath (Europe) (GHWT).wad" size="20775040" crc="a343b3f2" md5="2ea4aa43d49d66ee000dd7057ca40eb1" sha1="44d8633a6e5fe0b0e24ab3b510918d6636a87610"/>
+	</game>
+	<game name="Guitar Hero World Tour - R.E.M. - Supernatural Superserious (Europe) (GHWT)" id="0454">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - R.E.M. - Supernatural Superserious (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - R.E.M. - Supernatural Superserious (Europe) (GHWT).wad" size="24739648" crc="fb454569" md5="2cb98457096bbca10f2c173a3b10deaf" sha1="804aa595b04e54976c3e7f623e23afc054f1a832"/>
+	</game>
+	<game name="Guitar Hero World Tour - Ram Jam - Black Betty (Europe) (GHWT)" id="0456">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Ram Jam - Black Betty (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Ram Jam - Black Betty (Europe) (GHWT).wad" size="24821504" crc="38017021" md5="e4eaff4f7cef7d5820843363110789ce" sha1="0f147151f510dacca43069eb4b47bdb252bcd842"/>
+	</game>
+	<game name="Guitar Hero World Tour - Rancid - Ruby Soho (Europe) (GHWT)" id="0458">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Rancid - Ruby Soho (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Rancid - Ruby Soho (Europe) (GHWT).wad" size="22381056" crc="5660d8f5" md5="19654b3ef40814272ef8df569706489a" sha1="a61d7ef9618f697583f3e81a495b8744d1b51e10"/>
+	</game>
+	<game name="Guitar Hero World Tour - Rancid - Ruby Soho (Europe) (Update) (GHWT)" id="0459">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Rancid - Ruby Soho (Europe) (Update) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Rancid - Ruby Soho (Europe) (Update) (GHWT).wad" size="22385920" crc="822f6a9b" md5="0f7637ba69b0906118f3d18840de3b70" sha1="1a46461e08766f6f56a4360b84f79f40c2dac289"/>
+	</game>
+	<game name="Guitar Hero World Tour - Rascal Flatts - Me and My Gang (Europe) (GHWT)" id="0461">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Rascal Flatts - Me and My Gang (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Rascal Flatts - Me and My Gang (Europe) (GHWT).wad" size="23624576" crc="430f536e" md5="7498777456c854e817ceb5184e4a2147" sha1="998677c99bdad98dd8169d1385ed17aa4122bb1f"/>
+	</game>
+	<game name="Guitar Hero World Tour - Rev Theory - Light It Up (Europe) (GHWT)" id="0463">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Rev Theory - Light It Up (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Rev Theory - Light It Up (Europe) (GHWT).wad" size="24339264" crc="7f94b21f" md5="7c4ee5aa04b99caf8004171d81c8f27a" sha1="12cdf95c0caf0d6062b25aa9ae6f0c94864774ad"/>
+	</game>
+	<game name="Guitar Hero World Tour - Richard Fortus - The James Bond Theme (Europe) (GHWT)" id="0465">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Richard Fortus - The James Bond Theme (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Richard Fortus - The James Bond Theme (Europe) (GHWT).wad" size="23148480" crc="c8eb5d2f" md5="7da950b033483dcfbd3bfc041d96843e" sha1="9225ebcb627a70f85bf8c9af610e842cc814be02"/>
+	</game>
+	<game name="Guitar Hero World Tour - Rick Springfield - Jessie's Girl (Europe) (GHWT)" id="0467">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Rick Springfield - Jessie's Girl (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Rick Springfield - Jessie's Girl (Europe) (GHWT).wad" size="24338560" crc="d93d6227" md5="bfff4049ba18a011935ed10b78172df9" sha1="fdc31f038cab05b0ce2cf913ba564841e4b7bc52"/>
+	</game>
+	<game name="Guitar Hero World Tour - Rise Against - Audience of One (Europe) (GHWT)" id="0469">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Rise Against - Audience of One (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Rise Against - Audience of One (Europe) (GHWT).wad" size="25245376" crc="634090a5" md5="df1c8eb324a71f2c48cf93870fd17f7a" sha1="b22daaa76f49b1145ac4ca467cba2caed82020fb"/>
+	</game>
+	<game name="Guitar Hero World Tour - Rise Against - Death Blossoms (Europe) (GHWT)" id="0471">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Rise Against - Death Blossoms (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Rise Against - Death Blossoms (Europe) (GHWT).wad" size="20736704" crc="bcd7d144" md5="0cbea16597c8f442680e7cfb53355da9" sha1="f8164e9ba7a7f35cf297793cd6f16f1b9b65fe24"/>
+	</game>
+	<game name="Guitar Hero World Tour - Rise Against - Ready to Fall (Europe) (GHWT)" id="0473">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Rise Against - Ready to Fall (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Rise Against - Ready to Fall (Europe) (GHWT).wad" size="25197120" crc="1b005b3b" md5="030a8e1b1eb28284d1e28121e546bd7a" sha1="1c9d542fbda3a755c5b0fc5203716339d2bb2292"/>
+	</game>
+	<game name="Guitar Hero World Tour - Ryan Adams - Wonderwall (Europe) (GHWT)" id="0475">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Ryan Adams - Wonderwall (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Ryan Adams - Wonderwall (Europe) (GHWT).wad" size="19367040" crc="2a99921b" md5="797e34eea534ac2f0d49bee1a0339134" sha1="9f60d0323bb13f2dbe4e7ad924bfc320780ce607"/>
+	</game>
+	<game name="Guitar Hero World Tour - S.U.P.R.A.H.U.M.A.N. - ProtoShredanoid - Guitar Hero On Tour Modern Hits Theme (Europe) (GHWT)" id="0477">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - S.U.P.R.A.H.U.M.A.N. - ProtoShredanoid - Guitar Hero On Tour Modern Hits Theme (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - S.U.P.R.A.H.U.M.A.N. - ProtoShredanoid - Guitar Hero On Tour Modern Hits Theme (Europe) (GHWT).wad" size="24561856" crc="6c7d6555" md5="e6678411745ceed9e82db00eb230cfa4" sha1="acc137246cffb1c5029030abb971930c0893e317"/>
+	</game>
+	<game name="Guitar Hero World Tour - Senses Fail - The Martyr (Europe) (GHWT)" id="0479">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Senses Fail - The Martyr (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Senses Fail - The Martyr (Europe) (GHWT).wad" size="25214720" crc="17d90ecb" md5="f27eaafc5e777af55f9b22cb96399619" sha1="a17853f30a952d523b52e0137d34dfc7fae454f3"/>
+	</game>
+	<game name="Guitar Hero World Tour - Silverchair - Tomorrow (Europe) (GHWT)" id="0481">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Silverchair - Tomorrow (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Silverchair - Tomorrow (Europe) (GHWT).wad" size="23501632" crc="3d8917eb" md5="17eca665180f64397a0ac78d3b186b06" sha1="b7bfb9b6f700fbf5717f7a8d7ca4018cb56115e2"/>
+	</game>
+	<game name="Guitar Hero World Tour - Silverstein - I Am the Arsonist (Europe) (GHWT)" id="0483">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Silverstein - I Am the Arsonist (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Silverstein - I Am the Arsonist (Europe) (GHWT).wad" size="25254272" crc="55e6afd4" md5="055b52571fc4a79715d6078d0bbd6f8c" sha1="ba0c59bccdcddce55f5f0c77ecba63c6e3ca2b95"/>
+	</game>
+	<game name="Guitar Hero World Tour - Silverstein - I Am the Arsonist (Europe) (Update) (GHWT)" id="0484">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Silverstein - I Am the Arsonist (Europe) (Update) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Silverstein - I Am the Arsonist (Europe) (Update) (GHWT).wad" size="25259392" crc="034111a5" md5="68dd521df1a32db0bde92bb9e11d0d6e" sha1="8632525c890f8f241975a53b0214fa0a24b86335"/>
+	</game>
+	<game name="Guitar Hero World Tour - Silversun Pickups - It's Nice to Know You Work Alone (Europe) (GHWT)" id="0486">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Silversun Pickups - It's Nice to Know You Work Alone (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Silversun Pickups - It's Nice to Know You Work Alone (Europe) (GHWT).wad" size="24257600" crc="2fe3772a" md5="d4f6d37d7999a3febedd33268d440219" sha1="552abda4a89a55688fe6fbe9b32887d6fab2f2f2"/>
+	</game>
+	<game name="Guitar Hero World Tour - Silversun Pickups - Panic Switch (Europe) (GHWT)" id="0488">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Silversun Pickups - Panic Switch (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Silversun Pickups - Panic Switch (Europe) (GHWT).wad" size="24022848" crc="0c9a95a4" md5="0a806709f6203d6d02173016d7daa7ce" sha1="ef708922eb32786343e3fbf692b8b3a9bd05d871"/>
+	</game>
+	<game name="Guitar Hero World Tour - Silversun Pickups - Well Thought Out Twinkles (Europe) (GHWT)" id="0490">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Silversun Pickups - Well Thought Out Twinkles (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Silversun Pickups - Well Thought Out Twinkles (Europe) (GHWT).wad" size="24304576" crc="c345e19c" md5="4525e05960433c9602d5b4e724e3be8c" sha1="47a9e23ffa55d5b56bbe4d6a53f8b6ddcc54d659"/>
+	</game>
+	<game name="Guitar Hero World Tour - Slightly Stoopid - Jimi (Europe) (GHWT)" id="0492">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Slightly Stoopid - Jimi (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Slightly Stoopid - Jimi (Europe) (GHWT).wad" size="23168896" crc="fdaf7535" md5="4ca306b072d8cebcad41700782e38810" sha1="07c63339a947f39ba534b1693ce6c22036d7c35c"/>
+	</game>
+	<game name="Guitar Hero World Tour - Sportfreunde Stiller - 54, 74, 90, 2010 (Europe) (GHWT)" id="0494">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Sportfreunde Stiller - 54, 74, 90, 2010 (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Sportfreunde Stiller - 54, 74, 90, 2010 (Europe) (GHWT).wad" size="22359360" crc="df4af428" md5="71a2c4ba1033c87dbbf07c8bab3b833c" sha1="4d49b15a63e8a142941ce3ea3b6fe8ccc5f6a26d"/>
+	</game>
+	<game name="Guitar Hero World Tour - Stan Bush - The Touch (Europe) (GHWT)" id="0496">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Stan Bush - The Touch (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Stan Bush - The Touch (Europe) (GHWT).wad" size="23309504" crc="0c8de21d" md5="65a0dab54218fb7b7c4169e12cbc2322" sha1="85150fbc853ee0c1773c009f97d9a552871cf955"/>
+	</game>
+	<game name="Guitar Hero World Tour - Steely Dan - Black Friday (Europe) (GHWT)" id="0498">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Steely Dan - Black Friday (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Steely Dan - Black Friday (Europe) (GHWT).wad" size="24291584" crc="d73148a2" md5="195fd7f4390596807ae7b1350eda91e5" sha1="9a752a62dd72f6d3894cfc31e2cc9dd5d2db3336"/>
+	</game>
+	<game name="Guitar Hero World Tour - Steely Dan - Bodhisattva (Europe) (GHWT)" id="0500">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Steely Dan - Bodhisattva (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Steely Dan - Bodhisattva (Europe) (GHWT).wad" size="24280960" crc="b51b175f" md5="bd93a4c727c308f447a7cc6d50fe4dcc" sha1="375944ab12258ebf2dc0d101fb197d8703c0b659"/>
+	</game>
+	<game name="Guitar Hero World Tour - Steely Dan - Kid Charlemagne (Europe) (GHWT)" id="0502">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Steely Dan - Kid Charlemagne (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Steely Dan - Kid Charlemagne (Europe) (GHWT).wad" size="25204608" crc="7433c45d" md5="39b9ba19dbc354717f344ea463c28117" sha1="40837e25bcbfda5210d095c763cc7bdf2217f460"/>
+	</game>
+	<game name="Guitar Hero World Tour - Steve Ouimette - Dueling Banjos (Europe) (GHWT)" id="0504">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Steve Ouimette - Dueling Banjos (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Steve Ouimette - Dueling Banjos (Europe) (GHWT).wad" size="23986496" crc="fc871a20" md5="ca937cbde5b246c6bcf8198195706e86" sha1="caef74ca6fcd676f8c2a21573dd39b8f7c1237dc"/>
+	</game>
+	<game name="Guitar Hero World Tour - Sworn - Electro Rock (Europe) (GHWT)" id="0506">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Sworn - Electro Rock (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Sworn - Electro Rock (Europe) (GHWT).wad" size="24057472" crc="cc426c4d" md5="5830e5b00cd901a3f396c10a72901a5e" sha1="991d06a433b19289772d7880d0d428e46fb991ce"/>
+	</game>
+	<game name="Guitar Hero World Tour - Ted Nugent - Ted Nugent Guitar Duel (Europe) (GHWT)" id="0508">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Ted Nugent - Ted Nugent Guitar Duel (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Ted Nugent - Ted Nugent Guitar Duel (Europe) (GHWT).wad" size="23889280" crc="f583befd" md5="7470e5509de99a27ce084285e2979503" sha1="cb8df718732092573697882ed6521ef0bbb7406b"/>
+	</game>
+	<game name="Guitar Hero World Tour - The Devil Wears Prada - Dez Moines (Europe) (GHWT)" id="0510">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - The Devil Wears Prada - Dez Moines (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - The Devil Wears Prada - Dez Moines (Europe) (GHWT).wad" size="24504640" crc="c122f613" md5="e278f133ba9c44f210af042461dec10f" sha1="7718a0a2dbd62f578a106a07a30e3e0847f3d1c0"/>
+	</game>
+	<game name="Guitar Hero World Tour - The Killers - Human (Europe) (GHWT)" id="0512">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - The Killers - Human (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - The Killers - Human (Europe) (GHWT).wad" size="23398272" crc="f787ebde" md5="7a0caca975ccf534639e0cef64e807ae" sha1="66609cc833271f0594ca7075448e8eff02599ecb"/>
+	</game>
+	<game name="Guitar Hero World Tour - The Killers - Losing Touch (Europe) (GHWT)" id="0514">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - The Killers - Losing Touch (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - The Killers - Losing Touch (Europe) (GHWT).wad" size="24939456" crc="cd31d9eb" md5="64c724da0311a25765f19f644704d376" sha1="aa9899aae252512d2224cdddda23377365b7b3f3"/>
+	</game>
+	<game name="Guitar Hero World Tour - The Killers - Mr. Brightside (Europe) (GHWT)" id="0516">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - The Killers - Mr. Brightside (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - The Killers - Mr. Brightside (Europe) (GHWT).wad" size="24879360" crc="77fb6a0c" md5="7ab8e70d429926e1acfc1377fd07f3d0" sha1="abea5d9dae08219aaeefac13e8ef0286e55524dc"/>
+	</game>
+	<game name="Guitar Hero World Tour - The Raconteurs - Consoler of the Lonely (Europe) (GHWT)" id="0518">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - The Raconteurs - Consoler of the Lonely (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - The Raconteurs - Consoler of the Lonely (Europe) (GHWT).wad" size="24424192" crc="f9a6d426" md5="55a006d5e49f2b8b8ee23428b7602e99" sha1="73b28c6f512e2aaa195e4bb803a47659d23f8d69"/>
+	</game>
+	<game name="Guitar Hero World Tour - The Raconteurs - Hold Up (Europe) (GHWT)" id="0520">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - The Raconteurs - Hold Up (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - The Raconteurs - Hold Up (Europe) (GHWT).wad" size="24418752" crc="a3a4a004" md5="950cc9cbc5f4adbb7ef42b2fbdedad44" sha1="c023c19ae6ec2b4dd03b058436d11957145e528a"/>
+	</game>
+	<game name="Guitar Hero World Tour - The Raconteurs - Salute Your Solution (Europe) (GHWT)" id="0522">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - The Raconteurs - Salute Your Solution (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - The Raconteurs - Salute Your Solution (Europe) (GHWT).wad" size="23494848" crc="304f11e7" md5="5d7f0e5d3778658463995ec59bf9675a" sha1="b82da3dee3dec1a7665a69e656945f0a23000b2e"/>
+	</game>
+	<game name="Guitar Hero World Tour - The Rasmus - In the Shadows (Europe) (GHWT)" id="0524">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - The Rasmus - In the Shadows (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - The Rasmus - In the Shadows (Europe) (GHWT).wad" size="25064832" crc="0f253070" md5="29bc247d612c7d35749050974fe13774" sha1="d91a978359bb549194e4e2c9af12285dae411740"/>
+	</game>
+	<game name="Guitar Hero World Tour - The Shins - New Slang (Europe) (GHWT)" id="0526">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - The Shins - New Slang (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - The Shins - New Slang (Europe) (GHWT).wad" size="24007936" crc="5847e182" md5="19a19db213ccacb041fb1515ad6d8435" sha1="e9e7af663294d7dd4bf4c508d0f3e3ec55ef0e3f"/>
+	</game>
+	<game name="Guitar Hero World Tour - The Sleeping - Bomb the World (Europe) (GHWT)" id="0528">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - The Sleeping - Bomb the World (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - The Sleeping - Bomb the World (Europe) (GHWT).wad" size="24364800" crc="eb3007a3" md5="d516ce651b7841fa5f0241db71231054" sha1="9dd3742e92f99093f8159aaa595a5a6e264b1495"/>
+	</game>
+	<game name="Guitar Hero World Tour - The Sleeping - Bomb the World (Europe) (Update) (GHWT)" id="0529">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - The Sleeping - Bomb the World (Europe) (Update) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - The Sleeping - Bomb the World (Europe) (Update) (GHWT).wad" size="24369344" crc="5592fdae" md5="3a519fe43eb71b5d8d61d25b40a726eb" sha1="2f3b97299fdc9f515587cd805288368206550698"/>
+	</game>
+	<game name="Guitar Hero World Tour - The Smashing Pumpkins - 1979 (Europe) (GHWT)" id="0531">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - The Smashing Pumpkins - 1979 (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - The Smashing Pumpkins - 1979 (Europe) (GHWT).wad" size="24700224" crc="935b0b17" md5="4628ff4393715f7c36f1a660dc089639" sha1="d640b691a9b26d70c2e0d56f69a929907cca8463"/>
+	</game>
+	<game name="Guitar Hero World Tour - The Smashing Pumpkins - G.L.O.W. (Europe) (GHWT)" id="0533">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - The Smashing Pumpkins - G.L.O.W. (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - The Smashing Pumpkins - G.L.O.W. (Europe) (GHWT).wad" size="23868736" crc="e77241ad" md5="7f1ba273206c7922466f3cfd0a004ee1" sha1="f00a56e75e2601c1bc4080a2a783a6f9db07f6bc"/>
+	</game>
+	<game name="Guitar Hero World Tour - The Smashing Pumpkins - The Everlasting Gaze (Europe) (GHWT)" id="0535">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - The Smashing Pumpkins - The Everlasting Gaze (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - The Smashing Pumpkins - The Everlasting Gaze (Europe) (GHWT).wad" size="24671104" crc="e020df24" md5="df02c89ce99870c9e1dd52ec34943322" sha1="2cfc3d6cac15ee9160f278af1064ae839ad6deb0"/>
+	</game>
+	<game name="Guitar Hero World Tour - The Vines - Outtathaway! (Europe) (GHWT)" id="0537">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - The Vines - Outtathaway! (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - The Vines - Outtathaway! (Europe) (GHWT).wad" size="24120896" crc="b8fdee29" md5="2ece791704c130279680dd41945c6cb3" sha1="6571e05e4e20ecf8ec4b0cf8f415ffc5faf26855"/>
+	</game>
+	<game name="Guitar Hero World Tour - Thrice - All the World Is Mad (Europe) (GHWT)" id="0539">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Thrice - All the World Is Mad (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Thrice - All the World Is Mad (Europe) (GHWT).wad" size="24806976" crc="240f656e" md5="585f24e1da34e4f02a304f4941423bee" sha1="8f90f87ecda7c1def3bf118690402cbabbf0981f"/>
+	</game>
+	<game name="Guitar Hero World Tour - Unearth - Grave of Opportunity (Europe) (GHWT)" id="0541">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Unearth - Grave of Opportunity (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Unearth - Grave of Opportunity (Europe) (GHWT).wad" size="24956160" crc="872ff2f8" md5="64f9ee19d8b0f5d21690b3ffd35be5ea" sha1="f3c85a2e4540b93d1701a30ceff3dbe1c163a2d1"/>
+	</game>
+	<game name="Guitar Hero World Tour - Vanilla Sky - Break It Out (Europe) (GHWT)" id="0543">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Vanilla Sky - Break It Out (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Vanilla Sky - Break It Out (Europe) (GHWT).wad" size="25153600" crc="ccb0e584" md5="015a8f0c70907242279b447ba2495da5" sha1="dc1888fbf0c0a23edf027c2da912d1e06702af77"/>
+	</game>
+	<game name="Guitar Hero World Tour - Wings - Hi Hi Hi (Europe) (GHWT)" id="0545">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Wings - Hi Hi Hi (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Wings - Hi Hi Hi (Europe) (GHWT).wad" size="24603072" crc="dc74455c" md5="5b1e92219a715fc78a720920d603d0fc" sha1="3eb215939f6578c70df44cb35b761833a30b87ae"/>
+	</game>
+	<game name="Guitar Hero World Tour - Wings - Jet (Europe) (GHWT)" id="0547">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Wings - Jet (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Wings - Jet (Europe) (GHWT).wad" size="24275648" crc="9e604087" md5="d99e5905269aceb819b111b3dd686f7d" sha1="5b2e87effdf24bd36c50552326dcf6cfee887a54"/>
+	</game>
+	<game name="Guitar Hero World Tour - Wings - Junior's Farm (Europe) (GHWT)" id="0549">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Wings - Junior's Farm (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Wings - Junior's Farm (Europe) (GHWT).wad" size="24637952" crc="8c7720b8" md5="d08d7ef462ffd5916db887d3e6a8a492" sha1="d9f3dfe1b87403f58a00a9d153b941fb16e85b49"/>
+	</game>
+	<game name="Guitar Hero World Tour - Within Temptation - What Have You Done (Europe) (GHWT)" id="0551">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Within Temptation - What Have You Done (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Within Temptation - What Have You Done (Europe) (GHWT).wad" size="24556160" crc="889f17dc" md5="2a43ec77f98b24f36f9d011d7f4bf9b0" sha1="51610502b26667d8456590393643580cdaa08b4a"/>
+	</game>
+	<game name="Guitar Hero World Tour - Wolfmother - Dimension (Europe) (GHWT)" id="0553">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Wolfmother - Dimension (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Wolfmother - Dimension (Europe) (GHWT).wad" size="24037696" crc="ec596f35" md5="640a2a7a7d5a276a9ee58ec0a970977e" sha1="b23071c11376295efd9bba8760309e4f4c2a54e8"/>
+	</game>
+	<game name="Guitar Hero World Tour - ZZ Top - Gimme all Your Lovin' (Europe) (GHWT)" id="0557">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - ZZ Top - Gimme all Your Lovin' (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - ZZ Top - Gimme all Your Lovin' (Europe) (GHWT).wad" size="24211392" crc="6ed3a19e" md5="e7939d015a94cba705381f9614da3237" sha1="98f4f14b33d94cd890015909944e98d808ca615e"/>
+	</game>
+	<game name="Guitar Hero World Tour - Zakk Wylde - Zakk Wylde Guitar Duel (Europe) (GHWT)" id="0555">
+		<category>Games</category>
+		<description>Guitar Hero World Tour - Zakk Wylde - Zakk Wylde Guitar Duel (Europe) (GHWT)</description>
+		<rom name="Guitar Hero World Tour - Zakk Wylde - Zakk Wylde Guitar Duel (Europe) (GHWT).wad" size="23939456" crc="3c871a6f" md5="919e517d0aeeeff3e57303e80a08f75b" sha1="b6c3761a26d30b0169e146622f04060eadce68d5"/>
+	</game>
+	<game name="Title Files (Europe) (BRB)" id="0031">
+		<category>Games</category>
+		<description>Title Files (Europe) (BRB)</description>
+		<rom name="Title Files (Europe) (BRB).wad" size="54014" crc="983dd209" md5="268322f83e3e17d74bc3554036fb637f" sha1="e0f132c4af23ea47fc2d255c1a9ebad42f2572bf"/>
+	</game>
+	<game name="Title Files (Europe) (DH2)" id="3602">
+		<category>Games</category>
+		<description>Title Files (Europe) (DH2)</description>
+		<rom name="Title Files (Europe) (DH2).wad" size="65984" crc="4f45c228" md5="ca020ea3eeb69e2f2908f37a313e0a87" sha1="6f81205c47c970b8def73e8188ad904ccdd8946c"/>
+	</game>
+	<game name="Title Files (Europe) (JD2)" id="3895">
+		<category>Games</category>
+		<description>Title Files (Europe) (JD2)</description>
+		<rom name="Title Files (Europe) (JD2).wad" size="33664" crc="4c30c677" md5="6483e36a71dacfbf659fc50a9e3975eb" sha1="4bc4bcde0411687d2d420066eb931803069846af"/>
+	</game>
+	<game name="Title Files (Europe) (JD2014)" id="3896">
+		<category>Games</category>
+		<description>Title Files (Europe) (JD2014)</description>
+		<rom name="Title Files (Europe) (JD2014).wad" size="33726" crc="497947b9" md5="1215cdc4b590abdfcf903a2fc5f249b0" sha1="703bb31745d2925776fcb9e85866b859ffcd3113"/>
+	</game>
+	<game name="Title Files (Europe) (JD2015)" id="3897">
+		<category>Games</category>
+		<description>Title Files (Europe) (JD2015)</description>
+		<rom name="Title Files (Europe) (JD2015).wad" size="34110" crc="f801001b" md5="d3329e77374852a435a62e16400cd7fa" sha1="5906e71c410e077da556019838e2546e952a0138"/>
+	</game>
+	<game name="Title Files (Europe) (JD3)" id="3898">
+		<category>Games</category>
+		<description>Title Files (Europe) (JD3)</description>
+		<rom name="Title Files (Europe) (JD3).wad" size="33536" crc="5e37530e" md5="6b6113a920bc966c28ad073d09cd951c" sha1="541dc2b73b96fbd2f61a9d337a50fec8339aa320"/>
+	</game>
+	<game name="Title Files (Europe) (JD4)" id="3899">
+		<category>Games</category>
+		<description>Title Files (Europe) (JD4)</description>
+		<rom name="Title Files (Europe) (JD4).wad" size="33472" crc="ba4e7e56" md5="60eedda7d8286229e09f246fd401da9b" sha1="96173cb6e59ddff3d8983066185a7e9703b82a48"/>
+	</game>
+	<game name="Title Files (Europe) (RB2)" id="3603">
+		<category>Games</category>
+		<description>Title Files (Europe) (RB2)</description>
+		<rom name="Title Files (Europe) (RB2).wad" size="70080" crc="f777b02c" md5="cf94ecc8f9bbff03403bd63e4c1a31b9" sha1="6e7a3245c64e148b42a7e7606a2f06207d5d7440"/>
+	</game>
+	<game name="Title Files (Europe) (RB3)" id="3609">
+		<category>Games</category>
+		<description>Title Files (Europe) (RB3)</description>
+		<rom name="Title Files (Europe) (RB3).wad" size="69824" crc="c029364f" md5="872183799c02241666b6f347c3484458" sha1="ed22f665963b11233fdccf6c85170431128228e0"/>
+	</game>
+	<game name="Title Files (Europe) (Rev 3) (GHWT)" id="0037">
+		<category>Games</category>
+		<description>Title Files (Europe) (Rev 3) (GHWT)</description>
+		<rom name="Title Files (Europe) (Rev 3) (GHWT).wad" size="9312" crc="f5c7d639" md5="615503526c75468858d0d15f198a4664" sha1="828ae5ce7a25bbe1337cea56730467dcb74c7ce3"/>
+	</game>
+	<game name="Title Files (Europe) (Rev 9) (GH 5)" id="0043">
+		<category>Games</category>
+		<description>Title Files (Europe) (Rev 9) (GH 5)</description>
+		<rom name="Title Files (Europe) (Rev 9) (GH 5).wad" size="8448" crc="b1853cfe" md5="2562be58d9a057c87164ea8ad70121b5" sha1="db2e334f835b1ca4edb93648a5c385bbc7102d88"/>
+	</game>
+</datafile>

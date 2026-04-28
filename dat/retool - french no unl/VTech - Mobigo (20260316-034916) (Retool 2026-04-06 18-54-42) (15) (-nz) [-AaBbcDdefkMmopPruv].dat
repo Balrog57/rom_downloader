@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<name>VTech - Mobigo (Retool)</name>
+		<description>VTech - Mobigo (15) (-nz) [-AaBbcDdefkMmopPruv] (20260316-034916) (Retool)</description>
+		<version>20260316-034916</version>
+		<date>2026-04-06 18-54-42</date>
+		<author>nnssxx, Tauwasser</author>
+		<homepage>http://www.github.com/unexpectedpanda/retool</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"></clrmamepro>
+		<retool>Created by Retool 2.4.8</retool>
+	</header>
+	<game name="Brave (USA)" id="0034">
+		<category>Games</category>
+		<description>Brave (USA)</description>
+		<rom name="Brave (USA).bin" size="16777216" crc="cbf91103" md5="8796dfef65603ff5e0aca702a0f3fad0" sha1="39ba554528ff070e39d737233ad4b85937ccb9e8" sha256="6e36b03f9a69299185d865027ee0cc91303d0915f854deed4e1c7de048d73aea"/>
+	</game>
+	<game name="Cars 2 (USA) (Rev 1)" id="0039">
+		<category>Games</category>
+		<description>Cars 2 (USA) (Rev 1)</description>
+		<rom name="Cars 2 (USA) (Rev 1).bin" size="16777216" crc="9d0da1ef" md5="d826bb14857cb7e659542fb3d2eac8bf" sha1="2fc4e5e4251508b391067541fcca0230b6cf5b16" sha256="28f8fb61a5072afb3fe320ffe7b1e19d39bf7cb01f35f936f91100d60a88aca8"/>
+	</game>
+	<game name="Disney Fairies - Explore Your Talents (USA)" id="0040">
+		<category>Games</category>
+		<description>Disney Fairies - Explore Your Talents (USA)</description>
+		<rom name="Disney Fairies - Explore Your Talents (USA).bin" size="16777216" crc="0e26b761" md5="7d174dab1479173fc58890f7489456d7" sha1="a0f1ccb048990e4144801f05c143d4f38f9cbf44" sha256="2998ce1f36bd82de2ab5cd3964263dd45d1902fb0302e0a0b21f7dbb9949a602"/>
+	</game>
+	<game name="Disney Princess (USA)" id="0032">
+		<category>Games</category>
+		<description>Disney Princess (USA)</description>
+		<rom name="Disney Princess (USA).bin" size="16777216" crc="fd9d04fc" md5="03272b9c02efad17fb50cbaf0661531c" sha1="af9ae160faf3087eb4d3a375c484e569465d4fc4" sha256="c2f6066b90310204c38a84a5c2d259073d3669273f8b05d11664e5499874894c"/>
+	</game>
+	<game name="Jake and the Neverland Pirates (USA)" id="0035">
+		<category>Games</category>
+		<description>Jake and the Neverland Pirates (USA)</description>
+		<rom name="Jake and the Neverland Pirates (USA).bin" size="16777216" crc="afb1288c" md5="d1d355f0bd23b6c8352c07c0d1627ca7" sha1="355358492787020668daf2cf7cf56fadf3da2710" sha256="b34fa295e806ca4cbd2e6632230d84f84a8c757a622cafc67502149b49e41b10"/>
+	</game>
+	<game name="Mickey Mouse (USA)" id="0044">
+		<category>Games</category>
+		<description>Mickey Mouse (USA)</description>
+		<rom name="Mickey Mouse (USA).bin" size="16777216" crc="51671cd0" md5="e94ee26174f376779bcf88f8177906f6" sha1="73a2d1a0a8701d3a5daaa98972af545b4b448bf2" sha256="d6978b9af643d8772cd626cba90d5ff29c0827e8db1a88b78b84ffe34ffa0bee"/>
+	</game>
+	<game name="Penguins of Madagascar, The - Mission Madness (USA)" id="0036">
+		<category>Games</category>
+		<description>Penguins of Madagascar, The - Mission Madness (USA)</description>
+		<rom name="Penguins of Madagascar, The - Mission Madness (USA).bin" size="16777216" crc="b3f0fd02" md5="005b619b835b63239e459c18938f8a25" sha1="ef896a26820ea6f4f79e0c7d9debf6f23c6d10fb" sha256="aa5177c131df4a5ef2a99679792f1d1813ff63f1ac3f27b917dd4ef9fc9202d9"/>
+	</game>
+	<game name="Scooby-Doo! - Mystery Town (United Kingdom)" id="0014">
+		<category>Games</category>
+		<description>Scooby-Doo! - Mystery Town (United Kingdom)</description>
+		<rom name="Scooby-Doo! - Mystery Town (United Kingdom).bin" size="16777216" crc="dcc4a1ee" md5="66aa4f7130cebfeac1ed4fd7b0f163fe" sha1="678e4c83bb120db028ffdd170f4bcfb3aa9d5229" sha256="45f4f88989603dad468fc30d9d1b57b0960caad23c05eecbe96eee7f48ea5339"/>
+	</game>
+	<game name="Sesame Street - Elmo and Abby - Nature Explorers (USA)" id="0033">
+		<category>Games</category>
+		<description>Sesame Street - Elmo and Abby - Nature Explorers (USA)</description>
+		<rom name="Sesame Street - Elmo and Abby - Nature Explorers (USA).bin" size="16777216" crc="73095ec6" md5="54fabf8ac1b92a3c59bdb1893b122b0b" sha1="884b7025f19b1a566d76ccac144b7be19e1e7c0d" sha256="eaf9bb10ec5811ec49c90116ec6319b9908d23fff9b6f67a59a1200d8a46e2ec"/>
+	</game>
+	<game name="Shrek - Forever After (USA)" id="0031">
+		<category>Games</category>
+		<description>Shrek - Forever After (USA)</description>
+		<rom name="Shrek - Forever After (USA).bin" size="16777216" crc="c8bdb5f6" md5="52ed3d6cb92e9bb68d9ce0db8b7b4174" sha1="f376884717907cfd96d23085a26350bc5589bdb7" sha256="25124536651fc9216ee75adba2ac50a71049c0ab2c665e8b8453c428521b49fa"/>
+	</game>
+	<game name="Spongebob SquarePants - Defending the Secret Formula (USA)" id="0046">
+		<category>Games</category>
+		<description>Spongebob SquarePants - Defending the Secret Formula (USA)</description>
+		<rom name="Spongebob SquarePants - Defending the Secret Formula (USA).bin" size="16777216" crc="85266243" md5="7c30b48c1d46c864f8836dda41070530" sha1="4ffd4ca308d1d3419396e706892ff6eff23d8cd0" sha256="baa833464338ce6eb6fb21aa54733cc076462941007dc4f0e118d6da822a2ae5"/>
+	</game>
+	<game name="Super Hero Squad - Sports Heroes (United Kingdom)" id="0005">
+		<category>Games</category>
+		<description>Super Hero Squad - Sports Heroes (United Kingdom)</description>
+		<rom name="Super Hero Squad - Sports Heroes (United Kingdom).bin" size="16777216" crc="e5060f03" md5="dea1826c5ea1b00dffc38eaa48891489" sha1="886dccb473f3a196ed1f475f04663e73aff9aedc" sha256="f8589e303abb3ded60fb82dfce792af96c988b633083e9e670457e24a80af82e"/>
+	</game>
+	<game name="Tangled (USA)" id="0045">
+		<category>Games</category>
+		<description>Tangled (USA)</description>
+		<rom name="Tangled (USA).bin" size="16777216" crc="8883ecf6" md5="ed05c9ca0cb8ceed2df70fb7a733bc51" sha1="b51cff0333644e758a4cc7ef26b2365e9a58877c" sha256="de6ad0787d96c07843b8d8f80cc2ff4b59f88fcfee915c44844ff2cd445d987b"/>
+	</game>
+	<game name="Thomas &amp; Friends - Really Useful Engines (USA) (Rev 1)" id="0038">
+		<category>Games</category>
+		<description>Thomas &amp; Friends - Really Useful Engines (USA) (Rev 1)</description>
+		<rom name="Thomas &amp; Friends - Really Useful Engines (USA) (Rev 1).bin" size="16777216" crc="a5515438" md5="232526e82ea472c006cb1da901da6610" sha1="3a9896c28479aff95d43692da2562e97f974c44d" sha256="8f0419e6b479f56d123083bf8dc080d592fbb481616ddc9e589869677538eba6"/>
+	</game>
+	<game name="Toy Story 3 (USA)" id="0043">
+		<category>Games</category>
+		<description>Toy Story 3 (USA)</description>
+		<rom name="Toy Story 3 (USA).bin" size="16777216" crc="bf7bc6e1" md5="587aba71ebeaecc3bde5b9767680c641" sha1="cc86160f29848d6620923cffd0f740a593ba2d94" sha256="b2564db6f56c90bd08c9f018a7c957e7e1a5ab8081a0b8ff5a330ca4a0667458"/>
+	</game>
+</datafile>

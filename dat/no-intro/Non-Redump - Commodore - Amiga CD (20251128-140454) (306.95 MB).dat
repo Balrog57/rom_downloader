@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<id>464</id>
+		<name>Non-Redump - Commodore - Amiga CD</name>
+		<description>Non-Redump - Commodore - Amiga CD</description>
+		<subset>Non-Redump</subset>
+		<version>20251128-140454</version>
+		<author>Gefflon, NovaAurora</author>
+		<homepage>No-Intro</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"/>
+	</header>
+	<game name="Bridge Strike (Poland)" id="0001">
+		<description>Bridge Strike (Poland)</description>
+		<rom name="Bridge Strike (Poland).cue" size="88" crc="c7f745d7" sha1="effa29cc968aaf6301f773e1cbf2a469fb411f15"/>
+		<rom name="Bridge Strike (Poland).bin" size="37288608" crc="a0d951c0" md5="e18e7d6ee30c8d7bb6b44b0c87d811ee" sha1="1ed5c6852adba37888deb99833a30d36b8128959" sha256="0b303aa0bcc9189a44a517eee75a51e01a0af2995b7aa0a9de2c66a358a4cc68"/>
+	</game>
+	<game name="Sixth Sense Investigations (Europe)" id="0003">
+		<description>Sixth Sense Investigations (Europe)</description>
+		<rom name="Sixth Sense Investigations (Europe).cue" size="101" crc="896d4304" sha1="633db19ac2c87eba33a95e6252fdae200d867c64"/>
+		<rom name="Sixth Sense Investigations (Europe).bin" size="278276880" crc="7925c4ec" md5="9fc030f338f01990b8efb0aa0f5a1c75" sha1="4371de2c32e111e0f63111ea3c19f469eec0fe30" sha256="cafb0e12dbdceef50053da6c114b5a11bb8fc578deebb12a26713fcbc73085b4"/>
+	</game>
+	<game name="Tanks Furry (Poland)" id="0002">
+		<description>Tanks Furry (Poland)</description>
+		<rom name="Tanks Furry (Poland).cue" size="86" crc="29d8b0b4" sha1="6e20fc187c488a24c1811f5d5b4086cf4fe5f29a"/>
+		<rom name="Tanks Furry (Poland).bin" size="6291600" crc="2005e284" md5="a312fc60387ea0d4922b676deac1b660" sha1="f8081aa77e40e9ad0b123945c57d55abf8ed8151" sha256="f45e034e6a6f3ac19561f28251d30698ed9d1630ab66d3a6970bd4c26f0d41fc"/>
+	</game>
+</datafile>

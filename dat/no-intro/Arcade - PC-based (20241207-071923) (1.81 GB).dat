@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<id>399</id>
+		<name>Arcade - PC-based</name>
+		<description>Arcade - PC-based</description>
+		<version>20241207-071923</version>
+		<author>Hiccup</author>
+		<homepage>No-Intro</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"/>
+	</header>
+	<game name="Mario Kart Arcade GP DX (Unknown) (v1.18) [b]" id="0001">
+		<category>Games</category>
+		<description>Mario Kart Arcade GP DX (Unknown) (v1.18) [b]</description>
+		<rom name="Mario Kart Arcade GP DX (Unknown) (v1.18) [b].7z" size="1688871977" crc="4400aeca" md5="8152f02e94472b3cd0367ed7825ff41d" sha1="daf9023b967024d5f08aa0bba20160efd6486a84" sha256="c7be17b5ed0fc3e597c328cc8e8a32bd4c4ab9b043baae2e2adac4e25da89661" status="baddump"/>
+	</game>
+	<game name="New Super Mario Bros. Wii Coin World (Unknown)" id="0002">
+		<category>Games</category>
+		<description>New Super Mario Bros. Wii Coin World (Unknown)</description>
+		<rom name="vdimg_ec_dec.img" size="250609664" crc="a87b5473" md5="6018f7b4103bba5af90b0fcbb4240a64" sha1="09d78eed0c49349f604e3d692a927c8f8f9e3fc2" sha256="49dacae42823223d096a185b62c1f12ccd5f0bbe8afc64009e3bc34f52081962"/>
+	</game>
+</datafile>

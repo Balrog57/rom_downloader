@@ -80,8 +80,8 @@ Roms/**/*.zip
 Roms/**/*.7z
 Roms/**/*.rar
 
-# DAT files (large, generated locally — keep them out of the repo)
-dat/
+# DAT files (optional - can be large)
+# *.dat
 
 # Database files (keep the zip, exclude extracted JSON)
 # rom_database.json
