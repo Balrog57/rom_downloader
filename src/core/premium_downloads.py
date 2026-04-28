@@ -193,7 +193,8 @@ def download_alldebrid(url: str, dest_path: str, api_key: str, progress_callback
             print(f"  Erreur: {error.get('message', 'Unknown error')}")
             return False
 
-        download_url = result.get('data', {}).get('downloadLink')
+        data = result.get('data', {})
+        download_url = data.get('downloadLink') or data.get('link')
         if not download_url:
             print("  Erreur: Pas d'URL de telechargement")
             return False
