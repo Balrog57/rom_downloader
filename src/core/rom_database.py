@@ -225,6 +225,81 @@ def database_result_filename(entry: dict, fallback: str = '') -> str:
     )
 
 
+def add_to_shard(md5_hash: str, entry: dict, url: str = ''):
+    """Ajoute ou met a jour une entree ROM dans le shard correspondant.
+    Permet d'enrichir la base incrementalement quand une ROM est trouvee."""
+    import time
+    md5_hash = (md5_hash or '').lower().strip()
+    if not md5_hash or len(md5_hash) != 32:
+        return False
+
+    shard_char = md5_hash[0]
+    conn, columns = load_rom_db_shard(shard_char)
+    if not conn:
+        return False
+
+    shard_cache = ROM_DB_SHARD_CONNECTIONS.get(shard_char)
+    if not shard_cache:
+        return False
+    shard_lock = shard_cache.get('lock') or threading.RLock()
+
+    try:
+        with shard_lock:
+            cursor = conn.cursor()
+
+            existing_entries = []
+            existing_urls = []
+            cursor.execute("SELECT entries, urls FROM roms WHERE md5 = ?", (md5_hash,))
+            row = cursor.fetchone()
+            if row:
+                try:
+                    existing_entries = json.loads(row[0] or '[]')
+                except (json.JSONDecodeError, TypeError):
+                    existing_entries = []
+                try:
+                    existing_urls = json.loads(row[1] or '[]')
+                except (json.JSONDecodeError, TypeError):
+                    existing_urls = []
+
+            new_entry = {
+                'host': entry.get('host', 'unknown'),
+                'file_name': entry.get('file_name') or entry.get('filename') or entry.get('full_name', ''),
+                'full_path': entry.get('full_path', ''),
+                'size': str(entry['size']) if entry.get('size') else '',
+                'crc32': entry.get('crc32') or entry.get('crc', ''),
+                'sha1': entry.get('sha1', ''),
+                'torrent_path': entry.get('torrent_path', ''),
+                'torrent_url': entry.get('torrent_url', url),
+            }
+
+            host_lower = new_entry['host'].lower()
+            duplicate = False
+            for existing in existing_entries:
+                if (existing.get('torrent_url') or existing.get('url', '')).lower() == (new_entry['torrent_url'] or new_entry.get('url', url)).lower():
+                    duplicate = True
+                    break
+                if existing.get('file_name', '').lower() == new_entry['file_name'].lower() and existing.get('host', '').lower() == host_lower:
+                    duplicate = True
+                    break
+
+            if not duplicate:
+                existing_entries.append(new_entry)
+                if url:
+                    existing_urls.append(url)
+
+            entries_json = json.dumps(existing_entries, ensure_ascii=False, separators=(',', ':'))
+            urls_json = json.dumps(existing_urls, ensure_ascii=False, separators=(',', ':'))
+            cursor.execute(
+                "INSERT OR REPLACE INTO roms (md5, entries, urls) VALUES (?, ?, ?)",
+                (md5_hash, entries_json, urls_json)
+            )
+            conn.commit()
+        return True
+    except Exception as e:
+        print(f"Erreur ajout shard {shard_char}: {e}")
+        return False
+
+
 def search_by_crc(crc_hash: str) -> list:
     """
     Recherche une ROM par CRC dans la base locale.
@@ -298,6 +373,7 @@ __all__ = [
     'is_minerva_database_result',
     'search_by_md5',
     'database_result_filename',
+    'add_to_shard',
     'search_by_crc',
     'search_by_sha1',
     'search_by_name',

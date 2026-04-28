@@ -184,20 +184,12 @@ def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_ru
                     print(f"  Torrent: {torrent_url[:80]}...")
                     success = download_from_minerva_torrent(torrent_url, filename, dest_path)
 
-                elif source in ['myrient', 'Myrient', 'Myrient No-Intro', 'Myrient Redump', 'Myrient TOSEC', 'Myrient Custom'] and download_url:
-                    print(f"  URL: {download_url[:80]}...")
-                    success = download_file(download_url, dest_path, session)
-
                 elif source == 'database' and download_url:
                     print(f"  URL: {download_url[:80]}...")
 
                     if '1fichier.com' in download_url:
                         api_keys = load_api_keys()
                         success = download_from_premium_source('1fichier', download_url, dest_path, api_keys)
-                    elif 'archive.org' in download_url:
-                        success = download_file(download_url, dest_path, session)
-                    elif 'myrient' in download_url:
-                        success = download_file(download_url, dest_path, session)
                     else:
                         success = download_file(download_url, dest_path, session)
 

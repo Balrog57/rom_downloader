@@ -107,6 +107,137 @@ def attempt_download_from_resolved_provider(game_info: dict, output_folder: str,
         if page_url:
             success = download_vimm(page_url, dest_path, get_vimm_session(), progress_callback)
 
+    elif source == 'RomHustler':
+        page_url = game_info.get('page_url')
+        download_url = game_info.get('download_url')
+        if download_url:
+            rh_session = requests.Session()
+            rh_session.headers.update({
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            })
+            success = download_file(download_url, dest_path, rh_session, progress_callback, download_timeout, progress_detail_callback)
+        elif page_url:
+            rh_session = requests.Session()
+            rh_session.headers.update({
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            })
+            from .scrapers import _romhustler_session as _rh_sess
+            rh_session = _rh_sess()
+            try:
+                resp = rh_session.get(page_url, timeout=30)
+                if resp.status_code == 200:
+                    from bs4 import BeautifulSoup
+                    import re as _re
+                    soup = BeautifulSoup(resp.text, 'html.parser')
+                    for a in soup.find_all('a', href=True):
+                        if '/download/' in a.get('href', ''):
+                            from urllib.parse import urljoin
+                            from .constants import ROMHUSTLER_BASE
+                            dl_url = urljoin(ROMHUSTLER_BASE, a['href'])
+                            success = download_file(dl_url, dest_path, rh_session, progress_callback, download_timeout, progress_detail_callback)
+                            break
+            except Exception:
+                pass
+
+    elif source == 'CoolROM':
+        page_url = game_info.get('page_url')
+        if page_url:
+            cr_session = requests.Session()
+            cr_session.headers.update({
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                'Referer': 'https://coolrom.com.au/',
+            })
+            try:
+                resp = cr_session.get(page_url, timeout=30)
+                if resp.status_code == 200:
+                    from bs4 import BeautifulSoup
+                    import re as _re
+                    from urllib.parse import urljoin
+                    from .constants import COOLROM_BASE
+                    soup = BeautifulSoup(resp.text, 'html.parser')
+                    for a in soup.find_all('a', href=True):
+                        href = a.get('href', '')
+                        if 'dl.coolrom.com.au' in href:
+                            success = download_file(href, dest_path, cr_session, progress_callback, download_timeout, progress_detail_callback)
+                            break
+                        if '/dl/' in href:
+                            dl_url = urljoin(COOLROM_BASE, href)
+                            success = download_file(dl_url, dest_path, cr_session, progress_callback, download_timeout, progress_detail_callback)
+                            break
+            except Exception:
+                pass
+
+    elif source == 'RomsXISOs' and download_url:
+        if game_info.get('is_gdrive'):
+            try:
+                with session.get(download_url, stream=True, allow_redirects=True, timeout=download_timeout) as gresp:
+                    gresp.raise_for_status()
+                    cd = gresp.headers.get('content-disposition', '')
+                    if 'text/html' in gresp.headers.get('content-type', '') and 'export=download' in download_url:
+                        confirm_url = None
+                        from bs4 import BeautifulSoup
+                        soup = BeautifulSoup(gresp.text, 'html.parser')
+                        form = soup.find('form', id='download-form') or soup.find('form')
+                        if form:
+                            action = form.get('action', '')
+                            confirm_url = action if action.startswith('http') else urljoin(download_url, action)
+                        if confirm_url:
+                            import re as _re
+                            virus_scan_match = _re.search(r'href="([^"]*scan[^"]*)"', resp.text, re.IGNORECASE) if 'resp' in dir() else None
+                            with session.get(confirm_url, stream=True, allow_redirects=True, timeout=download_timeout) as dresp:
+                                dresp.raise_for_status()
+                                total = int(dresp.headers.get('content-length', 0))
+                                with open(dest_path, 'wb') as f:
+                                    for chunk in dresp.iter_content(chunk_size=DOWNLOAD_CHUNK_SIZE):
+                                        if chunk:
+                                            f.write(chunk)
+                                success = True
+                    else:
+                        total = int(gresp.headers.get('content-length', 0))
+                        downloaded_sz = 0
+                        with open(dest_path, 'wb') as f:
+                            for chunk in gresp.iter_content(chunk_size=DOWNLOAD_CHUNK_SIZE):
+                                if chunk:
+                                    f.write(chunk)
+                                    downloaded_sz += len(chunk)
+                        success = True
+            except Exception as e:
+                log_func(f"  [RomsXISOs] Erreur GDrive: {e}")
+        else:
+            success = download_file(download_url, dest_path, session, progress_callback, download_timeout, progress_detail_callback)
+
+    elif source == 'StartGame' and download_url:
+        if is_1fichier_url(download_url):
+            success = download_from_premium_source('1fichier', download_url, dest_path, load_api_keys(), progress_callback)
+        else:
+            success = download_file(download_url, dest_path, session, progress_callback, download_timeout, progress_detail_callback)
+
+    elif source == 'NoPayStation' and download_url:
+        success = download_file(download_url, dest_path, session, progress_callback, download_timeout, progress_detail_callback)
+
+    elif source == 'hShop':
+        page_url = game_info.get('page_url')
+        if page_url:
+            hs_session = requests.Session()
+            hs_session.headers.update({
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            })
+            try:
+                resp = hs_session.get(page_url, timeout=30)
+                if resp.status_code == 200:
+                    from bs4 import BeautifulSoup
+                    from urllib.parse import urljoin
+                    from .constants import HSHOP_BASE
+                    soup = BeautifulSoup(resp.text, 'html.parser')
+                    for a in soup.find_all('a', href=True):
+                        href = a.get('href', '')
+                        if '.cia' in href or '.3ds' in href or '/dl/' in href:
+                            dl_url = urljoin(HSHOP_BASE, href)
+                            success = download_file(dl_url, dest_path, hs_session, progress_callback, download_timeout, progress_detail_callback)
+                            break
+            except Exception:
+                pass
+
     elif source == 'RetroGameSets' and download_url:
         if is_1fichier_url(download_url):
             success = download_from_premium_source('1fichier', download_url, dest_path, load_api_keys(), progress_callback)
@@ -119,17 +250,14 @@ def attempt_download_from_resolved_provider(game_info: dict, output_folder: str,
         torrent_target = game_info.get('torrent_target_filename') or filename
         success = download_from_minerva_torrent(torrent_url, torrent_target, dest_path, progress_callback)
 
-    elif source in ['myrient', 'Myrient', 'Myrient No-Intro', 'Myrient Redump', 'Myrient TOSEC', 'Source Custom'] and download_url:
-        log_func(f"  URL: {download_url[:80]}...")
-        success = download_file(download_url, dest_path, session, progress_callback, download_timeout, progress_detail_callback)
-
     elif source == 'database' and download_url:
         log_func(f"  URL: {download_url[:80]}...")
         if '1fichier.com' in download_url:
             success = download_from_premium_source('1fichier', download_url, dest_path, load_api_keys(), progress_callback)
-        elif 'myrient' in download_url:
-            log_func("  URL Myrient ignoree (source fermee)")
-            success = False
+        elif game_info.get('database_host') == 'minerva-torrent' and torrent_url:
+            log_func(f"  Torrent (DB): {torrent_url[:80]}...")
+            torrent_target = game_info.get('torrent_target_filename') or game_info.get('minerva_full_path') or filename
+            success = download_from_minerva_torrent(torrent_url, torrent_target, dest_path, progress_callback)
         else:
             success = download_file(download_url, dest_path, session, progress_callback, download_timeout, progress_detail_callback)
 

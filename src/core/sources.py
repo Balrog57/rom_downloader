@@ -571,82 +571,6 @@ SYSTEM_MAPPINGS = {
         'retrogamesets': 'Pokemon Mini (Archive)',
         'romsxisos': 'pokemonmini',
     },
-    'Nintendo - Nintendo Entertainment System (Headered)': {
-        'edgeemu': 'nintendo-nes',
-        'planetemu': 'nintendo-entertainment-system',
-        'lolroms': 'Nintendo - Famicom/Headered',
-        'vimm': 'NES',
-        'romhustler': 'nintendo-nes',
-        'coolrom': 'nes',
-    },
-    'Nintendo - Super Nintendo Entertainment System': {
-        'edgeemu': 'nintendo-snes',
-        'planetemu': 'nintendo-super-nintendo-entertainment-system',
-        'lolroms': 'Nintendo - Super Famicom',
-        'vimm': 'SNES',
-        'retrogamesets': 'SNES (Archive)',
-        'romhustler': 'nintendo-snes',
-        'coolrom': 'snes',
-        'romsxisos': 'nintendo-super-nintendo-entertainment-system',
-    },
-    'Nintendo - Nintendo 64': {
-        'edgeemu': 'nintendo-n64',
-        'planetemu': 'nintendo-64',
-        'lolroms': 'Nintendo - 64',
-        'vimm': 'N64',
-        'retrogamesets': 'Nintendo 64 (Archive)',
-        'romhustler': 'nintendo-n64',
-        'coolrom': 'n64',
-        'romsxisos': 'nintendo-nintendo-64',
-    },
-    'Nintendo - DS': {
-        'lolroms': 'Nintendo - DS',
-        'vimm': 'DS',
-        'retrogamesets': 'Nintendo DS (LolRoms)',
-        'romhustler': 'nintendo-nds',
-        'coolrom': 'nds',
-        'romsxisos': 'nintendo-ds',
-    },
-    'Nintendo - 3DS': {
-        'lolroms': 'Nintendo - 3DS',
-        'vimm': '3DS',
-        'retrogamesets': '3DS (Archive)',
-        'romhustler': 'nintendo-3ds',
-        'hshop': 'games',
-        'romsxisos': 'nintendo-3ds',
-    },
-    'Nintendo - GameCube': {
-        'lolroms': 'Nintendo - GameCube',
-        'vimm': 'GameCube',
-        'retrogamesets': 'Game Cube (Archive)',
-        'romhustler': 'nintendo-gamecube',
-        'coolrom': 'gamecube',
-        'romsxisos': 'nintendo-gamecube',
-    },
-    'Nintendo - Wii': {
-        'lolroms': 'Nintendo - Wii',
-        'vimm': 'Wii',
-        'retrogamesets': 'Wii (Archive)',
-        'romhustler': 'nintendo-wii',
-        'coolrom': 'wii',
-        'romsxisos': 'nintendo-wii',
-    },
-    'Nintendo - Wii U': {
-        'lolroms': 'Nintendo - Wii U',
-        'vimm': 'WiiU',
-        'retrogamesets': 'Wii U (EU) (1Fichier)',
-        'romhustler': 'nintendo-wii-u',
-    },
-    'Nintendo - Virtual Boy': {
-        'lolroms': 'Nintendo - Virtual Boy',
-        'vimm': 'VirtualBoy',
-        'retrogamesets': 'Virtual Boy (Archive)',
-        'romhustler': 'nintendo-virtual-boy',
-    },
-    'Nintendo - Pok\u00e9mon Mini': {
-        'lolroms': 'Nintendo - Pok\u00e9mon Mini',
-        'retrogamesets': 'Pokemon Mini (Archive)',
-    },
     'Sega - Mega Drive - Genesis': {
         'edgeemu': 'sega-genesis',
         'planetemu': 'sega-mega-drive',
@@ -696,6 +620,7 @@ SYSTEM_MAPPINGS = {
         'retrogamesets': 'Neo-Geo Pocket Color (Archive)',
         'romhustler': 'neogeo-pocket',
         'romsxisos': 'pocket_color',
+        'startgame': 'snk-neo-geo-pocket-color',
     },
     'Sony - PlayStation': {
         'lolroms': 'SONY/PlayStation',
@@ -736,11 +661,13 @@ SYSTEM_MAPPINGS = {
         'romhustler': 'saturn',
         'coolrom': 'saturn',
         'romsxisos': 'saturn',
+        'startgame': 'sega-saturn',
     },
     'Sega - Dreamcast': {
         'romhustler': 'dreamcast',
         'coolrom': 'dc',
         'romsxisos': 'dreamcast',
+        'startgame': 'sega-dreamcast',
     },
     'Sega - Mega CD - Sega CD': {
         'romhustler': 'segacd',
@@ -752,42 +679,31 @@ SYSTEM_MAPPINGS = {
         'coolrom': '32x',
         'startgame': 'sega-32x',
     },
-    'Sega - Saturn': {
-        'romhustler': 'saturn',
-        'coolrom': 'saturn',
-        'romsxisos': 'saturn',
-        'startgame': 'sega-saturn',
-    },
-    'Sega - Dreamcast': {
-        'romhustler': 'dreamcast',
-        'coolrom': 'dc',
-        'romsxisos': 'dreamcast',
-        'startgame': 'sega-dreamcast',
-    },
     'Atari - 2600': {
-        'romhustler': 'atari-2600',
+        'romhustler': 'atari2600',
+        'coolrom': 'atari2600',
         'startgame': 'atari-2600',
     },
     'Atari - 7800': {
-        'romhustler': 'atari-7800',
+        'romhustler': 'atari7800',
         'startgame': 'atari-7800',
     },
     'Atari - Jaguar': {
-        'romhustler': 'atari-jaguar',
+        'romhustler': 'jaguar',
         'startgame': 'atari-jaguar',
     },
-    'Sega - 32X': {
-        'romhustler': 'sega-32x',
-        'coolrom': '32x',
+    'Atari - Atari 2600': {
+        'romhustler': 'atari2600',
+        'coolrom': 'atari2600',
+        'startgame': 'atari-2600',
     },
-    'Atari - 2600': {
-        'romhustler': 'atari-2600',
+    'Atari - Atari 7800': {
+        'romhustler': 'atari7800',
+        'startgame': 'atari-7800',
     },
-    'Atari - 7800': {
-        'romhustler': 'atari-7800',
-    },
-    'Atari - Jaguar': {
-        'romhustler': 'atari-jaguar',
+    'Atari - Atari Jaguar': {
+        'romhustler': 'jaguar',
+        'startgame': 'atari-jaguar',
     },
     'Arcade - MAME': {
         'romhustler': 'mame',
@@ -801,18 +717,6 @@ SYSTEM_MAPPINGS = {
     'NEC - PC-FX': {
         'romhustler': 'pc-fx',
         'startgame': 'nec-pc-fx',
-    },
-    'SNK - Neo Geo Pocket Color': {
-        'edgeemu': 'snk-neogeopocketcolor',
-        'planetemu': 'snk-neo-geo-pocket-color',
-        'lolroms': 'SNK/NeoGeo Pocket Color',
-        'retrogamesets': 'Neo-Geo Pocket Color (Archive)',
-        'romhustler': 'neogeo-pocket',
-        'romsxisos': 'pocket_color',
-        'startgame': 'snk-neo-geo-pocket-color',
-    },
-    'NEC - PC-FX': {
-        'romhustler': 'pc-fx',
     },
 }
 
