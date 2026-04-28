@@ -151,7 +151,7 @@ def prepare_sources_for_profile(sources: list, dat_profile: dict | None, prefer_
         compatible = is_source_compatible_with_profile(source_copy, dat_profile)
         source_copy['compatible'] = compatible
 
-        source_copy['enabled'] = True
+        source_copy['enabled'] = bool(source_copy.get('enabled', True))
 
         if prefer_1fichier and source_copy.get('type') in ('retrogamesets', 'startgame'):
             source_copy['priority'] = 0
