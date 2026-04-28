@@ -137,10 +137,14 @@ def is_source_compatible_with_profile(source: dict, dat_profile: dict | None) ->
     if family == 'redump' and source_type in {'edgeemu', 'planetemu', 'lolroms'}:
         return False
 
+    if source_type == 'edgeemu':
+        return False
+
     return True
 
 
-def prepare_sources_for_profile(sources: list, dat_profile: dict | None) -> list:
+def prepare_sources_for_profile(sources: list, dat_profile: dict | None, prefer_1fichier: bool = False) -> list:
+    from .api_keys import load_api_keys
     prepared = []
     for source in sources:
         source_copy = source.copy()
@@ -148,6 +152,14 @@ def prepare_sources_for_profile(sources: list, dat_profile: dict | None) -> list
         source_copy['compatible'] = compatible
 
         source_copy['enabled'] = True
+
+        if prefer_1fichier and source_copy.get('type') in ('retrogamesets', 'startgame'):
+            source_copy['priority'] = 0
+        elif not prefer_1fichier and source_copy.get('type') in ('retrogamesets', 'startgame'):
+            api_keys = load_api_keys()
+            has_deblocker = api_keys.get('alldebrid') or api_keys.get('realdebrid') or api_keys.get('1fichier')
+            if not has_deblocker:
+                source_copy['compatible'] = False
 
         prepared.append(source_copy)
 
