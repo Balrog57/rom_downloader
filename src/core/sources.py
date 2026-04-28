@@ -8,6 +8,12 @@ from .constants import (
     LOLROMS_BASE,
     MINERVA_BROWSE_BASE,
     RETRO_GAME_SETS_BASE,
+    ROMHUSTLER_BASE,
+    COOLROM_BASE,
+    NOPAYSTATION_BASE,
+    STARTGAME_BASE,
+    HSHOP_BASE,
+    ROMSXISOS_BASE,
     SOURCE_FAMILY_MAP,
     VIMM_BASE,
 )
@@ -81,15 +87,19 @@ def get_default_sources_legacy():
 
 
 SOURCE_TYPE_ORDER = {
-    'edgeemu': 20,
+    'retrogamesets': 20,
+    'startgame': 22,
     'planetemu': 30,
     'lolroms': 40,
-    'cdromance': 45,
     'vimm': 50,
-    'retrogamesets': 60,
-    'free_host': 70,
-    'myrient': 80,
-    'minerva': 100,
+    'cdromance': 55,
+    'romhustler': 60,
+    'coolrom': 65,
+    'romsxisos': 70,
+    'nopaystation': 80,
+    'hshop': 85,
+    'edgeemu': 200,
+    'minerva': 90,
     'archive_org': 110,
 }
 
@@ -293,55 +303,55 @@ def get_default_sources():
     config = rom_db.get('config_urls', {})
     sources = [
         {
+            'name': 'archive.org',
+            'base_url': config.get('archive_org', ''),
+            'type': 'archive_org',
+            'enabled': True,
+            'description': 'Source principale',
+            'priority': 1
+        },
+        {
             'name': 'Minerva No-Intro',
             'base_url': f'{MINERVA_BROWSE_BASE}No-Intro/',
             'type': 'minerva',
             'enabled': True,
-            'description': 'Dernier recours torrent pour les DAT No-Intro / Retool',
+            'description': 'Torrent pour les DAT No-Intro / Retool',
             'collection': 'No-Intro',
             'minerva_path_mode': 'single',
             'scan_depth': 0,
             'torrent_scope': 'system',
-            'priority': 100
+            'priority': 90
         },
         {
             'name': 'Minerva Redump',
             'base_url': f'{MINERVA_BROWSE_BASE}Redump/',
             'type': 'minerva',
             'enabled': True,
-            'description': 'Dernier recours torrent pour les DAT Redump / Retool',
+            'description': 'Torrent pour les DAT Redump / Retool',
             'collection': 'Redump',
             'minerva_path_mode': 'single',
             'scan_depth': 0,
             'torrent_scope': 'system',
-            'priority': 100
+            'priority': 90
         },
         {
             'name': 'Minerva TOSEC',
             'base_url': f'{MINERVA_BROWSE_BASE}TOSEC/',
             'type': 'minerva',
             'enabled': True,
-            'description': 'Dernier recours torrent pour la collection TOSEC',
+            'description': 'Torrent pour la collection TOSEC',
             'collection': 'TOSEC',
             'minerva_path_mode': 'split',
             'scan_depth': 2,
             'torrent_scope': 'vendor',
-            'priority': 100
-        },
-        {
-            'name': 'archive.org',
-            'base_url': config.get('archive_org', ''),
-            'type': 'archive_org',
-            'enabled': True,
-            'description': 'Fallback checksum / telechargement direct',
-            'priority': 2
+            'priority': 90
         },
         {
             'name': 'EdgeEmu',
             'base_url': config.get('edgeemu_browse', ''),
             'type': 'edgeemu',
-            'enabled': True,
-            'description': 'Lien direct (Excellent pour le retro)',
+            'enabled': False,
+            'description': 'DESACTIVE - Retourne des fichiers vides (0 bytes)',
             'priority': 3
         },
         {
@@ -364,8 +374,8 @@ def get_default_sources():
             'name': 'CDRomance',
             'base_url': CDROMANCE_BASE,
             'type': 'cdromance',
-            'enabled': True,
-            'description': 'Source majeure pour les jeux CD et traductions',
+            'enabled': False,
+            'description': 'Site archive depuis janv 2026 (plus de telechargements)',
             'priority': 3
         },
         {
@@ -381,17 +391,57 @@ def get_default_sources():
             'base_url': RETRO_GAME_SETS_BASE,
             'type': 'retrogamesets',
             'enabled': True,
-            'description': 'Base de donnees communautaire (1fichier)',
+            'description': 'JSON DB - 1fichier (AllDebrid recommande)',
             'priority': 2
         },
         {
-            'name': 'Passerelle 1fichier',
-            'base_url': config.get('1fichier_free', ''),
-            'type': 'free_host',
+            'name': 'RomHustler',
+            'base_url': ROMHUSTLER_BASE,
+            'type': 'romhustler',
             'enabled': True,
-            'description': 'Hebergeur utilise quand une source fournit un lien 1fichier',
-            'priority': 4
-        }
+            'description': 'DDL guest - 500KB/s, jeux populaires bloques',
+            'priority': 3
+        },
+        {
+            'name': 'CoolROM',
+            'base_url': COOLROM_BASE,
+            'type': 'coolrom',
+            'enabled': True,
+            'description': 'DDL token - Nintendo supprime, autres OK',
+            'priority': 3
+        },
+        {
+            'name': 'NoPayStation',
+            'base_url': NOPAYSTATION_BASE,
+            'type': 'nopaystation',
+            'enabled': True,
+            'description': 'Index TSV - PS1/PS2/PS3/PSP/Vita (.pkg expirants)',
+            'priority': 2
+        },
+        {
+            'name': 'StartGame',
+            'base_url': STARTGAME_BASE,
+            'type': 'startgame',
+            'enabled': True,
+            'description': 'Sets No-Intro/Redump via 1fichier (AllDebrid recommande)',
+            'priority': 2
+        },
+        {
+            'name': 'hShop',
+            'base_url': HSHOP_BASE,
+            'type': 'hshop',
+            'enabled': True,
+            'description': '3DS uniquement - .cia cryptes, partiel',
+            'priority': 3
+        },
+        {
+            'name': 'RomsXISOs',
+            'base_url': ROMSXISOS_BASE,
+            'type': 'romsxisos',
+            'enabled': True,
+            'description': 'GitHub Pages - Google Drive (ES, multi-consoles)',
+            'priority': 3
+        },
     ]
     return sorted(sources, key=source_order_key)
 
@@ -402,21 +452,30 @@ SYSTEM_MAPPINGS = {
         'planetemu': 'nintendo-game-boy',
         'lolroms': 'Nintendo - Game Boy',
         'vimm': 'GB',
-        'retrogamesets': 'Game Boy (Archive)'
+        'retrogamesets': 'Game Boy (Archive)',
+        'romhustler': 'gbc',
+        'coolrom': 'gb',
+        'romsxisos': 'gameboy',
     },
     'Nintendo - Game Boy Color': {
         'edgeemu': 'nintendo-gameboycolor',
         'planetemu': 'nintendo-game-boy-color',
         'lolroms': 'Nintendo - Game Boy Color',
         'vimm': 'GBC',
-        'retrogamesets': 'Game Boy Color (Archive)'
+        'retrogamesets': 'Game Boy Color (Archive)',
+        'romhustler': 'gbc',
+        'coolrom': 'gbc',
+        'romsxisos': 'gameboycolor',
     },
     'Nintendo - Game Boy Advance': {
         'edgeemu': 'nintendo-gba',
         'planetemu': 'nintendo-game-boy-advance',
         'lolroms': 'Nintendo - Game Boy Advance',
         'vimm': 'GBA',
-        'retrogamesets': 'Game Boy Advance (Archive)'
+        'retrogamesets': 'Game Boy Advance (Archive)',
+        'romhustler': 'gba',
+        'coolrom': 'gba',
+        'romsxisos': 'gba',
     },
     'Nintendo - Game Boy Advance (Multiboot)': {
         'lolroms': 'Nintendo - Game Boy Advance/Multi-Boot',
@@ -429,105 +488,332 @@ SYSTEM_MAPPINGS = {
         'planetemu': 'nintendo-entertainment-system',
         'lolroms': 'Nintendo - Famicom/Headerless',
         'vimm': 'NES',
-        'retrogamesets': 'NES (Archive)'
+        'retrogamesets': 'NES (Archive)',
+        'romhustler': 'nes',
+        'coolrom': 'nes',
+        'romsxisos': 'nes',
     },
     'Nintendo - Nintendo Entertainment System (Headered)': {
         'edgeemu': 'nintendo-nes',
         'planetemu': 'nintendo-entertainment-system',
         'lolroms': 'Nintendo - Famicom/Headered',
-        'vimm': 'NES'
+        'vimm': 'NES',
+        'romhustler': 'nes',
+        'coolrom': 'nes',
     },
     'Nintendo - Super Nintendo Entertainment System': {
         'edgeemu': 'nintendo-snes',
         'planetemu': 'nintendo-super-nintendo-entertainment-system',
         'lolroms': 'Nintendo - Super Famicom',
         'vimm': 'SNES',
-        'retrogamesets': 'SNES (Archive)'
+        'retrogamesets': 'SNES (Archive)',
+        'romhustler': 'snes',
+        'coolrom': 'snes',
+        'romsxisos': 'snes',
     },
     'Nintendo - Nintendo 64': {
         'edgeemu': 'nintendo-n64',
         'planetemu': 'nintendo-64',
         'lolroms': 'Nintendo - 64',
         'vimm': 'N64',
-        'retrogamesets': 'Nintendo 64 (Archive)'
+        'retrogamesets': 'Nintendo 64 (Archive)',
+        'romhustler': 'n64',
+        'coolrom': 'n64',
+        'romsxisos': 'n64',
+    },
+    'Nintendo - DS': {
+        'lolroms': 'Nintendo - DS',
+        'vimm': 'DS',
+        'retrogamesets': 'Nintendo DS (LolRoms)',
+        'romhustler': 'nds',
+        'coolrom': 'nds',
+        'romsxisos': 'nds',
+    },
+    'Nintendo - 3DS': {
+        'lolroms': 'Nintendo - 3DS',
+        'vimm': '3DS',
+        'retrogamesets': '3DS (Archive)',
+        'romhustler': '3ds',
+        'hshop': 'games',
+        'romsxisos': '3ds',
+    },
+    'Nintendo - GameCube': {
+        'lolroms': 'Nintendo - GameCube',
+        'vimm': 'GameCube',
+        'retrogamesets': 'Game Cube (Archive)',
+        'romhustler': 'gamecube',
+        'coolrom': 'gamecube',
+        'romsxisos': 'gamecube',
+    },
+    'Nintendo - Wii': {
+        'lolroms': 'Nintendo - Wii',
+        'vimm': 'Wii',
+        'retrogamesets': 'Wii (Archive)',
+        'romhustler': 'wii',
+        'coolrom': 'wii',
+        'romsxisos': 'wii',
+    },
+    'Nintendo - Wii U': {
+        'lolroms': 'Nintendo - Wii U',
+        'vimm': 'WiiU',
+        'retrogamesets': 'Wii U (EU) (1Fichier)',
+        'romhustler': 'wii-u',
+    },
+    'Nintendo - Virtual Boy': {
+        'lolroms': 'Nintendo - Virtual Boy',
+        'vimm': 'VirtualBoy',
+        'retrogamesets': 'Virtual Boy (Archive)',
+        'romhustler': 'virtual-boy',
+        'romsxisos': 'virtualboy',
+    },
+    'Nintendo - Pokémon Mini': {
+        'lolroms': 'Nintendo - Pokémon Mini',
+        'retrogamesets': 'Pokemon Mini (Archive)',
+        'romsxisos': 'pokemonmini',
+    },
+    'Nintendo - Nintendo Entertainment System (Headered)': {
+        'edgeemu': 'nintendo-nes',
+        'planetemu': 'nintendo-entertainment-system',
+        'lolroms': 'Nintendo - Famicom/Headered',
+        'vimm': 'NES',
+        'romhustler': 'nintendo-nes',
+        'coolrom': 'nes',
+    },
+    'Nintendo - Super Nintendo Entertainment System': {
+        'edgeemu': 'nintendo-snes',
+        'planetemu': 'nintendo-super-nintendo-entertainment-system',
+        'lolroms': 'Nintendo - Super Famicom',
+        'vimm': 'SNES',
+        'retrogamesets': 'SNES (Archive)',
+        'romhustler': 'nintendo-snes',
+        'coolrom': 'snes',
+        'romsxisos': 'nintendo-super-nintendo-entertainment-system',
+    },
+    'Nintendo - Nintendo 64': {
+        'edgeemu': 'nintendo-n64',
+        'planetemu': 'nintendo-64',
+        'lolroms': 'Nintendo - 64',
+        'vimm': 'N64',
+        'retrogamesets': 'Nintendo 64 (Archive)',
+        'romhustler': 'nintendo-n64',
+        'coolrom': 'n64',
+        'romsxisos': 'nintendo-nintendo-64',
+    },
+    'Nintendo - DS': {
+        'lolroms': 'Nintendo - DS',
+        'vimm': 'DS',
+        'retrogamesets': 'Nintendo DS (LolRoms)',
+        'romhustler': 'nintendo-nds',
+        'coolrom': 'nds',
+        'romsxisos': 'nintendo-ds',
+    },
+    'Nintendo - 3DS': {
+        'lolroms': 'Nintendo - 3DS',
+        'vimm': '3DS',
+        'retrogamesets': '3DS (Archive)',
+        'romhustler': 'nintendo-3ds',
+        'hshop': 'games',
+        'romsxisos': 'nintendo-3ds',
+    },
+    'Nintendo - GameCube': {
+        'lolroms': 'Nintendo - GameCube',
+        'vimm': 'GameCube',
+        'retrogamesets': 'Game Cube (Archive)',
+        'romhustler': 'nintendo-gamecube',
+        'coolrom': 'gamecube',
+        'romsxisos': 'nintendo-gamecube',
+    },
+    'Nintendo - Wii': {
+        'lolroms': 'Nintendo - Wii',
+        'vimm': 'Wii',
+        'retrogamesets': 'Wii (Archive)',
+        'romhustler': 'nintendo-wii',
+        'coolrom': 'wii',
+        'romsxisos': 'nintendo-wii',
+    },
+    'Nintendo - Wii U': {
+        'lolroms': 'Nintendo - Wii U',
+        'vimm': 'WiiU',
+        'retrogamesets': 'Wii U (EU) (1Fichier)',
+        'romhustler': 'nintendo-wii-u',
+    },
+    'Nintendo - Virtual Boy': {
+        'lolroms': 'Nintendo - Virtual Boy',
+        'vimm': 'VirtualBoy',
+        'retrogamesets': 'Virtual Boy (Archive)',
+        'romhustler': 'nintendo-virtual-boy',
+    },
+    'Nintendo - Pok\u00e9mon Mini': {
+        'lolroms': 'Nintendo - Pok\u00e9mon Mini',
+        'retrogamesets': 'Pokemon Mini (Archive)',
     },
     'Sega - Mega Drive - Genesis': {
         'edgeemu': 'sega-genesis',
         'planetemu': 'sega-mega-drive',
         'lolroms': 'SEGA/Mega Drive',
         'vimm': 'Genesis',
-        'retrogamesets': 'Mega Drive (Archive)'
+        'retrogamesets': 'Mega Drive (Archive)',
+        'romhustler': 'genesis',
+        'coolrom': 'genesis',
+        'romsxisos': 'segagenesis',
+        'startgame': 'sega-mega-drive-genesis',
     },
     'Sega - Master System - Mark III': {
         'edgeemu': 'sega-mastersystem',
         'planetemu': 'sega-master-system',
         'lolroms': 'SEGA/Master System',
         'vimm': 'SMS',
-        'retrogamesets': 'Master System (Archive)'
+        'retrogamesets': 'Master System (Archive)',
+        'romhustler': 'sms',
+        'coolrom': 'sms',
+        'romsxisos': 'master_system',
+        'startgame': 'sega-master-system-mark-iii',
     },
     'Sega - Game Gear': {
         'edgeemu': 'sega-gamegear',
         'planetemu': 'sega-game-gear',
         'lolroms': 'SEGA/Game Gear',
         'vimm': 'GameGear',
-        'retrogamesets': 'Game Gear (Archive)'
+        'retrogamesets': 'Game Gear (Archive)',
+        'romhustler': 'game-gear',
+        'coolrom': 'gamegear',
+        'romsxisos': 'gamegear',
+        'startgame': 'sega-game-gear',
     },
     'NEC - PC Engine - TurboGrafx 16': {
         'edgeemu': 'nec-pcengine',
         'planetemu': 'nec-pc-engine-turbografx-16-entertainment-super-system',
         'vimm': 'Engine',
-        'retrogamesets': 'PC Engine (Archive)'
+        'retrogamesets': 'PC Engine (Archive)',
+        'romhustler': 'pcengine',
+        'coolrom': 'tg16',
+        'startgame': 'nec-pc-engine-turbografx-16',
     },
     'SNK - Neo Geo Pocket Color': {
         'edgeemu': 'snk-neogeopocketcolor',
         'planetemu': 'snk-neo-geo-pocket-color',
         'lolroms': 'SNK/NeoGeo Pocket Color',
-        'retrogamesets': 'Neo-Geo Pocket Color (Archive)'
+        'retrogamesets': 'Neo-Geo Pocket Color (Archive)',
+        'romhustler': 'neogeo-pocket',
+        'romsxisos': 'pocket_color',
     },
     'Sony - PlayStation': {
         'lolroms': 'SONY/PlayStation',
         'vimm': 'PS1',
-        'retrogamesets': 'PlayStation (Archive)'
+        'retrogamesets': 'PlayStation (Archive)',
+        'romhustler': 'psx',
+        'coolrom': 'psx',
+        'romsxisos': 'ps1',
+        'startgame': 'sony-playstation',
+        'nopaystation': 'PSX_GAMES',
     },
     'Sony - PlayStation Portable': {
         'lolroms': 'SONY/PlayStation Portable',
         'vimm': 'PSP',
-        'retrogamesets': 'PlayStation Portable (Archive)'
+        'retrogamesets': 'PlayStation Portable (Archive)',
+        'romhustler': 'playstation-portable',
+        'coolrom': 'psp',
+        'romsxisos': 'psp',
+        'startgame': 'sony-playstation-portable',
+        'nopaystation': 'PSP_GAMES',
     },
-    'Nintendo - DS': {
-        'lolroms': 'Nintendo - DS',
-        'vimm': 'DS',
-        'retrogamesets': 'Nintendo DS (LolRoms)'
+    'Sony - PlayStation 2': {
+        'romhustler': 'playstation2',
+        'coolrom': 'ps2',
+        'startgame': 'sony-playstation-2',
     },
-    'Nintendo - 3DS': {
-        'lolroms': 'Nintendo - 3DS',
-        'vimm': '3DS',
-        'retrogamesets': '3DS (Archive)'
+    'Sony - PlayStation 3': {
+        'romhustler': 'ps3',
+        'startgame': 'sony-playstation-3',
+        'nopaystation': 'PS3_GAMES',
     },
-    'Nintendo - GameCube': {
-        'lolroms': 'Nintendo - GameCube',
-        'vimm': 'GameCube',
-        'retrogamesets': 'Game Cube (Archive)'
+    'Sony - PlayStation Vita': {
+        'romhustler': 'ps-vita',
+        'romsxisos': 'psvita',
+        'nopaystation': 'PSV_GAMES',
     },
-    'Nintendo - Wii': {
-        'lolroms': 'Nintendo - Wii',
-        'vimm': 'Wii',
-        'retrogamesets': 'Wii (Archive)'
+    'Sega - Saturn': {
+        'romhustler': 'saturn',
+        'coolrom': 'saturn',
+        'romsxisos': 'saturn',
     },
-    'Nintendo - Wii U': {
-        'lolroms': 'Nintendo - Wii U',
-        'vimm': 'WiiU',
-        'retrogamesets': 'Wii U (EU) (1Fichier)'
+    'Sega - Dreamcast': {
+        'romhustler': 'dreamcast',
+        'coolrom': 'dc',
+        'romsxisos': 'dreamcast',
     },
-    'Nintendo - Virtual Boy': {
-        'lolroms': 'Nintendo - Virtual Boy',
-        'vimm': 'VirtualBoy',
-        'retrogamesets': 'Virtual Boy (Archive)'
+    'Sega - Mega CD - Sega CD': {
+        'romhustler': 'segacd',
+        'coolrom': 'segacd',
+        'startgame': 'sega-mega-cd-sega-cd',
     },
-    'Nintendo - Pok\u00e9mon Mini': {
-        'lolroms': 'Nintendo - Pok\u00e9mon Mini',
-        'retrogamesets': 'Pokemon Mini (Archive)'
-    }
+    'Sega - 32X': {
+        'romhustler': 'sega-32x',
+        'coolrom': '32x',
+        'startgame': 'sega-32x',
+    },
+    'Sega - Saturn': {
+        'romhustler': 'saturn',
+        'coolrom': 'saturn',
+        'romsxisos': 'saturn',
+        'startgame': 'sega-saturn',
+    },
+    'Sega - Dreamcast': {
+        'romhustler': 'dreamcast',
+        'coolrom': 'dc',
+        'romsxisos': 'dreamcast',
+        'startgame': 'sega-dreamcast',
+    },
+    'Atari - 2600': {
+        'romhustler': 'atari-2600',
+        'startgame': 'atari-2600',
+    },
+    'Atari - 7800': {
+        'romhustler': 'atari-7800',
+        'startgame': 'atari-7800',
+    },
+    'Atari - Jaguar': {
+        'romhustler': 'atari-jaguar',
+        'startgame': 'atari-jaguar',
+    },
+    'Sega - 32X': {
+        'romhustler': 'sega-32x',
+        'coolrom': '32x',
+    },
+    'Atari - 2600': {
+        'romhustler': 'atari-2600',
+    },
+    'Atari - 7800': {
+        'romhustler': 'atari-7800',
+    },
+    'Atari - Jaguar': {
+        'romhustler': 'atari-jaguar',
+    },
+    'Arcade - MAME': {
+        'romhustler': 'mame',
+        'coolrom': 'arcade',
+    },
+    'Bandai - WonderSwan': {
+        'romhustler': 'wonderswan',
+        'romsxisos': 'wonderswan',
+        'startgame': 'bandai-wonderswan',
+    },
+    'NEC - PC-FX': {
+        'romhustler': 'pc-fx',
+        'startgame': 'nec-pc-fx',
+    },
+    'SNK - Neo Geo Pocket Color': {
+        'edgeemu': 'snk-neogeopocketcolor',
+        'planetemu': 'snk-neo-geo-pocket-color',
+        'lolroms': 'SNK/NeoGeo Pocket Color',
+        'retrogamesets': 'Neo-Geo Pocket Color (Archive)',
+        'romhustler': 'neogeo-pocket',
+        'romsxisos': 'pocket_color',
+        'startgame': 'snk-neo-geo-pocket-color',
+    },
+    'NEC - PC-FX': {
+        'romhustler': 'pc-fx',
+    },
 }
 
 
@@ -586,7 +872,7 @@ def build_custom_source(source_url: str) -> dict:
     return {
         'name': 'Source Custom',
         'base_url': normalized_url,
-        'type': 'myrient',
+        'type': 'minerva',
         'enabled': True,
         'priority': 0
     }
