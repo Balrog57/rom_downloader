@@ -61,7 +61,7 @@ def prioritize_sources(
         score = compute_provider_score(metric)
         base_priority = int(src.get("priority", 50))
         order = int(src.get("order", base_priority))
-        return (-score, order, base_priority, name.lower())
+        return (order, -score, base_priority, name.lower())
 
     return sorted(sources, key=sort_key)
 

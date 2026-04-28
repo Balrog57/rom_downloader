@@ -20,6 +20,7 @@ def safe_platform_label() -> str:
 def print_sources_info():
     """Print information about available download sources."""
     from ._facade import get_default_sources
+    from .sources import DDL_SOURCE_TYPES
     print("\n" + "=" * 70)
     print("SOURCES DE TELECHARGEMENT DISPONIBLES")
     print("Extrait de games.zip RGSX (74,189 URLs analysees)")
@@ -27,7 +28,7 @@ def print_sources_info():
 
     print("\n--- Sources DDL prioritaires ---")
     for i, source in enumerate(get_default_sources(), 1):
-        if source['type'] not in ('archive_org', 'edgeemu', 'planetemu', 'lolroms', 'cdromance', 'vimm', 'retrogamesets', 'romhustler', 'coolrom', 'nopaystation', 'startgame', 'hshop', 'romsxisos', 'free_host'):
+        if source['type'] not in DDL_SOURCE_TYPES:
             continue
         print(f"\n{i}. {source['name']}")
         print(f"   Type: {source['type']}")
@@ -43,6 +44,17 @@ def print_sources_info():
         print(f"\n{i}. {source['name']}")
         print(f"   Type: {source['type']}")
         print(f"   Collection: {source.get('collection', 'N/A')}")
+        print(f"   Description: {source.get('description', 'N/A')}")
+        print(f"   Priorite: {source.get('priority', 'N/A')}")
+
+    print("\n--- Dernier recours HTTP ---")
+    for i, source in enumerate(get_default_sources(), 1):
+        if source['type'] != 'archive_org':
+            continue
+        print(f"\n{i}. {source['name']}")
+        print(f"   Type: {source['type']}")
+        if source['base_url']:
+            print(f"   URL: Masquee")
         print(f"   Description: {source.get('description', 'N/A')}")
         print(f"   Priorite: {source.get('priority', 'N/A')}")
 

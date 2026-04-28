@@ -32,8 +32,8 @@ def get_default_sources_legacy():
             'base_url': config.get('archive_org', ''),
             'type': 'archive_org',
             'enabled': True,
-            'description': 'Source principale',
-            'priority': 1
+            'description': 'Dernier recours HTTP apres DDL et Minerva',
+            'priority': 110
         },
         {
             'name': 'Myrient No-Intro',
@@ -87,27 +87,44 @@ def get_default_sources_legacy():
 
 
 SOURCE_TYPE_ORDER = {
-    'retrogamesets': 20,
-    'startgame': 22,
-    'planetemu': 30,
-    'lolroms': 40,
+    'planetemu': 20,
+    'romhustler': 25,
+    'coolrom': 30,
+    'romsxisos': 35,
+    'nopaystation': 40,
+    'hshop': 45,
     'vimm': 50,
-    'cdromance': 55,
-    'romhustler': 60,
-    'coolrom': 65,
-    'romsxisos': 70,
-    'nopaystation': 80,
-    'hshop': 85,
-    'edgeemu': 200,
-    'minerva': 90,
-    'archive_org': 110,
+    'lolroms': 60,
+    'retrogamesets': 70,
+    'startgame': 72,
+    'free_host': 78,
+    'cdromance': 800,
+    'edgeemu': 850,
+    'minerva': 900,
+    'archive_org': 1000,
 }
+
+DDL_SOURCE_TYPES = {
+    'planetemu',
+    'romhustler',
+    'coolrom',
+    'romsxisos',
+    'nopaystation',
+    'hshop',
+    'vimm',
+    'lolroms',
+    'retrogamesets',
+    'startgame',
+    'free_host',
+}
+
+ONEFICHIER_SOURCE_TYPES = {'retrogamesets', 'startgame'}
 
 
 def source_order_key(source: dict) -> tuple:
     """Trie les sources avec archive.org en tout dernier recours."""
     return (
-        SOURCE_TYPE_ORDER.get(source.get('type'), 60),
+        int(source.get('order', SOURCE_TYPE_ORDER.get(source.get('type'), 60))),
         source.get('priority', 50),
         source.get('name', '').lower()
     )
@@ -122,7 +139,7 @@ def active_source_labels(sources: list) -> list[str]:
     """Retourne les labels stables des sources actives."""
     labels = []
     for source in sources or []:
-        if source.get('enabled', True):
+        if source.get('enabled', True) and source.get('compatible', True):
             labels.append(normalize_source_label(source.get('name') or source.get('type', '')))
     return sorted(label for label in labels if label)
 
@@ -146,6 +163,17 @@ def resolution_cache_key(game_info: dict, sources: list, system_name: str,
         'system': system_name or '',
         'family': (dat_profile or {}).get('family', ''),
         'sources': active_source_labels(sources),
+        'source_order': [
+            {
+                'label': normalize_source_label(source.get('name') or source.get('type', '')),
+                'type': source.get('type', ''),
+                'order': int(source.get('order', SOURCE_TYPE_ORDER.get(source.get('type'), 60))),
+                'priority': source.get('priority', 50),
+                'enabled': bool(source.get('enabled', True)),
+                'compatible': bool(source.get('compatible', True)),
+            }
+            for source in sorted(sources or [], key=source_order_key)
+        ],
         'excluded': sorted(excluded_sources or []),
         'signatures': [part for part in signature_parts if part],
     }
@@ -307,8 +335,8 @@ def get_default_sources():
             'base_url': config.get('archive_org', ''),
             'type': 'archive_org',
             'enabled': True,
-            'description': 'Source principale',
-            'priority': 1
+            'description': 'Dernier recours HTTP apres DDL et Minerva',
+            'priority': 110
         },
         {
             'name': 'Minerva No-Intro',
@@ -439,7 +467,7 @@ def get_default_sources():
             'base_url': ROMSXISOS_BASE,
             'type': 'romsxisos',
             'enabled': True,
-            'description': 'GitHub Pages - Google Drive (ES, multi-consoles)',
+            'description': 'GitHub Pages - Google Drive / directs non-Myrient',
             'priority': 3
         },
     ]
@@ -784,6 +812,8 @@ def build_custom_source(source_url: str) -> dict:
 __all__ = [
     'get_default_sources_legacy',
     'SOURCE_TYPE_ORDER',
+    'DDL_SOURCE_TYPES',
+    'ONEFICHIER_SOURCE_TYPES',
     'source_order_key',
     'normalize_source_label',
     'active_source_labels',

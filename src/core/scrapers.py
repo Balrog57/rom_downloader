@@ -1,4 +1,5 @@
 import html as html_module
+import csv
 import json
 import os
 import re
@@ -1160,22 +1161,21 @@ def _load_nopaystation_tsv(tsv_name: str, session: requests.Session) -> list:
             print(f"  [NoPayStation] Erreur ({resp.status_code}) pour {tsv_url}")
             return []
         rows = []
-        for line in resp.text.strip().split('\n'):
-            parts = line.split('\t')
-            if len(parts) >= 5:
-                title_id = parts[0].strip()
-                title = parts[1].strip() if len(parts) > 1 else ''
-                region = parts[2].strip() if len(parts) > 2 else ''
-                url = parts[3].strip() if len(parts) > 3 else ''
-                size = parts[4].strip() if len(parts) > 4 else ''
-                if url and title:
-                    rows.append({
-                        'title_id': title_id,
-                        'title': title,
-                        'region': region,
-                        'url': url,
-                        'size': size,
-                    })
+        reader = csv.DictReader(resp.text.splitlines(), delimiter='\t')
+        for item in reader:
+            title_id = (item.get('Title ID') or '').strip()
+            title = (item.get('Name') or item.get('Original Name') or '').strip()
+            region = (item.get('Region') or '').strip()
+            url = (item.get('PKG direct link') or item.get('URL') or '').strip()
+            size = (item.get('File Size') or '').strip()
+            if url.lower().startswith(('http://', 'https://')) and title:
+                rows.append({
+                    'title_id': title_id,
+                    'title': title,
+                    'region': region,
+                    'url': url,
+                    'size': size,
+                })
         _NPS_TSV_CACHE[tsv_name] = rows
         print(f"  [NoPayStation] {len(rows)} entrees dans {tsv_name}")
         return rows
@@ -1190,16 +1190,23 @@ def resolve_nopaystation_game(game_info: dict, tsv_name: str, session: requests.
     rows = _load_nopaystation_tsv(tsv_name, session)
     if not rows:
         return None
-    candidates = [c.lower() for c in iter_game_candidate_names(game_info)]
+    listing = {}
     for row in rows:
-        row_title = row['title'].lower()
-        for candidate in candidates:
-            if candidate in row_title or row_title in candidate:
-                return {
-                    'full_name': row['title'],
-                    'url': row['url'],
-                    'filename': os.path.basename(unquote(row['url'])),
-                }
+        title = row.get('title', '').strip()
+        if not title:
+            continue
+        listing[title.lower()] = {
+            'full_name': title,
+            'url': row.get('url', ''),
+            'region': row.get('region', ''),
+        }
+    _candidate_name, entry = find_listing_match(game_info, listing, min_score=0.95)
+    if entry and entry.get('url'):
+        return {
+            'full_name': entry.get('full_name', ''),
+            'url': entry['url'],
+            'filename': os.path.basename(unquote(entry['url'])),
+        }
     return None
 
 
@@ -1315,6 +1322,14 @@ _ROMSXISOS_JS_BASE = 'https://romsxisos.github.io/web/js_games/'
 _romsxisos_js_cache: dict[str, list] = {}
 
 
+def _romsxisos_session():
+    session = requests.Session()
+    session.headers.update({
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+    })
+    return session
+
+
 def _gdrive_viewer_to_direct(url: str) -> str:
     """Convertit une URL Google Drive viewer en URL de telechargement direct."""
     m = re.search(r'/file/d/([a-zA-Z0-9_-]+)', url)
@@ -1338,10 +1353,24 @@ def _parse_romsxisos_js(js_text: str) -> list[dict]:
         return []
     depth = 0
     end_idx = -1
+    in_string = False
+    escape = False
     for i in range(bracket_start, len(js_text)):
-        if js_text[i] == '[':
+        ch = js_text[i]
+        if escape:
+            escape = False
+            continue
+        if ch == '\\' and in_string:
+            escape = True
+            continue
+        if ch == '"':
+            in_string = not in_string
+            continue
+        if in_string:
+            continue
+        if ch == '[':
             depth += 1
-        elif js_text[i] == ']':
+        elif ch == ']':
             depth -= 1
             if depth == 0:
                 end_idx = i + 1
@@ -1350,6 +1379,7 @@ def _parse_romsxisos_js(js_text: str) -> list[dict]:
         return []
     raw_array = js_text[bracket_start:end_idx]
     fixed = re.sub(r'(\{|,)\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*:', r'\1"\2":', raw_array)
+    fixed = re.sub(r',\s*([\]\}])', r'\1', fixed)
     try:
         data = json.loads(fixed)
     except (json.JSONDecodeError, ValueError):
@@ -1379,7 +1409,7 @@ def list_romsxisos_directory(system_slug: str, session: requests.Session) -> dic
     print(f"Scraping RomsXISOs: {js_url}")
     from . import _facade
     cache = _facade.load_listing_cache()
-    cache_key = f"romsxisos:{js_url}"
+    cache_key = f"romsxisos:v3:{js_url}"
     cached = _facade.listing_cache_get(cache, cache_key)
     if cached:
         print("  Listing RomsXISOs depuis le cache")
@@ -1395,12 +1425,16 @@ def list_romsxisos_directory(system_slug: str, session: requests.Session) -> dic
         for entry in entries:
             name_no_ext = strip_rom_extension(entry['name'])
             url = _gdrive_viewer_to_direct(entry['link1'] or entry['link2'])
+            if 'myrient.' in url.lower() or 'myrient/' in url.lower():
+                continue
+            url_filename = os.path.basename(unquote(url.split('?', 1)[0]))
+            filename = url_filename if strip_rom_extension(url_filename) != url_filename else f"{name_no_ext}.zip"
             mapping[name_no_ext.lower()] = {
                 'full_name': name_no_ext,
                 'url': url,
-                'filename': entry.get('name', ''),
+                'filename': filename,
                 'size': entry.get('size', ''),
-                'is_gdrive': True,
+                'is_gdrive': 'drive.google.com' in url,
             }
         _facade.listing_cache_set(cache, cache_key, mapping)
         _facade.save_listing_cache(cache)
@@ -1416,15 +1450,14 @@ def resolve_romsxisos_game(game_info: dict, system_slug: str, session: requests.
     listing = list_romsxisos_directory(system_slug, session)
     if not listing:
         return None
-    for candidate_name in iter_game_candidate_names(game_info):
-        entry = listing.get(candidate_name.lower())
-        if entry:
-            return {
-                'full_name': candidate_name,
-                'url': entry['url'],
-                'filename': entry.get('filename', f"{candidate_name}.zip"),
-                'is_gdrive': True,
-            }
+    candidate_name, entry = find_listing_match(game_info, listing)
+    if entry:
+        return {
+            'full_name': entry.get('full_name') or candidate_name,
+            'url': entry['url'],
+            'filename': entry.get('filename', f"{candidate_name}.zip"),
+            'is_gdrive': entry.get('is_gdrive', False),
+        }
     return None
 
 
@@ -1468,6 +1501,7 @@ __all__ = [
     '_ROMSXISOS_JS_BASE',
     '_gdrive_viewer_to_direct',
     '_parse_romsxisos_js',
+    '_romsxisos_session',
     'list_romsxisos_directory',
     'resolve_romsxisos_game',
     '_NPS_TSV_CACHE',
