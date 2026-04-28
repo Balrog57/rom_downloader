@@ -236,7 +236,8 @@ def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_ru
 
 def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limit,
                  move_to_tosort=False, clean_torrentzip=False, custom_sources=None,
-                 parallel_downloads: int | None = None, refresh_resolution_cache: bool = False):
+                 parallel_downloads: int | None = None, refresh_resolution_cache: bool = False,
+                 prefer_1fichier: bool = False):
     """Run the download process with archive.org as the final fallback."""
     from . import _facade
     if refresh_resolution_cache:
@@ -263,7 +264,7 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
     sources = [source.copy() for source in (custom_sources if custom_sources else get_default_sources())]
     if myrient_url and myrient_url not in [s['base_url'] for s in sources]:
         sources.insert(0, build_custom_source(myrient_url))
-    sources = prepare_sources_for_profile(sources, dat_profile)
+    sources = prepare_sources_for_profile(sources, dat_profile, prefer_1fichier=prefer_1fichier)
     report_active_sources = [source['name'] for source in sources if source.get('enabled', True)]
     print_analysis_summary(build_analysis_summary(dat_file, rom_folder, dat_games, missing_games, dat_profile, sources))
 
@@ -278,7 +279,7 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
         if myrient_url and myrient_url not in [s['base_url'] for s in sources]:
             sources.insert(0, build_custom_source(myrient_url))
 
-        sources = prepare_sources_for_profile(sources, dat_profile)
+        sources = prepare_sources_for_profile(sources, dat_profile, prefer_1fichier=prefer_1fichier)
         sources = prioritize_sources(sources, session_metrics)
         report_active_sources = [source['name'] for source in sources if source.get('enabled', True)]
 

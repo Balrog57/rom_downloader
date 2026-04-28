@@ -13,7 +13,7 @@ from .env import *
 from .dependencies import *
 from .dat_parser import strip_rom_extension, normalize_checksum
 from .rom_database import load_rom_database, database_result_filename
-from .sources import SYSTEM_MAPPINGS, normalize_source_label, source_is_excluded
+from .sources import SYSTEM_MAPPINGS, normalize_source_label, source_is_excluded, source_order_key
 from .archive_org import search_archive_org_by_md5, search_archive_org_by_crc, search_archive_org_by_sha1, search_archive_org_by_name
 from .minerva import (
     search_minerva_hash_database_for_games,
@@ -60,6 +60,11 @@ from .scrapers import (
 )
 
 
+def _source_is_usable(source: dict) -> bool:
+    """Indique si une source peut participer a la resolution courante."""
+    return bool(source.get('enabled', True) and source.get('compatible', True))
+
+
 def search_all_sources_legacy(missing_games: list, sources: list, session: requests.Session, system_name: str = None) -> tuple:
     from . import _facade
     print("\n" + "=" * 70)
@@ -81,7 +86,12 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
     still_missing = missing_games.copy()
 
     mappings = SYSTEM_MAPPINGS.get(system_name, {}) if system_name else {}
-
+    prefer_1fichier = any(
+        _source_is_usable(source)
+        and source.get('type') in {'retrogamesets', 'startgame'}
+        and int(source.get('order', 99)) <= 11
+        for source in sources
+    )
     print(f"\n{'=' * 70}")
     print("ETAPE 1: Recherche dans la base de donnees locale")
     print(f"{'=' * 70}")
@@ -124,8 +134,10 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
     print(f"  Non trouve dans la base: {len(still_missing)} jeux")
 
     if still_missing and system_name:
-        for source in sources:
-            if source['type'] == 'edgeemu' and source.get('enabled', True) and source.get('compatible', True):
+        for source in sorted(sources, key=source_order_key):
+            if not _source_is_usable(source):
+                continue
+            if source['type'] == 'edgeemu':
                 slug = mappings.get('edgeemu')
                 if slug:
                     print(f"\n--- Recherche sur EdgeEmu ({slug}) ---")
@@ -144,7 +156,7 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
                     all_found.extend(newly_found)
                     still_missing = remaining
 
-            elif source['type'] == 'planetemu' and source.get('enabled', True) and source.get('compatible', True):
+            elif source['type'] == 'planetemu':
                 slug = mappings.get('planetemu')
                 if slug:
                     print(f"\n--- Recherche sur PlanetEmu ({slug}) ---")
@@ -165,7 +177,7 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
                         all_found.extend(newly_found)
                         still_missing = remaining
 
-            elif source['type'] == 'cdromance' and source.get('enabled', True):
+            elif source['type'] == 'cdromance':
                 print(f"\n--- Recherche sur CDRomance ---")
                 cd_session = get_cdromance_session()
                 newly_found = []
@@ -183,7 +195,7 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
                 all_found.extend(newly_found)
                 still_missing = remaining
 
-            elif source['type'] == 'vimm' and source.get('enabled', True):
+            elif source['type'] == 'vimm':
                 slug = mappings.get('vimm')
                 if slug:
                     print(f"\n--- Recherche sur Vimm's Lair ({slug}) ---")
@@ -203,7 +215,7 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
                     all_found.extend(newly_found)
                     still_missing = remaining
 
-            elif source['type'] == 'retrogamesets' and source.get('enabled', True):
+            elif source['type'] == 'retrogamesets':
                 slug = mappings.get('retrogamesets')
                 if slug:
                     print(f"\n--- Recherche sur RetroGameSets ({slug}) ---")
@@ -354,6 +366,12 @@ def search_all_sources(
     archive_found = []
 
     mappings = SYSTEM_MAPPINGS.get(system_name, {}) if system_name else {}
+    prefer_1fichier = any(
+        _source_is_usable(source)
+        and source.get('type') in {'retrogamesets', 'startgame'}
+        and int(source.get('order', 99)) <= 11
+        for source in sources
+    )
 
     # ── ETAPE 1: Base locale (liens DDL uniquement) ──
 
@@ -374,7 +392,7 @@ def search_all_sources(
             db_results, search_hint = search_database_for_game(game_info)
 
             if db_results:
-                ddl_result = select_ddl_result(db_results)
+                ddl_result = select_ddl_result(db_results, prefer_1fichier=prefer_1fichier)
                 if ddl_result:
                     game_info['download_filename'] = database_result_filename(ddl_result, game_name)
                     game_info['download_url'] = ddl_result.get('url')
@@ -388,10 +406,12 @@ def search_all_sources(
                     torrent_result = select_torrent_result(db_results)
                     if torrent_result:
                         torrent_pending.append((game_info, torrent_result, search_hint))
+                        not_in_db.append(game_info)
                     else:
                         archive_result = select_archive_result(db_results)
                         if archive_result:
                             archive_pending.append((game_info, archive_result, search_hint))
+                            not_in_db.append(game_info)
                         else:
                             not_in_db.append(game_info)
             else:
@@ -411,13 +431,15 @@ def search_all_sources(
     print(f"{'=' * 70}")
 
     if still_missing and system_name:
-        for source in sources:
+        for source in sorted(sources, key=source_order_key):
             if not still_missing:
                 break
             if source_is_excluded(source, excluded_sources):
                 continue
+            if not _source_is_usable(source):
+                continue
 
-            if source['type'] == 'edgeemu' and source.get('enabled', True) and source.get('compatible', True):
+            if source['type'] == 'edgeemu':
                 slug = mappings.get('edgeemu')
                 if slug and still_missing:
                     print(f"\n--- Recherche sur EdgeEmu ({slug}) ---")
@@ -436,7 +458,7 @@ def search_all_sources(
                     ddl_found.extend(newly_found)
                     still_missing = remaining
 
-            elif source['type'] == 'planetemu' and source.get('enabled', True) and source.get('compatible', True):
+            elif source['type'] == 'planetemu':
                 slug = mappings.get('planetemu')
                 if slug:
                     print(f"\n--- Recherche sur PlanetEmu ({slug}) ---")
@@ -464,7 +486,7 @@ def search_all_sources(
                         ddl_found.extend(newly_found)
                         still_missing = remaining
 
-            elif source['type'] == 'lolroms' and source.get('enabled', True):
+            elif source['type'] == 'lolroms':
                 lolroms_paths = []
                 subdir = _lolroms_subdir_for_system(system_name)
                 if subdir:
@@ -513,7 +535,7 @@ def search_all_sources(
                         ddl_found.extend(newly_found)
                         still_missing = remaining
 
-            elif source['type'] == 'cdromance' and source.get('enabled', True):
+            elif source['type'] == 'cdromance':
                 if still_missing:
                     print(f"\n--- Recherche sur CDRomance ---")
                     cd_session = get_cdromance_session()
@@ -532,7 +554,7 @@ def search_all_sources(
                     ddl_found.extend(newly_found)
                     still_missing = remaining
 
-            elif source['type'] == 'vimm' and source.get('enabled', True):
+            elif source['type'] == 'vimm':
                 slug = mappings.get('vimm')
                 if slug and still_missing:
                     print(f"\n--- Recherche sur Vimm's Lair ({slug}) ---")
@@ -552,7 +574,7 @@ def search_all_sources(
                     ddl_found.extend(newly_found)
                     still_missing = remaining
 
-            elif source['type'] == 'retrogamesets' and source.get('enabled', True):
+            elif source['type'] == 'retrogamesets':
                 slug = mappings.get('retrogamesets')
                 if slug and still_missing:
                     print(f"\n--- Recherche sur RetroGameSets ({slug}) ---")
@@ -571,7 +593,7 @@ def search_all_sources(
                     ddl_found.extend(newly_found)
                     still_missing = remaining
 
-            elif source['type'] == 'romhustler' and source.get('enabled', True):
+            elif source['type'] == 'romhustler':
                 slug = mappings.get('romhustler')
                 if slug and still_missing:
                     print(f"\n--- Recherche sur RomHustler ({slug}) ---")
@@ -592,7 +614,7 @@ def search_all_sources(
                     ddl_found.extend(newly_found)
                     still_missing = remaining
 
-            elif source['type'] == 'coolrom' and source.get('enabled', True):
+            elif source['type'] == 'coolrom':
                 slug = mappings.get('coolrom')
                 if slug and slug not in _COOLROM_NINTENDO_SYSTEMS and still_missing:
                     print(f"\n--- Recherche sur CoolROM ({slug}) ---")
@@ -614,7 +636,7 @@ def search_all_sources(
                     ddl_found.extend(newly_found)
                     still_missing = remaining
 
-            elif source['type'] == 'nopaystation' and source.get('enabled', True):
+            elif source['type'] == 'nopaystation':
                 tsv_name = mappings.get('nopaystation')
                 if tsv_name and still_missing:
                     print(f"\n--- Recherche sur NoPayStation ({tsv_name}) ---")
@@ -633,7 +655,7 @@ def search_all_sources(
                     ddl_found.extend(newly_found)
                     still_missing = remaining
 
-            elif source['type'] == 'startgame' and source.get('enabled', True):
+            elif source['type'] == 'startgame':
                 slug = mappings.get('startgame')
                 if slug and still_missing:
                     print(f"\n--- Recherche sur StartGame ({slug}) ---")
@@ -653,7 +675,7 @@ def search_all_sources(
                     ddl_found.extend(newly_found)
                     still_missing = remaining
 
-            elif source['type'] == 'hshop' and source.get('enabled', True):
+            elif source['type'] == 'hshop':
                 category = mappings.get('hshop')
                 if category and still_missing:
                     print(f"\n--- Recherche sur hShop ({category}) ---")
@@ -673,7 +695,7 @@ def search_all_sources(
                     ddl_found.extend(newly_found)
                     still_missing = remaining
 
-            elif source['type'] == 'romsxisos' and source.get('enabled', True):
+            elif source['type'] == 'romsxisos':
                 slug = mappings.get('romsxisos')
                 if slug and still_missing:
                     print(f"\n--- Recherche sur RomsXISOs ({slug}) ---")
@@ -717,7 +739,10 @@ def search_all_sources(
 
         # 3a: Resultats torrent deja trouves en base locale
         if torrent_pending:
+            remaining_ids = {id(game_info) for game_info in still_missing}
             for game_info, torrent_result, search_hint in torrent_pending:
+                if id(game_info) not in remaining_ids:
+                    continue
                 game_info['download_filename'] = database_result_filename(torrent_result, game_info['game_name'])
                 game_info['download_url'] = torrent_result.get('url')
                 game_info['source'] = 'Minerva Official Hashes'
@@ -731,11 +756,13 @@ def search_all_sources(
                 db_torrent_found.append(game_info)
                 hint = f' ({search_hint})' if search_hint else ''
                 print(f"  [DB torrent] {game_info['game_name']} -> minerva-torrent{hint}")
-            all_found.extend(db_torrent_found)
+            if db_torrent_found:
+                all_found.extend(db_torrent_found)
             print(f"\n  Trouve en base (torrent Minerva): {len(db_torrent_found)} jeux")
 
         # 3b: Recherche MD5 DAT dans la base Minerva
-        still_missing = [g for g in still_missing if g not in [gi for gi in db_torrent_found]]
+        db_torrent_ids = {id(game_info) for game_info in db_torrent_found}
+        still_missing = [g for g in still_missing if id(g) not in db_torrent_ids]
         if still_missing:
             print("\n--- Recherche Minerva officielle par MD5 DAT ---")
             found, still_missing = search_minerva_hash_database_for_games(still_missing)
@@ -800,7 +827,10 @@ def search_all_sources(
 
         # 4a: Resultats archive.org deja trouves en base locale
         if archive_pending:
+            remaining_ids = {id(game_info) for game_info in still_missing}
             for game_info, archive_result, search_hint in archive_pending:
+                if id(game_info) not in remaining_ids:
+                    continue
                 game_info['download_filename'] = database_result_filename(archive_result, game_info['game_name'])
                 game_info['download_url'] = archive_result.get('url')
                 game_info['source'] = 'database'
@@ -808,10 +838,12 @@ def search_all_sources(
                 archive_found.append(game_info)
                 hint = f' ({search_hint})' if search_hint else ''
                 print(f"  [DB archive.org] {game_info['game_name']} -> archive.org{hint}")
-            all_found.extend(archive_found)
+            if archive_found:
+                all_found.extend(archive_found)
 
         # 4b: Recherche live sur archive.org
-        remaining_for_archive = [g for g in still_missing if g not in [gi for gi in archive_found]]
+        archive_ids = {id(game_info) for game_info in archive_found}
+        remaining_for_archive = [g for g in still_missing if id(g) not in archive_ids]
         if remaining_for_archive:
             print(f"\n--- Recherche archive.org par checksum puis nom ---")
             found, still_missing = search_archive_org_for_games(remaining_for_archive)

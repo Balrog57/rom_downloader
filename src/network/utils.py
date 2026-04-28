@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import json
 import os
+import time
+import uuid
 from pathlib import Path
 
 
@@ -23,12 +25,24 @@ def save_json_file(path: Path, data) -> bool:
     """Ecrit un JSON local de facon atomique."""
     try:
         path.parent.mkdir(parents=True, exist_ok=True)
-        tmp_path = path.with_suffix(path.suffix + '.tmp')
+        tmp_path = path.with_name(f"{path.name}.{os.getpid()}.{uuid.uuid4().hex}.tmp")
         with open(tmp_path, 'w', encoding='utf-8') as handle:
             json.dump(data, handle, indent=2, ensure_ascii=False)
-        os.replace(tmp_path, path)
+        for attempt in range(3):
+            try:
+                os.replace(tmp_path, path)
+                break
+            except PermissionError:
+                if attempt == 2:
+                    raise
+                time.sleep(0.15 * (attempt + 1))
         return True
     except Exception as e:
+        try:
+            if 'tmp_path' in locals() and tmp_path.exists():
+                tmp_path.unlink()
+        except OSError:
+            pass
         print(f"Avertissement: impossible d'ecrire {path.name}: {e}")
         return False
 

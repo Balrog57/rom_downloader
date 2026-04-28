@@ -3,7 +3,7 @@ import re
 import xml.etree.ElementTree as ET
 
 from .constants import SOURCE_FAMILY_MAP
-from .sources import normalize_source_label
+from .sources import ONEFICHIER_SOURCE_TYPES, normalize_source_label
 
 
 def normalize_system_name(system_name: str) -> str:
@@ -137,7 +137,7 @@ def is_source_compatible_with_profile(source: dict, dat_profile: dict | None) ->
     if family == 'redump' and source_type in {'edgeemu', 'planetemu', 'lolroms'}:
         return False
 
-    if source_type == 'edgeemu':
+    if source_type in {'edgeemu', 'cdromance'}:
         return False
 
     return True
@@ -153,9 +153,12 @@ def prepare_sources_for_profile(sources: list, dat_profile: dict | None, prefer_
 
         source_copy['enabled'] = bool(source_copy.get('enabled', True))
 
-        if prefer_1fichier and source_copy.get('type') in ('retrogamesets', 'startgame'):
+        source_type = source_copy.get('type')
+        if prefer_1fichier and source_type in ONEFICHIER_SOURCE_TYPES:
             source_copy['priority'] = 0
-        elif not prefer_1fichier and source_copy.get('type') in ('retrogamesets', 'startgame'):
+            source_copy['order'] = 10 if source_type == 'retrogamesets' else 11
+        elif not prefer_1fichier and source_type in ONEFICHIER_SOURCE_TYPES:
+            source_copy['order'] = 78 if source_type == 'retrogamesets' else 79
             api_keys = load_api_keys()
             has_deblocker = api_keys.get('alldebrid') or api_keys.get('realdebrid') or api_keys.get('1fichier')
             if not has_deblocker:

@@ -47,6 +47,7 @@ Exemples:
     parser.add_argument('--tosort', action='store_true', help='Deplacer les ROMs non presentes dans le DAT vers un sous-dossier ToSort')
     parser.add_argument('--clean-torrentzip', action='store_true', help='Recompresser les archives validees MD5 en ZIP TorrentZip/RomVault')
     parser.add_argument('--parallel', type=int, default=DEFAULT_PARALLEL_DOWNLOADS, help=f'Nombre de telechargements simultanes (defaut: {DEFAULT_PARALLEL_DOWNLOADS})')
+    parser.add_argument('--prefer-1fichier', action='store_true', help='Prioriser RetroGameSets/StartGame avant les DDL directs')
     parser.add_argument('--sources', action='store_true', help='Afficher les sources de telechargement')
     parser.add_argument('--version', action='version', version=f'ROM Downloader {APP_VERSION}', help='Afficher la version puis quitter')
     parser.add_argument('--analyze', action='store_true', help='Afficher une pre-analyse DAT/dossier puis quitter')

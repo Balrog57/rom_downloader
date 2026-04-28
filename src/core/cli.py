@@ -24,7 +24,8 @@ def cli_mode(args):
         args.tosort,
         args.clean_torrentzip,
         parallel_downloads=args.parallel,
-        refresh_resolution_cache=args.refresh_cache
+        refresh_resolution_cache=args.refresh_cache,
+        prefer_1fichier=args.prefer_1fichier
     )
 
 

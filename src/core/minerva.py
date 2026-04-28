@@ -169,7 +169,7 @@ def collect_minerva_files_from_url(minerva_url: str, session, depth: int = 0) ->
     return collected
 
 
-def select_ddl_result(db_results: list) -> dict | None:
+def select_ddl_result(db_results: list, prefer_1fichier: bool = True) -> dict | None:
     """Selectionne le meilleur resultat DDL (1fichier ou autre lien direct).
     Exclut les resultats torrent et archive.org."""
     results_by_priority = {'1fichier': [], 'other': []}
@@ -180,12 +180,15 @@ def select_ddl_result(db_results: list) -> dict | None:
             continue
         if 'archive.org' in host or 'archive.org' in url:
             continue
+        if 'myrient.' in host or 'myrient.' in url or 'myrient/' in url:
+            continue
         if '1fichier.com' in host or '1fichier.com' in url:
             results_by_priority['1fichier'].append(result)
         else:
             results_by_priority['other'].append(result)
 
-    for priority in ('1fichier', 'other'):
+    priority_order = ('1fichier', 'other') if prefer_1fichier else ('other', '1fichier')
+    for priority in priority_order:
         if results_by_priority[priority]:
             return results_by_priority[priority][0]
     return None
