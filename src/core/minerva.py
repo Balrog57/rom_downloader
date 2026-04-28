@@ -169,29 +169,44 @@ def collect_minerva_files_from_url(minerva_url: str, session, depth: int = 0) ->
     return collected
 
 
-def select_database_result(db_results: list) -> dict | None:
-    candidates = []
+def select_ddl_result(db_results: list) -> dict | None:
+    """Selectionne le meilleur resultat DDL (1fichier ou autre lien direct).
+    Exclut les resultats torrent et archive.org."""
+    results_by_priority = {'1fichier': [], 'other': []}
     for result in db_results:
-        if is_minerva_database_result(result):
-            continue
         host = (result.get('host') or '').lower()
         url = (result.get('url') or '').lower()
-        if 'myrient' in host or 'myrient' in url:
+        if is_minerva_database_result(result):
             continue
         if 'archive.org' in host or 'archive.org' in url:
             continue
-        candidates.append(result)
+        if '1fichier.com' in host or '1fichier.com' in url:
+            results_by_priority['1fichier'].append(result)
+        else:
+            results_by_priority['other'].append(result)
 
-    if not candidates:
-        return None
+    for priority in ('1fichier', 'other'):
+        if results_by_priority[priority]:
+            return results_by_priority[priority][0]
+    return None
 
-    for result in candidates:
+
+def select_torrent_result(db_results: list) -> dict | None:
+    """Selectionne le meilleur resultat torrent (Minerva) depuis la base locale."""
+    for result in db_results:
+        if is_minerva_database_result(result):
+            return result
+    return None
+
+
+def select_archive_result(db_results: list) -> dict | None:
+    """Selectionne un resultat archive.org depuis la base locale."""
+    for result in db_results:
         host = (result.get('host') or '').lower()
         url = (result.get('url') or '').lower()
-        if '1fichier.com' in host or '1fichier.com' in url:
+        if 'archive.org' in host or 'archive.org' in url:
             return result
-
-    return candidates[0]
+    return None
 
 
 def search_database_for_game(game_info: dict) -> tuple[list, str]:
@@ -279,7 +294,9 @@ __all__ = [
     'resolve_minerva_torrent_url',
     'list_minerva_directory',
     'collect_minerva_files_from_url',
-    'select_database_result',
+    'select_ddl_result',
+    'select_torrent_result',
+    'select_archive_result',
     'search_database_for_game',
     'search_minerva_hash_database_for_game',
     'search_minerva_hash_database_for_games',

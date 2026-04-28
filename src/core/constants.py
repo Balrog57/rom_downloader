@@ -37,6 +37,12 @@ LOLROMS_BASE = 'https://lolroms.com/'
 CDROMANCE_BASE = 'https://cdromance.org/'
 VIMM_BASE = 'https://vimm.net/'
 RETRO_GAME_SETS_BASE = 'https://retrogamesets.fr/'
+ROMHUSTLER_BASE = 'https://romhustler.org/'
+COOLROM_BASE = 'https://coolrom.com.au/'
+NOPAYSTATION_BASE = 'https://nopaystation.com/'
+STARTGAME_BASE = 'https://startgame.world/'
+HSHOP_BASE = 'https://hshop.erista.me/'
+ROMSXISOS_BASE = 'https://romsxisos.github.io/'
 BALROG_ASSETS_DIR = APP_ROOT / 'assets'
 BALROG_WINDOW_ICON = BALROG_ASSETS_DIR / 'Retrogaming-Toolkit-AIO.ico'
 BALROG_1G1R_ICON = BALROG_ASSETS_DIR / 'icon_1g1r.png'
@@ -74,6 +80,12 @@ __all__ = [
     'CDROMANCE_BASE',
     'VIMM_BASE',
     'RETRO_GAME_SETS_BASE',
+    'ROMHUSTLER_BASE',
+    'COOLROM_BASE',
+    'NOPAYSTATION_BASE',
+    'STARTGAME_BASE',
+    'HSHOP_BASE',
+    'ROMSXISOS_BASE',
     'BALROG_ASSETS_DIR',
     'BALROG_WINDOW_ICON',
     'BALROG_1G1R_ICON',

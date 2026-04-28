@@ -13,13 +13,27 @@ from __future__ import annotations
 
 import asyncio
 import concurrent.futures
+import importlib.util
 from typing import Callable, Any
 
-try:
-    import aiohttp
-    _AIOHTTP_AVAILABLE = True
-except ImportError:
-    _AIOHTTP_AVAILABLE = False
+_AIOHTTP_AVAILABLE = importlib.util.find_spec('aiohttp') is not None
+_AIOHTTP_MODULE = None
+
+
+def _get_aiohttp():
+    """Importe aiohttp uniquement au moment de l'utiliser."""
+    global _AIOHTTP_AVAILABLE, _AIOHTTP_MODULE
+    if not _AIOHTTP_AVAILABLE:
+        return None
+    if _AIOHTTP_MODULE is not None:
+        return _AIOHTTP_MODULE
+    try:
+        import aiohttp
+    except Exception:
+        _AIOHTTP_AVAILABLE = False
+        return None
+    _AIOHTTP_MODULE = aiohttp
+    return aiohttp
 
 
 async def async_fetch_page(
@@ -28,7 +42,8 @@ async def async_fetch_page(
     headers: dict | None = None,
 ) -> str | None:
     """Fetch une page HTML via aiohttp. Retourne le texte ou None si echec."""
-    if not _AIOHTTP_AVAILABLE:
+    aiohttp = _get_aiohttp()
+    if aiohttp is None:
         return None
     session = aiohttp.ClientSession(
         timeout=aiohttp.ClientTimeout(total=timeout),
@@ -56,7 +71,8 @@ async def async_fetch_listings_parallel(
     Retourne {url: html_text ou None}.
     Si aiohttp n'est pas disponible, retourne {}.
     """
-    if not _AIOHTTP_AVAILABLE or not urls:
+    aiohttp = _get_aiohttp()
+    if aiohttp is None or not urls:
         return {}
 
     connector = aiohttp.TCPConnector(limit=10, ssl=False)

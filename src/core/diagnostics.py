@@ -11,6 +11,12 @@ from .constants import BALROG_ASSETS_DIR
 from .rom_database import ROM_DATABASE_SHARDS_DIR
 
 
+def safe_platform_label() -> str:
+    """Retourne un libelle plateforme sans appeler WMI sur Windows."""
+    arch = os.environ.get('PROCESSOR_ARCHITECTURE') or os.environ.get('PROCESSOR_ARCHITEW6432') or ''
+    return f"{sys.platform} {arch}".strip()
+
+
 def print_sources_info():
     """Print information about available download sources."""
     from ._facade import get_default_sources
@@ -21,7 +27,7 @@ def print_sources_info():
 
     print("\n--- Sources DDL prioritaires ---")
     for i, source in enumerate(get_default_sources(), 1):
-        if source['type'] not in ('archive_org', 'edgeemu', 'planetemu', 'lolroms', 'cdromance', 'vimm', 'retrogamesets', 'free_host'):
+        if source['type'] not in ('archive_org', 'edgeemu', 'planetemu', 'lolroms', 'cdromance', 'vimm', 'retrogamesets', 'romhustler', 'coolrom', 'nopaystation', 'startgame', 'hshop', 'romsxisos', 'free_host'):
             continue
         print(f"\n{i}. {source['name']}")
         print(f"   Type: {source['type']}")
@@ -144,7 +150,7 @@ def build_diagnostic_report() -> dict:
         'app_version': APP_VERSION,
         'python': sys.version.split()[0],
         'executable': sys.executable,
-        'platform': platform.platform(),
+        'platform': safe_platform_label(),
         'app_root': str(APP_ROOT),
         'cwd': os.getcwd(),
         'dat_sections': [item['label'] for item in dat_items if item.get('type') == 'section'],

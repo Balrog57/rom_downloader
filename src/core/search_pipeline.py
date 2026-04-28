@@ -18,7 +18,9 @@ from .archive_org import search_archive_org_by_md5, search_archive_org_by_crc, s
 from .minerva import (
     search_minerva_hash_database_for_games,
     search_database_for_game,
-    select_database_result,
+    select_ddl_result,
+    select_torrent_result,
+    select_archive_result,
     build_minerva_directory_url,
     collect_minerva_files_from_url,
     resolve_minerva_torrent_url,
@@ -38,23 +40,32 @@ from .scrapers import (
     resolve_cdromance_game,
     resolve_vimm_game,
     resolve_retrogamesets_game,
-    list_myrient_directory,
     match_myrient_files,
     search_archive_org_for_games,
+    list_romhustler_directory,
+    resolve_romhustler_game,
+    _romhustler_session as _romhustler_session_fn,
+    _COOLROM_NINTENDO_SYSTEMS,
+    list_coolrom_directory,
+    resolve_coolrom_game,
+    _coolrom_session as _coolrom_session_fn,
+    resolve_nopaystation_game,
+    list_startgame_directory,
+    resolve_startgame_game,
+    _startgame_session as _startgame_session_fn,
+    resolve_hshop_game,
+    _hshop_session as _hshop_session_fn,
+    list_romsxisos_directory,
+    resolve_romsxisos_game,
 )
 
 
 def search_all_sources_legacy(missing_games: list, sources: list, session: requests.Session, system_name: str = None) -> tuple:
-    """
-    Search for missing games across all configured sources.
-    Utilise la base de donnees locale (74,189 URLs) + recherche directe + nouveaux scrapers.
-    Returns (found_games: list, not_found_games: list)
-    """
     from . import _facade
     print("\n" + "=" * 70)
     print(f"Recherche des jeux manquants pour le systeme: {system_name or 'Inconnu'}")
     print("=" * 70)
-    
+
     effective_profile = None
     if effective_profile and effective_profile.get('system_name'):
         system_name = effective_profile.get('system_name')
@@ -62,28 +73,28 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
     sources = prepare_sources_for_profile(sources, effective_profile)
 
     load_rom_database()
-    
+
     if effective_profile:
         print(f"DAT detecte: {describe_dat_profile(effective_profile)}")
 
     all_found = []
     still_missing = missing_games.copy()
-    
+
     mappings = SYSTEM_MAPPINGS.get(system_name, {}) if system_name else {}
-    
+
     print(f"\n{'=' * 70}")
     print("ETAPE 1: Recherche dans la base de donnees locale")
     print(f"{'=' * 70}")
-    
+
     found_in_db = []
     not_in_db = []
-    
+
     for game_info in still_missing:
         game_name = game_info['game_name']
         roms = game_info.get('roms', [])
-        
+
         db_results, search_hint = search_database_for_game(game_info)
-        
+
         if db_results:
             best_result = None
             for result in db_results:
@@ -91,12 +102,12 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
                 if 'archive.org' in host:
                     best_result = result
                     break
-                elif 'myrient' in host and not best_result:
+                elif 'minerva' in host and not best_result:
                     best_result = result
-            
+
             if not best_result:
                 best_result = db_results[0]
-            
+
             game_info['download_filename'] = database_result_filename(best_result, game_name)
             game_info['download_url'] = best_result.get('url')
             game_info['source'] = 'database'
@@ -105,13 +116,13 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
             print(f"  [DB] {game_name} -> {best_result.get('host')}")
         else:
             not_in_db.append(game_info)
-    
+
     all_found.extend(found_in_db)
     still_missing = not_in_db
-    
+
     print(f"\n  Trouve dans la base: {len(found_in_db)} jeux")
     print(f"  Non trouve dans la base: {len(still_missing)} jeux")
-    
+
     if still_missing and system_name:
         for source in sources:
             if source['type'] == 'edgeemu' and source.get('enabled', True) and source.get('compatible', True):
@@ -211,43 +222,47 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
                     all_found.extend(newly_found)
                     still_missing = remaining
 
-    myrient_sources = [s for s in sources if s['type'] == 'myrient' and s.get('enabled', True)]
-    
-    if myrient_sources and still_missing:
-        for source in myrient_sources:
+    minerva_sources = [s for s in sources if s['type'] == 'minerva' and s.get('enabled', True)]
+
+    if minerva_sources and still_missing:
+        for source in minerva_sources:
             print(f"\n--- Recherche directe sur {source['name']} ---")
-            
-            base_url = source['base_url']
-            if base_url.endswith('/No-Intro/') and system_name:
-                base_url = f"{base_url}{quote(system_name)}/"
-            
-            myrient_files = list_myrient_directory(base_url, session)
-            
-            if myrient_files:
-                found, still_missing = match_myrient_files(still_missing, myrient_files, source['name'])
+
+            base_url = build_minerva_directory_url(source, system_name)
+            minerva_files = collect_minerva_files_from_url(base_url, session, source.get('scan_depth', 0))
+
+            if minerva_files:
+                torrent_url = resolve_minerva_torrent_url(source, system_name, session)
+                if not torrent_url:
+                    candidates = build_minerva_torrent_urls(source, system_name)
+                    probe_url = candidates[0] if candidates else 'aucune URL candidate'
+                    print(f"  Avertissement: torrent Minerva introuvable pour {source['name']} ({probe_url})")
+                    continue
+
+                found, still_missing = match_myrient_files(still_missing, minerva_files, source['name'])
                 for f in found:
-                    f['download_url'] = f"{base_url.rstrip('/')}/{quote(f['download_filename'])}"
+                    f['torrent_url'] = torrent_url
+                    f['source'] = source['name']
                 all_found.extend(found)
-    
+
     archive_sources = [
         s for s in sources
         if s['type'] == 'archive_org' and s.get('enabled', True) and s.get('compatible', True)
     ]
-    
+
     if archive_sources and still_missing:
         print(f"\n--- Recherche archive.org par MD5 (fallback) ---")
         found, still_missing = search_archive_org_for_games(still_missing)
         all_found.extend(found)
-    
+
     print(f"\n{'=' * 70}")
     print("RESUME DE LA RECHERCHE")
     print(f"{'=' * 70}")
     print(f"  Jeux trouves (base locale): {len(found_in_db)}")
-    print(f"  Jeux trouves (Myrient direct): {len(all_found) - len(found_in_db)}")
     print(f"  Total trouves: {len(all_found)}")
     print(f"  Jeux non trouves: {len(still_missing)}")
     print(f"{'=' * 70}")
-    
+
     return all_found, still_missing
 
 
@@ -313,9 +328,11 @@ def search_all_sources(
     excluded_sources: set[str] | None = None
 ) -> tuple:
     """
-    Search for missing games across all configured sources.
-    Les liens directs sont prioritaires; Minerva passe ensuite, puis archive.org en dernier recours.
-    Returns (found_games: list, not_found_games: list)
+    Recherche des jeux manquants selon le pipeline prioritaire:
+    1. Base locale (liens DDL uniquement -- 1fichier, autres hebergeurs directs)
+    2. Sources DDL live (EdgeEmu, PlanetEmu, LoLROMs, CDRomance, Vimm, RetroGameSets)
+    3. Torrent Minerva (base locale torrent + browse Minerva)
+    4. archive.org (dernier recours)
     """
     print("\n" + "=" * 70)
     print(f"Recherche des jeux manquants pour le systeme: {system_name or 'Inconnu'}")
@@ -330,15 +347,18 @@ def search_all_sources(
 
     all_found = []
     still_missing = missing_games.copy()
-    direct_found = []
-    found_in_db = []
+    ddl_found = []
+    db_ddl_found = []
+    db_torrent_found = []
     minerva_found = []
     archive_found = []
 
     mappings = SYSTEM_MAPPINGS.get(system_name, {}) if system_name else {}
 
+    # ── ETAPE 1: Base locale (liens DDL uniquement) ──
+
     print(f"\n{'=' * 70}")
-    print("ETAPE 1: Recherche dans la base de donnees locale (MD5 shards + fallback)")
+    print("ETAPE 1: Base locale (liens DDL directs)")
     print(f"{'=' * 70}")
 
     not_in_db = []
@@ -346,116 +366,49 @@ def search_all_sources(
         not_in_db = still_missing
         print("  [DB] ignoree pour ce retry")
     else:
+        ddl_results_for_games = []
+        torrent_pending = []
+        archive_pending = []
         for game_info in still_missing:
             game_name = game_info['game_name']
             db_results, search_hint = search_database_for_game(game_info)
 
-            best_result = select_database_result(db_results)
-            if best_result:
-                game_info['download_filename'] = database_result_filename(best_result, game_name)
-                game_info['download_url'] = best_result.get('url')
-                game_info['source'] = 'database'
-                game_info['database_host'] = best_result.get('host')
-                found_in_db.append(game_info)
-                print(f"  [DB] {game_name} -> {best_result.get('host')}{f' ({search_hint})' if search_hint else ''}")
+            if db_results:
+                ddl_result = select_ddl_result(db_results)
+                if ddl_result:
+                    game_info['download_filename'] = database_result_filename(ddl_result, game_name)
+                    game_info['download_url'] = ddl_result.get('url')
+                    game_info['source'] = 'database'
+                    game_info['database_host'] = ddl_result.get('host')
+                    if '1fichier.com' in (ddl_result.get('url') or ''):
+                        game_info['source'] = 'database (1fichier)'
+                    db_ddl_found.append(game_info)
+                    print(f"  [DB DDL] {game_name} -> {ddl_result.get('host')}{f' ({search_hint})' if search_hint else ''}")
+                else:
+                    torrent_result = select_torrent_result(db_results)
+                    if torrent_result:
+                        torrent_pending.append((game_info, torrent_result, search_hint))
+                    else:
+                        archive_result = select_archive_result(db_results)
+                        if archive_result:
+                            archive_pending.append((game_info, archive_result, search_hint))
+                        else:
+                            not_in_db.append(game_info)
             else:
                 not_in_db.append(game_info)
 
-    all_found.extend(found_in_db)
-    still_missing = not_in_db
+    all_found.extend(db_ddl_found)
+    remaining_after_ddl_db = not_in_db
+    print(f"\n  Trouve en base (DDL): {len(db_ddl_found)} jeux")
+    print(f"  Restants: {len(remaining_after_ddl_db)} jeux")
 
-    print(f"\n  Trouve dans la base: {len(found_in_db)} jeux")
-    print(f"  Non trouve dans la base: {len(still_missing)} jeux")
+    still_missing = remaining_after_ddl_db
+
+    # ── ETAPE 2: Sources DDL live ──
 
     print(f"\n{'=' * 70}")
-    print("ETAPE 2: Recherche directe sur les sources DDL")
+    print("ETAPE 2: Recherche DDL directe (scrapers live)")
     print(f"{'=' * 70}")
-
-    direct_sources = [
-        s for s in sources
-        if s.get('enabled', True)
-        and s.get('compatible', True)
-        and not source_is_excluded(s, excluded_sources)
-        and s['type'] in {'myrient'}
-    ]
-
-    # Pre-fetch async des listings DDL si aiohttp disponible
-    if _AIOHTTP_AVAILABLE and direct_sources and still_missing:
-        prefetch_urls = []
-        for source in direct_sources:
-            if source['type'] == 'minerva':
-                base_url = build_minerva_directory_url(source, system_name)
-                listing_key = f"listing:minerva:{base_url}"
-                session_cache = get_session_cache()
-                if session_cache.get_listing(listing_key) is None:
-                    prefetch_urls.append(base_url)
-            elif source.get('base_url'):
-                base_url = source['base_url']
-                if base_url.endswith('/No-Intro/') and system_name:
-                    base_url = f"{base_url}{quote(system_name)}/"
-                listing_key = f"listing:myrient:{base_url}"
-                session_cache = get_session_cache()
-                if session_cache.get_listing(listing_key) is None:
-                    prefetch_urls.append(base_url)
-
-        if prefetch_urls:
-            print(f"  Pre-fetch async de {len(prefetch_urls)} listing(s)...")
-            import asyncio
-            from ..network.async_search import async_fetch_listings_parallel
-            try:
-                asyncio.run(async_fetch_listings_parallel(prefetch_urls, timeout=30))
-            except Exception:
-                pass
-
-    if direct_sources and still_missing:
-        for source in direct_sources:
-            if not still_missing:
-                break
-            print(f"\n--- Recherche directe sur {source['name']} ---")
-
-            if source['type'] == 'minerva':
-                base_url = build_minerva_directory_url(source, system_name)
-                listing_key = f"listing:minerva:{base_url}"
-                session_cache = get_session_cache()
-                minerva_files = session_cache.get_listing(listing_key)
-                if minerva_files is None:
-                    minerva_files = collect_minerva_files_from_url(base_url, session, source.get('scan_depth', 0))
-                    session_cache.set_listing(listing_key, minerva_files)
-                if minerva_files:
-                    torrent_url = resolve_minerva_torrent_url(source, system_name, session)
-                    if not torrent_url:
-                        candidates = build_minerva_torrent_urls(source, system_name)
-                        probe_url = candidates[0] if candidates else 'aucune URL candidate'
-                        print(f"  Avertissement: torrent Minerva introuvable pour {source['name']} ({probe_url})")
-                        print("  Bascule vers les sources de fallback pour ce systeme.")
-                        continue
-
-                    found, still_missing = match_myrient_files(still_missing, minerva_files, source['name'])
-                    for game in found:
-                        game['torrent_url'] = torrent_url
-                        game['source'] = source['name']
-                    direct_found.extend(found)
-                    all_found.extend(found)
-            else:
-                base_url = source['base_url']
-                if base_url.endswith('/No-Intro/') and system_name:
-                    base_url = f"{base_url}{quote(system_name)}/"
-
-                listing_key = f"listing:myrient:{base_url}"
-                session_cache = get_session_cache()
-                myrient_files = session_cache.get_listing(listing_key)
-                if myrient_files is None:
-                    myrient_files = list_myrient_directory(base_url, session)
-                    session_cache.set_listing(listing_key, myrient_files)
-                if myrient_files:
-                    found, still_missing = match_myrient_files(still_missing, myrient_files, source['name'])
-                    for game in found:
-                        game['download_url'] = f"{base_url.rstrip('/')}/{quote(game['download_filename'])}"
-                    direct_found.extend(found)
-                    all_found.extend(found)
-
-    print(f"\n  Trouve via source DDL directe: {len(direct_found)} jeux")
-    print(f"  Restants apres DDL direct: {len(still_missing)} jeux")
 
     if still_missing and system_name:
         for source in sources:
@@ -464,7 +417,7 @@ def search_all_sources(
             if source_is_excluded(source, excluded_sources):
                 continue
 
-            if source['type'] == 'edgeemu' and source.get('enabled', True):
+            if source['type'] == 'edgeemu' and source.get('enabled', True) and source.get('compatible', True):
                 slug = mappings.get('edgeemu')
                 if slug and still_missing:
                     print(f"\n--- Recherche sur EdgeEmu ({slug}) ---")
@@ -480,9 +433,10 @@ def search_all_sources(
                         extra_fields_fn=_edge_fields,
                     )
                     all_found.extend(newly_found)
+                    ddl_found.extend(newly_found)
                     still_missing = remaining
 
-            elif source['type'] == 'planetemu' and source.get('enabled', True):
+            elif source['type'] == 'planetemu' and source.get('enabled', True) and source.get('compatible', True):
                 slug = mappings.get('planetemu')
                 if slug:
                     print(f"\n--- Recherche sur PlanetEmu ({slug}) ---")
@@ -507,6 +461,7 @@ def search_all_sources(
                             else:
                                 remaining.append(game_info)
                         all_found.extend(newly_found)
+                        ddl_found.extend(newly_found)
                         still_missing = remaining
 
             elif source['type'] == 'lolroms' and source.get('enabled', True):
@@ -521,7 +476,7 @@ def search_all_sources(
                     resolved = resolve_lolroms_system_path(system_name)
                     if resolved:
                         lolroms_paths.append(resolved)
-                if lolroms_paths:
+                if lolroms_paths and still_missing:
                     lolroms_files = None
                     for lolroms_path in lolroms_paths:
                         if not still_missing:
@@ -535,7 +490,7 @@ def search_all_sources(
                             session_cache.set_listing(listing_key, path_files)
                         if path_files:
                             lolroms_files = path_files
-                    if lolroms_files:
+                    if lolroms_files and still_missing:
                         newly_found = []
                         remaining = []
                         for game_info in still_missing:
@@ -555,6 +510,7 @@ def search_all_sources(
                                 remaining.append(game_info)
 
                         all_found.extend(newly_found)
+                        ddl_found.extend(newly_found)
                         still_missing = remaining
 
             elif source['type'] == 'cdromance' and source.get('enabled', True):
@@ -573,6 +529,7 @@ def search_all_sources(
                         extra_fields_fn=_cd_fields,
                     )
                     all_found.extend(newly_found)
+                    ddl_found.extend(newly_found)
                     still_missing = remaining
 
             elif source['type'] == 'vimm' and source.get('enabled', True):
@@ -592,6 +549,7 @@ def search_all_sources(
                         extra_fields_fn=_vimm_fields,
                     )
                     all_found.extend(newly_found)
+                    ddl_found.extend(newly_found)
                     still_missing = remaining
 
             elif source['type'] == 'retrogamesets' and source.get('enabled', True):
@@ -610,7 +568,139 @@ def search_all_sources(
                         extra_fields_fn=_rgs_fields,
                     )
                     all_found.extend(newly_found)
+                    ddl_found.extend(newly_found)
                     still_missing = remaining
+
+            elif source['type'] == 'romhustler' and source.get('enabled', True):
+                slug = mappings.get('romhustler')
+                if slug and still_missing:
+                    print(f"\n--- Recherche sur RomHustler ({slug}) ---")
+                    rh_session = _romhustler_session_fn()
+                    def _rh_fields(merged, result):
+                        merged['download_url'] = result.get('url', '')
+                        merged['page_url'] = result.get('page_url', '')
+                        merged['download_filename'] = result.get('filename', f"{merged['game_name']}.zip")
+                    newly_found, remaining = _resolve_games_parallel(
+                        still_missing,
+                        lambda gi: resolve_romhustler_game(gi, slug, rh_session),
+                        "resolve:romhustler",
+                        "RomHustler",
+                        system_name,
+                        extra_fields_fn=_rh_fields,
+                    )
+                    all_found.extend(newly_found)
+                    ddl_found.extend(newly_found)
+                    still_missing = remaining
+
+            elif source['type'] == 'coolrom' and source.get('enabled', True):
+                slug = mappings.get('coolrom')
+                if slug and slug not in _COOLROM_NINTENDO_SYSTEMS and still_missing:
+                    print(f"\n--- Recherche sur CoolROM ({slug}) ---")
+                    cr_session = _coolrom_session_fn()
+                    def _cr_fields(merged, result):
+                        merged['page_url'] = result.get('page_url', '')
+                        merged['download_url'] = result.get('url', '')
+                        merged['download_filename'] = result.get('filename', f"{merged['game_name']}.zip")
+                        merged['game_id'] = result.get('game_id', '')
+                    newly_found, remaining = _resolve_games_parallel(
+                        still_missing,
+                        lambda gi: resolve_coolrom_game(gi, slug, cr_session),
+                        "resolve:coolrom",
+                        "CoolROM",
+                        system_name,
+                        extra_fields_fn=_cr_fields,
+                    )
+                    all_found.extend(newly_found)
+                    ddl_found.extend(newly_found)
+                    still_missing = remaining
+
+            elif source['type'] == 'nopaystation' and source.get('enabled', True):
+                tsv_name = mappings.get('nopaystation')
+                if tsv_name and still_missing:
+                    print(f"\n--- Recherche sur NoPayStation ({tsv_name}) ---")
+                    def _nps_fields(merged, result):
+                        merged['download_url'] = result['url']
+                        merged['download_filename'] = result.get('filename', f"{merged['game_name']}.pkg")
+                    newly_found, remaining = _resolve_games_parallel(
+                        still_missing,
+                        lambda gi: resolve_nopaystation_game(gi, tsv_name, session),
+                        "resolve:nopaystation",
+                        "NoPayStation",
+                        system_name,
+                        extra_fields_fn=_nps_fields,
+                    )
+                    all_found.extend(newly_found)
+                    ddl_found.extend(newly_found)
+                    still_missing = remaining
+
+            elif source['type'] == 'startgame' and source.get('enabled', True):
+                slug = mappings.get('startgame')
+                if slug and still_missing:
+                    print(f"\n--- Recherche sur StartGame ({slug}) ---")
+                    sg_session = _startgame_session_fn()
+                    def _sg_fields(merged, result):
+                        merged['download_url'] = result.get('url', '')
+                        merged['download_filename'] = result.get('filename', f"{merged['game_name']}.zip")
+                    newly_found, remaining = _resolve_games_parallel(
+                        still_missing,
+                        lambda gi: resolve_startgame_game(gi, slug, sg_session),
+                        "resolve:startgame",
+                        "StartGame",
+                        system_name,
+                        extra_fields_fn=_sg_fields,
+                    )
+                    all_found.extend(newly_found)
+                    ddl_found.extend(newly_found)
+                    still_missing = remaining
+
+            elif source['type'] == 'hshop' and source.get('enabled', True):
+                category = mappings.get('hshop')
+                if category and still_missing:
+                    print(f"\n--- Recherche sur hShop ({category}) ---")
+                    hs_session = _hshop_session_fn()
+                    def _hs_fields(merged, result):
+                        merged['page_url'] = result.get('page_url', '')
+                        merged['download_filename'] = result.get('filename', f"{merged['game_name']}.cia")
+                    newly_found, remaining = _resolve_games_parallel(
+                        still_missing,
+                        lambda gi: resolve_hshop_game(gi, category, hs_session),
+                        "resolve:hshop",
+                        "hShop",
+                        system_name,
+                        extra_fields_fn=_hs_fields,
+                    )
+                    all_found.extend(newly_found)
+                    ddl_found.extend(newly_found)
+                    still_missing = remaining
+
+            elif source['type'] == 'romsxisos' and source.get('enabled', True):
+                slug = mappings.get('romsxisos')
+                if slug and still_missing:
+                    print(f"\n--- Recherche sur RomsXISOs ({slug}) ---")
+                    rx_session = requests.Session()
+                    rx_session.headers.update({
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                    })
+                    def _rx_fields(merged, result):
+                        merged['download_url'] = result.get('url', '')
+                        merged['download_filename'] = result.get('filename', f"{merged['game_name']}.zip")
+                        merged['is_gdrive'] = result.get('is_gdrive', False)
+                    newly_found, remaining = _resolve_games_parallel(
+                        still_missing,
+                        lambda gi: resolve_romsxisos_game(gi, slug, rx_session),
+                        "resolve:romsxisos",
+                        "RomsXISOs",
+                        system_name,
+                        extra_fields_fn=_rx_fields,
+                    )
+                    all_found.extend(newly_found)
+                    ddl_found.extend(newly_found)
+                    still_missing = remaining
+
+    print(f"\n  Trouve via DDL direct: {len(ddl_found)} jeux")
+    print(f"  Restants apres DDL: {len(still_missing)} jeux")
+
+    # ── ETAPE 3: Minerva torrent (base locale torrent + browse) ──
 
     minerva_sources = [
         s for s in sources
@@ -622,14 +712,37 @@ def search_all_sources(
 
     if minerva_sources and still_missing:
         print(f"\n{'=' * 70}")
-        print("ETAPE 4: Minerva via torrent")
+        print("ETAPE 3: Minerva via torrent")
         print(f"{'=' * 70}")
 
-        print("\n--- Recherche Minerva officielle par MD5 DAT ---")
-        found, still_missing = search_minerva_hash_database_for_games(still_missing)
-        minerva_found.extend(found)
-        all_found.extend(found)
+        # 3a: Resultats torrent deja trouves en base locale
+        if torrent_pending:
+            for game_info, torrent_result, search_hint in torrent_pending:
+                game_info['download_filename'] = database_result_filename(torrent_result, game_info['game_name'])
+                game_info['download_url'] = torrent_result.get('url')
+                game_info['source'] = 'Minerva Official Hashes'
+                game_info['database_host'] = 'minerva-torrent'
+                if torrent_result.get('torrent_url'):
+                    game_info['torrent_url'] = torrent_result['torrent_url']
+                if torrent_result.get('torrent_path') or torrent_result.get('full_path'):
+                    game_info['torrent_target_filename'] = torrent_result.get('full_path') or torrent_result.get('file_name') or game_info['game_name']
+                if torrent_result.get('full_path'):
+                    game_info['minerva_full_path'] = torrent_result['full_path']
+                db_torrent_found.append(game_info)
+                hint = f' ({search_hint})' if search_hint else ''
+                print(f"  [DB torrent] {game_info['game_name']} -> minerva-torrent{hint}")
+            all_found.extend(db_torrent_found)
+            print(f"\n  Trouve en base (torrent Minerva): {len(db_torrent_found)} jeux")
 
+        # 3b: Recherche MD5 DAT dans la base Minerva
+        still_missing = [g for g in still_missing if g not in [gi for gi in db_torrent_found]]
+        if still_missing:
+            print("\n--- Recherche Minerva officielle par MD5 DAT ---")
+            found, still_missing = search_minerva_hash_database_for_games(still_missing)
+            minerva_found.extend(found)
+            all_found.extend(found)
+
+        # 3c: Browse Minerva par dossier
         for source in minerva_sources:
             if not still_missing:
                 break
@@ -638,6 +751,17 @@ def search_all_sources(
             listing_key = f"listing:minerva:{base_url}"
             session_cache = get_session_cache()
             minerva_files = session_cache.get_listing(listing_key)
+
+            # Pre-fetch async si aiohttp dispo
+            if _AIOHTTP_AVAILABLE and minerva_files is None:
+                prefetch_urls = [base_url]
+                try:
+                    import asyncio
+                    asyncio.run(async_fetch_listings_parallel(prefetch_urls, timeout=30))
+                    minerva_files = session_cache.get_listing(listing_key)
+                except Exception:
+                    pass
+
             if minerva_files is None:
                 minerva_files = collect_minerva_files_from_url(base_url, session, source.get('scan_depth', 0))
                 session_cache.set_listing(listing_key, minerva_files)
@@ -658,6 +782,11 @@ def search_all_sources(
             minerva_found.extend(found)
             all_found.extend(found)
 
+        print(f"\n  Trouve via Minerva (torrent): {len(minerva_found)} jeux")
+        print(f"  Restants apres Minerva: {len(still_missing)} jeux")
+
+    # ── ETAPE 4: archive.org (dernier recours) ──
+
     archive_sources = [
         s for s in sources
         if s['type'] == 'archive_org'
@@ -666,20 +795,38 @@ def search_all_sources(
     ]
     if archive_sources and still_missing:
         print(f"\n{'=' * 70}")
-        print("ETAPE 5: Dernier recours archive.org")
+        print("ETAPE 4: Dernier recours archive.org")
         print(f"{'=' * 70}")
-        print(f"\n--- Recherche archive.org par checksum puis nom ---")
-        found, still_missing = search_archive_org_for_games(still_missing)
-        archive_found.extend(found)
-        all_found.extend(found)
+
+        # 4a: Resultats archive.org deja trouves en base locale
+        if archive_pending:
+            for game_info, archive_result, search_hint in archive_pending:
+                game_info['download_filename'] = database_result_filename(archive_result, game_info['game_name'])
+                game_info['download_url'] = archive_result.get('url')
+                game_info['source'] = 'database'
+                game_info['database_host'] = archive_result.get('host', 'archive.org')
+                archive_found.append(game_info)
+                hint = f' ({search_hint})' if search_hint else ''
+                print(f"  [DB archive.org] {game_info['game_name']} -> archive.org{hint}")
+            all_found.extend(archive_found)
+
+        # 4b: Recherche live sur archive.org
+        remaining_for_archive = [g for g in still_missing if g not in [gi for gi in archive_found]]
+        if remaining_for_archive:
+            print(f"\n--- Recherche archive.org par checksum puis nom ---")
+            found, still_missing = search_archive_org_for_games(remaining_for_archive)
+            archive_found.extend(found)
+            all_found.extend(found)
+        else:
+            still_missing = remaining_for_archive
 
     print(f"\n{'=' * 70}")
     print("RESUME DE LA RECHERCHE")
     print(f"{'=' * 70}")
-    print(f"  Jeux trouves (DDL direct): {len(direct_found)}")
-    print(f"  Jeux trouves (base locale): {len(found_in_db)}")
-    print(f"  Jeux trouves (Minerva torrent): {len(minerva_found)}")
-    print(f"  Jeux trouves (archive.org dernier recours): {len(archive_found)}")
+    print(f"  Etape 1 - Base locale (DDL): {len(db_ddl_found)} jeux")
+    print(f"  Etape 2 - DDL direct: {len(ddl_found)} jeux")
+    print(f"  Etape 3 - Minerva torrent: {len(db_torrent_found) + len(minerva_found)} jeux")
+    print(f"  Etape 4 - archive.org: {len(archive_found)} jeux")
     print(f"  Total trouves: {len(all_found)}")
     print(f"  Jeux non trouves: {len(still_missing)}")
     print(f"{'=' * 70}")

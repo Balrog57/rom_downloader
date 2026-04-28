@@ -2,6 +2,8 @@ import html as html_module
 import json
 import os
 import re
+import unicodedata
+from difflib import SequenceMatcher
 from urllib.parse import quote, unquote, urljoin
 
 import cloudscraper
@@ -22,7 +24,9 @@ from .minerva import (
     resolve_minerva_torrent_url,
     build_minerva_torrent_urls,
     search_database_for_game,
-    select_database_result,
+    select_ddl_result,
+    select_torrent_result,
+    select_archive_result,
 )
 from .dat_profile import (
     finalize_dat_profile,
@@ -326,6 +330,67 @@ def iter_game_candidate_names(game_info: dict) -> list:
         candidates.append(game_name)
 
     return candidates
+
+
+def normalize_external_game_name(name: str) -> str:
+    """Normalise un titre pour comparer DAT et listings web."""
+    value = html_module.unescape(str(name or ''))
+    value = os.path.basename(unquote(value))
+    value = strip_rom_extension(value)
+    value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
+    value = value.lower().replace('&', ' and ')
+    value = re.sub(r'[\(\[]\s*((?:disc|disk|cd)\s*\d+)\s*[\)\]]', r' \1 ', value)
+    value = re.sub(r'[\(\[][^\)\]]*[\)\]]', ' ', value)
+    value = re.sub(r'\b(?:rev|version|v)\s*\d+(?:\.\d+)*\b', ' ', value)
+    value = re.sub(r'\b(?:disc|disk|cd)\s*(\d+)\b', r'disc \1', value)
+    value = re.sub(r'[^a-z0-9]+', ' ', value)
+    return re.sub(r'\s+', ' ', value).strip()
+
+
+def find_listing_match(game_info: dict, listing: dict, min_score: float = 0.92) -> tuple[str, dict] | tuple[None, None]:
+    """Trouve le meilleur resultat d'un listing avec exact + normalisation."""
+    if not listing:
+        return None, None
+
+    raw_index = {str(key).lower(): entry for key, entry in listing.items()}
+    normalized_index = {}
+    normalized_names = []
+    for key, entry in listing.items():
+        display_name = entry.get('full_name') or key
+        for value in (key, display_name):
+            normalized = normalize_external_game_name(value)
+            current = normalized_index.get(normalized)
+            current_name = current.get('full_name', '') if current else ''
+            if normalized and (current is None or len(str(display_name)) < len(str(current_name))):
+                normalized_index[normalized] = entry
+                if normalized not in normalized_names:
+                    normalized_names.append(normalized)
+
+    for candidate_name in iter_game_candidate_names(game_info):
+        raw = candidate_name.lower()
+        if raw in raw_index:
+            return candidate_name, raw_index[raw]
+
+        normalized_candidate = normalize_external_game_name(candidate_name)
+        if not normalized_candidate:
+            continue
+
+        entry = normalized_index.get(normalized_candidate)
+        if entry:
+            return candidate_name, entry
+
+        best_name = ''
+        best_score = 0.0
+        for normalized_name in normalized_names:
+            score = SequenceMatcher(None, normalized_candidate, normalized_name).ratio()
+            if score > best_score:
+                best_name = normalized_name
+                best_score = score
+
+        if best_score >= min_score:
+            return candidate_name, normalized_index[best_name]
+
+    return None, None
 
 
 def resolve_edgeemu_game(game_info: dict, system_slug: str, session: requests.Session) -> dict | None:
@@ -781,7 +846,6 @@ def match_myrient_files(missing_games: list, myrient_files: set, source_name: st
 
 
 def search_archive_org_for_games(not_available: list) -> tuple:
-    """Recherche archive.org avec priorite md5 -> crc -> sha1 -> nom."""
     found_on_archive = []
     still_not_available = []
     total_games = len(not_available)
@@ -851,6 +915,519 @@ def search_archive_org_for_games(not_available: list) -> tuple:
     return found_on_archive, still_not_available
 
 
+# ── RomHustler ──────────────────────────────────────────────────────────
+
+def _romhustler_session():
+    session = requests.Session()
+    session.headers.update({
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Accept': 'text/html,application/xhtml+xml',
+    })
+    return session
+
+
+ROMHUSTLER_MAX_PAGES = 8
+
+
+def list_romhustler_directory(system_slug: str, session: requests.Session) -> dict:
+    if not system_slug:
+        return {}
+    url = f"{ROMHUSTLER_BASE}roms/{system_slug}"
+    print(f"Scraping RomHustler: {url}")
+    from . import _facade
+    cache = _facade.load_listing_cache()
+    cache_key = f"romhustler:{url}"
+    cached = _facade.listing_cache_get(cache, cache_key)
+    if cached:
+        print("  Listing RomHustler depuis le cache")
+        return dict(cached)
+
+    mapping = {}
+    try:
+        page = 1
+        while True:
+            page_url = f"{ROMHUSTLER_BASE}roms/{system_slug}" if page == 1 else f"{ROMHUSTLER_BASE}roms/{system_slug}/{page}"
+            resp = session.get(page_url, timeout=30)
+            if resp.status_code != 200:
+                break
+            soup = BeautifulSoup(resp.text, 'html.parser')
+            table = soup.find('table', class_='roms-table')
+            if not table:
+                break
+
+            rows = table.find_all('tr')
+            page_count = 0
+            for row in rows:
+                link = row.find('a', href=True)
+                if not link:
+                    continue
+                href = link['href']
+                text = link.get_text().strip()
+                if not text:
+                    continue
+                if ROMHUSTLER_BASE in href:
+                    if '/rom/' not in href:
+                        continue
+                elif not href.startswith('/rom/'):
+                    continue
+                name_no_ext = strip_rom_extension(text)
+                game_page_url = href if href.startswith('http') else urljoin(ROMHUSTLER_BASE, href)
+                mapping[name_no_ext.lower()] = {
+                    'full_name': name_no_ext,
+                    'page_url': game_page_url,
+                }
+                page_count += 1
+
+            if page_count == 0:
+                break
+
+            next_link = soup.find('a', href=True, string=re.compile(r'Next', re.IGNORECASE))
+            rel_next = soup.find('link', rel='next')
+            has_next = bool(next_link or rel_next)
+            if not has_next:
+                pagination = soup.find('ul', class_='pagination') or soup.find('nav', class_='pagination')
+                if pagination:
+                    for a in pagination.find_all('a', href=True):
+                        href = a.get('href', '')
+                        if f'/roms/{system_slug}/{page + 1}' in href:
+                            has_next = True
+                            break
+            if not has_next:
+                break
+            page += 1
+            if page > ROMHUSTLER_MAX_PAGES:
+                print(f"  [RomHustler] Pagination limitee a {ROMHUSTLER_MAX_PAGES} pages")
+                break
+
+        _facade.listing_cache_set(cache, cache_key, mapping)
+        _facade.save_listing_cache(cache)
+        print(f"Found {len(mapping)} files on RomHustler")
+    except Exception as e:
+        print(f"Erreur scraping RomHustler: {e}")
+    return mapping
+
+
+def resolve_romhustler_game(game_info: dict, system_slug: str, session: requests.Session) -> dict | None:
+    if not system_slug:
+        return None
+    listing = list_romhustler_directory(system_slug, session)
+    if not listing:
+        return None
+    candidate_name, entry = find_listing_match(game_info, listing)
+    if entry:
+            game_page_url = entry.get('page_url', '')
+            if not game_page_url:
+                return None
+            try:
+                resp = session.get(game_page_url, timeout=30)
+                if resp.status_code != 200:
+                    return None
+                soup = BeautifulSoup(resp.text, 'html.parser')
+                dl_link = soup.find('a', href=True, string=re.compile(r'(download|télécharger)', re.IGNORECASE))
+                if not dl_link:
+                    for a in soup.find_all('a', href=True):
+                        if '/download/' in a.get('href', ''):
+                            dl_link = a
+                            break
+                if dl_link:
+                    href = dl_link['href']
+                    dl_url = urljoin(ROMHUSTLER_BASE, href)
+                    return {
+                        'full_name': entry.get('full_name') or candidate_name,
+                        'page_url': game_page_url,
+                        'url': dl_url,
+                        'filename': f"{candidate_name}.zip",
+                    }
+                return {
+                    'full_name': entry.get('full_name') or candidate_name,
+                    'page_url': game_page_url,
+                    'filename': f"{candidate_name}.zip",
+                }
+            except Exception:
+                return None
+    return None
+
+
+# ── CoolROM ─────────────────────────────────────────────────────────────
+
+_COOLROM_NINTENDO_SYSTEMS = {
+    'nes', 'snes', 'n64', 'nds', 'gbc', 'gba', 'gamecube', 'wii', 'vb',
+}
+
+def _coolrom_session():
+    session = requests.Session()
+    session.headers.update({
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Referer': COOLROM_BASE,
+    })
+    return session
+
+
+def list_coolrom_directory(system_slug: str, session: requests.Session) -> dict:
+    if not system_slug:
+        return {}
+    if system_slug in _COOLROM_NINTENDO_SYSTEMS:
+        print(f"  [CoolROM] Systeme Nintendo ({system_slug}) supprime pour droits d'auteur")
+        return {}
+    url = f"{COOLROM_BASE}roms/{system_slug}/"
+    print(f"Scraping CoolROM: {url}")
+    from . import _facade
+    cache = _facade.load_listing_cache()
+    cache_key = f"coolrom:{url}"
+    cached = _facade.listing_cache_get(cache, cache_key)
+    if cached:
+        print("  Listing CoolROM depuis le cache")
+        return dict(cached)
+
+    mapping = {}
+    try:
+        all_url = f"{COOLROM_BASE}roms/{system_slug}/all/"
+        resp = session.get(all_url, timeout=30)
+        if resp.status_code != 200:
+            resp = session.get(url, timeout=30)
+        if resp.status_code != 200:
+            print(f"Erreur CoolROM ({resp.status_code}) pour {url}")
+            return mapping
+        if 'removed.php' in resp.text.lower():
+            print(f"  [CoolROM] Systeme {system_slug} supprime pour droits d'auteur")
+            return mapping
+        soup = BeautifulSoup(resp.text, 'html.parser')
+        for a in soup.find_all('a', href=True):
+            href = a['href']
+            if '/roms/' not in href:
+                continue
+            if f'/roms/{system_slug}/' not in href:
+                continue
+            if href.endswith('/'):
+                continue
+            parts = href.strip('/').split('/')
+            if len(parts) < 4:
+                continue
+            if not parts[-1].endswith('.php'):
+                continue
+            text = a.get_text().strip()
+            if not text:
+                continue
+            name_no_ext = strip_rom_extension(text)
+            page_url = urljoin(COOLROM_BASE, href)
+            game_id_match = re.search(r'/roms/[^/]+/(\d+)/', href)
+            game_id = game_id_match.group(1) if game_id_match else ''
+            mapping[name_no_ext.lower()] = {
+                'full_name': name_no_ext,
+                'page_url': page_url,
+                'game_id': game_id,
+            }
+        _facade.listing_cache_set(cache, cache_key, mapping)
+        _facade.save_listing_cache(cache)
+        print(f"Found {len(mapping)} files on CoolROM")
+    except Exception as e:
+        print(f"Erreur scraping CoolROM: {e}")
+    return mapping
+
+
+def resolve_coolrom_game(game_info: dict, system_slug: str, session: requests.Session) -> dict | None:
+    if not system_slug:
+        return None
+    if system_slug in _COOLROM_NINTENDO_SYSTEMS:
+        return None
+    listing = list_coolrom_directory(system_slug, session)
+    if not listing:
+        return None
+    candidate_name, entry = find_listing_match(game_info, listing)
+    if entry:
+        return {
+            'full_name': entry.get('full_name') or candidate_name,
+            'page_url': entry.get('page_url', ''),
+            'game_id': entry.get('game_id', ''),
+            'filename': f"{candidate_name}.zip",
+        }
+    return None
+
+
+# ── NoPayStation ────────────────────────────────────────────────────────
+
+_NPS_TSV_CACHE = {}
+
+
+def _load_nopaystation_tsv(tsv_name: str, session: requests.Session) -> list:
+    if tsv_name in _NPS_TSV_CACHE:
+        return _NPS_TSV_CACHE[tsv_name]
+    tsv_url = f"{NOPAYSTATION_BASE}tsv/{tsv_name}.tsv"
+    print(f"Chargement NoPayStation TSV: {tsv_url}")
+    try:
+        resp = session.get(tsv_url, timeout=60)
+        if resp.status_code != 200:
+            print(f"  [NoPayStation] Erreur ({resp.status_code}) pour {tsv_url}")
+            return []
+        rows = []
+        for line in resp.text.strip().split('\n'):
+            parts = line.split('\t')
+            if len(parts) >= 5:
+                title_id = parts[0].strip()
+                title = parts[1].strip() if len(parts) > 1 else ''
+                region = parts[2].strip() if len(parts) > 2 else ''
+                url = parts[3].strip() if len(parts) > 3 else ''
+                size = parts[4].strip() if len(parts) > 4 else ''
+                if url and title:
+                    rows.append({
+                        'title_id': title_id,
+                        'title': title,
+                        'region': region,
+                        'url': url,
+                        'size': size,
+                    })
+        _NPS_TSV_CACHE[tsv_name] = rows
+        print(f"  [NoPayStation] {len(rows)} entrees dans {tsv_name}")
+        return rows
+    except Exception as e:
+        print(f"  [NoPayStation] Erreur chargement TSV: {e}")
+        return []
+
+
+def resolve_nopaystation_game(game_info: dict, tsv_name: str, session: requests.Session) -> dict | None:
+    if not tsv_name:
+        return None
+    rows = _load_nopaystation_tsv(tsv_name, session)
+    if not rows:
+        return None
+    candidates = [c.lower() for c in iter_game_candidate_names(game_info)]
+    for row in rows:
+        row_title = row['title'].lower()
+        for candidate in candidates:
+            if candidate in row_title or row_title in candidate:
+                return {
+                    'full_name': row['title'],
+                    'url': row['url'],
+                    'filename': os.path.basename(unquote(row['url'])),
+                }
+    return None
+
+
+# ── StartGame.world ─────────────────────────────────────────────────────
+
+def _startgame_session():
+    session = requests.Session()
+    session.headers.update({
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+    })
+    return session
+
+
+def list_startgame_directory(system_slug: str, session: requests.Session) -> dict:
+    if not system_slug:
+        return {}
+    url = f"{STARTGAME_BASE}{quote(system_slug)}/"
+    print(f"Scraping StartGame: {url}")
+    from . import _facade
+    cache = _facade.load_listing_cache()
+    cache_key = f"startgame:{url}"
+    cached = _facade.listing_cache_get(cache, cache_key)
+    if cached:
+        print("  Listing StartGame depuis le cache")
+        return dict(cached)
+
+    mapping = {}
+    try:
+        resp = session.get(url, timeout=30)
+        if resp.status_code != 200:
+            print(f"Erreur StartGame ({resp.status_code}) pour {url}")
+            return mapping
+        if 'connexion-inscription' in resp.url or 'redirect_to=' in resp.url:
+            print("  [StartGame] Connexion requise, listing ignore")
+            return mapping
+        soup = BeautifulSoup(resp.text, 'html.parser')
+        for a in soup.find_all('a', href=True):
+            href = a['href']
+            text = a.get_text().strip()
+            if not text or '1fichier.com' not in href:
+                continue
+            if '?af=' in href.lower():
+                continue
+            name_no_ext = strip_rom_extension(text)
+            mapping[name_no_ext.lower()] = {
+                'full_name': name_no_ext,
+                'url': href,
+            }
+        _facade.listing_cache_set(cache, cache_key, mapping)
+        _facade.save_listing_cache(cache)
+        print(f"Found {len(mapping)} fichiers sur StartGame")
+    except Exception as e:
+        print(f"Erreur scraping StartGame: {e}")
+    return mapping
+
+
+def resolve_startgame_game(game_info: dict, system_slug: str, session: requests.Session) -> dict | None:
+    if not system_slug:
+        return None
+    listing = list_startgame_directory(system_slug, session)
+    if not listing:
+        return None
+    candidate_name, entry = find_listing_match(game_info, listing)
+    if entry:
+        return {
+            'full_name': entry.get('full_name') or candidate_name,
+            'url': entry['url'],
+            'filename': f"{candidate_name}.zip",
+        }
+    return None
+
+
+# ── hShop (3DS) ─────────────────────────────────────────────────────────
+
+def _hshop_session():
+    session = requests.Session()
+    session.headers.update({
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+    })
+    return session
+
+
+def resolve_hshop_game(game_info: dict, category: str, session: requests.Session) -> dict | None:
+    if not category:
+        return None
+    for candidate_name in iter_game_candidate_names(game_info):
+        search_url = f"{HSHOP_BASE}search?q={quote(candidate_name)}"
+        try:
+            resp = session.get(search_url, timeout=30)
+            if resp.status_code != 200:
+                continue
+            soup = BeautifulSoup(resp.text, 'html.parser')
+            for a in soup.find_all('a', href=True):
+                href = a['href']
+                text = a.get_text().strip().lower()
+                candidate_lower = candidate_name.lower()
+                if candidate_lower in text or text in candidate_lower:
+                    page_url = urljoin(HSHOP_BASE, href)
+                    return {
+                        'full_name': candidate_name,
+                        'page_url': page_url,
+                        'filename': f"{candidate_name}.cia",
+                    }
+        except Exception:
+            continue
+    return None
+
+
+# ── RomsXISOs (GitHub Pages) ────────────────────────────────────────────
+
+_ROMSXISOS_JS_BASE = 'https://romsxisos.github.io/web/js_games/'
+
+_romsxisos_js_cache: dict[str, list] = {}
+
+
+def _gdrive_viewer_to_direct(url: str) -> str:
+    """Convertit une URL Google Drive viewer en URL de telechargement direct."""
+    m = re.search(r'/file/d/([a-zA-Z0-9_-]+)', url)
+    if m:
+        file_id = m.group(1)
+        return f"https://drive.google.com/uc?export=download&id={file_id}"
+    m = re.search(r'[?&]id=([a-zA-Z0-9_-]+)', url)
+    if m:
+        file_id = m.group(1)
+        return f"https://drive.google.com/uc?export=download&id={file_id}"
+    return url
+
+
+def _parse_romsxisos_js(js_text: str) -> list[dict]:
+    """Extrait les entrees ROM depuis un fichier JS RomsXISOs (const roms = [...])."""
+    start_idx = js_text.find('const roms = [')
+    if start_idx < 0:
+        return []
+    bracket_start = js_text.find('[', start_idx)
+    if bracket_start < 0:
+        return []
+    depth = 0
+    end_idx = -1
+    for i in range(bracket_start, len(js_text)):
+        if js_text[i] == '[':
+            depth += 1
+        elif js_text[i] == ']':
+            depth -= 1
+            if depth == 0:
+                end_idx = i + 1
+                break
+    if end_idx < 0:
+        return []
+    raw_array = js_text[bracket_start:end_idx]
+    fixed = re.sub(r'(\{|,)\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*:', r'\1"\2":', raw_array)
+    try:
+        data = json.loads(fixed)
+    except (json.JSONDecodeError, ValueError):
+        return []
+    results = []
+    for entry in data:
+        if not isinstance(entry, dict):
+            continue
+        name = entry.get('name', '').strip()
+        link1 = entry.get('link1', '').strip()
+        link2 = entry.get('link2', '').strip()
+        size = entry.get('size', '').strip()
+        if name and (link1 or link2):
+            results.append({
+                'name': name,
+                'link1': link1,
+                'link2': link2,
+                'size': size,
+            })
+    return results
+
+
+def list_romsxisos_directory(system_slug: str, session: requests.Session) -> dict:
+    if not system_slug:
+        return {}
+    js_url = f"{_ROMSXISOS_JS_BASE}{system_slug}_games_es.js"
+    print(f"Scraping RomsXISOs: {js_url}")
+    from . import _facade
+    cache = _facade.load_listing_cache()
+    cache_key = f"romsxisos:{js_url}"
+    cached = _facade.listing_cache_get(cache, cache_key)
+    if cached:
+        print("  Listing RomsXISOs depuis le cache")
+        return dict(cached)
+
+    mapping = {}
+    try:
+        resp = session.get(js_url, timeout=30)
+        if resp.status_code != 200:
+            print(f"Erreur RomsXISOs ({resp.status_code}) pour {js_url}")
+            return mapping
+        entries = _parse_romsxisos_js(resp.text)
+        for entry in entries:
+            name_no_ext = strip_rom_extension(entry['name'])
+            url = _gdrive_viewer_to_direct(entry['link1'] or entry['link2'])
+            mapping[name_no_ext.lower()] = {
+                'full_name': name_no_ext,
+                'url': url,
+                'filename': entry.get('name', ''),
+                'size': entry.get('size', ''),
+                'is_gdrive': True,
+            }
+        _facade.listing_cache_set(cache, cache_key, mapping)
+        _facade.save_listing_cache(cache)
+        print(f"Found {len(mapping)} fichiers sur RomsXISOs")
+    except Exception as e:
+        print(f"Erreur scraping RomsXISOs: {e}")
+    return mapping
+
+
+def resolve_romsxisos_game(game_info: dict, system_slug: str, session: requests.Session) -> dict | None:
+    if not system_slug:
+        return None
+    listing = list_romsxisos_directory(system_slug, session)
+    if not listing:
+        return None
+    for candidate_name in iter_game_candidate_names(game_info):
+        entry = listing.get(candidate_name.lower())
+        if entry:
+            return {
+                'full_name': candidate_name,
+                'url': entry['url'],
+                'filename': entry.get('filename', f"{candidate_name}.zip"),
+                'is_gdrive': True,
+            }
+    return None
+
+
 __all__ = [
     'get_lolroms_session',
     'get_cdromance_session',
@@ -862,6 +1439,8 @@ __all__ = [
     'list_lolroms_directory',
     'list_edgeemu_directory',
     'iter_game_candidate_names',
+    'normalize_external_game_name',
+    'find_listing_match',
     'resolve_edgeemu_game',
     'list_planetemu_directory',
     'download_planetemu',
@@ -877,4 +1456,19 @@ __all__ = [
     'match_myrient_files',
     'LOLROMS_SESSION',
     'search_archive_org_for_games',
+    'list_romhustler_directory',
+    'resolve_romhustler_game',
+    '_COOLROM_NINTENDO_SYSTEMS',
+    'list_coolrom_directory',
+    'resolve_coolrom_game',
+    'resolve_nopaystation_game',
+    'list_startgame_directory',
+    'resolve_startgame_game',
+    'resolve_hshop_game',
+    '_ROMSXISOS_JS_BASE',
+    '_gdrive_viewer_to_direct',
+    '_parse_romsxisos_js',
+    'list_romsxisos_directory',
+    'resolve_romsxisos_game',
+    '_NPS_TSV_CACHE',
 ]
