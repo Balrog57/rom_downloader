@@ -235,6 +235,7 @@ def gui_mode():
                     'dat_label': self.dat_display.get().strip(),
                     'rom_folder': self.rom_folder.get().strip(),
                     'move_to_tosort': bool(getattr(self, 'move_to_tosort_var', tk.BooleanVar(value=False)).get()),
+                    'prefer_1fichier': bool(getattr(self, 'prefer_1fichier_var', tk.BooleanVar(value=False)).get()),
                     'clean_torrentzip': bool(self.clean_torrentzip_var.get()),
                     'parallel_downloads': max(1, int(self.parallel_var.get() or 1)),
                     'analysis_candidate_limit': self.analysis_candidate_var.get().strip() or '8',
@@ -286,9 +287,11 @@ def gui_mode():
                 tk.Label(sources, text=source_names, bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, justify='left', wraplength=880, font=(self.font, 9)).grid(row=2, column=0, sticky='w')
                 self.button(sources, "Configurer les sources", self.open_source_settings, kind='ghost', width=20).grid(row=3, column=0, sticky='w', pady=(10, 0))
                 self.move_to_tosort_var = tk.BooleanVar(value=bool(self.preferences.get('move_to_tosort', False)))
+                self.prefer_1fichier_var = tk.BooleanVar(value=bool(self.preferences.get('prefer_1fichier', False)))
                 self.clean_torrentzip_var.set(bool(self.preferences.get('clean_torrentzip', False)))
                 self.toggle(sources, "Deplacer les ROMs hors DAT dans un sous-dossier ToSort", self.move_to_tosort_var).grid(row=4, column=0, sticky='w', pady=(14, 0))
-                self.toggle(sources, "Apres verification MD5, recompresser les archives en ZIP TorrentZip/RomVault", self.clean_torrentzip_var).grid(row=5, column=0, sticky='w', pady=(8, 0))
+                self.toggle(sources, "Privilegier les sources 1fichier (RetroGameSets, StartGame)", self.prefer_1fichier_var).grid(row=5, column=0, sticky='w', pady=(8, 0))
+                self.toggle(sources, "Apres verification MD5, recompresser les archives en ZIP TorrentZip/RomVault", self.clean_torrentzip_var).grid(row=6, column=0, sticky='w', pady=(8, 0))
                 parallel_row = tk.Frame(sources, bg=UI_COLOR_CARD_BG)
                 parallel_row.grid(row=6, column=0, sticky='w', pady=(10, 0))
                 tk.Label(parallel_row, text="Telechargements simultanes", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 10)).pack(side='left')
@@ -581,7 +584,7 @@ def gui_mode():
                     if quota is not None:
                         item['quota_per_run'] = quota
                     sources.append(item)
-                return prepare_sources_for_profile(sources, self.dat_profile)
+                return prepare_sources_for_profile(sources, self.dat_profile, prefer_1fichier=bool(self.prefer_1fichier_var.get()))
 
             def provider_stats_text(self, source_name):
                 stats = self.provider_stats.get(source_name)
