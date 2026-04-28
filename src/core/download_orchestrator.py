@@ -108,33 +108,69 @@ def attempt_download_from_resolved_provider(game_info: dict, output_folder: str,
             success = download_vimm(page_url, dest_path, get_vimm_session(), progress_callback)
 
     elif source == 'RomHustler':
+        from bs4 import BeautifulSoup
+        from urllib.parse import urljoin
+        from .constants import ROMHUSTLER_BASE
+        from .scrapers import _romhustler_session as _rh_sess
+
+        def _romhustler_final_url(url: str) -> str:
+            if not url:
+                return ''
+            if 'dl.romhustler.org/files/guest/' in url:
+                return url
+            resp = rh_session.get(url, timeout=30, headers={'Referer': page_url or ROMHUSTLER_BASE})
+            if resp.status_code != 200:
+                return url
+            content_type = (resp.headers.get('content-type') or '').lower()
+            if 'text/html' not in content_type:
+                return url
+            soup = BeautifulSoup(resp.text, 'html.parser')
+            for link in soup.find_all('a', href=True):
+                href = link.get('href', '')
+                if 'dl.romhustler.org/files/guest/' in href:
+                    return href
+            return url
+
+        def _download_romhustler_file(url: str) -> bool:
+            part_path = dest_path + '.part'
+            with rh_session.get(url, stream=True, allow_redirects=True, timeout=download_timeout) as resp:
+                resp.raise_for_status()
+                content_type = (resp.headers.get('content-type') or '').lower()
+                if 'text/html' in content_type:
+                    preview = resp.raw.read(160, decode_content=True)
+                    message = preview.decode('utf-8', errors='ignore').strip()
+                    raise DownloadNetworkError(f"RomHustler n'a pas retourne un fichier: {message[:120]}")
+                total = int(resp.headers.get('content-length', 0))
+                downloaded = 0
+                with open(part_path, 'wb') as handle:
+                    for chunk in resp.iter_content(chunk_size=DOWNLOAD_CHUNK_SIZE):
+                        if not chunk:
+                            continue
+                        handle.write(chunk)
+                        downloaded += len(chunk)
+                        if total > 0 and progress_callback:
+                            progress_callback((downloaded / total) * 100)
+                if progress_callback:
+                    progress_callback(100.0)
+            os.replace(part_path, dest_path)
+            return True
+
         page_url = game_info.get('page_url')
         download_url = game_info.get('download_url')
+        rh_session = _rh_sess()
         if download_url:
-            rh_session = requests.Session()
-            rh_session.headers.update({
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-            })
-            success = download_file(download_url, dest_path, rh_session, progress_callback, download_timeout, progress_detail_callback)
+            final_url = _romhustler_final_url(download_url)
+            success = _download_romhustler_file(final_url)
         elif page_url:
-            rh_session = requests.Session()
-            rh_session.headers.update({
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-            })
-            from .scrapers import _romhustler_session as _rh_sess
-            rh_session = _rh_sess()
             try:
                 resp = rh_session.get(page_url, timeout=30)
                 if resp.status_code == 200:
-                    from bs4 import BeautifulSoup
-                    import re as _re
                     soup = BeautifulSoup(resp.text, 'html.parser')
                     for a in soup.find_all('a', href=True):
                         if '/download/' in a.get('href', ''):
-                            from urllib.parse import urljoin
-                            from .constants import ROMHUSTLER_BASE
                             dl_url = urljoin(ROMHUSTLER_BASE, a['href'])
-                            success = download_file(dl_url, dest_path, rh_session, progress_callback, download_timeout, progress_detail_callback)
+                            final_url = _romhustler_final_url(dl_url)
+                            success = _download_romhustler_file(final_url)
                             break
             except Exception:
                 pass
