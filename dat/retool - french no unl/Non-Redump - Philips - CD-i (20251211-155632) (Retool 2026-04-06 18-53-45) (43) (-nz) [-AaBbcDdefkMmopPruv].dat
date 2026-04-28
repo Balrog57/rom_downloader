@@ -1,0 +1,273 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<name>Non-Redump - Philips - CD-i (Retool)</name>
+		<description>Non-Redump - Philips - CD-i (43) (-nz) [-AaBbcDdefkMmopPruv] (20251211-155632) (Retool)</description>
+		<version>20251211-155632</version>
+		<date>2026-04-06 18-53-45</date>
+		<author>bikerspade, Hiccup, MeguCocoa, norkmetnoil577, NovaAurora, rarenight, Schrodinger, Seventy7, UnlockerPT</author>
+		<homepage>http://www.github.com/unexpectedpanda/retool</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"></clrmamepro>
+		<retool>Created by Retool 2.4.8</retool>
+	</header>
+	<game name="Accent Health (USA)" id="0240">
+		<category>Games</category>
+		<description>Accent Health (USA)</description>
+		<rom name="Accent Health (USA).bin" size="617404704" crc="39da932f" md5="328def44e4ba604b33a9795dac5f85d8" sha1="4d8201755a34e300926c5d11f05076fe97aaf7b4" sha256="4b8b3b1812c50e3919588361abf4e01baa8591fdac4104715c8d285e7fd751ad"/>
+		<rom name="Accent Health (USA).cue" size="83" crc="beb18a49" sha1="4d6dc3a7dbfca6193799f725e346ecbdae371760"/>
+	</game>
+	<game name="Accent Health - Information for Healthy Living - November 2004 - 50 Silver CDi 1104 (USA)" id="0089">
+		<category>Games</category>
+		<description>Accent Health - Information for Healthy Living - November 2004 - 50 Silver CDi 1104 (USA)</description>
+		<rom name="Accent Health - Information for Healthy Living - November 2004 - 50 Silver CDi 1104 (USA).bin" size="622520304" crc="5363bc00" md5="7ed29523018a53c055c8d4baebce7ec5" sha1="56e6166373e44f352097141f5d75479deab5f8c2"/>
+		<rom name="Accent Health - Information for Healthy Living - November 2004 - 50 Silver CDi 1104 (USA).cue" size="176" crc="fb9ab3fa" md5="86dd1b64bb8441b4bf712453d393ba40" sha1="78626071938f6d0cc6925f6b7eed795a89470f80"/>
+	</game>
+	<game name="CD-i Prototype Disc (Europe) (1988-09-01)" id="0011">
+		<category>Games</category>
+		<description>CD-i Prototype Disc (Europe) (1988-09-01)</description>
+		<rom name="CD-i Prototype Disc (Europe) (1988-09-01).ccd" size="1534" crc="28d620df" md5="a088d827d53d6d864131dfd28a603bd6" sha1="170ed93ee86fe1a3523fdfc8f6f5b2b1641c82a5"/>
+		<rom name="CD-i Prototype Disc (Europe) (1988-09-01).img" size="380941680" crc="8689b656" md5="8b7e27172ae85d693f7e9b03d5c82aab" sha1="ddfadca1d9784f2604239617089984c3e1b635f8"/>
+		<rom name="CD-i Prototype Disc (Europe) (1988-09-01).sub" size="15548640" crc="63a8d380" md5="3b8c06cb64fbc34ffcb42192dc51b75f" sha1="f72375de30a3441492532317ccc6f65ddebf1b82"/>
+	</game>
+	<game name="CDISC 4 - Shareware Disc (USA)" id="0146">
+		<category>Games</category>
+		<description>CDISC 4 - Shareware Disc (USA)</description>
+		<rom name="CDISC 4 - Shareware Disc (USA).bin" size="350859600" crc="3ef427f6" md5="8bd60eba56116ff1cc87cd2f14d6d22b" sha1="6262bc085b47c68b8416db1c625e440713a12157"/>
+		<rom name="CDISC 4 - Shareware Disc (USA).cue" size="360" crc="b1c9c2f1" md5="0a23a3e20433fc958a0aac079b711af8" sha1="bbfe3c861143e1d0812d69c2d22589d3ea041507"/>
+	</game>
+	<game name="Caricature (Europe) (Rev 0) (8110001 50274 188 01)" id="0217">
+		<category>Games</category>
+		<description>Caricature (Europe) (Rev 0) (8110001 50274 188 01)</description>
+		<rom name="Caricature (Europe) (Rev 0) (8110001 50274 188 01).bin" size="384034560" crc="bfdc8ff2" md5="f6f11cabed8cd0d56bf503fb50e83438" sha1="198320f5b68b155c6e2f4896e00bc20acfb8df30"/>
+		<rom name="Caricature (Europe) (Rev 0) (8110001 50274 188 01).cue" size="139" crc="9f3168db" md5="d41a5ef19c01578ce03a9de7fb2c601d" sha1="b059e74fc8ee30c5f3f1758271f1ada1494b940a"/>
+	</game>
+	<game name="Children's Musical Theatre (00821015 01) (USA) (Rev 1)" id="0229">
+		<category>Games</category>
+		<description>Children's Musical Theatre (00821015 01) (USA) (Rev 1)</description>
+		<rom name="Children's Musical Theatre (00821015 01) (USA) (Rev 1).bin" size="628666080" crc="7ee79faa" md5="427af58c344567c2fdbc72930870608b" sha1="96e392392a1c5780960f4aaa9a89ad1dff4d0e5e"/>
+		<rom name="Children's Musical Theatre (00821015 01) (USA) (Rev 1).cue" size="141" crc="992d71f0" md5="30aff75967178a7c326cee0e503b3413" sha1="2d65b912a328be44f597a7ae1a48c5300465eba6"/>
+	</game>
+	<game name="Discovery - Your Place in the World (USA)" id="0177">
+		<category>Games</category>
+		<description>Discovery - Your Place in the World (USA)</description>
+		<rom name="Discovery - Your Place in the World (USA).bin" size="743173200" crc="efc4d02a" md5="fb70c3a60f2e39dc17c87720317b0323" sha1="89ca43ffebfe0e77158a21889c044e9b49cb03db"/>
+		<rom name="Discovery - Your Place in the World (USA).cue" size="130" crc="b8311ac4" md5="386fec88bfda8f3c4f01a4503487eabf" sha1="4e872d417e5640458e3ef9e1da0ddde068ccc69b"/>
+	</game>
+	<game name="Dr. Ross Nash - Cosmetic Techniques (USA) (Disc 1)" id="0096">
+		<category>Games</category>
+		<description>Dr. Ross Nash - Cosmetic Techniques (USA) (Disc 1)</description>
+		<rom name="Dr. Ross Nash - Cosmetic Techniques (USA) (Disc 1).bin" size="654625104" crc="c05dd73e" md5="bc5a7c793cc458db892be63ac588e3e6" sha1="b9b5a0e4ea333f5a3ce5d856e5704b1971a6828a"/>
+		<rom name="Dr. Ross Nash - Cosmetic Techniques (USA) (Disc 1).cue" size="114" crc="7a38ffb0" md5="9ebb81e6b05299c372be74ef3c109834" sha1="8789e7d80bb01092f1d5353e8205b617e8153aad"/>
+	</game>
+	<game name="Dr. Ross Nash - Cosmetic Techniques (USA) (Disc 2)" id="0097">
+		<category>Games</category>
+		<description>Dr. Ross Nash - Cosmetic Techniques (USA) (Disc 2)</description>
+		<rom name="Dr. Ross Nash - Cosmetic Techniques (USA) (Disc 2).bin" size="620756304" crc="f69e02e9" md5="e76fdb663d512065e9da985d5eebe22c" sha1="173b2d220de70b5e26d8538801b45025623c6f71"/>
+		<rom name="Dr. Ross Nash - Cosmetic Techniques (USA) (Disc 2).cue" size="114" crc="fe3d6a60" md5="b83c279ff225015185a53d2291b620cd" sha1="55916412620601eef405ccff6f0fd7de97cff0f1"/>
+	</game>
+	<game name="Dr. Ross Nash - Cosmetic Techniques (USA) (Disc 4)" id="0099">
+		<category>Games</category>
+		<description>Dr. Ross Nash - Cosmetic Techniques (USA) (Disc 4)</description>
+		<rom name="Dr. Ross Nash - Cosmetic Techniques (USA) (Disc 4).bin" size="575950704" crc="c2255413" md5="02216b05440f99d0bea0111a6a39d60d" sha1="22fd806f6f5c6509279669d2910441a5b5b4601e"/>
+		<rom name="Dr. Ross Nash - Cosmetic Techniques (USA) (Disc 4).cue" size="114" crc="2d474781" md5="71b32e1456651d107c4e40267600f79c" sha1="0a72cf40b8bb44365e6db74888552de214101699"/>
+	</game>
+	<game name="Exploration - The World Around You (USA)" id="0231">
+		<category>Games</category>
+		<description>Exploration - The World Around You (USA)</description>
+		<rom name="Exploration - The World Around You (USA).bin" size="585123504" crc="6a71310b" md5="45acfe5196bfd8c61fdef810009f667b" sha1="109f939541b2853c51c5a32510531d887798d6c2"/>
+		<rom name="Exploration - The World Around You (USA).cue" size="129" crc="32e175bd" md5="340109130d5995d46f62a43f8918e2b2" sha1="4181e853b37bcd88befe48913d014e640e8b6d9a"/>
+	</game>
+	<game name="French Impressionists, The (USA) (Rev 1)" id="0232">
+		<category>Games</category>
+		<description>French Impressionists, The (USA) (Rev 1)</description>
+		<rom name="French Impressionists, The (USA) (Rev 1).bin" size="743161440" crc="37733e06" md5="e0e7ddd2b746a5550375b0f78a207756" sha1="ad4f3ff8d63e2b16870f010c09eeed9a63a5ba4c"/>
+		<rom name="French Impressionists, The (USA) (Rev 1).cue" size="138" crc="c3cb90b3" md5="bfca5dca346672968ffb939be6aaf94a" sha1="4bc9083b5c3d45c440b2d8e1deec2a6fa8983f65"/>
+	</game>
+	<game name="Harvest of the Sun - Vincent Van Gogh (310690028-2, 50239 148 02) (Europe)" id="0233">
+		<category>Games</category>
+		<description>Harvest of the Sun - Vincent Van Gogh (310690028-2, 50239 148 02) (Europe)</description>
+		<rom name="Harvest of the Sun - Vincent Van Gogh (310690028-2, 50239 148 02) (Europe).cue" size="163" crc="0ad08db6" md5="f0f195c6b66d382b371033552a890ba5" sha1="c416d7bae51c6c0b02f501e514b693e8e7cf1bb6"/>
+		<rom name="Harvest of the Sun - Vincent Van Gogh (310690028-2, 50239 148 02) (Europe).iso" size="615024480" crc="02b0f13d" md5="543924ec2b979d02d51b503ee6155a08" sha1="49d4f0d9fffd727a38f8c2d24c637911ed9d7c64"/>
+	</game>
+	<game name="How the Rhinoceros Got His Skin (3106900232 02!) (USA) (Rev 0)" id="0234">
+		<category>Games</category>
+		<description>How the Rhinoceros Got His Skin (3106900232 02!) (USA) (Rev 0)</description>
+		<rom name="How the Rhinoceros Got His Skin (3106900232 02!) (USA) (Rev 0).bin" size="427064400" crc="0cef10ee" md5="d8746415866dac7cb7d3ed7bcf5f2012" sha1="753f482d327a2c5da755a894b2e6369cdc0addfe"/>
+		<rom name="How the Rhinoceros Got His Skin (3106900232 02!) (USA) (Rev 0).cue" size="149" crc="c57a0d49" md5="ec01cc4a6fccb3db18b7843bd5b604e8" sha1="fd9150804bf78e81e5528f565691b906867f9ed5"/>
+	</game>
+	<game name="J'invente Mes Histoires 2 - Reves d'etoiles (France)" id="0186">
+		<category>Games</category>
+		<description>J'invente Mes Histoires 2 - Reves d'etoiles (France)</description>
+		<rom name="J'invente Mes Histoires 2 - Reves d'etoiles (France).bin" size="206105760" crc="31a69b85" md5="40b6ff6335ac6a46c3bcf7e3ffb04afe" sha1="27f67e771febd59b82b12d21ab1c484fb1b41e02"/>
+		<rom name="J'invente Mes Histoires 2 - Reves d'etoiles (France).cue" size="141" crc="1f65f793" md5="f3468628206927159838e413155889a0" sha1="570f3c225efe7d0f4554b2ea100765bfede9ef2c"/>
+	</game>
+	<game name="Karaoke Klassics 2 - Greatest Love Duets Volume 1 (Europe) (Rev 0)" id="0157">
+		<category>Games</category>
+		<description>Karaoke Klassics 2 - Greatest Love Duets Volume 1 (Europe) (Rev 0)</description>
+		<rom name="Karaoke Klassics 2 - Greatest Love Duets Volume 1 (Europe) (Rev 0).bin" size="520380000" crc="37956a2e" md5="dec3e4ad911ca9cf0239754b4444da58" sha1="679eee7b78ebc66d8dab5c10161fa200ece56437"/>
+		<rom name="Karaoke Klassics 2 - Greatest Love Duets Volume 1 (Europe) (Rev 0).cue" size="153" crc="1344a077" md5="95df60c372f643e35340fefb411855b8" sha1="3a3ee181bd95fa6800e44de4715bb60a5f99f2ef"/>
+	</game>
+	<game name="Karaoke Klassics 3 - Male Standards - Volume 1 (Europe) (Rev 0)" id="0158">
+		<category>Games</category>
+		<description>Karaoke Klassics 3 - Male Standards - Volume 1 (Europe) (Rev 0)</description>
+		<rom name="Karaoke Klassics 3 - Male Standards - Volume 1 (Europe) (Rev 0).bin" size="416480400" crc="8a5af29a" md5="e3c18473cd7355a1e09c2a88fa106fae" sha1="acc6cbb642eb633110693846842d264125cb43c1"/>
+		<rom name="Karaoke Klassics 3 - Male Standards - Volume 1 (Europe) (Rev 0).cue" size="150" crc="c58eaee1" md5="69a21359a7031cf0fb3041544b7487af" sha1="bd063fb6c205648c7595ef17989d3f3f961bae6b"/>
+	</game>
+	<game name="Karaoke Klassics 4 - Contemporary Pop Female - Volume 1 (Europe) (Rev 0)" id="0159">
+		<category>Games</category>
+		<description>Karaoke Klassics 4 - Contemporary Pop Female - Volume 1 (Europe) (Rev 0)</description>
+		<rom name="Karaoke Klassics 4 - Contemporary Pop Female - Volume 1 (Europe) (Rev 0).cue" size="159" crc="114acb36" md5="b8bcfa7c621b64a53ba4abcc38d9a901" sha1="5a96b654ee78d2ba27d788c90d1095c7a3d2fffa"/>
+		<rom name="Karaoke Klassics 4 - Contemporary Pop Female - Volume 1 (Europe) (Rev 0).iso" size="520203600" crc="b0e920c6" md5="a578d31b6d5a20d86f2b01b55d115a27" sha1="dd6e390d9ceb6343d4b61edc0b8f2c0e9c2ba1a6"/>
+	</game>
+	<game name="Kether (Germany) (En,De) (v3.08)" id="0078">
+		<category>Games</category>
+		<description>Kether (Germany) (En,De) (v3.08)</description>
+		<rom name="Kether (Germany) (En,De) (v3.08).bin" size="388609200" crc="96296ef4" md5="efec1072e1a891083d0145837c14ca99" sha1="13fa308d3505bfa161e2e15371652d7e059912bd"/>
+		<rom name="Kether (Germany) (En,De) (v3.08).cue" size="113" crc="5af4b0cd" md5="a373d67c6cdac3b5e7336dd6f5512fea" sha1="b30303cbbe66f9843833c117db08b06998511982"/>
+	</game>
+	<game name="Knowlogy (Saudia Arabia)" id="0239">
+		<category>Games</category>
+		<description>Knowlogy (Saudia Arabia)</description>
+		<rom name="Knowlogy (Saudia Arabia).bin" size="340579008" crc="c78daeb2" md5="b67e895fe169d85ca0cd989f7a468e15" sha1="dcc72022aff36f3c28b6c571c7346cd548d6306d" sha256="9176a3e3c7dd7c329bd36e32a8ac6e90d3230c8effb48cc43027bb656b293e17"/>
+		<rom name="Knowlogy (Saudia Arabia).cue" size="78" crc="44e2ca7e" sha1="2a7496bff36a884f89a6a01e74d99197f60e884f"/>
+	</game>
+	<game name="MPEG Video Sampler Volume 1 (USA)" id="0114">
+		<category>Games</category>
+		<description>MPEG Video Sampler Volume 1 (USA)</description>
+		<rom name="MPEG Video Sampler Volume 1 (USA).bin" size="255608304" crc="3a91b032" md5="a65f0b7632bb5c9c18ed60547037ad61" sha1="1792cb514fa8e6854c6e04be8a39b67d459a7daf"/>
+		<rom name="MPEG Video Sampler Volume 1 (USA).cue" size="95" crc="e16e6003" md5="baffb0c3314ecd93cfafd98f1e9fc258" sha1="8bc12f6aa68f063252cf7bb12f9eca1ebf81a12c"/>
+	</game>
+	<game name="Michigan Judicial Institute, The - Court Employees - A Comitment to Excellence (USA)" id="0106">
+		<category>Games</category>
+		<description>Michigan Judicial Institute, The - Court Employees - A Comitment to Excellence (USA)</description>
+		<rom name="Michigan Judicial Institute, The - Court Employees - A Comitment to Excellence (USA).bin" size="618286704" crc="43128541" md5="c52122ba26b7f9b1e97b04e1ad9736ea" sha1="9ae761ea042481c282c72d575fc48ec3bf3a5f51"/>
+		<rom name="Michigan Judicial Institute, The - Court Employees - A Comitment to Excellence (USA).cue" size="148" crc="c39bf6f2" md5="fc367fec3f8cfc48f6179ab62d5a48e0" sha1="41a4af05791e49643b60c3da335f3572560b03bd"/>
+	</game>
+	<game name="Michigan Judicial Institute, The - Court Staff Guide to PPOs (USA)" id="0107">
+		<category>Games</category>
+		<description>Michigan Judicial Institute, The - Court Staff Guide to PPOs (USA)</description>
+		<rom name="Michigan Judicial Institute, The - Court Staff Guide to PPOs (USA).bin" size="647035200" crc="03e17a08" md5="460a6a01e9319045c80e41133c64c91b" sha1="6591b81ba38048c6032d5e090aa85ea2b947a6ee"/>
+		<rom name="Michigan Judicial Institute, The - Court Staff Guide to PPOs (USA).cue" size="130" crc="4c0984e7" md5="3e872ecd46da704188fcc8a13b4b1bd9" sha1="02f436170db51146ae0a6e1fb919964eca12d526"/>
+	</game>
+	<game name="Michigan Judicial Institute, The - Court Support Personnel Training (USA)" id="0108">
+		<category>Games</category>
+		<description>Michigan Judicial Institute, The - Court Support Personnel Training (USA)</description>
+		<rom name="Michigan Judicial Institute, The - Court Support Personnel Training (USA).bin" size="405901104" crc="477c1ba7" md5="a275086da01207034ad8c9fabfae1044" sha1="1ec53530c8d0367feb3e41208b35ab4033ffa1fd"/>
+		<rom name="Michigan Judicial Institute, The - Court Support Personnel Training (USA).cue" size="137" crc="41fa501f" md5="279473cf7d35d5fb61ff0b1a701dcb16" sha1="ffab7a573500785acafec2e2ec2b71561a1b3178"/>
+	</game>
+	<game name="Michigan Judicial Institute, The - Repeat Offender Readiness (USA)" id="0109">
+		<category>Games</category>
+		<description>Michigan Judicial Institute, The - Repeat Offender Readiness (USA)</description>
+		<rom name="Michigan Judicial Institute, The - Repeat Offender Readiness (USA).bin" size="530086704" crc="4b5cf9fe" md5="382d0e354fb405d1fc06fa05250ffbd8" sha1="b8c8602f37036ef39d0df0b0546a892def35dd9c"/>
+		<rom name="Michigan Judicial Institute, The - Repeat Offender Readiness (USA).cue" size="130" crc="0e79cdae" md5="a882807bfef0a5193ba45421e50a5e3e" sha1="12308d07e4a3847ab1ddd18151da013f39eaf544"/>
+	</game>
+	<game name="Michigan Judicial Institute, The - Your Guide to Accessing the Michigan Courts (USA)" id="0110">
+		<category>Games</category>
+		<description>Michigan Judicial Institute, The - Your Guide to Accessing the Michigan Courts (USA)</description>
+		<rom name="Michigan Judicial Institute, The - Your Guide to Accessing the Michigan Courts (USA).bin" size="469581504" crc="3209d7a4" md5="70a209f98089d8976f4e3f13466c3a09" sha1="0aa8c587ff8f48da438fc01769b57fd57e4e2c99"/>
+		<rom name="Michigan Judicial Institute, The - Your Guide to Accessing the Michigan Courts (USA).cue" size="148" crc="e3a0fd86" md5="b20e3efd8215a7e34b758a9623998935" sha1="128eec748fbe8729570cdffe257c82b4483618f0"/>
+	</game>
+	<game name="Number Factory, The (Europe)" id="0196">
+		<category>Games</category>
+		<description>Number Factory, The (Europe)</description>
+		<rom name="Number Factory, The (Europe).bin" size="282769200" crc="ce1673c0" md5="dbdee47771b3d23cc546e22981abde93" sha1="1477987cc681182b1e71434156ee094775d2ab24"/>
+		<rom name="Number Factory, The (Europe).cue" size="112" crc="a45e3b32" md5="2a76e9ecf81fcdcc7c7ea9a4f04e20dd" sha1="d8f29b59629a293de3516028fda9def7180c9d44"/>
+	</game>
+	<game name="Odyssey - The Journey to Your Future (USA)" id="0236">
+		<category>Games</category>
+		<description>Odyssey - The Journey to Your Future (USA)</description>
+		<rom name="Odyssey - The Journey to Your Future (USA).bin" size="687430800" crc="af37db39" md5="bc5502bf51fe01c2c3bb6175433c9590" sha1="080b1fd1f4895c4383dbaca1c863ed7bd67dd72c"/>
+		<rom name="Odyssey - The Journey to Your Future (USA).cue" size="131" crc="e6c46722" md5="83b7e5e942eb8e8c2af82e7eb38acc4f" sha1="05833287a1e2b698cce6cde57d8a81d1030b2ee7"/>
+	</game>
+	<game name="Paramount DV Demo V0.05 (USA)" id="0117">
+		<category>Games</category>
+		<description>Paramount DV Demo V0.05 (USA)</description>
+		<rom name="Paramount DV Demo V0.05 (USA).bin" size="67455360" crc="bc4e0d52" md5="b38b5526ca8b24ade9b63c9e04ccfaf6" sha1="8e5acc8b716aa7d2ad39aa4b3c9d89e49ff1dd11"/>
+		<rom name="Paramount DV Demo V0.05 (USA).cue" size="91" crc="62c99650" md5="6b17f57bb882529680a86da42746955c" sha1="7f6e3a1a1585e2e4fc97ea8ae8660dd602687edf"/>
+	</game>
+	<game name="Philips Sampler Disk (USA)" id="0046">
+		<category>Games</category>
+		<description>Philips Sampler Disk (USA)</description>
+		<rom name="Philips Sampler Disk (USA).bin" size="215031600" crc="65c397ac" md5="c8a2198221864364e5f83514c52ebece" sha1="ade781a99012c208d6e9a973e0f2219679c3e6ec"/>
+		<rom name="Philips Sampler Disk (USA).cue" size="377" crc="56c4132b" md5="53696a331c84aa18edf7eedd9c88e2dc" sha1="af6d43b165e1d6e45a4803a5bb79990d1ab37b77"/>
+	</game>
+	<game name="Stickybear Preschool (Europe)" id="0205">
+		<category>Games</category>
+		<description>Stickybear Preschool (Europe)</description>
+		<rom name="Stickybear Preschool (Europe).bin" size="672140448" crc="e8a9b51c" md5="08b5c36d3e701f4c2b6acbb6718bb562" sha1="f45163cfcd90c9efc179f05484336ecd05e837c0"/>
+		<rom name="Stickybear Preschool (Europe).cue" size="118" crc="d6947d92" md5="163628961c2747cee8392f476f8aacb2" sha1="9a9d63ce7b3f21f7769943ef09ffad043587467f"/>
+	</game>
+	<game name="Tom le Maximagier (France) (8120021V203 50262231 05)" id="0227">
+		<category>Games</category>
+		<description>Tom le Maximagier (France) (8120021V203 50262231 05)</description>
+		<rom name="Tom le Maximagier (France) (8120021V203 50262231 05).bin" size="189100800" crc="51eca1c0" md5="da9eda403461a719a642a660b41028c7" sha1="892534b2faab6c2f0644fcf58e311064ed2aa3bc"/>
+		<rom name="Tom le Maximagier (France) (8120021V203 50262231 05).cue" size="141" crc="b001650c" md5="ac70dbc654997da8a5777f2113108b9f" sha1="18b740c3c3038df35f5d7535ca9016398bdffd02"/>
+	</game>
+	<game name="Total Euro 96 (Europe)" id="0208">
+		<category>Games</category>
+		<description>Total Euro 96 (Europe)</description>
+		<rom name="Total Euro 96 (Europe).bin" size="463760304" crc="7a833180" md5="726d6bec7f6b837a4d65fc8e9ab5db2b" sha1="72ed4e05eb9dc76761b96a60de45cc1a379b37e9"/>
+		<rom name="Total Euro 96 (Europe).cue" size="111" crc="aa696f2c" md5="958e6f0c4a9d61af2fe17128f6705372" sha1="aec34a46c198e29b3a1a19024c8d6027c5d96362"/>
+	</game>
+	<game name="Vegas Girls (Europe) (Rev 0)" id="0085">
+		<category>Games</category>
+		<description>Vegas Girls (Europe) (Rev 0)</description>
+		<rom name="Vegas Girls (Europe) (Rev 0).bin" size="584413200" crc="4075ee3e" md5="7781d0ca9fc690d4121a3720fc58f385" sha1="0b809608468abfc74cdb355a342c9ca6942da465"/>
+		<rom name="Vegas Girls (Europe) (Rev 0).cue" size="117" crc="b4733ed7" md5="afd118e0fd27e6f5225b984a4e03a91a" sha1="68037cc2d3d3c1964dbd993f2ff849f1b8c0a56f"/>
+	</game>
+	<game name="WEB-i (USA)" id="0126">
+		<category>Games</category>
+		<description>WEB-i (USA)</description>
+		<rom name="WEB-i (USA).bin" size="597643200" crc="3b548b9e" md5="86adbd92fc7563f522d40fee65ccf8c8" sha1="82e472c81b4a949c8269fc1905f2c94f2a830576"/>
+		<rom name="WEB-i (USA).cue" size="98" crc="38d53d36" md5="8cfebcaa99fb9578579bedcdf723a11e" sha1="c41b8f17378003d79ed2314e39632cb24e9860bb"/>
+	</game>
+	<game name="Why CD-I (Europe)" id="0087">
+		<category>Games</category>
+		<description>Why CD-I (Europe)</description>
+		<rom name="Why CD-I (Europe).bin" size="380494800" crc="5ab203d2" md5="dbc49f873f1e21336318f3e9225cd8f6" sha1="9a35db7e5edd72f95e53936ec379e0a3601acbb4"/>
+		<rom name="Why CD-I (Europe).cue" size="106" crc="aab12ca1" md5="c359015a10c635f0c3e909189ac0b5f5" sha1="484b75d26be53a357a66ad9a64eb7f778053a338"/>
+	</game>
+	<game name="World Below, The - Literature Explorers (USA)" id="0214">
+		<category>Games</category>
+		<description>World Below, The - Literature Explorers (USA)</description>
+		<rom name="World Below, The - Literature Explorers (USA).bin" size="570835104" crc="aa3ba243" md5="b36bd75a90e3656527d6c74130244244" sha1="531cf2552bee78b50465176a92fd6be7868fab54"/>
+		<rom name="World Below, The - Literature Explorers (USA).cue" size="134" crc="93d865d3" md5="325e53390917fd154488b69ae21f8108" sha1="3374b245db41fe72cf3c4e94d372fb0dd73501de"/>
+	</game>
+	<game name="World Tours - Egypt (USA)" id="0127">
+		<category>Games</category>
+		<description>World Tours - Egypt (USA)</description>
+		<rom name="World Tours - Egypt (USA).bin" size="693604800" crc="bd8a56ea" md5="7efc49a81139b795c3f7800611ae2d23" sha1="637c6156a5fe1e2af65b6f5feb02fe1005f26126"/>
+		<rom name="World Tours - Egypt (USA).cue" size="112" crc="0538f366" md5="03fb9fc812393ca88a76a36f62dc7924" sha1="f0f33c3b2b5314acabf14ebc4c7960dd50d6ab98"/>
+	</game>
+	<game name="World Tours - Hong Kong (USA)" id="0128">
+		<category>Games</category>
+		<description>World Tours - Hong Kong (USA)</description>
+		<rom name="World Tours - Hong Kong (USA).bin" size="656539632" crc="30d87227" md5="fa6a7ce6444059923ff7724181e97c5f" sha1="85efd95c1aea7c2c6478cac2402d5b53679533be"/>
+		<rom name="World Tours - Hong Kong (USA).cue" size="116" crc="f9126dd6" md5="23216bd62d357372c87805fc33e231cd" sha1="4f2d76ccab181da0e4152a0b2788ac19ede87a87"/>
+	</game>
+	<game name="World Tours - New Zealand (USA)" id="0129">
+		<category>Games</category>
+		<description>World Tours - New Zealand (USA)</description>
+		<rom name="World Tours - New Zealand (USA).bin" size="689371200" crc="0b84bbaf" md5="eef978704e8c9a40367986135f796706" sha1="1c9566f1aa43941bb3583896522f751de8a98fad"/>
+		<rom name="World Tours - New Zealand (USA).cue" size="118" crc="1f583c87" md5="99fb172f1765eb62b685e830dcd4cfc1" sha1="bda9e77301d25f18b64803d7ed78af03ca52645d"/>
+	</game>
+	<game name="World Tours - Pacific Islands (USA)" id="0130">
+		<category>Games</category>
+		<description>World Tours - Pacific Islands (USA)</description>
+		<rom name="World Tours - Pacific Islands (USA).bin" size="768222000" crc="8db85a06" md5="d1b262d859cd64305789303cb6f8c04a" sha1="b5ef305978b1e6572b5abded7cde98f117ba7eca"/>
+		<rom name="World Tours - Pacific Islands (USA).cue" size="122" crc="fd668300" md5="5faa31e06381040f012821bf630bfabc" sha1="4a40de8286528450ea40bb3d8b5873e4c9281d48"/>
+	</game>
+	<game name="World Tours - The Amazon Rainforest (USA)" id="0131">
+		<category>Games</category>
+		<description>World Tours - The Amazon Rainforest (USA)</description>
+		<rom name="World Tours - The Amazon Rainforest (USA).bin" size="664322400" crc="f7da23b0" md5="16d9d147f67176022897b236db53fafd" sha1="37853327754e1524f598081151eb6309f7c5a8df"/>
+		<rom name="World Tours - The Amazon Rainforest (USA).cue" size="128" crc="86f25e9c" md5="01a123d8bc7e0aa116340b9bc9d5f778" sha1="dc0b1c7288dd02765a900e3b90c0e68e32aefca0"/>
+	</game>
+	<game name="World Tours - West Africa (USA)" id="0132">
+		<category>Games</category>
+		<description>World Tours - West Africa (USA)</description>
+		<rom name="World Tours - West Africa (USA).bin" size="645099504" crc="89c51331" md5="891f31076c8992789e116fd2859ebfb1" sha1="69c7d90908c747788c104eee3d739090089daf82"/>
+		<rom name="World Tours - West Africa (USA).cue" size="118" crc="f60b403e" md5="0e13c7bf8349c6bf56aa254c5b8b6933" sha1="6734a11961bbf921d6d57832a925ba809a66371d"/>
+	</game>
+</datafile>

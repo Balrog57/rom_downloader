@@ -1,0 +1,223 @@
+<?xml version="1.0"?>
+<!DOCTYPE datafile PUBLIC "-//Logiqx//DTD ROM Management Datafile//EN" "http://www.logiqx.com/Dats/datafile.dtd">
+<datafile>
+	<header>
+		<name>Arcade - Sega - RingEdge 2</name>
+		<description>Arcade - Sega - RingEdge 2 - Discs (42) (2025-10-11 06-53-10)</description>
+		<version>2025-10-11 06-53-10</version>
+		<date>2025-10-11 06-53-10</date>
+		<author>redump.org</author>
+		<homepage>redump.org</homepage>
+		<url>http://redump.org/</url>
+	</header>
+	<game name="Guilty Gear XX Accent Core Plus R (Japan)">
+		<category>Games</category>
+		<description>Guilty Gear XX Accent Core Plus R (Japan)</description>
+		<rom name="Guilty Gear XX Accent Core Plus R (Japan).iso" size="1118306304" crc="6453c548" md5="1dced127b402d7f57e0b1a818588e20b" sha1="0ef500c6186584c96d60f34c37ca924c5e103d13"/>
+	</game>
+	<game name="GeeSen Love. Plus Pengo! (Japan)">
+		<category>Games</category>
+		<description>GeeSen Love. Plus Pengo! (Japan)</description>
+		<rom name="GeeSen Love. Plus Pengo! (Japan).iso" size="1179058176" crc="d832eb00" md5="5a81b120f8264a3acb9f1dbc10d02864" sha1="355a241e80c39cb21f7922155668e4a96d41b2aa"/>
+	</game>
+	<game name="ALL.Net P-ras Multi Version 2 (Japan) (Rev A)">
+		<category>Applications</category>
+		<description>ALL.Net P-ras Multi Version 2 (Japan) (Rev A)</description>
+		<rom name="ALL.Net P-ras Multi Version 2 (Japan) (Rev A).iso" size="1004601344" crc="b275a574" md5="13028d55a15b2118b04ae58153b0b557" sha1="3d665b55daa069b5aacb557fe922a300dd857ab3"/>
+	</game>
+	<game name="Under Night In-Birth (Japan)">
+		<category>Games</category>
+		<description>Under Night In-Birth (Japan)</description>
+		<rom name="Under Night In-Birth (Japan).iso" size="2913402880" crc="83228abc" md5="962b794ca6e1ebd317733f131ad26b16" sha1="6b786c5ebd525084fd0fc14eb2c63f5875276538"/>
+	</game>
+	<game name="ALL.Net P-ras Multi Version 2 (Japan)">
+		<category>Applications</category>
+		<description>ALL.Net P-ras Multi Version 2 (Japan)</description>
+		<rom name="ALL.Net P-ras Multi Version 2 (Japan).iso" size="506986496" crc="a34c2b9f" md5="f414178734b0d61c2790cb56c49ef575" sha1="08b3b73d014d005c31e0e80f21a157086ca07118"/>
+	</game>
+	<game name="Code of Joker S (Japan) (Rev C)">
+		<category>Games</category>
+		<description>Code of Joker S (Japan) (Rev C)</description>
+		<rom name="Code of Joker S (Japan) (Rev C).iso" size="7298547712" crc="a48b8f7a" md5="d0a26f0dc4533ca60411f7960010fc78" sha1="e0de5f59073565d8f34130ed0737c10ec6e5f2ec"/>
+	</game>
+	<game name="Code of Joker (Japan) (No. 2) (Rev F)">
+		<category>Games</category>
+		<description>Code of Joker (Japan) (No. 2) (Rev F)</description>
+		<rom name="Code of Joker (Japan) (No. 2) (Rev F).iso" size="4140040192" crc="c41ca3dd" md5="44c4d517b2155fffac0e04fa9093d0d6" sha1="a34c3b5f736685ebab3fd110426309b1846725d0"/>
+	</game>
+	<game name="Maimai (Japan) (Rev A)">
+		<category>Games</category>
+		<description>Maimai (Japan) (Rev A)</description>
+		<rom name="Maimai (Japan) (Rev A).iso" size="7664566272" crc="a5999795" md5="050b4a39e3c1dfe2bdd69231b8c762f7" sha1="b088b5877fb0bed82c4d831a03bdf4690198e9f1"/>
+	</game>
+	<game name="Maimai Orange (Japan) (No. 1)">
+		<category>Games</category>
+		<description>Maimai Orange (Japan) (No. 1)</description>
+		<rom name="Maimai Orange (Japan) (No. 1).iso" size="8435204096" crc="0a9d7d4a" md5="90dc520cfce2da25616be62cb5372cbe" sha1="c645f88eab83201063073dd5eadd712b0f54a27d"/>
+	</game>
+	<game name="Maimai Orange (Japan) (No. 2)">
+		<category>Games</category>
+		<description>Maimai Orange (Japan) (No. 2)</description>
+		<rom name="Maimai Orange (Japan) (No. 2).iso" size="6920863744" crc="b43eed2d" md5="101e8dbfc0a76d07f15481547494490b" sha1="2debf28f923c48d91b1a6ae95ca6bd922e4f23db"/>
+	</game>
+	<game name="Maimai Green (Japan) (No. 1)">
+		<category>Games</category>
+		<description>Maimai Green (Japan) (No. 1)</description>
+		<rom name="Maimai Green (Japan) (No. 1).iso" size="8448770048" crc="ab68cfae" md5="bbeb5979e438ee118e197c030ea0c90a" sha1="0237fc5b55003cf10787b65289ba46b9089c97b3"/>
+	</game>
+	<game name="Maimai Green (Japan) (No. 2)">
+		<category>Games</category>
+		<description>Maimai Green (Japan) (No. 2)</description>
+		<rom name="Maimai Green (Japan) (No. 2).iso" size="3071541248" crc="997c269c" md5="58ce3e89c5c18e41c15df2d4fdd597c1" sha1="dd41a6a42ed052c0534d3eab81d9b8e38e9780f5"/>
+	</game>
+	<game name="Code of Joker S (Japan)">
+		<category>Games</category>
+		<description>Code of Joker S (Japan)</description>
+		<rom name="Code of Joker S (Japan).iso" size="6742769664" crc="82af1aab" md5="fbe4f723ff35bfb0368e600d67124fef" sha1="5d322dcb2eb231750156519fb9d3beed1f9444b6"/>
+	</game>
+	<game name="Code of Joker - The Agents (Japan) (No. 1) (Rev P)">
+		<category>Games</category>
+		<description>Code of Joker - The Agents (Japan) (No. 1) (Rev P)</description>
+		<rom name="Code of Joker - The Agents (Japan) (No. 1) (Rev P).iso" size="8030519296" crc="85363b6c" md5="12a8b24d205106ce595dad28d5c3447d" sha1="fab031c620a78ee990be2099d35209d633d32c55"/>
+	</game>
+	<game name="Code of Joker - The Agents (Japan) (No. 2) (Rev R)">
+		<category>Games</category>
+		<description>Code of Joker - The Agents (Japan) (No. 2) (Rev R)</description>
+		<rom name="Code of Joker - The Agents (Japan) (No. 2) (Rev R).iso" size="2284060672" crc="0b47acd2" md5="1736fae3747963ca768e4009513bc20f" sha1="faa038ebec276130a33b3fb024b4c120600ac771"/>
+	</game>
+	<game name="Horuka x Toruka (Japan) (Rev B)">
+		<category>Games</category>
+		<description>Horuka x Toruka (Japan) (Rev B)</description>
+		<rom name="Horuka x Toruka (Japan) (Rev B).iso" size="1371013120" crc="13337a3f" md5="33e8749a65758728af0eae7d3dbecdfc" sha1="740d1d576c7f4a4ebcf6822d02f5e5c0ed562d51"/>
+	</game>
+	<game name="Maimai Orange Plus (Japan) (No. 1)">
+		<category>Games</category>
+		<description>Maimai Orange Plus (Japan) (No. 1)</description>
+		<rom name="Maimai Orange Plus (Japan) (No. 1).iso" size="8265302016" crc="ccf2febf" md5="9b1be7a9cb192bde7b776c229bd9cdc3" sha1="17c3a2020af0ed4c1e2c0828fb78b3edeb8988ea"/>
+	</game>
+	<game name="Maimai Orange Plus (Japan) (No. 2)">
+		<category>Games</category>
+		<description>Maimai Orange Plus (Japan) (No. 2)</description>
+		<rom name="Maimai Orange Plus (Japan) (No. 2).iso" size="6890455040" crc="0988e582" md5="554af6f5169538a618eb536d67d0180b" sha1="445ea2f2c85a05bea9ae0dd39f1a165926f4c7eb"/>
+	</game>
+	<game name="Maimai Orange Plus (Japan) (No. 3)">
+		<category>Games</category>
+		<description>Maimai Orange Plus (Japan) (No. 3)</description>
+		<rom name="Maimai Orange Plus (Japan) (No. 3).iso" size="358875136" crc="06d752ec" md5="a8a4cc83c441f4f5a84ed6c51dd173b8" sha1="dee9ed8e6b09ba11512006daddef69bdf9cf3b25"/>
+	</game>
+	<game name="Maimai Pink (Japan) (No. 1)">
+		<category>Games</category>
+		<description>Maimai Pink (Japan) (No. 1)</description>
+		<rom name="Maimai Pink (Japan) (No. 1).iso" size="7888732160" crc="0b089c68" md5="0ad156623649e1f707c57c38257c2a60" sha1="f398714b808cd15d0d4b46223b194f69f28e1fd3"/>
+	</game>
+	<game name="Maimai Pink (Japan) (No. 2)">
+		<category>Games</category>
+		<description>Maimai Pink (Japan) (No. 2)</description>
+		<rom name="Maimai Pink (Japan) (No. 2).iso" size="8502116352" crc="eea39d7c" md5="153b35cb461ee072899e39f997498b18" sha1="de9b3ff4bdf683f3ac164a59231238d8581d586a"/>
+	</game>
+	<game name="Maimai Pink (Japan) (No. 3)">
+		<category>Games</category>
+		<description>Maimai Pink (Japan) (No. 3)</description>
+		<rom name="Maimai Pink (Japan) (No. 3).iso" size="2208563200" crc="198f1c65" md5="30c9439f646358362b2e1b9d2c3e6952" sha1="1ca175160aa1fdcca3797fad1d19aae4cec18c25"/>
+	</game>
+	<game name="Maimai Pink Plus (Japan) (No. 1) (Rev B)">
+		<category>Games</category>
+		<description>Maimai Pink Plus (Japan) (No. 1) (Rev B)</description>
+		<rom name="Maimai Pink Plus (Japan) (No. 1) (Rev B).iso" size="7305887744" crc="f090efc9" md5="f0ff937ef83fa45866235a9b055a0b97" sha1="d391d4b878b20f7b5c2f9f24212ac38259fe1a23"/>
+	</game>
+	<game name="Maimai Pink Plus (Japan) (No. 2) (Rev B)">
+		<category>Games</category>
+		<description>Maimai Pink Plus (Japan) (No. 2) (Rev B)</description>
+		<rom name="Maimai Pink Plus (Japan) (No. 2) (Rev B).iso" size="8084783104" crc="46619368" md5="d4f046c17a44325cd04f1e72c6a1e1be" sha1="706be02a9369dffcb4b51f7e57364a5435c08162"/>
+	</game>
+	<game name="Maimai Pink Plus (Japan) (No. 3) (Rev B)">
+		<category>Games</category>
+		<description>Maimai Pink Plus (Japan) (No. 3) (Rev B)</description>
+		<rom name="Maimai Pink Plus (Japan) (No. 3) (Rev B).iso" size="5724438528" crc="d5c12a06" md5="661f78da987b355bcdb0439d751062d4" sha1="3579f2ebbcb9a0bee7edfde17fb4d09200f97885"/>
+	</game>
+	<game name="Initial D - Arcade Stage 8 Infinity (Export)">
+		<category>Games</category>
+		<description>Initial D - Arcade Stage 8 Infinity (Export)</description>
+		<rom name="Initial D - Arcade Stage 8 Infinity (Export).iso" size="7328169984" crc="944fcd42" md5="ee9c8ae15ff5034e39e89f345402760e" sha1="74e2cd6f0c48c8dcd7db10dd7dcc36f135f405c9"/>
+	</game>
+	<game name="StarHorse 3 Season I - A New Legend Begins (Japan) (Rev F)">
+		<category>Games</category>
+		<description>StarHorse 3 Season I - A New Legend Begins (Japan) (Rev F)</description>
+		<rom name="StarHorse 3 Season I - A New Legend Begins (Japan) (Rev F).iso" size="5498208256" crc="9def0d19" md5="4396e38148c3564c2abdfe845e2ab869" sha1="f1cf59e777ad1d7bc38b614f7228cd58457ebf2a"/>
+	</game>
+	<game name="StarHorse 3 - SH4-you User Data Uploader (Japan)">
+		<category>Applications</category>
+		<description>StarHorse 3 - SH4-you User Data Uploader (Japan)</description>
+		<rom name="StarHorse 3 - SH4-you User Data Uploader (Japan).iso" size="710213632" crc="71916cef" md5="76c53ed8b231580738245de379186531" sha1="b9befe76fb87d22c477865ceb4eec7107fbfdab0"/>
+	</game>
+	<game name="StarHorse 3 Season VII - Great Journey (Japan) (No. 1)">
+		<category>Games</category>
+		<description>StarHorse 3 Season VII - Great Journey (Japan) (No. 1)</description>
+		<rom name="StarHorse 3 Season VII - Great Journey (Japan) (No. 1).iso" size="6495404032" crc="5335b882" md5="cd668cf46c1a9819ccbc7e139afe53e1" sha1="bcd433bedca9f55df487e4883becf60ea28e7148"/>
+	</game>
+	<game name="StarHorse 3 Season VII - Great Journey (Japan) (No. 2)">
+		<category>Games</category>
+		<description>StarHorse 3 Season VII - Great Journey (Japan) (No. 2)</description>
+		<rom name="StarHorse 3 Season VII - Great Journey (Japan) (No. 2).iso" size="3327393792" crc="e55604b4" md5="01ba3ab2a83b477760537be32dd39ee4" sha1="5dcef778252f481f2788cd2088cd5bbbfaa2cab9"/>
+	</game>
+	<game name="StarHorse 3 Season VII - Great Journey (Japan) (No. 1) (Rev C)">
+		<category>Games</category>
+		<description>StarHorse 3 Season VII - Great Journey (Japan) (No. 1) (Rev C)</description>
+		<rom name="StarHorse 3 Season VII - Great Journey (Japan) (No. 1) (Rev C).iso" size="6652526592" crc="54051e8e" md5="39e46c1e6edc54b2aed78b8931caf78e" sha1="7c40a01b5c3592fcaa7ce32c281756d3dbaf78bd"/>
+	</game>
+	<game name="StarHorse 3 Season VII - Great Journey (Japan) (No. 2) (Rev C)">
+		<category>Games</category>
+		<description>StarHorse 3 Season VII - Great Journey (Japan) (No. 2) (Rev C)</description>
+		<rom name="StarHorse 3 Season VII - Great Journey (Japan) (No. 2) (Rev C).iso" size="3338928128" crc="067306ba" md5="4a389d13114380dfc1870c459d37c4fb" sha1="5da75f301b3dba5297281e9ad74b95cfded98b77"/>
+	</game>
+	<game name="Transformers - Human Alliance (Export) (Rev B)">
+		<category>Games</category>
+		<description>Transformers - Human Alliance (Export) (Rev B)</description>
+		<rom name="Transformers - Human Alliance (Export) (Rev B).iso" size="6188138496" crc="1b04183a" md5="92a0b5e0dfe8d38092904e3d5b31ae95" sha1="276e2752e0ca58cf3690ce2cca971ebb0ab5a3e6"/>
+	</game>
+	<game name="Guilty Gear XX Accent Core Plus R (Japan) (Rev A)">
+		<category>Games</category>
+		<description>Guilty Gear XX Accent Core Plus R (Japan) (Rev A)</description>
+		<rom name="Guilty Gear XX Accent Core Plus R (Japan) (Rev A).iso" size="1118240768" crc="83705910" md5="eb94983433db57af4c721581b256a4d3" sha1="b6e9e0765ff6477dc88daef4480d921ae0889091"/>
+	</game>
+	<game name="StarHorse 3 Season V - Exceed the Limit (Japan) (No. 1) (Rev J)">
+		<category>Games</category>
+		<description>StarHorse 3 Season V - Exceed the Limit (Japan) (No. 1) (Rev J)</description>
+		<rom name="StarHorse 3 Season V - Exceed the Limit (Japan) (No. 1) (Rev J).iso" size="6831833088" crc="cf2b9a33" md5="cb73902a2757110034ed424ee49339c5" sha1="caa9b791f98a082dd0a71caeda940160782da6c7"/>
+	</game>
+	<game name="StarHorse 3 Season V - Exceed the Limit (Japan) (No. 2) (Rev J)">
+		<category>Games</category>
+		<description>StarHorse 3 Season V - Exceed the Limit (Japan) (No. 2) (Rev J)</description>
+		<rom name="StarHorse 3 Season V - Exceed the Limit (Japan) (No. 2) (Rev J).iso" size="2121793536" crc="27cd0e2a" md5="98aacf9ee7097057dde16862b357f31b" sha1="20516986c9b3c0e5a3718f417cb40f0a30bc61e0"/>
+	</game>
+	<game name="Maimai (Japan)">
+		<category>Games</category>
+		<description>Maimai (Japan)</description>
+		<rom name="Maimai (Japan).iso" size="6303252480" crc="a518baf7" md5="31c7469c0ef0b4b8687acd22b4698961" sha1="d1dd01a08962232c2e5f8fde8204b83f27bcfce2"/>
+	</game>
+	<game name="Maimai Plus (Japan) (Rev B)">
+		<category>Games</category>
+		<description>Maimai Plus (Japan) (Rev B)</description>
+		<rom name="Maimai Plus (Japan) (Rev B).iso" size="8042971136" crc="97541f49" md5="8f98ceaa70dbcd6761db4e251f7ba8ed" sha1="a8caec3a9e6c1faf24ce997c759024ffefbe2932"/>
+	</game>
+	<game name="ALL.Net P-ras Multi Version 2 (Japan) (Rev C)">
+		<category>Applications</category>
+		<description>ALL.Net P-ras Multi Version 2 (Japan) (Rev C)</description>
+		<rom name="ALL.Net P-ras Multi Version 2 (Japan) (Rev C).iso" size="1004404736" crc="9ed6e60a" md5="c38b28d743df3f073f849bda9ec265ae" sha1="c82408fb24d323b4911cdad2b9153b62d137da4f"/>
+	</game>
+	<game name="Hokuto no Ken - Battle Medal (Japan) (Rev D)">
+		<category>Games</category>
+		<description>Hokuto no Ken - Battle Medal (Japan) (Rev D)</description>
+		<rom name="Hokuto no Ken - Battle Medal (Japan) (Rev D).iso" size="7492698112" crc="0e862616" md5="f70b96817b8a6690f365dbe3b1616e73" sha1="ee796a5e873e6654b1edbcbf27196ef81d7dd7a0"/>
+	</game>
+	<game name="Hokuto no Ken - Battle Medal (Japan) (Rev F)">
+		<category>Games</category>
+		<description>Hokuto no Ken - Battle Medal (Japan) (Rev F)</description>
+		<rom name="Hokuto no Ken - Battle Medal (Japan) (Rev F).iso" size="7492861952" crc="85f18ca9" md5="7015c89010eb34eecb696bd1617c95a7" sha1="e4fb568895bd21cdc38e1e669983d607acb0b543"/>
+	</game>
+	<game name="Horuka x Toruka (Japan) (Rev C)">
+		<category>Games</category>
+		<description>Horuka x Toruka (Japan) (Rev C)</description>
+		<rom name="Horuka x Toruka (Japan) (Rev C).iso" size="1460011008" crc="365dc6f0" md5="f561c78535271093d58634b901d3e123" sha1="39ae57a468a586c098565973c914b2fe2baccbc6"/>
+	</game>
+</datafile>

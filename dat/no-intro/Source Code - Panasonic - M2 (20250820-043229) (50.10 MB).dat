@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<id>467</id>
+		<name>Source Code - Panasonic - M2</name>
+		<description>Source Code - Panasonic - M2</description>
+		<subset>Source Code</subset>
+		<version>20250820-043229</version>
+		<author>Schrodinger</author>
+		<homepage>No-Intro</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"/>
+	</header>
+	<game name="3DO M2 Portfolio OS (World) (v3.0)" id="0002">
+		<category>Source Code</category>
+		<description>3DO M2 Portfolio OS (World) (v3.0)</description>
+		<rom name="m2 src pre-release.zip" size="7597751" crc="4ed42a48" md5="50c346373be4985a7e6bcb2d41f3c211" sha1="dac9ca5b3f27ad76674868ce870a59332f190398" sha256="6db61c66e0d4fa44972868c157b100470d13c35c659120ed6f0dce29b5cf451d"/>
+		<rom name="portfolio_os_m2-master.zip" size="35648436" crc="7f98e59d" md5="2ba3f01099c626f6bc62e3f0db49aa81" sha1="ad797a798e5a2272407f650e4aeefdb38d6c69a3" sha256="2b2b66b5d0bde5405aa84b4ecf69dedabcca8b4ae5c84d12e281187b0d33ec74"/>
+	</game>
+	<game name="Power Crystal (Assets) (Unknown)" id="0001">
+		<description>Power Crystal (Assets) (Unknown)</description>
+		<rom name="DavidTolleyAssets.zip" size="6523667" crc="24242fd3" md5="041159ad6b7c4a15389ca7d0650cd1dd" sha1="0771cf2ff32bbcd5d9d84769f7860356af59d77e" sha256="eaf4be06498580db7990638e309f67e66370d495a1b68856a93de7845212d241"/>
+		<rom name="JohnWellsAssets.zip" size="2762915" crc="92ea293b" md5="9b320a271610f06dca28ffd52551bc2f" sha1="79a93c3b226c10350bf23d3873d7de9dccaf77f9" sha256="cdca324282da12f8403e9ccc511378aa4b1c794084a748df69d09bb8d29f1e7b"/>
+	</game>
+</datafile>

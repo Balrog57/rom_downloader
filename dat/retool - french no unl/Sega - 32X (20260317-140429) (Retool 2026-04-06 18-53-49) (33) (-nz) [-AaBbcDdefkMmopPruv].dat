@@ -1,0 +1,179 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<name>Sega - 32X (Retool)</name>
+		<description>Sega - 32X (33) (-nz) [-AaBbcDdefkMmopPruv] (20260317-140429) (Retool)</description>
+		<version>20260317-140429</version>
+		<date>2026-04-06 18-53-49</date>
+		<author>bikerspade, BitLooter, ElBarto, FakeShemp, Gefflon, gigadeath, Hiccup, norkmetnoil577, omonim2007, psykopat, relax, Seventy7, SonGoku, Special T, xuom2</author>
+		<homepage>http://www.github.com/unexpectedpanda/retool</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"></clrmamepro>
+		<retool>Created by Retool 2.4.8</retool>
+	</header>
+	<game name="After Burner Complete (Europe)" id="0005">
+		<category>Games</category>
+		<description>After Burner Complete (Europe)</description>
+		<rom name="After Burner Complete (Europe).32x" size="2097152" crc="029106f5" md5="a8e05bd3cdf97e1811ebd6d52c4371a7" sha1="c7d56cc75dc9a5206fda6a080cbedae9f48c82bc" sha256="78e4e6ed0dcc2b56018b5f7b7e6758208d1d29355524878829389906624c36a1"/>
+	</game>
+	<game name="Amazing Spider-Man, The - Web of Fire (USA)" id="0007">
+		<category>Games</category>
+		<description>Amazing Spider-Man, The - Web of Fire (USA)</description>
+		<rom name="Amazing Spider-Man, The - Web of Fire (USA).32x" size="3145728" crc="29dce257" md5="a60b0838a776966e17a8f10b94baddef" sha1="7cc2ea1e10f110338ad880bd3e7ff3bce72e7e9e" sha256="567eb80a69ca1fea67f4cb64252e6a23e9bd41c3f9c4c422a6bc04dfb763509d"/>
+	</game>
+	<game name="BC Racers (USA)" id="0008">
+		<category>Games</category>
+		<description>BC Racers (USA)</description>
+		<rom name="BC Racers (USA).32x" size="3145728" crc="936c3d27" md5="35a11e021ca0b7ff909e4774eb8b3236" sha1="9b5fd499eaa442d48a2c97fceb1d505dc8e8ddff" sha256="e606ab6b3d205011a811c8569cd17075f0b67139f90b8418e565567a5592bf73"/>
+	</game>
+	<game name="Blackthorne (USA)" id="0009">
+		<category>Games</category>
+		<description>Blackthorne (USA)</description>
+		<rom name="Blackthorne (USA).32x" size="3145728" crc="d1a60a47" md5="c238b112113b0297b2b9f4f618d56598" sha1="4bf120cf056fe1417ca5b02fa0372ef33cb8ec11" sha256="ed5da3dfc740881a0467679b8be5505e14282b1a61eff3121f6b714e24ddd9a6"/>
+	</game>
+	<game name="Brutal - Above the Claw (USA)" id="0010">
+		<category>Games</category>
+		<description>Brutal - Above the Claw (USA)</description>
+		<rom name="Brutal - Above the Claw (USA).32x" size="3145728" crc="7a72c939" md5="1738a479b0253bcb0bcfb7bf09c03add" sha1="40aa2c787f37772cdbd7280b8be06b15421fabae" sha256="f8279a81a76445cd68df0bc0e0fb0e53379406f462195e1799f2d90a097afe29"/>
+	</game>
+	<game name="Cosmic Carnage (Europe)" id="0012">
+		<category>Games</category>
+		<description>Cosmic Carnage (Europe)</description>
+		<rom name="Cosmic Carnage (Europe).32x" size="3145728" crc="9f3fdbc2" md5="8aadc467d31bc64f95a7fbe8f95afeb3" sha1="900e8ecdcc4460b4c4af3873e1d6bc83da4aee99" sha256="2339b1132520488a652c6b1b65500b6aa3ac25c34e3ab70ac82a12c2949949f4"/>
+	</game>
+	<game name="Darxide (Europe) (En,Fr,De,Es)" id="0014">
+		<category>Games</category>
+		<description>Darxide (Europe) (En,Fr,De,Es)</description>
+		<rom name="Darxide (Europe) (En,Fr,De,Es).32x" size="2097152" crc="22d7c906" md5="30ee320f76db70a836edeff2c8ce9cd2" sha1="108b4ffed8643abdefa921cfb58389b119b47f3d" sha256="31ae1b06ede2127c61b7e6ad58d56b21cf1a604f46f9d3a6f535679693ef929b"/>
+	</game>
+	<game name="Doom (Europe)" id="0015">
+		<category>Games</category>
+		<description>Doom (Europe)</description>
+		<rom name="Doom (Europe).32x" size="3145728" crc="53734e3a" md5="1abe8b9b1855b1b101cb7f1d86395c22" sha1="4ec03c2114ebffbbcd16859583340d4ea4cd8dd5" sha256="12275e2b18ccf5606b97a6c26bf9a8b206af385c43343977dedad6a37c66ab7b"/>
+	</game>
+	<game name="FIFA Soccer 96 (Europe) (En,Fr,De,Es,It,Sv)" id="0018">
+		<category>Games</category>
+		<description>FIFA Soccer 96 (Europe) (En,Fr,De,Es,It,Sv)</description>
+		<rom name="FIFA Soccer 96 (Europe) (En,Fr,De,Es,It,Sv).32x" size="3145728" crc="fb14a7c8" md5="24aaa6ef307d20147ce10e7610e59aa2" sha1="131ebb717dee4dd1d8f5ab2b9393c23785d3a359" sha256="6641801d0266a5e795c467c6e66d055f70ff15e53b35accc0f537b19cc25850a"/>
+	</game>
+	<game name="Golf Magazine Presents - 36 Great Holes Starring Fred Couples (Europe)" id="0019">
+		<category>Games</category>
+		<description>Golf Magazine Presents - 36 Great Holes Starring Fred Couples (Europe)</description>
+		<rom name="Golf Magazine Presents - 36 Great Holes Starring Fred Couples (Europe).32x" size="3145728" crc="6ef99202" md5="f772e22b574406e3e20c172117050973" sha1="55848f7c54533fd2a19011db661ef261cd8bdb22" sha256="808bb9c3d7444bd8bc41d7d5e62c92334cb3883a80bae31faf1f830b8a31639d"/>
+	</game>
+	<game name="Knuckles' Chaotix (Europe)" id="0021">
+		<category>Games</category>
+		<description>Knuckles' Chaotix (Europe)</description>
+		<rom name="Knuckles' Chaotix (Europe).32x" size="3145728" crc="41d63572" md5="4ce9e6b6e8883d8a678d90aabce022d0" sha1="5c1a2e327a656217604d4bae7e141764a7e59922" sha256="569decc257fd8fab95b60be581f52b4b10d3584db941657e6d707b37629d38fe"/>
+	</game>
+	<game name="Kolibri (USA, Europe)" id="0022">
+		<category>Games</category>
+		<description>Kolibri (USA, Europe)</description>
+		<rom name="Kolibri (USA, Europe).32x" size="3145728" crc="20ca53ef" md5="6af6207b1e67072a9104178130c61712" sha1="191ae0b525ecf32664086d8d748e0b35f776ddfe" sha256="3e8bf99e7257921b5f0f4b2c2b836e2c414193cc3771540c603fd925c6316525"/>
+	</game>
+	<game name="Metal Head (Europe) (En,Ja)" id="0029">
+		<category>Games</category>
+		<description>Metal Head (Europe) (En,Ja)</description>
+		<rom name="Metal Head (Europe) (En,Ja).32x" size="3145728" crc="bf9b8376" md5="5ab011dae907f77e68eb764bec3870d8" sha1="2a7767024e23b55fe193d586a96a3ba3c92e7ea8" sha256="0111b2acbd73b803ab73fd3443afac8a282deaa75490ee304a15dc62c38e53e5"/>
+	</game>
+	<game name="Mortal Kombat II (Europe)" id="0031">
+		<category>Games</category>
+		<description>Mortal Kombat II (Europe)</description>
+		<rom name="Mortal Kombat II (Europe).32x" size="4194304" crc="211085ce" md5="9d258d11fe1e4cac2c1aab370c35e57a" sha1="f75698de887d0ef980f73e35fc4615887a9ad58f" sha256="c1d827dba5d315499cb2e6271522daf4928af2b682df30f223db6e52e0b8a31a"/>
+	</game>
+	<game name="Motherbase (Europe)" id="0211">
+		<category>Games</category>
+		<description>Motherbase (Europe)</description>
+		<rom name="Motherbase (Europe).32x" size="2097152" crc="0d6523a3" md5="66833be0da3d737ac45cdaab9b6bd818" sha1="00792570c459637d46f26d0ceb301ed9d83f0098" sha256="44b30ec69a4f1a80bb81c059fb91e3742eb044a8970f3306ba3debc64aff5b21"/>
+	</game>
+	<game name="Motocross Championship (Europe)" id="0033">
+		<category>Games</category>
+		<description>Motocross Championship (Europe)</description>
+		<rom name="Motocross Championship (Europe).32x" size="2097152" crc="ae3364e9" md5="6bc365808a00b8a640dd86ccb5a0ea24" sha1="af0cb8626825e1b431eba07b8a9b571186745c16" sha256="37943b4f266cc9740d9a93b9f7c6bcafd080908cb30dd24748c1a408127e2fd1"/>
+	</game>
+	<game name="NBA Jam - Tournament Edition (World)" id="0035">
+		<category>Games</category>
+		<description>NBA Jam - Tournament Edition (World)</description>
+		<rom name="NBA Jam - Tournament Edition (World).32x" size="4194304" crc="6b7994aa" md5="966a5e00dd7bcdc70b05c5a0c0e8f7aa" sha1="c8af3e74c49514669ba6652ec0c81bccf77873b6" sha256="7f7e1059671a99405e3782cd9b4e5d4025ee4bb122a89357b95b0fcac512f74f"/>
+	</game>
+	<game name="NFL Quarterback Club (World)" id="0036">
+		<category>Games</category>
+		<description>NFL Quarterback Club (World)</description>
+		<rom name="NFL Quarterback Club (World).32x" size="3145728" crc="0bc7018d" md5="e273c10114351cdafeba1abccca8909d" sha1="a0dc24f2f3a7fc5bfd12791cf25af7f7888843cf" sha256="092ad8896ea7784d2feb7f17b1a348562588a361c50de6ade722a5c5cce698d5"/>
+	</game>
+	<game name="Pitfall - The Mayan Adventure (USA)" id="0038">
+		<category>Games</category>
+		<description>Pitfall - The Mayan Adventure (USA)</description>
+		<rom name="Pitfall - The Mayan Adventure (USA).32x" size="3145728" crc="f9126f15" md5="e091e542f7ea29ef3daf6022b36e219b" sha1="ee864d1677c6d976d0846eb5f8d8edb839acfb76" sha256="901a582a9b2d0a2f55f07f1a7b1aaa6484e680fabe4f83c9daffef955f4ec95b"/>
+	</game>
+	<game name="Primal Rage (USA, Europe)" id="0039">
+		<category>Games</category>
+		<description>Primal Rage (USA, Europe)</description>
+		<rom name="Primal Rage (USA, Europe).32x" size="4194304" crc="e78a4d28" md5="e1efc5804d3360e7b19f7542219bf964" sha1="5084dcca51d76173c383ab7d04cbc661673545f7" sha256="04de760f8c87d9ccb9bdc4a756e70dbc71f70b3084849e5fd945ceccee39cc2a"/>
+	</game>
+	<game name="RBI Baseball '95 (USA)" id="0040">
+		<category>Games</category>
+		<description>RBI Baseball '95 (USA)</description>
+		<rom name="RBI Baseball '95 (USA).32x" size="2097152" crc="ff795fdc" md5="5f955b5feab07c072fc345f1fee52a60" sha1="4f90433a4403fd74cafeea49272689046de4ae43" sha256="89f8114f9a4fb5ec3e3f0229427117c72c4af2dbda337bc52e6afa60787e6d95"/>
+	</game>
+	<game name="Space Harrier (Europe)" id="0043">
+		<category>Games</category>
+		<description>Space Harrier (Europe)</description>
+		<rom name="Space Harrier (Europe).32x" size="2097152" crc="5cac3587" md5="4619e328e1719bee165941d891c08d81" sha1="8b0495257fa5392ef9ddcc9c3ba1860ae58f4f3d" sha256="3eb30032a5e7b79532820dcdc4754517ed83ff4551a7dd4b78c6b3913061dec5"/>
+	</game>
+	<game name="Star Trek - Starfleet Academy - Starship Bridge Simulator (USA)" id="0045">
+		<category>Games</category>
+		<description>Star Trek - Starfleet Academy - Starship Bridge Simulator (USA)</description>
+		<rom name="Star Trek - Starfleet Academy - Starship Bridge Simulator (USA).32x" size="2097152" crc="dd9708b9" md5="78086fba202066ff4f968d35e7c21c11" sha1="e5248328b64a1ec4f1079c88ee53ef8d48e99e58" sha256="37b9cbfb18a4591263f354016f11b83abdef7e496f91ce4f6bf7cafffe3dd158"/>
+	</game>
+	<game name="Star Wars Arcade (Europe)" id="0046">
+		<category>Games</category>
+		<description>Star Wars Arcade (Europe)</description>
+		<rom name="Star Wars Arcade (Europe).32x" size="2621440" crc="82e82660" md5="bfaa6fd031490c26e25f3d59d9c37497" sha1="a877cbf704fe7480966fd88a3c39efb6a39392ac" sha256="a159a537195153faf2921bcbf87bde7a38db016be400763f4299aaa625ef642d"/>
+	</game>
+	<game name="Stellar Assault (USA, Europe)" id="0042">
+		<category>Games</category>
+		<description>Stellar Assault (USA, Europe)</description>
+		<rom name="Stellar Assault (USA, Europe).32x" size="2097152" crc="60c49e4d" md5="1415a8675adf3e8647b3df673b50056d" sha1="561c8c63dbcabc0b1b6f31673ca75a0bde7abc72" sha256="2f9b6017258fbb1c37d81df07c68d5255495d3bf76d9c7b680ff66bccf665750"/>
+	</game>
+	<game name="T-MEK (USA, Europe)" id="0049">
+		<category>Games</category>
+		<description>T-MEK (USA, Europe)</description>
+		<rom name="T-MEK (USA, Europe).32x" size="3145728" crc="66d2c48f" md5="1b06c84caf09206a8d9f0bb3eaaba512" sha1="173c8425921d83db3e8d181158e7599364f4c0f6" sha256="ee218c878a7c2105530631073b9f95fd8a61d1be110da030c599e983988e7d10"/>
+	</game>
+	<game name="Tempo (Japan, USA) (En)" id="0050">
+		<category>Games</category>
+		<description>Tempo (Japan, USA) (En)</description>
+		<rom name="Tempo (Japan, USA) (En).32x" size="3145728" crc="14e5c575" md5="30989c83d4e4ea3c35a1f3e2620b8465" sha1="6673ba83570b4f2c1b4a22415a56594c3cc6c6a9" sha256="b8bf72deeda5cba5ca63bc59c96d0f1d223c9406475a9099b7831ac191671bf6"/>
+	</game>
+	<game name="Toughman Contest (USA, Europe)" id="0051">
+		<category>Games</category>
+		<description>Toughman Contest (USA, Europe)</description>
+		<rom name="Toughman Contest (USA, Europe).32x" size="4194304" crc="14eac7a6" md5="386d99d132ce5699ade81b4473cef5b4" sha1="7588b0b8f4e93d5fdc920d3ab7e464154e423da9" sha256="5085e80dee63cf0264aadb3595588c3098a68607e8cf48c948535483832bafc2"/>
+	</game>
+	<game name="Virtua Fighter (Europe)" id="0052">
+		<category>Games</category>
+		<description>Virtua Fighter (Europe)</description>
+		<rom name="Virtua Fighter (Europe).32x" size="4194304" crc="25aea73c" md5="adcf6c6150d1bc3d073d3754b22ebc69" sha1="24b3063284a914c76d8d1f681e3ed6323b0d7d0b" sha256="4268e52768292941a22fab918b6aaf930b0c0523735f5434388d35dc6eb80b4b"/>
+	</game>
+	<game name="Virtua Racing Deluxe (Europe)" id="0054">
+		<category>Games</category>
+		<description>Virtua Racing Deluxe (Europe)</description>
+		<rom name="Virtua Racing Deluxe (Europe).32x" size="3145728" crc="27f14b5f" md5="c30a6430b1a7e819bd2dde63a41d4d57" sha1="bb26ddde26cd07191d872e8a76a170ca3326f781" sha256="96030ff528cdbf7cd5994265f83587fb1d6cd5b6ea5001a629deb53184b363b1"/>
+	</game>
+	<game name="WWF Raw (World)" id="0058">
+		<category>Games</category>
+		<description>WWF Raw (World)</description>
+		<rom name="WWF Raw (World).32x" size="4194304" crc="8eb7cd2c" md5="b3788f861803d21cfa0e559695835f44" sha1="94b974f2f69f0c10bc18b349fa4ff95ca56fa47b" sha256="901f61356060a983b938e7df02ac8b193d8c7c9c31aa5ed58083494f1e621d3b"/>
+	</game>
+	<game name="WWF WrestleMania - The Arcade Game (USA)" id="0059">
+		<category>Games</category>
+		<description>WWF WrestleMania - The Arcade Game (USA)</description>
+		<rom name="WWF WrestleMania - The Arcade Game (USA).32x" size="4194304" crc="61833503" md5="8456cae9975ba6cb041c4ef2be54b1a1" sha1="551eedc963cba0e1410b3d229b332ef9ea061469" sha256="b64adcee5a1f7a93a5672a45079c624ffe3af081fb834e2c57cb6c9d0aa37e6a"/>
+	</game>
+	<game name="World Series Baseball Starring Deion Sanders (USA)" id="0057">
+		<category>Games</category>
+		<description>World Series Baseball Starring Deion Sanders (USA)</description>
+		<rom name="World Series Baseball Starring Deion Sanders (USA).32x" size="3145728" crc="6de1bc75" md5="4d14eab0585e79e2fc4789e090755f2d" sha1="ab3026eae46a775adb7eaebc13702699557ddc41" sha256="9545b478e89c780bc9119b585bf88826956f54f40dfb534fb49eef9b40245f3a"/>
+	</game>
+</datafile>

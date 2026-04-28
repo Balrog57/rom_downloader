@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<name>Sony - PlayStation 3 (PSN) (DLC) (Retool)</name>
+		<description>Sony - PlayStation 3 (PSN) (DLC) (2) (-nz) [-AaBbcDdefkMmopPruv] (20251207-104612) (Retool)</description>
+		<version>20251207-104612</version>
+		<date>2026-04-06 18-54-02</date>
+		<author>bikerspade, buckwheat, C. V. Reynolds, emstan784, FakeShemp, Hiccup, Intothisworld, Landcross, norkmetnoil577, rarenight, SonGoku, xuom2</author>
+		<homepage>http://www.github.com/unexpectedpanda/retool</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"></clrmamepro>
+		<retool>Created by Retool 2.4.8</retool>
+	</header>
+	<game name="Toybox Turbos - Unlock Key (Europe) (NPEB02086) (Unlock Key)" id="04484">
+		<category>Games</category>
+		<description>Toybox Turbos - Unlock Key (Europe) (NPEB02086) (Unlock Key)</description>
+		<game_id>EP4001-NPEB02086_00-TBTLIC000000PEGI</game_id>
+		<rom name="EP4001-NPEB02086_00-TBTLIC000000PEGI_bg_1_32423b3610598a33ae9f3f989bd24300d957af65.pkg" size="6080" crc="40420788" md5="0da14caec2f108cbc688b57fbe46e04b" sha1="a9614bef72cf211cfc5e47c85efce54e69ed7a11" sha256="247731aa259e505c3c2f3c646308ba40a75255ffc1df1735c72f275399fd3b6c"/>
+	</game>
+	<game name="Yu-Gi-Oh! Millennium Duels (USA) (Unlock Key)" id="16369">
+		<category>Games</category>
+		<description>Yu-Gi-Oh! Millennium Duels (USA) (Unlock Key)</description>
+		<game_id>UP0101-NPUB31455_00-YGOMILLDUELSKEYX</game_id>
+		<rom name="UP0101-NPUB31455_00-YGOMILLDUELSKEYX.rap" size="16" crc="07cd7fb1" md5="150c5f8b24ef6d551208a38cb25d9f89" sha1="dd68fa45e672ad3e48701adcce426704bbc070ea" sha256="b6c32f66b5c6bac0c77d8c502a651c956341cef456e0edeba51b6bf2f0e9fe59"/>
+		<rom name="aWSpLDdpkFcIxcoVpkRzfbvNhHjIIYSHhrfhYtnsixXIuwcNvbTuHyNrSaGvWxpa.pkg" size="6080" crc="fc1d1b8b" md5="d3c932bbb9a5855b9fe5ee9562c4e2f9" sha1="130d0bf336c4ce76d21707473e16376b683038ff" sha256="39eba1a0490dfda8224f0fe14abf5248374a95dc8f4b602d01e518b50af7702e"/>
+	</game>
+</datafile>

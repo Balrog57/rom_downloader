@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!DOCTYPE datafile PUBLIC "-//Logiqx//DTD ROM Management Datafile//EN" "https://raw.githubusercontent.com/unexpectedpanda/retool-clonelists-metadata/main/datafile.dtd">
+<datafile>
+	<header>
+		<name>Acorn - Archimedes (Retool)</name>
+		<description>Acorn - Archimedes (7) (-nz) [-AaBbcDdefkMmopPruv] (2025-10-23 18-11-28) (Retool)</description>
+		<version>2025-10-23 18-11-28</version>
+		<date>2026-04-06 18-56-44</date>
+		<author>redump.org</author>
+		<homepage>http://www.github.com/unexpectedpanda/retool</homepage>
+		<url>http://redump.org/</url>
+		<retool>Created by Retool 2.4.8</retool>
+	</header>
+	<game name="!ogic Mania (UK)">
+		<category>Games</category>
+		<description>!ogic Mania (UK)</description>
+		<rom name="!ogic Mania (UK).bin" size="5270832" crc="cc8ce67e" md5="01780355a191eca23802064a02ca505b" sha1="be5ae61dc865c4c7bece838a960ad73954946b38"/>
+		<rom name="!ogic Mania (UK).cue" size="82" crc="576c183a" md5="9c7beb45cde36c4358c6406b2a50407a" sha1="d3d75ac49b691d7617cb682e3c2a4141f8507339"/>
+	</game>
+	<game name="Ankh - The Tales of Mystery (UK)">
+		<category>Games</category>
+		<description>Ankh - The Tales of Mystery (UK)</description>
+		<rom name="Ankh - The Tales of Mystery (UK) (Track 1).bin" size="81950736" crc="24e729ae" md5="312adb7131c09622d5d1dde95d54f5f8" sha1="5401756986a0b15b866d96e4b8d3002da00381f0"/>
+		<rom name="Ankh - The Tales of Mystery (UK) (Track 2).bin" size="96961200" crc="e295f8b3" md5="f6eae368dcbd11b0b6528134aa9dd249" sha1="b2356de5305a18c5c2036bb8243bcbc3dffe2bca"/>
+		<rom name="Ankh - The Tales of Mystery (UK) (Track 3).bin" size="105562464" crc="1b4bbaea" md5="5906a27e0c933e9993ece74cc511a4dc" sha1="2a166475f23f7cddc47175daf2c29e2c2b6f6e25"/>
+		<rom name="Ankh - The Tales of Mystery (UK) (Track 4).bin" size="76604640" crc="60701906" md5="564652b9d66553dfa81977edd6051a00" sha1="ba61e9cf60f277758e33f2baa098ca46955a567e"/>
+		<rom name="Ankh - The Tales of Mystery (UK) (Track 5).bin" size="94668000" crc="fc003814" md5="44126dfa21d42d3beeae04c360d89e88" sha1="ffc8c6a7845cdec92d6f3cb32891f60ab8f573cc"/>
+		<rom name="Ankh - The Tales of Mystery (UK) (Track 6).bin" size="123844560" crc="276651eb" md5="dbe2805e9032dc1336710e9bba30dcd8" sha1="7a3f5f21d88f43abb58504d2aeef3ae04ff6ea72"/>
+		<rom name="Ankh - The Tales of Mystery (UK) (Track 7).bin" size="145021968" crc="6a57b253" md5="3d83b4b85565f763d2f26f1561b49012" sha1="7a73b1140166990db162497e2d0b4fa15cf87299"/>
+		<rom name="Ankh - The Tales of Mystery (UK) (Track 8).bin" size="18601968" crc="460724d3" md5="59f6a92279e1bd0619df13f2f76a00b0" sha1="14b15a9c315b7a765d03602a9ec0fdaa6005d013"/>
+		<rom name="Ankh - The Tales of Mystery (UK).cue" size="875" crc="7b50f259" md5="1f3e6e530736bb93ff289e1aa0c77fcb" sha1="29cd0a7a313f6c0b6f7932f4103e83602a894bb1"/>
+	</game>
+	<game name="Desktop Repton - Issue Two (UK)">
+		<category>Games</category>
+		<description>Desktop Repton - Issue Two (UK)</description>
+		<rom name="Desktop Repton - Issue Two (UK).bin" size="4974480" crc="c1d94252" md5="9235e4f55a7e307b765054aaf9e9d8f0" sha1="56093e2d70472820a9572695c02127beab92b636"/>
+		<rom name="Desktop Repton - Issue Two (UK).cue" size="97" crc="56550541" md5="4019155f821bebdca5e26c29c2b687a7" sha1="d0dc14dcfc268c33e27f77cd38cb5d8357ba5d95"/>
+	</game>
+	<game name="Dune II - Battle for Arrakis (UK)">
+		<category>Games</category>
+		<description>Dune II - Battle for Arrakis (UK)</description>
+		<rom name="Dune II - Battle for Arrakis (UK).bin" size="305049696" crc="23ba6d27" md5="0a9b6300d4aeb81a6bd014f2e35c305f" sha1="319245d5bbeada6dffd09bce822ba59fa9afcb28"/>
+		<rom name="Dune II - Battle for Arrakis (UK).cue" size="122" crc="e6f9902d" md5="8aa07d18b9492409586c249825583869" sha1="43c41044245c6b9ec6d3760d7e45f1596cad816d"/>
+	</game>
+	<game name="Simon the Sorcerer (UK)">
+		<category>Games</category>
+		<description>Simon the Sorcerer (UK)</description>
+		<rom name="Simon the Sorcerer (UK).bin" size="301432320" crc="19908f17" md5="ee146e5ca601972bb046eb381609e53d" sha1="b4574e516425a4cb5652ee027e36886865714723"/>
+		<rom name="Simon the Sorcerer (UK).cue" size="112" crc="994b39f9" md5="53e6c03a11233e21b0a8077cd78e8681" sha1="586ebff5a730d39f06462bbb4645d61fd9a1e7ba"/>
+	</game>
+	<game name="Soft Rock Games Collection CD, The (UK)">
+		<category>Games</category>
+		<description>Soft Rock Games Collection CD, The (UK)</description>
+		<rom name="Soft Rock Games Collection CD, The (UK).bin" size="10346448" crc="ea41adb1" md5="03aa81149d475b0e2f97a225ee36fc0a" sha1="62bcf0e6c4a7706a494f067c9d1c1e3c6bcba916"/>
+		<rom name="Soft Rock Games Collection CD, The (UK).cue" size="120" crc="9a19b4a9" md5="bf6de1c7ce28fd6ecbbfeba3557b1aa2" sha1="dbf6375a756923b34b325ded92f802799144299f"/>
+	</game>
+	<game name="Wizard Apprentice (UK)">
+		<category>Games</category>
+		<description>Wizard Apprentice (UK)</description>
+		<rom name="Wizard Apprentice (UK).bin" size="218738352" crc="2ad0fa44" md5="0ea83328c54db45db9b80d7bead52756" sha1="1f36f9c2aff876f702b445ae7738a9a9af8b1bb2"/>
+		<rom name="Wizard Apprentice (UK).cue" size="88" crc="b723bb34" md5="875733c5563a283cc9f6399f7a52a6a2" sha1="8238bad9ff38b5a61918d852e0da0ba573c3a276"/>
+	</game>
+</datafile>

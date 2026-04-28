@@ -1,0 +1,169 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<name>Sega - PICO (Retool)</name>
+		<description>Sega - PICO (31) (-nz) [-AaBbcDdefkMmopPruv] (20250220-080006) (Retool)</description>
+		<version>20250220-080006</version>
+		<date>2026-04-06 18-53-52</date>
+		<author>Arctic Circle System, BigFred, C. V. Reynolds, Connie, FakeShemp, fuzzball, Gefflon, Hiccup, Money_114, omonim2007, Powerpuff, relax, scorp256, TeamEurope, xNo, xuom2</author>
+		<homepage>http://www.github.com/unexpectedpanda/retool</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"></clrmamepro>
+		<retool>Created by Retool 2.4.8</retool>
+	</header>
+	<game name="Adventures in Letter Land with Jack &amp; Jill (USA)" id="0101">
+		<category>Games</category>
+		<description>Adventures in Letter Land with Jack &amp; Jill (USA)</description>
+		<rom name="Adventures in Letter Land with Jack &amp; Jill (USA).md" size="1048576" crc="e846858b" md5="3960b1a060675f59d0be6c035e6664e1" sha1="fe4412ba81673894167841f47780a3f67d93c4e7"/>
+	</game>
+	<game name="Annee en Compagnie de Winnie l'Ourson, Une (France)" id="0018">
+		<category>Games</category>
+		<description>Annee en Compagnie de Winnie l'Ourson, Une (France)</description>
+		<rom name="Annee en Compagnie de Winnie l'Ourson, Une (France).md" size="524288" crc="4e4c17bc" md5="73922db11a14d272658312a380e4a3b5" sha1="e07a568f90a5db13bae314bfd310488320122439"/>
+	</game>
+	<game name="Aventures du Roi Lion, Les (France)" id="0115">
+		<category>Games</category>
+		<description>Aventures du Roi Lion, Les (France)</description>
+		<rom name="Aventures du Roi Lion, Les (France).md" size="1048576" crc="f8a95177" md5="aa1ea874328bacab73be1e7c9d4733e5" sha1="8c1853e1c6eba378cb2efc71039462cbb021c0ed"/>
+	</game>
+	<game name="Berenstain Bears, The - A School Day (USA)" id="0070">
+		<category>Games</category>
+		<description>Berenstain Bears, The - A School Day (USA)</description>
+		<rom name="Berenstain Bears, The - A School Day (USA).md" size="1048576" crc="e92af9f1" md5="d84c7f5ebdb96e282dca16731b1b852b" sha1="f4ae09a8a0e11cd8bec95ec3ac3908ce6da7a30f"/>
+	</game>
+	<game name="Crayola Crayons - Create a World (USA)" id="0102">
+		<category>Games</category>
+		<description>Crayola Crayons - Create a World (USA)</description>
+		<rom name="Crayola Crayons - Create a World (USA).md" size="524288" crc="04fc1c21" md5="117a260f12ca604247f35681ee2eb029" sha1="88738c2b5b6302385fbaad60af1221cf70cf0f93"/>
+	</game>
+	<game name="Crayons Magiques (France)" id="0152">
+		<category>Games</category>
+		<description>Crayons Magiques (France)</description>
+		<rom name="Crayons Magiques (France).md" size="524288" crc="dc2aeb72" md5="709105305d5e4c9d5da8b707d8c9727f" sha1="34ff47646eb90f243b4a793ecff3591ee85a71d0"/>
+	</game>
+	<game name="Ecco Jr. and the Great Ocean Treasure Hunt! (USA)" id="0065">
+		<category>Games</category>
+		<description>Ecco Jr. and the Great Ocean Treasure Hunt! (USA)</description>
+		<rom name="Ecco Jr. and the Great Ocean Treasure Hunt! (USA).md" size="524288" crc="c8862213" md5="e6cb49d4333edd2715779c89b04ccc95" sha1="0eaa54e3e67469efbdb3737c8dee3b1f11fd04ed"/>
+	</game>
+	<game name="Ecco Jr. et la Chasse au Tresor Sous-Marine! (France)" id="0014">
+		<category>Games</category>
+		<description>Ecco Jr. et la Chasse au Tresor Sous-Marine! (France)</description>
+		<rom name="Ecco Jr. et la Chasse au Tresor Sous-Marine! (France).md" size="524288" crc="1b7b3825" md5="1c4163aef7aec0d2289aa996e97ce0f2" sha1="64706b5f1240941a4989db96dab432aed6009e0a"/>
+	</game>
+	<game name="Great Counting Caper with 3 Blind Mice, The (USA)" id="0106">
+		<category>Games</category>
+		<description>Great Counting Caper with 3 Blind Mice, The (USA)</description>
+		<rom name="Great Counting Caper with 3 Blind Mice, The (USA).md" size="1048576" crc="06dc8145" md5="176e15c6b26814e625ca7b1db7ca0c07" sha1="76a27504a36f7d4b68892e56f7586a26326d0878"/>
+	</game>
+	<game name="Lion King Adventures, The (United Kingdom)" id="0009">
+		<category>Games</category>
+		<description>Lion King Adventures, The (United Kingdom)</description>
+		<rom name="Lion King Adventures, The (United Kingdom).md" size="1048576" crc="a7b92dc1" md5="62d5bb17c1fdfccc9e8692a189da109f" sha1="7f20cd3bec73624f93c8235887ad82f33a78077e"/>
+	</game>
+	<game name="Lion King, The - Adventures at Pride Rock (USA)" id="0108">
+		<category>Games</category>
+		<description>Lion King, The - Adventures at Pride Rock (USA)</description>
+		<rom name="Lion King, The - Adventures at Pride Rock (USA).md" size="1048576" crc="2c0db3b9" md5="e0e810b4d2cbf85c41c5170bd484a6c6" sha1="2da72b5ab41d95675163850bab11e38d7e8a098d"/>
+	</game>
+	<game name="Magic Crayons (USA)" id="0067">
+		<category>Games</category>
+		<description>Magic Crayons (USA)</description>
+		<rom name="Magic Crayons (USA).md" size="524288" crc="c567ea50" md5="fb8b1cc2f2fbb7554e341af5f768b114" sha1="8ac1cd4cd9af44bc35ce78bec20662860cc78822"/>
+	</game>
+	<game name="Magic School Bus, The (USA)" id="0069">
+		<category>Games</category>
+		<description>Magic School Bus, The (USA)</description>
+		<rom name="Magic School Bus, The (USA).md" size="524288" crc="e6ef55f9" md5="4776e04223fa667fb4d466456909f39c" sha1="927e48f24745732235de4745d3acf1656750e12b"/>
+	</game>
+	<game name="Math Antics with Disney's 101 Dalmatians (USA, Korea) (En)" id="0109">
+		<category>Games</category>
+		<description>Math Antics with Disney's 101 Dalmatians (USA, Korea) (En)</description>
+		<rom name="Math Antics with Disney's 101 Dalmatians (USA, Korea) (En).md" size="1048576" crc="d271f727" md5="cede845f6088bcaf3af3448529e6fdb6" sha1="bbbb351396ae9c636092efc6780dd1f80f4ca854"/>
+	</game>
+	<game name="Mickey - Fait un Voyage Eclair Dans le Passe (France)" id="0015">
+		<category>Games</category>
+		<description>Mickey - Fait un Voyage Eclair Dans le Passe (France)</description>
+		<rom name="Mickey - Fait un Voyage Eclair Dans le Passe (France).md" size="524288" crc="fafee898" md5="69c37997757f6ea8edcebf3b99fc47e7" sha1="6cacd57339ad8dcdbc40f08abffb6fa0f00b5ae5"/>
+	</game>
+	<game name="Mickey's Blast into the Past (USA)" id="0001">
+		<category>Games</category>
+		<description>Mickey's Blast into the Past (USA)</description>
+		<rom name="Mickey's Blast into the Past (USA).md" size="524288" crc="2628f6ef" md5="f9e23f3b23d4653c8914906265c571a3" sha1="1d04a40d353f71061b206d893d2d8e7864a2faee"/>
+	</game>
+	<game name="Muppets, The - On the Go! (USA)" id="0110">
+		<category>Games</category>
+		<description>Muppets, The - On the Go! (USA)</description>
+		<rom name="Muppets, The - On the Go! (USA).md" size="524288" crc="d686b96e" md5="797d9f439fbd5deb1becd88b77b49a55" sha1="731ad3ab65f1681f48594cad86e1a1adb9f57829"/>
+	</game>
+	<game name="Musical Zoo (USA)" id="0244">
+		<category>Games</category>
+		<description>Musical Zoo (USA)</description>
+		<rom name="Musical Zoo (USA).md" size="524288" crc="35add3d0" md5="f055c868587aec072ac33fe4a52a3c7f" sha1="a9f0f50c0631c4be34b6e71f76d67ef156ac2552"/>
+	</game>
+	<game name="Pepe's Puzzles (USA)" id="0066">
+		<category>Games</category>
+		<description>Pepe's Puzzles (USA)</description>
+		<rom name="Pepe's Puzzles (USA).md" size="524288" crc="41e5618a" md5="c0cbcdb54d5f4687c4501832a9225285" sha1="faf327f39af6e6f8957b307eacbd940fd02919a4"/>
+	</game>
+	<game name="Pocahontas (Europe)" id="0006">
+		<category>Games</category>
+		<description>Pocahontas (Europe)</description>
+		<rom name="Pocahontas (Europe).md" size="1048576" crc="deefbfd9" md5="99b591162383355a437d589e03380528" sha1="8376f01619def050fa7a2f53d48aa32ab0e860cd"/>
+	</game>
+	<game name="Pocahontas - Riverbend Adventures (USA)" id="0133">
+		<category>Games</category>
+		<description>Pocahontas - Riverbend Adventures (USA)</description>
+		<rom name="Pocahontas - Riverbend Adventures (USA).md" size="1048576" crc="edf2218b" md5="9e69816c04e46e20c181a478548e5adb" sha1="b2c70bb26f9fed925b6beab27db73d8fc7e21cd7"/>
+	</game>
+	<game name="Professeur PICO et la Machine a Couleurs (France)" id="0019">
+		<category>Games</category>
+		<description>Professeur PICO et la Machine a Couleurs (France)</description>
+		<rom name="Professeur PICO et la Machine a Couleurs (France).md" size="524288" crc="2870805c" md5="1060c923cd687bb5293a81ab3c268959" sha1="cec40575c1ddbb9c73241346b9e6510820c28b7a"/>
+	</game>
+	<game name="Professor PICO and the Paintbox Puzzle (United Kingdom)" id="0325">
+		<category>Games</category>
+		<description>Professor PICO and the Paintbox Puzzle (United Kingdom)</description>
+		<rom name="Professor PICO and the Paintbox Puzzle (United Kingdom).md" size="524288" crc="2e81a633" md5="62b4f6de7be60031c8f4c50e1e15e9b2" sha1="a32376e294d0b7f0cc2043965891784bbe614e09"/>
+	</game>
+	<game name="Richard Scarry's Huckle and Lowly's Busiest Day Ever (USA)" id="0072">
+		<category>Games</category>
+		<description>Richard Scarry's Huckle and Lowly's Busiest Day Ever (USA)</description>
+		<rom name="Richard Scarry's Huckle and Lowly's Busiest Day Ever (USA).md" size="1048576" crc="42007e92" md5="e1ca483d74cb58edf1882f690b6ad711" sha1="ce0b387427226baa4067d6eacebe90cef760a18e"/>
+	</game>
+	<game name="Richard Scarry's Une Journee Bien Remplie pour Cassis et Asticot (France)" id="0016">
+		<category>Games</category>
+		<description>Richard Scarry's Une Journee Bien Remplie pour Cassis et Asticot (France)</description>
+		<rom name="Richard Scarry's Une Journee Bien Remplie pour Cassis et Asticot (France).md" size="1048576" crc="53f94256" md5="d45b9955cb3ae27cc312d3d716981012" sha1="9d9cdd8281e7dadb6668f35692e42fbde74d6349"/>
+	</game>
+	<game name="Sesame Street - Alphabet Avenue (USA)" id="0114">
+		<category>Games</category>
+		<description>Sesame Street - Alphabet Avenue (USA)</description>
+		<rom name="Sesame Street - Alphabet Avenue (USA).md" size="1048576" crc="ca1bbeef" md5="2d899b33ea220d58822cc72f5b31a282" sha1="62ce7f387eb9f61bdef3f74df8aff98106b022da"/>
+	</game>
+	<game name="Smart Alex and Smart Alice - Curious Kids (USA)" id="0124">
+		<category>Games</category>
+		<description>Smart Alex and Smart Alice - Curious Kids (USA)</description>
+		<rom name="Smart Alex and Smart Alice - Curious Kids (USA).md" size="524288" crc="8b5e7490" md5="a23897661b56e03fd89767fd37b5c3f9" sha1="1d809139fd2926107a9fae6270b10615c6f6477f"/>
+	</game>
+	<game name="Sonic The Hedgehog's Gameworld (USA)" id="0002">
+		<category>Games</category>
+		<description>Sonic The Hedgehog's Gameworld (USA)</description>
+		<rom name="Sonic The Hedgehog's Gameworld (USA).md" size="524288" crc="e472a795" md5="825674b726b2545019c4b7bdee05d6b7" sha1="839d8be99eabf371bb992166471c877db6f6e265"/>
+	</game>
+	<game name="Tails and the Music Maker (USA)" id="0068">
+		<category>Games</category>
+		<description>Tails and the Music Maker (USA)</description>
+		<rom name="Tails and the Music Maker (USA).md" size="524288" crc="982154ab" md5="3ca902dbeb56a28362fbbfcdcec02d50" sha1="807ee1ed88ffdd780754043d836a848864155844"/>
+	</game>
+	<game name="Tails et le Faiseur de Musique (France)" id="0017">
+		<category>Games</category>
+		<description>Tails et le Faiseur de Musique (France)</description>
+		<rom name="Tails et le Faiseur de Musique (France).md" size="524288" crc="8cec50fa" md5="6e59224ffde6f3078443602aef46141c" sha1="3f1ec0e7e55c7b1c1e4577f516c24ab1068d77ef"/>
+	</game>
+	<game name="Year at Pooh Corner, A (USA)" id="0064">
+		<category>Games</category>
+		<description>Year at Pooh Corner, A (USA)</description>
+		<rom name="Year at Pooh Corner, A (USA).md" size="524288" crc="333e88d2" md5="26d3a3d57e3d470712c71e55bf9322f0" sha1="65581aa9b77a5011039ff88a5b282c77ef0c9e81"/>
+	</game>
+</datafile>

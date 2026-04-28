@@ -1,0 +1,453 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<id>404</id>
+		<name>LeapFrog - Explorer</name>
+		<description>LeapFrog - Explorer</description>
+		<version>20260224-025116</version>
+		<author>Gefflon, nnssxx, relax, TeamEurope</author>
+		<homepage>No-Intro</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"/>
+	</header>
+	<game name="Adventure Sketchers - Draw, Play, Create (USA) (v1.0.0.11778)" id="0030">
+		<category>Games</category>
+		<description>Adventure Sketchers - Draw, Play, Create (USA) (v1.0.0.11778)</description>
+		<rom name="Adventure Sketchers - Draw, Play, Create (USA) (v1.0.0.11778).bin" size="67108864" crc="e1c332b2" md5="ce8d528dab8b958f10d69988d3813172" sha1="e3281062eb56edbeddddf0cdb2e0194f91b0d4d0" sha256="586b6508a3165973d48a2eb9a51f06efe1f56ef5739eeee37efeda23493ad5d4" status="verified" serial="152-12940"/>
+	</game>
+	<game name="Barbie - Malibu Mysteries (USA) (v1.0.10.0)" id="0031">
+		<category>Games</category>
+		<description>Barbie - Malibu Mysteries (USA) (v1.0.10.0)</description>
+		<rom name="Barbie - Malibu Mysteries (USA) (v1.0.10.0).bin" size="67108864" crc="1d7f9a98" md5="a17ac3d7bb65e607fa48bca9a833434b" sha1="462c4ffe7887e562154bc2b919d77acaa167f34c" sha256="ff917286440b6706ce62f055e9448909ed341bbe9e159e1e915cfc9782734fc2" serial="152-13003"/>
+	</game>
+	<game name="Ben 10 - Ultimate Alien (USA) (v1.0.0.0)" id="0032">
+		<category>Games</category>
+		<description>Ben 10 - Ultimate Alien (USA) (v1.0.0.0)</description>
+		<rom name="Ben 10 - Ultimate Alien (USA) (v1.0.0.0).bin" size="67108864" crc="386004e3" md5="eac65549dc9c8f85aa5fd4a53447bffd" sha1="aa98749159a9b586f8e02ba1e223c049d2ec350b" sha256="fdaa51fa0d31b1e31b815f30b9187754344ad4a7bb6e8d6a70531e869e4b6fee" serial="152-12371"/>
+	</game>
+	<game name="Brave (USA) (v1.0.5.0)" id="0014">
+		<category>Games</category>
+		<description>Brave (USA) (v1.0.5.0)</description>
+		<rom name="Brave (USA) (v1.0.5.0).bin" size="67108864" crc="d5c75056" md5="aa2e64530f188f02d92c3c8d088da942" sha1="ee466a5f317390497b30c5fe62c4475429392910" sha256="8ba49d7bff91a07274520a8c8b0009f1326747dd4ecae0da0664626008cf32a2" status="verified" serial="152-12691"/>
+	</game>
+	<game name="Bubble Guppies (USA) (v1.0.0.0)" id="0011">
+		<category>Games</category>
+		<description>Bubble Guppies (USA) (v1.0.0.0)</description>
+		<rom name="Bubble Guppies (USA) (v1.0.0.0).bin" size="67108864" crc="15f64d81" md5="816193260c66b221fa444a82759f40ff" sha1="b9ca74e9413db8171abb10b43d55a281a8a091ad" sha256="526c6ea3c7539b4a7b268c179210323f554dc038f2b981da3b8ab0d450b21999" status="verified" serial="152-12845"/>
+	</game>
+	<game name="Cars 2 (USA) (v1.0.2.0)" id="0033">
+		<category>Games</category>
+		<description>Cars 2 (USA) (v1.0.2.0)</description>
+		<rom name="Cars 2 (USA) (v1.0.2.0).bin" size="67108864" crc="08895c60" md5="7f9e5d4c89708b0adc8e6bffe8c7072a" sha1="9637309941a8fec805df307341f2aaa4272b9375" sha256="756a8a56765426e55aa1203646b1d8aa7ca909df544ca5358145c86d86ea2671" status="verified" serial="152-12503"/>
+	</game>
+	<game name="Cars 2 - Project Undercover (USA) (v1.0.4.10884)" id="0015">
+		<category>Games</category>
+		<description>Cars 2 - Project Undercover (USA) (v1.0.4.10884)</description>
+		<rom name="Cars 2 - Project Undercover (USA) (v1.0.4.10884).bin" size="134217728" crc="5480656d" md5="75fa895c2a70510c58f7ecd87cf504f7" sha1="9e02f2bd616692d9dc595217b9f319a196c8d508" sha256="9c43d02e5105374ff30235a6f677cf3b50015698a78915feb640e8d7acebc979" serial="152-12740"/>
+	</game>
+	<game name="Clifford Ready-To-Read (USA) (v1.0.1.0)" id="0035">
+		<category>Games</category>
+		<description>Clifford Ready-To-Read (USA) (v1.0.1.0)</description>
+		<rom name="Clifford Ready-To-Read (USA) (v1.0.1.0).bin" size="67108864" crc="5dbf8f2c" md5="0c4f1a79078d825591d99cbb398c7878" sha1="2ed8999ed4a630cd2b0d8e477794ea9fd1d671fc" sha256="74286e7af5a245a6f2cd70040240432140a0df62b8af95fc60e9d7b9708c1655" serial="152-13011"/>
+	</game>
+	<game name="Cooking! Recipes on the Road (USA) (v1.0.1.0)" id="0036">
+		<category>Games</category>
+		<description>Cooking! Recipes on the Road (USA) (v1.0.1.0)</description>
+		<rom name="Cooking! Recipes on the Road (USA) (v1.0.1.0).bin" size="67108864" crc="6752ccb8" md5="c806a3d8519f263a7e33058b3237e726" sha1="b38fe03c12d6a00bb2df293556e91c00893bebce" sha256="2660aeb90e940a9807b1abf20b69de257cb7751c200d346cdc3e1799e72fece0" status="verified" serial="152-12941"/>
+	</game>
+	<game name="Crayola Art Adventure (USA) (v1.0.3.0)" id="0016">
+		<category>Games</category>
+		<description>Crayola Art Adventure (USA) (v1.0.3.0)</description>
+		<rom name="Crayola Art Adventure (USA) (v1.0.3.0).bin" size="67108864" crc="7eb2729f" md5="b9f8e3c0aacc962ade4b578d7b2ed86f" sha1="a805aa4ba8a88a0369493fddd70b251ed20b948e" sha256="a9bccbe5bb277d64dafc506083804730f30f1ce0d7fb320814338588dc1f7357" status="verified" serial="152-12728"/>
+	</game>
+	<game name="Digging for Dinosaurs (USA) (v1.0.1.0)" id="0037">
+		<category>Games</category>
+		<description>Digging for Dinosaurs (USA) (v1.0.1.0)</description>
+		<rom name="Digging for Dinosaurs (USA) (v1.0.1.0).bin" size="67108864" crc="0adbe418" md5="ab752a1d067c533eb3ca0b78084e05ea" sha1="a9ec70176ee101a0b42234b1c3bdc640aed3d9da" sha256="f125377279d3e8b70c8eaa529ae9deaa71e3244d3cc927ef1340606af4864b53" status="verified" serial="152-12592"/>
+	</game>
+	<game name="Disney Fairies - Tink's Midnight Tea Party (USA) (v2.0.0.0)" id="0038">
+		<category>Games</category>
+		<description>Disney Fairies - Tink's Midnight Tea Party (USA) (v2.0.0.0)</description>
+		<rom name="Disney Fairies - Tink's Midnight Tea Party (USA) (v2.0.0.0).bin" size="134217728" crc="b8534ce3" md5="0523bb0dbf2338cc8a3b4e6670a0c500" sha1="ccac6129831afc5b184e9e3f7704a0983cf61fab" sha256="67fa6ae65a6c4ac305cd8535d3a1aed36ff18ab52c1f395ced329dcfecdbb745" serial="152-12764"/>
+	</game>
+	<game name="Disney Princess - Cinderella - The Heart that Believes (USA) (v1.0.7.13799)" id="0034">
+		<category>Games</category>
+		<description>Disney Princess - Cinderella - The Heart that Believes (USA) (v1.0.7.13799)</description>
+		<rom name="Disney Princess - Cinderella - The Heart that Believes (USA) (v1.0.7.13799).bin" size="67108864" crc="13cabdb5" md5="e8c43b8e9a9cffe56b97c4d4748cebef" sha1="8b9a2069781ea3b700f5231fffaaba9d5fd0a63c" sha256="58aaf9c02eec2e2cab5729e123cd795439d639572bbd12c5cf568199f8d563df" serial="152-12739"/>
+	</game>
+	<game name="Disney Princess - Pop-Up Story Adventures! (USA) (v1.0.3.0)" id="0002">
+		<category>Games</category>
+		<description>Disney Princess - Pop-Up Story Adventures! (USA) (v1.0.3.0)</description>
+		<rom name="Disney Princess - Pop-Up Story Adventures! (USA) (v1.0.3.0).bin" size="67108864" crc="f0f37c2e" md5="0fd5ba52e14ea06acc12638ad743da26" sha1="83dc83c0318c1a43c5aa49d2a0b727696ca5ec96" sha256="94297ecb428e00a6ee0583082276589bdfd4fee60565c45f1021aee450007440" status="verified" serial="152-12367"/>
+	</game>
+	<game name="Disney Princess - The Little Mermaid - Princess Adventures (USA) (v1.0.1.0)" id="0082">
+		<category>Games</category>
+		<description>Disney Princess - The Little Mermaid - Princess Adventures (USA) (v1.0.1.0)</description>
+		<rom name="Disney Princess - The Little Mermaid - Princess Adventures (USA) (v1.0.1.0).bin" size="67108864" crc="a999b1a9" md5="0ba62ea161601ac5396236a2f5b2f028" sha1="f12a338aa09ab8e9ec36e1c2431e014f753f9b73" sha256="3ee8ab4e4e553fbdca8b76fa129a09e6c1d2575571419b8e907af02c3f2d41d3" status="verified" serial="152-13027"/>
+	</game>
+	<game name="Disney Princess - The Princess and the Frog (USA) (v1.0.5.0)" id="0004">
+		<category>Games</category>
+		<description>Disney Princess - The Princess and the Frog (USA) (v1.0.5.0)</description>
+		<rom name="Disney Princess - The Princess and the Frog (USA) (v1.0.5.0).bin" size="67108864" crc="bb007611" md5="d1f863e99ac543073a3188399f6271c4" sha1="6c0cb5506e2d2ecd9c896f5a81dcc0b88c2b1304" sha256="e55338b0d1065c991e509a28a71d3983f8cd67f4818d711f1c9a6c5eebfda6c7" status="verified" serial="152-12481"/>
+	</game>
+	<game name="Disney Princesses - Histoires et Aventures en Livre Anime ! (Canada) (Fr) (v1.0.3.0)" id="0042" cloneofid="0002">
+		<category>Games</category>
+		<description>Disney Princesses - Histoires et Aventures en Livre Anime ! (Canada) (Fr) (v1.0.3.0)</description>
+		<rom name="Disney Princesses - Histoires et Aventures en Livre Anime ! (Canada) (Fr) (v1.0.3.0).bin" size="67108864" crc="29dc9d39" md5="766bb066e2379943037af6cd4f4f1f52" sha1="f9e758fc01a8469bae2717f0058a2e94eabef89d" sha256="7429551898776b1d94a9c205e3fcb6d6e60a1766b5a86dc99b418c5b82e72d12" serial="152-12575"/>
+	</game>
+	<game name="Doc McStuffins (USA) (v1.0.5.0)" id="0048" cloneofid="0049">
+		<category>Games</category>
+		<description>Doc McStuffins (USA) (v1.0.5.0)</description>
+		<rom name="Doc McStuffins (USA) (v1.0.5.0).bin" size="67108864" crc="eb4e372c" md5="b4f44377a36d8c101dbc12d4e921e99c" sha1="df878d399df1f5adb6ddef1ed4f2d2b6034148e4" sha256="0be665e0bb644c187367e67cb340ff829ac6df01c0765d8586ab83e9820e361e" serial="152-12969"/>
+	</game>
+	<game name="Doc McStuffins (USA) (v1.0.8.0)" id="0049">
+		<category>Games</category>
+		<description>Doc McStuffins (USA) (v1.0.8.0)</description>
+		<rom name="Doc McStuffins (USA) (v1.0.8.0).bin" size="67108864" crc="d700a9cb" md5="b377b30f3eef03c9a9f9a150c80d4c28" sha1="0449f5a88f58b94ca815adf5dc0baf8e85576f16" sha256="74ab8f94603f1d02d7dbf6b53757226cfd8e35001c69bbb8a5e14047b8c170ae" serial="152-13026"/>
+	</game>
+	<game name="Dora the Explorer - Dora's Amazing Show (USA) (v1.0.7.0)" id="0050">
+		<category>Games</category>
+		<description>Dora the Explorer - Dora's Amazing Show (USA) (v1.0.7.0)</description>
+		<rom name="Dora the Explorer - Dora's Amazing Show (USA) (v1.0.7.0).bin" size="134217728" crc="a98ae61f" md5="25bbe9d205d42c2054a735efb10753d7" sha1="d8dd26d12b671e4924af200eacaa2cb58c7b2f74" sha256="3949c703dcf19b669d486a70bd59515588fb35ab552e17be5c876f51e11133fe" serial="152-12908"/>
+	</game>
+	<game name="Dora the Explorer - Dora's Worldwide Rescue (USA) (v1.0.3.0)" id="0001" cloneofid="0050">
+		<category>Games</category>
+		<description>Dora the Explorer - Dora's Worldwide Rescue (USA) (v1.0.3.0)</description>
+		<rom name="Dora the Explorer - Dora's Worldwide Rescue (USA) (v1.0.3.0).bin" size="67108864" crc="50f2c72b" md5="c3420283cf4a2c7f5bb9b0ba93ca8501" sha1="22c92e01120b3d200b04ba44dc9bee9ee4fc2043" sha256="e1ae6ef4232e0f1a0c1272c087b7a7574f9ea859fcf94ba78e21eaa48499fc62" status="verified" serial="152-12372"/>
+	</game>
+	<game name="Dora the Explorer - Dora's Worldwide Rescue (USA) (v1.0.4.0)" id="0051" cloneofid="0050">
+		<category>Games</category>
+		<description>Dora the Explorer - Dora's Worldwide Rescue (USA) (v1.0.4.0)</description>
+		<rom name="Dora the Explorer - Dora's Worldwide Rescue (USA) (v1.0.4.0).bin" size="67108864" crc="a4da4b21" md5="030025123914f9908202b58a35a81945" sha1="104afb8e628efa2cede4173216a32d77bdc03cc1" sha256="1f3361ccb6bae8428f3aac752079529b55ff30e50ae3e80212e03e8f0b8a181a" status="verified" serial="152-12372"/>
+	</game>
+	<game name="Finding Dory - Mathematical Memories (USA) (v1.0.3.17)" id="0018">
+		<category>Games</category>
+		<description>Finding Dory - Mathematical Memories (USA) (v1.0.3.17)</description>
+		<rom name="Finding Dory - Mathematical Memories (USA) (v1.0.3.17).bin" size="67108864" crc="2310b2b8" md5="14116e3d2c8d69a46f4db9d51f9715e3" sha1="401094024c23f50c716d15d6169eabc3675996f4" sha256="8b5754bc2dd55cfc00e1aea0fb63cff5750155001b09f8ce01367f34bebe76df" serial="152-13213"/>
+	</game>
+	<game name="Frozen - Special Delivery (USA) (v1.0.15.0)" id="0039" cloneofid="0040">
+		<category>Games</category>
+		<description>Frozen - Special Delivery (USA) (v1.0.15.0)</description>
+		<rom name="Frozen - Special Delivery (USA) (v1.0.15.0).bin" size="67108864" crc="283b3563" md5="efc09153826dcc315bb518aa78bbc853" sha1="2263276b1494a7521922da0d04ca7af68082c7d3" sha256="8b86e0772bb738c8971b235bf9a2d70a02f5cb67de7bdd0a9313a16a969e7304" serial="152-13159"/>
+	</game>
+	<game name="Frozen - Special Delivery (USA) (v1.2.1.0)" id="0040">
+		<category>Games</category>
+		<description>Frozen - Special Delivery (USA) (v1.2.1.0)</description>
+		<rom name="Frozen - Special Delivery (USA) (v1.2.1.0).bin" size="67108864" crc="e93bc7e5" md5="62795c23d55a8f13f732cbf9e8bdc6b8" sha1="fe2812e26383cd85b072850df1c5403bdd37c85c" sha256="30d21d98dce00fc977eb007405313dfb8982993a8a2c6e029c2022e5a241851b" status="verified" serial="152-13218"/>
+	</game>
+	<game name="Get Puzzled (USA) (v1.0.4.0)" id="0052">
+		<category>Games</category>
+		<description>Get Puzzled (USA) (v1.0.4.0)</description>
+		<rom name="Get Puzzled (USA) (v1.0.4.0).bin" size="67108864" crc="bab26af2" md5="b331c303f52e8a35bbc0dc00fbb40115" sha1="ceddaaf5c6c11c22dcccf4bc360cf06e5c350940" sha256="cf272bed25e118482ae6ad4933c610f6e0f2fecb2204b35533dcf4d39f7cd830" serial="152-12593"/>
+	</game>
+	<game name="Get Ready for Kindergarten! (USA) (v1.0.3.0)" id="0053">
+		<category>Games</category>
+		<description>Get Ready for Kindergarten! (USA) (v1.0.3.0)</description>
+		<rom name="Get Ready for Kindergarten! (USA) (v1.0.3.0).bin" size="134217728" crc="b3ab3bb0" md5="1d59d684a294512c2f52f30fb459bb08" sha1="38141cb03a7e23952d7ad70452ce417c5be02157" sha256="81ab91e37dcabdbff79798b1f66020225c44cd75c884e44e52debebb7f352168" status="verified" serial="152-13086"/>
+	</game>
+	<game name="Globe - Earth Adventures (USA) (v1.0.2.0)" id="0019">
+		<category>Games</category>
+		<description>Globe - Earth Adventures (USA) (v1.0.2.0)</description>
+		<rom name="Globe - Earth Adventures (USA) (v1.0.2.0).bin" size="67108864" crc="5ae4a430" md5="32d45baa904afbf7849f3c9e724f1c94" sha1="9f096c5e210ab216824167fd20c314849910760d" sha256="ef27447ef4280dec2f2943daa7769b936bb8e0dc231cb181e9aaa1ce5aa663ce" serial="152-12407"/>
+	</game>
+	<game name="Hello Kitty and Friends - Sweet Little Shops (USA) (v1.0.2.0)" id="0054">
+		<category>Games</category>
+		<description>Hello Kitty and Friends - Sweet Little Shops (USA) (v1.0.2.0)</description>
+		<rom name="Hello Kitty and Friends - Sweet Little Shops (USA) (v1.0.2.0).bin" size="67108864" crc="5d4092d8" md5="be1a1f529f28ef26ef33a98900013d6f" sha1="f780c10938fdd9818cf5ef91389e7c50b02541a9" sha256="83e99cf5481ef3002cbf14b48a98bf5a9b3e23a7d030a1774d5cae65e356c1bc" serial="152-12913"/>
+	</game>
+	<game name="I Spy - Super Challenger (USA) (v0.1.5.0)" id="0078">
+		<category>Games</category>
+		<description>I Spy - Super Challenger (USA) (v0.1.5.0)</description>
+		<rom name="I Spy - Super Challenger (USA) (v0.1.5.0).bin" size="67108864" crc="83111d23" md5="eeafd69d8691c3affdc1feac1dffbe3f" sha1="f97540e1f39413775ebd602a6e3788897815e81e" sha256="4d5d6229c1b822a6d686599964a9c8abc55f5a036afd824e8425f40e0f79793f" status="verified" serial="152-12638"/>
+	</game>
+	<game name="I Spy - Treasure Hunt (USA) (v1.0.5.0)" id="0055">
+		<category>Games</category>
+		<description>I Spy - Treasure Hunt (USA) (v1.0.5.0)</description>
+		<rom name="I Spy - Treasure Hunt (USA) (v1.0.5.0).bin" size="67108864" crc="b8dd4faf" md5="c3f563501a9018ac787419f6ac748f0a" sha1="c946b30654badc011633bda608ec4c2ff3f1fa18" sha256="1002ea51538529c6a1044f332bacc42757586609173564572b1f38119639c051" serial="152-12591"/>
+	</game>
+	<game name="Jake and the Never Land Pirates (USA) (v1.0.0.0)" id="0009">
+		<category>Games</category>
+		<description>Jake and the Never Land Pirates (USA) (v1.0.0.0)</description>
+		<rom name="Jake and the Never Land Pirates (USA) (v1.0.0.0).bin" size="67108864" crc="50e7fc41" md5="359b2de9f799689f5c71b14b7092f575" sha1="2e10815cdc3b92383ca423d9e39de1177c7c589f" sha256="7e0389127b5e7525ce9551dad9eb46583011c1847dd120e8a175b2db5d82f14e" status="verified" serial="152-12734"/>
+	</game>
+	<game name="LeapSchool - How Not to Clean Your Room (USA) (v1.0.2.18053)" id="0056">
+		<category>Games</category>
+		<description>LeapSchool - How Not to Clean Your Room (USA) (v1.0.2.18053)</description>
+		<rom name="LeapSchool - How Not to Clean Your Room (USA) (v1.0.2.18053).bin" size="134217728" crc="016cf9b9" md5="b0225610a1d77b474942e9962465b6d6" sha1="79d6ce191b0e57d678d1db298ad4f6469b3d65ab" sha256="1fbc88171b75f050f40a837ae6729f9d40aa211f32f16c0dfd8f96cde88b2969" serial="152-12737"/>
+	</game>
+	<game name="LeapSchool - Math (USA) (v1.0.5.0)" id="0008">
+		<category>Games</category>
+		<description>LeapSchool - Math (USA) (v1.0.5.0)</description>
+		<rom name="LeapSchool - Math (USA) (v1.0.5.0).bin" size="67108864" crc="7838d515" md5="b8c49e26a30ed82ad4314a4e53635181" sha1="702c763ad994a63b48da1ac677e55838eb4a4392" sha256="927bcfcc94e2bda13481962ceb44bc5b802489c6f94daea00b1c4553495ae2a2" status="verified" serial="152-12705"/>
+	</game>
+	<game name="LeapSchool - Reading (USA) (v1.0.2.0)" id="0057">
+		<category>Games</category>
+		<description>LeapSchool - Reading (USA) (v1.0.2.0)</description>
+		<rom name="LeapSchool - Reading (USA) (v1.0.2.0).bin" size="67108864" crc="6f9acf89" md5="23f14281bf596a39a766ce5a35214494" sha1="7f8b0c749244a33f3d668080e7eff428759149d8" sha256="3a3f73a11c83c6bbb6c18edeebb5daa1c227af612f5b7988320c83f628d58b02" serial="152-12527"/>
+	</game>
+	<game name="Learn to Read Collection - Adventure Stories (USA) (v1.0.4.0)" id="0059">
+		<category>Games</category>
+		<description>Learn to Read Collection - Adventure Stories (USA) (v1.0.4.0)</description>
+		<rom name="Learn to Read Collection - Adventure Stories (USA) (v1.0.4.0).bin" size="134217728" crc="58436b42" md5="b61a8b4416da6ef820af7f0645d2a1ff" sha1="0b509e59cc19938ce4492b99bd439c14fe55397c" sha256="9aa039a2c1dfe199a90714248422f9eb3893e0611f64c562efd1e8eac7a6a2e4" serial="152-12783"/>
+	</game>
+	<game name="Learn to Read Collection - Fairy Tales (USA) (v1.0.3.0)" id="0020">
+		<category>Games</category>
+		<description>Learn to Read Collection - Fairy Tales (USA) (v1.0.3.0)</description>
+		<rom name="Learn to Read Collection - Fairy Tales (USA) (v1.0.3.0).bin" size="134217728" crc="35bc79fc" md5="5956849c76c09066fb75639987ec0894" sha1="22a7de380320908b96867ed9b89347119896db98" sha256="6927e386c70d1328586596cea3a5b7445bbbee82a1b1a0b47fcbefd55564343b" serial="152-12769"/>
+	</game>
+	<game name="Learn to Read Collection - Mysteries (USA) (v1.0.1.0)" id="0058">
+		<category>Games</category>
+		<description>Learn to Read Collection - Mysteries (USA) (v1.0.1.0)</description>
+		<rom name="Learn to Read Collection - Mysteries (USA) (v1.0.1.0).bin" size="134217728" crc="9aef2870" md5="3a1a2658ffb0dcedf7d9777601e810c1" sha1="5321c056f1c678686a92f5e1337028dde69c6ca7" sha256="6fe38507cc5b44bdc5360f8e223a44f18f5e2f6b5846a9f6a8b5140531a7f4a5" serial="152-12851"/>
+	</game>
+	<game name="Learning Friends - Preschool Adventures! (USA) (v1.0.3.0)" id="0060">
+		<category>Games</category>
+		<description>Learning Friends - Preschool Adventures! (USA) (v1.0.3.0)</description>
+		<rom name="Learning Friends - Preschool Adventures! (USA) (v1.0.3.0).bin" size="134217728" crc="7c14b9bd" md5="437bb6b21536000e4ea3c7bfbe2f4b7d" sha1="5d6cd5ec6bd76c8c39159349ee5861ffed94026e" sha256="2d16806b4b20e7084a3457b3a5e65e0bf3c96262cde9a1380a28cdd21cfd7576" serial="152-13154"/>
+	</game>
+	<game name="Letter Factory - Help Burfder Learn All About Letters! (USA) (v1.0.1.0)" id="0021">
+		<category>Games</category>
+		<description>Letter Factory - Help Burfder Learn All About Letters! (USA) (v1.0.1.0)</description>
+		<rom name="Letter Factory - Help Burfder Learn All About Letters! (USA) (v1.0.1.0).bin" size="67108864" crc="c21631e7" md5="626f7dc85fc4077ba88ceef8a5ab55f3" sha1="61ea7215bdc78fc1bce6d7bd6b86d7124d209eec" sha256="40835131abf01cc9e5cfca48ed7abe51889ff0481bf705adf5349ccf4a97b99b" serial="152-12773"/>
+	</game>
+	<game name="Letter Factory Adventures - The Rainforest (USA) (v1.0.3.0)" id="0061">
+		<category>Games</category>
+		<description>Letter Factory Adventures - The Rainforest (USA) (v1.0.3.0)</description>
+		<rom name="Letter Factory Adventures - The Rainforest (USA) (v1.0.3.0).bin" size="67108864" crc="69a95ef6" md5="ce2ccbce92fa6c11b3efbf1959882405" sha1="07b9666d46603ef629ee95304bc8bd07a57180f5" sha256="39445761be3c27ad04b65420cd531b530ea7d1056903e73add0b1805524b1786" serial="152-13077"/>
+	</game>
+	<game name="Letters on the Loose (USA) (v1.0.0.0)" id="0062">
+		<category>Games</category>
+		<description>Letters on the Loose (USA) (v1.0.0.0)</description>
+		<rom name="Letters on the Loose (USA) (v1.0.0.0).bin" size="134217728" crc="eecac71f" md5="c25309cd63cdc8636756e536706ddff3" sha1="44d57dab9e37837dbb144ae9f7471d80ef357e47" sha256="516f0d5273fc66c4a2b830c69d28fb8ca247f2c012089e5c20ad3d2544cfeab4" serial="152-12785"/>
+	</game>
+	<game name="M. Crayon Sauve Bourgribouille (USA) (Fr) (v1.0.0.0)" id="0063" cloneofid="0024">
+		<category>Games</category>
+		<description>M. Crayon Sauve Bourgribouille (USA) (Fr) (v1.0.0.0)</description>
+		<rom name="M. Crayon Sauve Bourgribouille (USA) (Fr) (v1.0.0.0).bin" size="67108864" crc="9846ccd6" md5="b869ce46f59219998da2bd629cb1f107" sha1="aedbe5b8e91b3260652972e4b0597d3805609b7e" sha256="7bac1da132d1fb7db7333164bffc9c4c5e4c9e942564ddd5e27318e83c13ff44" serial="152-12583"/>
+	</game>
+	<game name="Magic School Bus, The - Dinosaurs (USA) (v1.0.7.0)" id="0083">
+		<category>Games</category>
+		<description>Magic School Bus, The - Dinosaurs (USA) (v1.0.7.0)</description>
+		<rom name="Magic School Bus, The - Dinosaurs (USA) (v1.0.7.0).bin" size="67108864" crc="610f8367" md5="c086213ef66622f2c5c44c6271cdb450" sha1="3cd8f27e4177cae6bad8748b9b8c8cec9280fef8" sha256="a1e73003e3b4080b34d9b8ebf98f29a0d53f059340d56ece6d240ff1feaa6b19" serial="152-12918"/>
+	</game>
+	<game name="Magic School Bus, The - Oceans (USA) (v1.0.0.0)" id="0022">
+		<category>Games</category>
+		<description>Magic School Bus, The - Oceans (USA) (v1.0.0.0)</description>
+		<rom name="Magic School Bus, The - Oceans (USA) (v1.0.0.0).bin" size="67108864" crc="b7000f18" md5="176a751353b7254f6af6ecc34bddb145" sha1="53ecd326904cde2920d5d675b626a197677cdeeb" sha256="4c619195e493e4883da856764d776d0045ac15c731f936fb75a7401c8f139fdf" serial="152-12772"/>
+	</game>
+	<game name="Mini Game Greatest Hits (USA) (v1.0.2.0)" id="0064">
+		<category>Games</category>
+		<description>Mini Game Greatest Hits (USA) (v1.0.2.0)</description>
+		<rom name="Mini Game Greatest Hits (USA) (v1.0.2.0).bin" size="67108864" crc="65944daf" md5="992aa5920f444209c7937d2d1b0e5751" sha1="021fbc4fb2315cbc38a3d36ce6d6bddd9b650d0a" sha256="7b83889452e28364f27c4b65ab90415af90759df1b28cf19ec5aa080ada20105" serial="152-12743"/>
+	</game>
+	<game name="Minnie's Bow-tique - Super Surprise Party (USA) (v1.1.1.0)" id="0065">
+		<category>Games</category>
+		<description>Minnie's Bow-tique - Super Surprise Party (USA) (v1.1.1.0)</description>
+		<rom name="Minnie's Bow-tique - Super Surprise Party (USA) (v1.1.1.0).bin" size="67108864" crc="5a21b167" md5="839c4ab361512b1e062b8346332406f1" sha1="05074ce70afa6f8bb67a617cc6894ac980de06fa" sha256="a4ce3589bd476494bf059fd373307bc1081ef301e8d370debf014fbd2c882c9f" status="verified" serial="152-12977"/>
+	</game>
+	<game name="Minnie's Bow-tique - Super Surprise Party (USA) (v1.0.5.0)" id="0023" cloneofid="0065">
+		<category>Games</category>
+		<description>Minnie's Bow-tique - Super Surprise Party (USA) (v1.0.5.0)</description>
+		<rom name="Minnie's Bow-tique - Super Surprise Party (USA) (v1.0.5.0).bin" size="67108864" crc="c73914f5" md5="ab5babc19e46588a7631a869aefbf589" sha1="b2def15d5809418e0691279df65fb8f94d7bbabd" sha256="840b354f4d30be8d7a9ddee3a88f9d23794a1bf68f3a0cd6e62ba57892ac26dc" serial="152-12830"/>
+	</game>
+	<game name="Monsters University (USA) (v1.0.0.0)" id="0010">
+		<category>Games</category>
+		<description>Monsters University (USA) (v1.0.0.0)</description>
+		<rom name="Monsters University (USA) (v1.0.0.0).bin" size="67108864" crc="9e40b11d" md5="5e5b19978836b1c5cbcc48a4f0aee4ae" sha1="c8c4324c823118134b0803d9e6683fe017c556ee" sha256="ff3451dfd41a97cba6de7f0ae3fbd6e462315a5f250d374d6ea4799b83c57507" status="verified" serial="152-12844"/>
+	</game>
+	<game name="Mr. Pencil - The Lost Colors of Doodleburg (USA) (v1.0.4.0)" id="0066">
+		<category>Games</category>
+		<description>Mr. Pencil - The Lost Colors of Doodleburg (USA) (v1.0.4.0)</description>
+		<rom name="Mr. Pencil - The Lost Colors of Doodleburg (USA) (v1.0.4.0).bin" size="134217728" crc="5bc4d70a" md5="99e963ff44363ac65d521a1b5c115cb4" sha1="d9d6efbe159e0a6af70bee6482e0b89cd5c7ff3e" sha256="4b887e473430ce4094ae90a4145209ba05a97e2dc982ccd8c72b83eb95341868" serial="152-12846"/>
+	</game>
+	<game name="Mr. Pencil Saves Doodleburg (USA) (v1.0.3.0)" id="0024">
+		<category>Games</category>
+		<description>Mr. Pencil Saves Doodleburg (USA) (v1.0.3.0)</description>
+		<rom name="Mr. Pencil Saves Doodleburg (USA) (v1.0.3.0).bin" size="67108864" crc="9a5ea05d" md5="18d35ab20634acf33f7ef7b0fc2f6a1a" sha1="7696a664d6d63a7abbf17fff3dca721511d02ed3" sha256="9d9ba19863877646a8dfad48a15e0a9c23c1dcacee16268b17a03a74a1f90ccc" status="verified" serial="152-12376"/>
+	</game>
+	<game name="My Little Pony (USA) (v1.1.2.0)" id="0068">
+		<category>Games</category>
+		<description>My Little Pony (USA) (v1.1.2.0)</description>
+		<rom name="My Little Pony (USA) (v1.1.2.0).bin" size="67108864" crc="3c81db15" md5="82e5272da8ba357a953f37d4dba16986" sha1="f506c4800eb8998fc585e9fa579f9bfa1500c446" sha256="171fba21ba6241b419a4269836bab0a43909f608133474579bb9ec6bc3ad4296" status="verified" serial="152-13018"/>
+	</game>
+	<game name="My Little Pony (USA) (v1.0.0.0)" id="0067" cloneofid="0068">
+		<category>Games</category>
+		<description>My Little Pony (USA) (v1.0.0.0)</description>
+		<rom name="My Little Pony (USA) (v1.0.0.0).bin" size="67108864" crc="41fab02a" md5="6fda1a2d00b7a1e0340c1650e781686e" sha1="a0d5c3ea94c25d9c07ecacb492871417fa982284" sha256="6677ffde1c90c76759edf907a4eeb9c97559ff966d9f4a733f85365b7b100c73" serial="152-12909"/>
+	</game>
+	<game name="NFL Rush Zone (USA) (v1.0.0.0)" id="0069">
+		<category>Games</category>
+		<description>NFL Rush Zone (USA) (v1.0.0.0)</description>
+		<rom name="NFL Rush Zone (USA) (v1.0.0.0).bin" size="67108864" crc="d3f442ec" md5="600f25824a4523718865f4907b39986a" sha1="8f0f70ef8af926d3af8c0d327b18538fefa858e0" sha256="ef680105b90157f1a5029db3c92a4ee71199752ad01aac776d7e4bb64ae43e02" status="verified" serial="152-12381"/>
+	</game>
+	<game name="Ni Hao, Kai-Lan - Kai-Lan's Super Happy Day! (USA) (v1.0.1.5)" id="0070">
+		<category>Games</category>
+		<description>Ni Hao, Kai-Lan - Kai-Lan's Super Happy Day! (USA) (v1.0.1.5)</description>
+		<rom name="Ni Hao, Kai-Lan - Kai-Lan's Super Happy Day! (USA) (v1.0.1.5).bin" size="67108864" crc="607b1fcc" md5="cdd54583a7ca0d7a592acf4b03536aea" sha1="c32e99a5454284086ccf35660077e47ce5e37828" sha256="707410594c0962774c6c032f65a9998280c09394d894c3d44a689578716add7b" serial="152-12362"/>
+	</game>
+	<game name="Octonauts! (USA) (v1.0.1.0)" id="0072">
+		<category>Games</category>
+		<description>Octonauts! (USA) (v1.0.1.0)</description>
+		<rom name="Octonauts! (USA) (v1.0.1.0).bin" size="67108864" crc="c9f9222f" md5="fa25e42e00afcc47b82e005d50a89d24" sha1="0cea582372447219e372449df2ceb8889d431522" sha256="a1109fe74130e0afa4730a6e3b34228d78ec5fb69dcebe21ca3f150777852f15" serial="152-13022"/>
+	</game>
+	<game name="Olivia (USA) (v1.0.3.0)" id="0013">
+		<category>Games</category>
+		<description>Olivia (USA) (v1.0.3.0)</description>
+		<rom name="Olivia (USA) (v1.0.3.0).bin" size="67108864" crc="215ba68e" md5="9cf6ec861a7889025e4623ca323e8878" sha1="a13709a02195d0f455227411ce2a509dafcffc50" sha256="16943def759b09b62a48801b0ff552b5c67714580691bcced42dea3592dabbab" status="verified" serial="152-12733"/>
+	</game>
+	<game name="PAW Patrol - The Great Robot Rescue (USA) (v1.0.3.7)" id="0073">
+		<category>Games</category>
+		<description>PAW Patrol - The Great Robot Rescue (USA) (v1.0.3.7)</description>
+		<rom name="PAW Patrol - The Great Robot Rescue (USA) (v1.0.3.7).bin" size="67108864" crc="3857f7d4" md5="11e3783b45a4f1a58ea042b203223b81" sha1="4782a1a0b778f8853b6e95673b48795f1040b931" sha256="301e52d504c45475369839717a2588dfc870332cca171b4b093bd96af5b7fdbd" serial="152-13261"/>
+	</game>
+	<game name="Penguins of Madagascar, The - Operation Plushy Rescue (USA) (v1.0.11.0)" id="0005">
+		<category>Games</category>
+		<description>Penguins of Madagascar, The - Operation Plushy Rescue (USA) (v1.0.11.0)</description>
+		<rom name="Penguins of Madagascar, The - Operation Plushy Rescue (USA) (v1.0.11.0).bin" size="67108864" crc="986be1e5" md5="4d42cd9acc3fc5711b5d6e6212017af0" sha1="ed3fbc6acbcaa607271f469be8e05b6b4398fb9e" sha256="d6076c9edad424290b47f8f7888bdddec0cca1a10e908cb3ad22ccd1d3b5aa8c" status="verified" serial="152-12370"/>
+	</game>
+	<game name="Pet Pals (USA) (v1.0.0.0)" id="0074">
+		<category>Games</category>
+		<description>Pet Pals (USA) (v1.0.0.0)</description>
+		<rom name="Pet Pals (USA) (v1.0.0.0).bin" size="67108864" crc="f6c3496f" md5="9bad3adee557dabe79a9613ddbc9ae0d" sha1="a690144831f96e207618ff2d542633d165bb35c4" sha256="889fcbbba076444e5a635c2003ca5ff260f5ad4ccee690685da87f165a0e9293" serial="152-12479"/>
+	</game>
+	<game name="Pet Pals - Dog Show Detectives (USA) (1.0.5.25131)" id="0075">
+		<category>Games</category>
+		<description>Pet Pals - Dog Show Detectives (USA) (1.0.5.25131)</description>
+		<rom name="Pet Pals - Dog Show Detectives (USA) (1.0.5.25131).bin" size="134217728" crc="b2b65aae" md5="5fd6af1abf83cb5c6064e78e7ea51f7f" sha1="03ede96067765384f35114e22af4684ddae56295" sha256="9d85f0b90e518dcd89be768d161ba6caeb48b4d92938835fc0306fe37c6fa92f" status="verified" serial="152-12810"/>
+	</game>
+	<game name="Pet Pals 2 - Best of Friends! (USA) (v1.0.1.0)" id="0007">
+		<category>Games</category>
+		<description>Pet Pals 2 - Best of Friends! (USA) (v1.0.1.0)</description>
+		<rom name="Pet Pals 2 - Best of Friends! (USA) (v1.0.1.0).bin" size="67108864" crc="94d3734a" md5="7661fad035e46549a91591f7c9371162" sha1="cdcd91c5f40bcf91e4a915e990e02482f69dd8b3" sha256="dec1893604ce5f30bcecb66532887f92dbec901294b80ae13f0c7b5c6af0c09b" status="verified" serial="152-12528"/>
+	</game>
+	<game name="Phineas and Ferb - Food Fight Frenzy (USA) (v1.0.1.0)" id="0047">
+		<category>Games</category>
+		<description>Phineas and Ferb - Food Fight Frenzy (USA) (v1.0.1.0)</description>
+		<rom name="Phineas and Ferb - Food Fight Frenzy (USA) (v1.0.1.0).bin" size="67108864" crc="1dac55c4" md5="4116dc6967655797e6b1a18afe7a1d97" sha1="fe6e27c566073a0b0e96e20943ef6f8786315bf1" sha256="51d23b1b6f4911870c89925670e18d52932f03971fb7f475fae03893a1d5bd65" status="verified" serial="152-12727"/>
+	</game>
+	<game name="Pixar Pals (USA) (v1.0.2.0)" id="0025" cloneofid="0046">
+		<category>Games</category>
+		<description>Pixar Pals (USA) (v1.0.2.0)</description>
+		<rom name="Pixar Pals (USA) (v1.0.2.0).bin" size="67108864" crc="618fcfaa" md5="21a169848e57e9ae83b2ec5ea82f70f6" sha1="90214f7c72d7f30bc1ec73bf04bc1ffbee332950" sha256="b1cb502bb45ed11b1b10dcad04a37a0c7fe7e431dff8ab8c455bc3be3e96a07a" serial="152-12526"/>
+	</game>
+	<game name="Pixar Pals (USA) (v1.1.3.0)" id="0046">
+		<category>Games</category>
+		<description>Pixar Pals (USA) (v1.1.3.0)</description>
+		<rom name="Pixar Pals (USA) (v1.1.3.0).bin" size="67108864" crc="82d79917" md5="b1437b9c154e58b012553587cc4f2fc9" sha1="36b786c12cef6cebf4da00744890d3647df38997" sha256="4d6907cb99904cbfc27c5ed87971e57498fbb628962381f1b55823664949b6da" serial="152-13008"/>
+	</game>
+	<game name="PJ Masks - Time to Be a Hero (USA) (v1.0.3.21)" id="0076">
+		<category>Games</category>
+		<description>PJ Masks - Time to Be a Hero (USA) (v1.0.3.21)</description>
+		<rom name="PJ Masks - Time to Be a Hero (USA) (v1.0.3.21).bin" size="134217728" crc="83bda744" md5="356f22c575e9b860035455b72cdc3c85" sha1="72a85e32ad61ca26233d8009b344d0287e5bc808" sha256="ecbaad5bc1f33c6bc205a4abb0e81e3f5b30de7a17defe266405121a888f2cec" status="verified" serial="152-13262"/>
+	</game>
+	<game name="Planes - Wings Around the Globe (USA) (v1.1.2.0)" id="0017">
+		<category>Games</category>
+		<description>Planes - Wings Around the Globe (USA) (v1.1.2.0)</description>
+		<rom name="Planes - Wings Around the Globe (USA) (v1.1.2.0).bin" size="134217728" crc="362f5e8f" md5="e1f0a1407ba078f91d29872c709f062e" sha1="0e70ffbc9d49043a4d7d7e1a263925e4b2002b50" sha256="b52491155dc1306dab2f711db41b2e252004ec0e9b1b920db1c913bc99202a4e" serial="152-13091"/>
+	</game>
+	<game name="Rusty Rivets - Fix-it Adventures (USA) (v1.0.3.51)" id="0077">
+		<category>Games</category>
+		<description>Rusty Rivets - Fix-it Adventures (USA) (v1.0.3.51)</description>
+		<rom name="Rusty Rivets - Fix-it Adventures (USA) (v1.0.3.51).bin" size="134217728" crc="49ba6254" md5="a11766218f42a26b2ef27f668bd544a0" sha1="1d7e2494b9642a286b3d98f7170b9f8620aa3d7d" sha256="c27d16a1bfd1d602783f645a62f332d3ec860a67d8a36f1e0166de26232ad881" serial="270-15789"/>
+	</game>
+	<game name="Scooby-Doo! - Pirate Ghost of the Barbary Coast (USA) (v1.0.2.0)" id="0006">
+		<category>Games</category>
+		<description>Scooby-Doo! - Pirate Ghost of the Barbary Coast (USA) (v1.0.2.0)</description>
+		<rom name="Scooby-Doo! - Pirate Ghost of the Barbary Coast (USA) (v1.0.2.0).bin" size="67108864" crc="27f7bdb4" md5="073bfc45d675cb97a416d36511756505" sha1="c279f40e1165c9f4576db239cf8d12fea856e36f" sha256="9f2d8665d40bda1da49be369ff41dedbbba5a0720f3e7225dba8b22c1653f17b" status="verified" serial="152-12502"/>
+	</game>
+	<game name="Sesame Street - Solve it with Elmo, Abby and Super Grover 2.0 (USA) (v1.0.0.0)" id="0079">
+		<category>Games</category>
+		<description>Sesame Street - Solve it with Elmo, Abby and Super Grover 2.0 (USA) (v1.0.0.0)</description>
+		<rom name="Sesame Street - Solve it with Elmo, Abby and Super Grover 2.0 (USA) (v1.0.0.0).bin" size="67108864" crc="210aa7aa" md5="0206c753978ac0469a8053b31c688fcc" sha1="77c84b1d2d6c31b8fbfc289f5da9199910752a8e" sha256="ccc1f39c590616cd0e85e3420f52f506075e639a417bc7c120eefc0127d50800" serial="152-12907"/>
+	</game>
+	<game name="Sofia the First - Sofia's New Friends (USA) (v1.0.6.0)" id="0043">
+		<category>Games</category>
+		<description>Sofia the First - Sofia's New Friends (USA) (v1.0.6.0)</description>
+		<rom name="Sofia the First - Sofia's New Friends (USA) (v1.0.6.0).bin" size="134217728" crc="eb4130e8" md5="4ceb855c27a5cf288120eeab87382993" sha1="6134eb1e9d654caee8979c50961ca73751c0497e" sha256="a552bfe5b769aabb0d5f4090e40e8d11def2939fedd364598b08f928df4c8af3" serial="152-13009"/>
+	</game>
+	<game name="SpongeBob Squarepants - Best Day Ever (USA) (v1.0.2.21896)" id="0071">
+		<category>Games</category>
+		<description>SpongeBob Squarepants - Best Day Ever (USA) (v1.0.2.21896)</description>
+		<rom name="SpongeBob Squarepants - Best Day Ever (USA) (v1.0.2.21896).bin" size="134217728" crc="99967e5c" md5="94efcd62cf7e85f8b35961a46be03fe8" sha1="b84948cac8126f3224300bd8faf85d7f4e2fb45c" sha256="dae49c6a85f9bd7b82d84443f899721c969906476b16f7427ace914b24ff141a" serial="152-12933"/>
+	</game>
+	<game name="SpongeBob SquarePants - Fists of Foam (USA) (v1.0.7.0)" id="0026">
+		<category>Games</category>
+		<description>SpongeBob SquarePants - Fists of Foam (USA) (v1.0.7.0)</description>
+		<rom name="SpongeBob SquarePants - Fists of Foam (USA) (v1.0.7.0).bin" size="67108864" crc="a4950bd1" md5="71ef4d5716a65ba03f60892cd5a5018c" sha1="ff0c09c4d1cc7aa9b494bf0d07a39e1260d4d549" sha256="7db2bc56fa4a1a0c3b1ccb6ef5252872ed44ec26a10347a17384fde681ff6ab5" serial="152-12379"/>
+	</game>
+	<game name="SpongeBob SquarePants - The Clam Prix (USA) (v1.2.1.0)" id="0027">
+		<category>Games</category>
+		<description>SpongeBob SquarePants - The Clam Prix (USA) (v1.2.1.0)</description>
+		<rom name="SpongeBob SquarePants - The Clam Prix (USA) (v1.2.1.0).bin" size="67108864" crc="a8eb70b2" md5="754784ffe29ff678abbf826fad2690c4" sha1="f72057e58e5417aabeed3c703bb982f8876e5ad9" sha256="2fd509e9903f96733c84f8a4046e206d2546ef97568f3d1c11d6682c465045fa" serial="152-12859"/>
+	</game>
+	<game name="Star Wars - Jedi Reading (USA) (v1.0.2.0)" id="0081">
+		<category>Games</category>
+		<description>Star Wars - Jedi Reading (USA) (v1.0.2.0)</description>
+		<rom name="Star Wars - Jedi Reading (USA) (v1.0.2.0).bin" size="67108864" crc="ed293857" md5="9ac873f814dc4a60380e51fcd5d01c13" sha1="58c2fc940f172df1a7a8808a5d4b6afeaad5427c" sha256="c6e68b2c9e0b2579cf33c3cbdb47a32af4717ed868819c94b3bdc2d251cd4645" serial="152-12480"/>
+	</game>
+	<game name="Star Wars - The Clone Wars (USA) (v1.0.11.0)" id="0080">
+		<category>Games</category>
+		<description>Star Wars - The Clone Wars (USA) (v1.0.11.0)</description>
+		<rom name="Star Wars - The Clone Wars (USA) (v1.0.11.0).bin" size="67108864" crc="1145883c" md5="eba42fb68e4230d549bd94b810575c72" sha1="536ee8554e285eb5f5eaaf1960fa654a012c871b" sha256="4b8b9f5defd627cc85235520bcc967220bcf18333c996dff6b4884e1a8a11035" status="verified" serial="152-12380"/>
+	</game>
+	<game name="Super Animal Genius (USA) (v1.0.0.0)" id="0028">
+		<category>Games</category>
+		<description>Super Animal Genius (USA) (v1.0.0.0)</description>
+		<rom name="Super Animal Genius (USA) (v1.0.0.0).bin" size="67108864" crc="b456cf38" md5="a92b8d4436088e8e2b4b5db4bdb9117d" sha1="9694274e67d6fb3d33fbe455a8cffa6ac75bc001" sha256="0825c9e3822429ba20921dddf0dd24e8ab69bedae56c881a8fbff4a2f6bf6db2" serial="152-12843"/>
+	</game>
+	<game name="Tangled (USA) (v1.1.4.0)" id="0045" cloneofid="0044">
+		<category>Games</category>
+		<description>Tangled (USA) (v1.1.4.0)</description>
+		<rom name="Tangled (USA) (v1.1.4.0).bin" size="67108864" crc="8ec06d4b" md5="6a0f3121709e8064a43d30da8720672c" sha1="9f4d9a10a9751837ad52ad58e4027f41a23d8b5a" sha256="dbc54ffc9cf5db504c28abe462d7256ed7d7ef184a779d88d89905bc6f1a1642" serial="152-12525"/>
+	</game>
+	<game name="Tangled (USA) (v1.2.2.0)" id="0044">
+		<category>Games</category>
+		<description>Tangled (USA) (v1.2.2.0)</description>
+		<rom name="Tangled (USA) (v1.2.2.0).bin" size="67108864" crc="c9a4115d" md5="42989c23205d12ab55189367717e139c" sha1="d1e407cabb1b635fc7a524056fa10cd501753e0b" sha256="85908e2c57388ebde0eb76bada6ddca3d0ec637ad0cc6a316b161ecf244e4e64" status="verified" serial="152-12820"/>
+	</game>
+	<game name="Tangled (USA) (v1.0.4.0)" id="0003" cloneofid="0044">
+		<category>Games</category>
+		<description>Tangled (USA) (v1.0.4.0)</description>
+		<rom name="Tangled (USA) (v1.0.4.0).bin" size="67108864" crc="6d6c0304" md5="21cec6c0b3ecec79f17055ebf7e22828" sha1="99860c311ce1b34479aece582bb058ad9329be98" sha256="66b48ba0b6554ae775443994f18934ce0b8f67adb81c7cb6ad5144187d14d0d9" status="verified" serial="152-12419"/>
+	</game>
+	<game name="Team UmiZoomi - Umi City Heroes (USA) (v1.0.1.0)" id="0087">
+		<category>Games</category>
+		<description>Team UmiZoomi - Umi City Heroes (USA) (v1.0.1.0)</description>
+		<rom name="Team UmiZoomi - Umi City Heroes (USA) (v1.0.1.0).bin" size="67108864" crc="81bb99d0" md5="ae66e8c5e8686532d91161025d0fcef2" sha1="597af7a8f4ce0d15dc113e44bd42b8252bf3e16b" sha256="9a158d9852f58b38aeaa6b323379cd3b8c4f93876d5a7104a866547dd43246d5" serial="152-13082"/>
+	</game>
+	<game name="Thomas &amp; Friends - The Great Penguin Rescue (USA) (v1.0.6.25619)" id="0029">
+		<category>Games</category>
+		<description>Thomas &amp; Friends - The Great Penguin Rescue (USA) (v1.0.6.25619)</description>
+		<rom name="Thomas &amp; Friends - The Great Penguin Rescue (USA) (v1.0.6.25619).bin" size="134217728" crc="7585f751" md5="0acea2539915f3654923d2575925b53a" sha1="fecf2a73c027cf54332049a5b2b8be545e9f1323" sha256="9319f5061624df8ff4b5ea30bc90ce1739c3ec0645662d2ec158663093baa524" serial="152-12741"/>
+	</game>
+	<game name="Tinker Bell and the Lost Treasure (USA) (v1.0.0.0)" id="0084">
+		<category>Games</category>
+		<description>Tinker Bell and the Lost Treasure (USA) (v1.0.0.0)</description>
+		<rom name="Tinker Bell and the Lost Treasure (USA) (v1.0.0.0).bin" size="67108864" crc="000f5c1d" md5="4be09751fcf24a43eff0e71939aefe29" sha1="86b77ab2ac1fd6de9788d7404c96512ddd1339cf" sha256="428eee55ad38b2bc348caf0d56d5923729151a18937696872269f347b328edab" status="verified" serial="152-12399"/>
+	</game>
+	<game name="Toy Story 3 (USA) (v1.0.0.0)" id="0085">
+		<category>Games</category>
+		<description>Toy Story 3 (USA) (v1.0.0.0)</description>
+		<rom name="Toy Story 3 (USA) (v1.0.0.0).bin" size="67108864" crc="a442c71d" md5="ccc79733a2f6270f453c8eb03fbaa576" sha1="bbef5ac5988728e5126347bdc3c06495781ef0bd" sha256="a1756be642020c2203765b49a85c34272b3a269dd3926822f1392f7ba809ecea" status="verified" serial="152-12364"/>
+	</game>
+	<game name="Transformers Rescue Bots - Race to the Rescue (USA) (v1.0.1.9589)" id="0012">
+		<category>Games</category>
+		<description>Transformers Rescue Bots - Race to the Rescue (USA) (v1.0.1.9589)</description>
+		<rom name="Transformers Rescue Bots - Race to the Rescue (USA) (v1.0.1.9589).bin" size="67108864" crc="35f73959" md5="8e402cb0a83b7b03b2decb54f2decf7b" sha1="253bc751ab973d375ab701d7523c306c122c9a4c" sha256="0806ce6d91b611f30a9c859dfb2a603847676900c0ab773ebdf5b67ac72da5db" status="verified" serial="152-12899"/>
+	</game>
+	<game name="Trolls (USA) (v1.0.3.20)" id="0086">
+		<category>Games</category>
+		<description>Trolls (USA) (v1.0.3.20)</description>
+		<rom name="Trolls (USA) (v1.0.3.20).bin" size="134217728" crc="058e932f" md5="3c26d4e1cb6040f82d77c85d4faeed56" sha1="1167c73f2d6bd2cb0e4447183b01c9d4fcdf28a9" sha256="b8e87c5d0ca4ad6b0a3cbf073189f141c630eb06cc0c6f1e36a941079750933f" status="verified" serial="152-13263"/>
+	</game>
+	<game name="Up! (USA) (v1.0.0.2)" id="0041">
+		<category>Games</category>
+		<description>Up! (USA) (v1.0.0.2)</description>
+		<rom name="Up! (USA) (v1.0.0.2).bin" size="67108864" crc="6777c36a" md5="0c65f1446c0ad79e7e60867a07826f8e" sha1="60bfa1dbe1792a6c492edee00dbdbe80f9a03ff2" sha256="c68585d3ad1a2c8f2d80843782fddee4146310cbe6142c8c8d4be46e8b37507f" serial="152-12482"/>
+	</game>
+	<game name="Wolverine and the X-Men (USA) (v1.0.5.0)" id="0088">
+		<category>Games</category>
+		<description>Wolverine and the X-Men (USA) (v1.0.5.0)</description>
+		<rom name="Wolverine and the X-Men (USA) (v1.0.5.0).bin" size="67108864" crc="f7caa33f" md5="83ebe43db80c92d3112a3fc69f5cca86" sha1="53ac35be4a75eb40132f3b4d4c7c2deb6d0a6144" sha256="8e43b994a21f41f18c9b755772044d35668bbe21f53e60ab17795a7a44813ced" serial="152-12382"/>
+	</game>
+</datafile>

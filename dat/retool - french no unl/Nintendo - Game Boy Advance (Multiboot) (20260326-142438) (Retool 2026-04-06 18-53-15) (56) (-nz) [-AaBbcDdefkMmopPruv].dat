@@ -1,0 +1,302 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<name>Nintendo - Game Boy Advance (Multiboot) (Retool)</name>
+		<description>Nintendo - Game Boy Advance (Multiboot) (56) (-nz) [-AaBbcDdefkMmopPruv] (20260326-142438) (Retool)</description>
+		<version>20260326-142438</version>
+		<date>2026-04-06 18-53-15</date>
+		<author>Arctic Circle System, C. V. Reynolds, chillerecke, DeriLoko3, Hiccup, hking0036, niemand, norkmetnoil577, NovaAurora, relax</author>
+		<homepage>http://www.github.com/unexpectedpanda/retool</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"></clrmamepro>
+		<retool>Created by Retool 2.4.8</retool>
+	</header>
+	<game name="Animal Crossing - Balloon Fight (USA, Europe)" id="0017">
+		<category>Games</category>
+		<description>Animal Crossing - Balloon Fight (USA, Europe)</description>
+		<rom name="Animal Crossing - Balloon Fight (USA, Europe).gba" size="34764" crc="aecd98cd" md5="62c26ddf7579b5179b2a67073bc7e4a4" sha1="35a417a1a8443f85013e56b7bff9dce30797307a"/>
+	</game>
+	<game name="Animal Crossing - Baseball (USA, Europe)" id="0025">
+		<category>Games</category>
+		<description>Animal Crossing - Baseball (USA, Europe)</description>
+		<rom name="Animal Crossing - Baseball (USA, Europe).gba" size="35756" crc="b8c154c4" md5="b0c8f4dfe47c3649760748ad5c96a649" sha1="e5cf0bbab5caf0da47dfae8f6943c01ac0f7e34e"/>
+	</game>
+	<game name="Animal Crossing - Clu Clu Land (USA, Europe)" id="0014">
+		<category>Games</category>
+		<description>Animal Crossing - Clu Clu Land (USA, Europe)</description>
+		<rom name="Animal Crossing - Clu Clu Land (USA, Europe).gba" size="34972" crc="cb7e10af" md5="594b8e60e9406a570c9990e9bbc4340f" sha1="36e11bc92fcbf426bf2f0eef62e884c36ae9d8c8"/>
+	</game>
+	<game name="Animal Crossing - Donkey Kong (USA, Europe)" id="0019">
+		<category>Games</category>
+		<description>Animal Crossing - Donkey Kong (USA, Europe)</description>
+		<rom name="Animal Crossing - Donkey Kong (USA, Europe).gba" size="34908" crc="4b31dce1" md5="aa6bdfc4fce58b19d1a8a9f2f11042d9" sha1="b6ff00168e929b3f61e95f5464ead21cf0d985db"/>
+	</game>
+	<game name="Animal Crossing - Donkey Kong 3 (USA, Europe)" id="0022">
+		<category>Games</category>
+		<description>Animal Crossing - Donkey Kong 3 (USA, Europe)</description>
+		<rom name="Animal Crossing - Donkey Kong 3 (USA, Europe).gba" size="35452" crc="060ce560" md5="a7b95f64a01e7cc18968b1c501741414" sha1="eb6dd9ce3ea488b8c3eca602369d4d648d0052d2"/>
+	</game>
+	<game name="Animal Crossing - Donkey Kong Jr. (USA, Europe)" id="0020">
+		<category>Games</category>
+		<description>Animal Crossing - Donkey Kong Jr. (USA, Europe)</description>
+		<rom name="Animal Crossing - Donkey Kong Jr. (USA, Europe).gba" size="35644" crc="66035612" md5="ee8a23328607687b50a6706c7fdfc2e1" sha1="4f24678f518f6a4fe21ab99087b55c941f2412be"/>
+	</game>
+	<game name="Animal Crossing - Donkey Kong Jr. Math (USA, Europe)" id="0021">
+		<category>Games</category>
+		<description>Animal Crossing - Donkey Kong Jr. Math (USA, Europe)</description>
+		<rom name="Animal Crossing - Donkey Kong Jr. Math (USA, Europe).gba" size="35740" crc="9b531071" md5="1c8dcf20e4ce979cb9962c835c39a5c9" sha1="ce259e96d44ddfb651883a24beb22809f7438533"/>
+	</game>
+	<game name="Animal Crossing - Excitebike (USA, Europe)" id="0016">
+		<category>Games</category>
+		<description>Animal Crossing - Excitebike (USA, Europe)</description>
+		<rom name="Animal Crossing - Excitebike (USA, Europe).gba" size="36444" crc="a0b3e4de" md5="d3d227a1ca88b0629ef333d544686c41" sha1="1e72567aef01cd4463dea209d789c349862c8cd5"/>
+	</game>
+	<game name="Animal Crossing - Golf (USA, Europe)" id="0027">
+		<category>Games</category>
+		<description>Animal Crossing - Golf (USA, Europe)</description>
+		<rom name="Animal Crossing - Golf (USA, Europe).gba" size="35100" crc="c83c01ce" md5="f92aeb4bc274cb08c2eabe9dd3aadcb4" sha1="5df38015ca8f3a6a6e9878e0323a08ab0b12b31b"/>
+	</game>
+	<game name="Animal Crossing - Ice Climber (USA, Europe)" id="0018">
+		<category>Games</category>
+		<description>Animal Crossing - Ice Climber (USA, Europe)</description>
+		<rom name="Animal Crossing - Ice Climber (USA, Europe).gba" size="37036" crc="3bec49df" md5="f7adee0901bb73b6f1c1fbeb36b4ab4c" sha1="844845b5e1ff4f5f1390c7afc781c4bb9b62e699"/>
+	</game>
+	<game name="Animal Crossing - Mario Bros. (USA, Europe)" id="0013">
+		<category>Games</category>
+		<description>Animal Crossing - Mario Bros. (USA, Europe)</description>
+		<rom name="Animal Crossing - Mario Bros. (USA, Europe).gba" size="35420" crc="aed34405" md5="684e46cb0c672e06664ae742825ae89c" sha1="23a8d78b462d4e684763a7db6547b2d951c56934"/>
+	</game>
+	<game name="Animal Crossing - Pinball (USA, Europe)" id="0024">
+		<category>Games</category>
+		<description>Animal Crossing - Pinball (USA, Europe)</description>
+		<rom name="Animal Crossing - Pinball (USA, Europe).gba" size="34652" crc="ba79f589" md5="c1c6eb0d42591c46f2e4dc68145e4c81" sha1="67b78383bf9633f30b2ee99251f9aac924832c75"/>
+	</game>
+	<game name="Animal Crossing - Soccer (USA, Europe)" id="0015">
+		<category>Games</category>
+		<description>Animal Crossing - Soccer (USA, Europe)</description>
+		<rom name="Animal Crossing - Soccer (USA, Europe).gba" size="47708" crc="090f168f" md5="a81a5d9b9268da64ea8426bdc6a987ba" sha1="9cb498c0951901fe8523e62a98a530d72a25534e"/>
+	</game>
+	<game name="Animal Crossing - Super Mario Bros. (USA, Europe)" id="0026">
+		<category>Games</category>
+		<description>Animal Crossing - Super Mario Bros. (USA, Europe)</description>
+		<rom name="Animal Crossing - Super Mario Bros. (USA, Europe).gba" size="52396" crc="34970570" md5="34217e69f45e52d1550a8b241ce27404" sha1="b9b254174b1a7a7bc01a3b72070f7ece6f343037"/>
+	</game>
+	<game name="Animal Crossing - Tennis (USA, Europe)" id="0023">
+		<category>Games</category>
+		<description>Animal Crossing - Tennis (USA, Europe)</description>
+		<rom name="Animal Crossing - Tennis (USA, Europe).gba" size="35452" crc="2b2a361d" md5="146bdf7f70335a2ad67b59ef9e07bfaf" sha1="8de62672330db8b8e24c4e8b712d03369a4cb5fc"/>
+	</game>
+	<game name="Billy Hatcher Hyper Shoot (World)" id="0006">
+		<category>Games</category>
+		<description>Billy Hatcher Hyper Shoot (World)</description>
+		<game_id>AGBJ8P</game_id>
+		<rom name="Billy Hatcher Hyper Shoot (World).gba" size="234976" crc="cf2f2080" md5="ce85da4cb13f8015246bbc54807fa04d" sha1="68ccb226f6867b6729ecf6ddb14465febc2fff4b" sha256="4024f650a8671dd9eef3301d4da4c53cf9cb54ed5b8db5f0dc665d99dc3c5055"/>
+	</game>
+	<game name="Billy Hatcher Hyper Shoot - Easy (World)" id="0007">
+		<category>Games</category>
+		<description>Billy Hatcher Hyper Shoot - Easy (World)</description>
+		<game_id>AGBJ8P</game_id>
+		<rom name="Billy Hatcher Hyper Shoot - Easy (World).gba" size="234976" crc="7badb6a1" md5="3f2f578efe4a643220023db913dbd084" sha1="d86f2527a26f4a431ff9a7ee87efbd7487dd814c" sha256="c5d33fd03d276c015f3a20674b8f87ad379a8dce446a4884d1ca047c82703424"/>
+	</game>
+	<game name="Chao no Puchigaden (World) (En,Ja,Fr,De,Es)" id="0008">
+		<category>Games</category>
+		<description>Chao no Puchigaden (World) (En,Ja,Fr,De,Es)</description>
+		<game_id>GSBJ8P</game_id>
+		<rom name="Chao no Puchigaden (World) (En,Ja,Fr,De,Es).gba" size="218108" crc="dfe887a9" md5="994e827673b6daab9838153e4436f8e8" sha1="606159aec12e8feda1e3dbbbf8c754484a67199c" sha256="d2ebff2043eb9a5b0e00b6efadc0d7ce97680fa55be884304d4805cc9d42c101"/>
+	</game>
+	<game name="Chao no Puchigaden (World) (En,Ja,Fr,De,Es) (Phantasy Star Online Episode I &amp; II)" id="0009">
+		<category>Games</category>
+		<description>Chao no Puchigaden (World) (En,Ja,Fr,De,Es) (Phantasy Star Online Episode I &amp; II)</description>
+		<game_id>GSBJ8P</game_id>
+		<rom name="Chao no Puchigaden (World) (En,Ja,Fr,De,Es) (Phantasy Star Online Episode I &amp; II).gba" size="182840" crc="c523504f" md5="2fc01f93093666ebc8f88a26c5b2786e" sha1="55c9812e2164a618575c6dcd669fd993b60585f5" sha256="c54d6a37b5773681ee3681b97358995fc4ab75606c061068adb4f05de7d9a2ca"/>
+	</game>
+	<game name="Chao no Puchigaden (World) (En,Ja,Fr,De,Es) (Sonic Adventure DX - Director's Cut)" id="0010">
+		<category>Games</category>
+		<description>Chao no Puchigaden (World) (En,Ja,Fr,De,Es) (Sonic Adventure DX - Director's Cut)</description>
+		<game_id>GSBJ8P</game_id>
+		<rom name="Chao no Puchigaden (World) (En,Ja,Fr,De,Es) (Sonic Adventure DX - Director's Cut).gba" size="217032" crc="28a6baea" md5="2fd1658783cd1c6bf5e1b19a1462a42a" sha1="97ffbc9a4b0216af2983ce2e8d78b5693f47e673" sha256="a345bb567e73228743ef44c55b124de808cd77c0f566b46eea96de0b7caf831d"/>
+	</game>
+	<game name="ChuChu Rocket! Challenge (World)" id="0002">
+		<category>Games</category>
+		<description>ChuChu Rocket! Challenge (World)</description>
+		<game_id>ACRJ8P</game_id>
+		<rom name="ChuChu Rocket! Challenge (World).gba" size="226208" crc="ba0b2e06" md5="ab046b65776ae4696d1376f02353f4b4" sha1="f52b11aac9fd88f456014245a9c486655b41175c" sha256="d31c401e8633e3885fd0c980c2397259abaabe381e6258cd99ace4abbf171a15"/>
+	</game>
+	<game name="Crash Bandicoot Blast! (Europe) (En,Fr,De,Es,It,Nl)" id="0131">
+		<category>Games</category>
+		<description>Crash Bandicoot Blast! (Europe) (En,Fr,De,Es,It,Nl)</description>
+		<rom name="Crash Bandicoot Blast! (Europe) (En,Fr,De,Es,It,Nl).gba" size="95120" crc="918b3405" md5="0538ea9f0d8775ac355606d5240661b5" sha1="0a05775c90ee7ea71dbdf5b89cd6ad842793b7d9"/>
+	</game>
+	<game name="Crash Party (Europe) (En,Fr,De,Es,It,Nl)" id="0134">
+		<category>Games</category>
+		<description>Crash Party (Europe) (En,Fr,De,Es,It,Nl)</description>
+		<rom name="Crash Party (Europe) (En,Fr,De,Es,It,Nl).gba" size="245752" crc="a7ad9b24" md5="ea6bca3450bccaae39a7b6d73e8bcaa6" sha1="8ecd7a465b02d23c8882597e600d5cfa5d197f07"/>
+	</game>
+	<game name="Crash Party USA (USA)" id="0133">
+		<category>Games</category>
+		<description>Crash Party USA (USA)</description>
+		<rom name="Crash Party USA (USA).gba" size="243304" crc="58aa97ae" md5="d8e548916bece4072abc10dd1bb2f158" sha1="ac3133d486991ff896f873de890d7c88b80ac7cb"/>
+	</game>
+	<game name="Dakar 2 - Credits (USA)" id="0101">
+		<category>Games</category>
+		<description>Dakar 2 - Credits (USA)</description>
+		<rom name="Dakar 2 - Credits (USA).gba" size="204704" crc="95c1c780" md5="1bc102f251eac64257b11a8adc0ee29c" sha1="a231a3a48c1ed359332f0c165dd085639006d0ae"/>
+	</game>
+	<game name="Dakar 2 - Dirt 1 (USA)" id="0102">
+		<category>Games</category>
+		<description>Dakar 2 - Dirt 1 (USA)</description>
+		<rom name="Dakar 2 - Dirt 1 (USA).gba" size="260000" crc="2807a4f5" md5="b5cb1e7965674c2a98ab5066c5a76672" sha1="48b2f075a8c987816eeffa7519c2749b4ca76f89"/>
+	</game>
+	<game name="Dakar 2 - Dirt 2 (USA)" id="0103">
+		<category>Games</category>
+		<description>Dakar 2 - Dirt 2 (USA)</description>
+		<rom name="Dakar 2 - Dirt 2 (USA).gba" size="260000" crc="0b3d52f9" md5="fc6471b074dd16a9b5876c54f91455b5" sha1="cf15191dbc75cd98ceb647ec7ab85eea70ce1ba8"/>
+	</game>
+	<game name="Dakar 2 - Dirt 3 (USA)" id="0104">
+		<category>Games</category>
+		<description>Dakar 2 - Dirt 3 (USA)</description>
+		<rom name="Dakar 2 - Dirt 3 (USA).gba" size="260000" crc="613505ba" md5="a47a2e41abec5e44abfeb640bbb2ddae" sha1="92604ac76ee0efa0609e86e3222f53c098a456d6"/>
+	</game>
+	<game name="Dakar 2 - Paris 1 (USA)" id="0105">
+		<category>Games</category>
+		<description>Dakar 2 - Paris 1 (USA)</description>
+		<rom name="Dakar 2 - Paris 1 (USA).gba" size="257952" crc="ee3d95d5" md5="e4261466f5b7f1be4f13884c00a6a596" sha1="81978453106df5520a6c394897370716a5faa24e"/>
+	</game>
+	<game name="Dakar 2 - Paris 2 (USA)" id="0106">
+		<category>Games</category>
+		<description>Dakar 2 - Paris 2 (USA)</description>
+		<rom name="Dakar 2 - Paris 2 (USA).gba" size="249760" crc="c9dee703" md5="3b8a13761d4819022e35fe9313815ec6" sha1="e4e2089c9b4767505ebc30800da728646cb2ad80"/>
+	</game>
+	<game name="Dakar 2 - Paris 3 (USA)" id="0107">
+		<category>Games</category>
+		<description>Dakar 2 - Paris 3 (USA)</description>
+		<rom name="Dakar 2 - Paris 3 (USA).gba" size="262048" crc="0a5ff438" md5="ff0178dfe3f824ceb5308ec31e8e421b" sha1="2f4ce98d6fae9c873a602056e2a33b6bde245a53"/>
+	</game>
+	<game name="Dakar 2 - Rock 1 (USA)" id="0108">
+		<category>Games</category>
+		<description>Dakar 2 - Rock 1 (USA)</description>
+		<rom name="Dakar 2 - Rock 1 (USA).gba" size="253856" crc="e3d6ab64" md5="3653721fa1bb4f8215cc113eca677bcf" sha1="d6e10480e5e4f0ccaa553fd76e5d75be72c4a256"/>
+	</game>
+	<game name="Dakar 2 - Rock 2 (USA)" id="0109">
+		<category>Games</category>
+		<description>Dakar 2 - Rock 2 (USA)</description>
+		<rom name="Dakar 2 - Rock 2 (USA).gba" size="260000" crc="804faf14" md5="f65dc956ef56a7266b907edfcc6d0d1a" sha1="da6d794bbe4781f31a559279ccc07dfd7781a3c9"/>
+	</game>
+	<game name="Dakar 2 - Rock 3 (USA)" id="0110">
+		<category>Games</category>
+		<description>Dakar 2 - Rock 3 (USA)</description>
+		<rom name="Dakar 2 - Rock 3 (USA).gba" size="249760" crc="4f3eaf94" md5="a8eea5136d62f7478b67f8c74f229710" sha1="8626d5990f95379afe8f26655d8cbc895f61cb61"/>
+	</game>
+	<game name="Dakar 2 - Sand 1 (USA)" id="0111">
+		<category>Games</category>
+		<description>Dakar 2 - Sand 1 (USA)</description>
+		<rom name="Dakar 2 - Sand 1 (USA).gba" size="255904" crc="63d39d20" md5="3256c877296c87d55161d91617792c5a" sha1="5cfcbc87f011d55b6f2832490d70426294b74b43"/>
+	</game>
+	<game name="Dakar 2 - Sand 2 (USA)" id="0112">
+		<category>Games</category>
+		<description>Dakar 2 - Sand 2 (USA)</description>
+		<rom name="Dakar 2 - Sand 2 (USA).gba" size="243616" crc="6143bd39" md5="979ba24a1bb71315c4eec3f276a0c2d3" sha1="a94940be819755c0efbecc2073cbe606de3d0e65"/>
+	</game>
+	<game name="Dakar 2 - Sand 3 (USA)" id="0113">
+		<category>Games</category>
+		<description>Dakar 2 - Sand 3 (USA)</description>
+		<rom name="Dakar 2 - Sand 3 (USA).gba" size="247712" crc="55b585cc" md5="74cd227841209ab2bbdf12a33af4b17e" sha1="2393d9c6e3dffb010c612edd3168b5832edf3502"/>
+	</game>
+	<game name="Joy Boot Sample (Japan) (En) (Animal Crossing)" id="0054">
+		<category>Games</category>
+		<description>Joy Boot Sample (Japan) (En) (Animal Crossing)</description>
+		<rom name="Joy Boot Sample (Japan) (En) (Animal Crossing).gba" size="4944" crc="7a0441ae" md5="78668018524c984054db4d4f29a88dcd" sha1="0a4ebdf897c4180d4c0abe7b0c397a4a169a922b" sha256="ffeab705f325ab1c6fbcf5f182ab429b21a9305bf669e7cc5697ded82d25cecd"/>
+	</game>
+	<game name="Joy Boot Sample (USA) (Hot Wheels - Velocity X)" id="0126">
+		<category>Games</category>
+		<description>Joy Boot Sample (USA) (Hot Wheels - Velocity X)</description>
+		<rom name="Joy Boot Sample (USA) (Hot Wheels - Velocity X).gba" size="4948" crc="8a934795" md5="1f909ba5c4fd8ee77481870d0c4ec71d" sha1="7206d516a959e3c74113d8dbd1b8667fb2ff8fe7"/>
+	</game>
+	<game name="Joy Boot Sample (USA) (Mario Golf - Toadstool Tour) (A)" id="0124">
+		<category>Games</category>
+		<description>Joy Boot Sample (USA) (Mario Golf - Toadstool Tour) (A)</description>
+		<rom name="Joy Boot Sample (USA) (Mario Golf - Toadstool Tour) (A).gba" size="4216" crc="f69e2622" md5="4bbf14f55e88aaeae01d7fb2c9c84e29" sha1="a1ae80097695e9c92699b3727e90e91b508abd9e"/>
+	</game>
+	<game name="Joy Boot Sample (USA) (Mario Golf - Toadstool Tour) (B)" id="0125">
+		<category>Games</category>
+		<description>Joy Boot Sample (USA) (Mario Golf - Toadstool Tour) (B)</description>
+		<rom name="Joy Boot Sample (USA) (Mario Golf - Toadstool Tour) (B).gba" size="4944" crc="6479fc27" md5="77ab314c59a6b1f4ccf341823f78405c" sha1="e81301ecaf64f5a5013a0803b1a05b222c80037e"/>
+	</game>
+	<game name="NiGHTS into Dreams - Score Attack (World)" id="0003">
+		<category>Games</category>
+		<description>NiGHTS into Dreams - Score Attack (World)</description>
+		<game_id>AGBT8P</game_id>
+		<rom name="NiGHTS into Dreams - Score Attack (World).gba" size="255552" crc="7bba269b" md5="e4d4a68c43e58e1b583f89a416e16f48" sha1="3dfa93104696a4c75fb4f337e86d2dd9a9404357" sha256="6f06525a81881dcedb45c9100a280415a01b8a3105f213cb926e3dffcfb450c5"/>
+	</game>
+	<game name="Nintendo Puzzle Collection - Dr. Mario (Japan) (En)" id="0028">
+		<category>Games</category>
+		<description>Nintendo Puzzle Collection - Dr. Mario (Japan) (En)</description>
+		<rom name="Nintendo Puzzle Collection - Dr. Mario (Japan) (En).gba" size="50092" crc="9e54f585" md5="30beee2eccdc1278726c374d2984f596" sha1="349fa0a7b32f57210c9087d942af7689dfc27629"/>
+	</game>
+	<game name="Puyo Pop - Endless Version (World)" id="0005">
+		<category>Games</category>
+		<description>Puyo Pop - Endless Version (World)</description>
+		<game_id>AGBJ8P</game_id>
+		<rom name="Puyo Pop - Endless Version (World).gba" size="226584" crc="7fb14fe3" md5="15452792617c0de7201719ebc43bd424" sha1="82988783cd5aa06003d6b6369e19fcfbf0c0a02f" sha256="a6d539a45d50ff91788dc4991e3cac28353ce75edd897c850534b69c241aaea9"/>
+	</game>
+	<game name="WarioWare, Inc. - Mini-Jeux Vol. 1 (World) (Fr)" id="0061">
+		<category>Games</category>
+		<description>WarioWare, Inc. - Mini-Jeux Vol. 1 (World) (Fr)</description>
+		<rom name="WarioWare, Inc. - Mini-Jeux Vol. 1 (World) (Fr).gba" size="242816" crc="cf8a2145" md5="8eea91a2fd16f6d50908f400cd49e79f" sha1="1d7791d2428700803f2db0fe057227c7440c25a9" sha256="a62a71f10ddb249ce44e000cc4ff3db8e722616427a02af80ba00cb026e0f199"/>
+	</game>
+	<game name="WarioWare, Inc. - Mini-Jeux Vol. 2 (World) (Fr)" id="0062">
+		<category>Games</category>
+		<description>WarioWare, Inc. - Mini-Jeux Vol. 2 (World) (Fr)</description>
+		<rom name="WarioWare, Inc. - Mini-Jeux Vol. 2 (World) (Fr).gba" size="245120" crc="d12fb992" md5="7c6b7c46971c7a08b8a14f58270ada5d" sha1="e583b0f2094a46efeedfd39ce4b74cbf45e404e4" sha256="e5a96418e367ba2dc6e7e572654832f9a4c6c7ac35d01107d2fb6edfc75ea843"/>
+	</game>
+	<game name="WarioWare, Inc. - Mini-Jeux Vol. 3 (World) (Fr)" id="0063">
+		<category>Games</category>
+		<description>WarioWare, Inc. - Mini-Jeux Vol. 3 (World) (Fr)</description>
+		<rom name="WarioWare, Inc. - Mini-Jeux Vol. 3 (World) (Fr).gba" size="228992" crc="3de8df4b" md5="ae6076fcb4200423b5f856e8432e503e" sha1="89cfc738c7a2266c25a83af001f4cbb99f0fd567" sha256="8a6f7c705113fc272c6b2b158e3e6156472ff451d4733c68afb39225b38bbfc1"/>
+	</game>
+	<game name="WarioWare, Inc. - Mini-Jeux Vol. 4 (World) (Fr)" id="0064">
+		<category>Games</category>
+		<description>WarioWare, Inc. - Mini-Jeux Vol. 4 (World) (Fr)</description>
+		<rom name="WarioWare, Inc. - Mini-Jeux Vol. 4 (World) (Fr).gba" size="231776" crc="fe595a10" md5="ff49c79fee19ad9a08ddfca3e66b5f8b" sha1="31fd17cea12b9b90c1697b32c9c305d7f259879e" sha256="7ef8dfa341d049890907701fd7bd710d5cd50ed0f1e973acfa3bf6efcc8ce012"/>
+	</game>
+	<game name="WarioWare, Inc. - Selected 1 (World)" id="0057">
+		<category>Games</category>
+		<description>WarioWare, Inc. - Selected 1 (World)</description>
+		<rom name="WarioWare, Inc. - Selected 1 (World).gba" size="200640" crc="656cb9af" md5="d41782742ad92bd0fdc4842424795988" sha1="81aada4d3e7a2704c330a6ac4fd8c6685bbba341" sha256="f9c97c74851575e4fdd43f8212b0dec930b9cfd9d65190c743317cf3e252298e"/>
+	</game>
+	<game name="WarioWare, Inc. - Selected 2 (World)" id="0058">
+		<category>Games</category>
+		<description>WarioWare, Inc. - Selected 2 (World)</description>
+		<rom name="WarioWare, Inc. - Selected 2 (World).gba" size="198528" crc="caf3b44e" md5="761ad3e3ad23ffb9fb672d5c9dd26ee7" sha1="12f5aaa784f451eb0d5c19952c9adaef20995cf3" sha256="9b3b62638fd34cd8564ecfb6a804efba27704126ed8f117c5a6893cad94594be"/>
+	</game>
+	<game name="WarioWare, Inc. - Selected 3 (World)" id="0059">
+		<category>Games</category>
+		<description>WarioWare, Inc. - Selected 3 (World)</description>
+		<rom name="WarioWare, Inc. - Selected 3 (World).gba" size="199392" crc="00abcace" md5="e48145cb70fecb31bfecb1921687ca2d" sha1="f0f8b2f4e90d76adaf9e3f9e71a6c9fd7793cec8" sha256="6218814e8b34f461d291f3e18c48ba68d2936f7778fe4c092bd5816fbbb2fdbd"/>
+	</game>
+	<game name="WarioWare, Inc. - Selected 4 (World)" id="0060">
+		<category>Games</category>
+		<description>WarioWare, Inc. - Selected 4 (World)</description>
+		<rom name="WarioWare, Inc. - Selected 4 (World).gba" size="197344" crc="f358f0b9" md5="91984dba97b9c8172f302ddd8ab97c09" sha1="cc19ba8883c478a6a841b1be6ab4eda864015a04" sha256="011d51cffeff4cc41c251e6d1c5fc869e06d6c2ed5310e0411c287dc22c28b84"/>
+	</game>
+	<game name="WarioWare, Inc. - Selection 1 (World) (Fr)" id="0065">
+		<category>Games</category>
+		<description>WarioWare, Inc. - Selection 1 (World) (Fr)</description>
+		<rom name="WarioWare, Inc. - Selection 1 (World) (Fr).gba" size="198176" crc="734e4bdb" md5="dff4a4edf3f1aed02f2fd40743415845" sha1="2fab9403d1b0d5d255df9f45afcac38c3bb3804b" sha256="0d4bb30f59789b0d73a96e9f8ba4e26add7f3c7581514816990f7fa5637cfc35"/>
+	</game>
+	<game name="WarioWare, Inc. - Selection 2 (World) (Fr)" id="0066">
+		<category>Games</category>
+		<description>WarioWare, Inc. - Selection 2 (World) (Fr)</description>
+		<rom name="WarioWare, Inc. - Selection 2 (World) (Fr).gba" size="196352" crc="ad7ac42b" md5="dfd4012a94707e74d606514dc89f099b" sha1="5281b6e40304da089d75be09ae246acf85d3fbad" sha256="5796feb8ccca7cb2f769870adbca94813ef5d40a3c29d1304de34414d5365ab7"/>
+	</game>
+	<game name="WarioWare, Inc. - Selection 3 (World) (Fr)" id="0067">
+		<category>Games</category>
+		<description>WarioWare, Inc. - Selection 3 (World) (Fr)</description>
+		<rom name="WarioWare, Inc. - Selection 3 (World) (Fr).gba" size="196992" crc="5a15fe12" md5="6d7e9d08b41e9da17db851f01b912809" sha1="29058f7abe45a16ce89c9c689f3d9ea45e39a0ae" sha256="394c2cd387be490cd0604c6105233a37921f34184b33e28acb893e18697870ca"/>
+	</game>
+	<game name="WarioWare, Inc. - Selection 4 (World) (Fr)" id="0068">
+		<category>Games</category>
+		<description>WarioWare, Inc. - Selection 4 (World) (Fr)</description>
+		<rom name="WarioWare, Inc. - Selection 4 (World) (Fr).gba" size="194880" crc="430a8493" md5="fad7fdc7bdd7ab98a1162e05c23dac20" sha1="649ae936d646338e7bb6e7ef1c7837bc8b27006f" sha256="871c377952f8f7b69212d7b2fc8e8468ee1ba58bf54b38dde9a2158b927b00ed"/>
+	</game>
+</datafile>
