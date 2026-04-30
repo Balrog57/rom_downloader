@@ -35,9 +35,9 @@ from .download_orchestrator import (
     attempt_download_from_resolved_provider,
 )
 from .scrapers import (
+    download_lolroms_file,
     download_planetemu,
     download_vimm,
-    get_lolroms_session,
     get_vimm_session,
 )
 from .search_pipeline import search_all_sources, search_all_sources_legacy
@@ -164,7 +164,7 @@ def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_ru
                         success = download_planetemu(page_url, dest_path, session)
 
                 elif source == 'LoLROMs' and download_url:
-                    success = download_file(download_url, dest_path, get_lolroms_session())
+                    success = download_lolroms_file(download_url, dest_path)
 
                 elif source == 'Vimm\'s Lair':
                     page_url = game_info.get('page_url')

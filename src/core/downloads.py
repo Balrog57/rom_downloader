@@ -97,8 +97,40 @@ def download_file_legacy(url: str, dest_path: str, session: requests.Session, pr
     return False
 
 
+def _response_preview(response: requests.Response, max_bytes: int = 512) -> str:
+    """Retourne un court extrait de reponse sans lever d'erreur secondaire."""
+    try:
+        preview = response.raw.read(max_bytes, decode_content=True)
+        return preview.decode('utf-8', errors='ignore').strip()[:200]
+    except Exception:
+        try:
+            return response.text.strip()[:200]
+        except Exception:
+            return ''
+
+
+def _looks_like_cloudflare_block(response: requests.Response, snippet: str) -> bool:
+    server = (response.headers.get('server') or '').lower()
+    content_type = (response.headers.get('content-type') or '').lower()
+    text = (snippet or '').lower()
+    if response.status_code not in {403, 429, 503}:
+        return False
+    if 'cloudflare' not in server and 'text/html' not in content_type:
+        return False
+    if not text:
+        return True
+    return any(marker in text for marker in (
+        'just a moment',
+        'attention required',
+        'cloudflare',
+        'cf-ray',
+        'challenge-platform',
+    ))
+
+
 def download_file(url: str, dest_path: str, session: requests.Session, progress_callback=None,
-                  timeout_seconds: int = 120, progress_detail_callback=None) -> bool:
+                  timeout_seconds: int = 120, progress_detail_callback=None,
+                  extra_headers: dict | None = None) -> bool:
     """Download a file with retry, larger chunks and resumable .part files."""
     max_retries = 3
     retry_delay = 3
@@ -114,8 +146,11 @@ def download_file(url: str, dest_path: str, session: requests.Session, progress_
                 'timeout': timeout_seconds,
                 'allow_redirects': True,
             }
+            headers = dict(extra_headers or {})
             if resume_from > 0:
-                request_kwargs['headers'] = {'Range': f'bytes={resume_from}-'}
+                headers['Range'] = f'bytes={resume_from}-'
+            if headers:
+                request_kwargs['headers'] = headers
             archive_hosts = ('archive.org', '.archive.org')
             if any(host in (url or '').lower() for host in archive_hosts):
                 access_key = os.environ.get('IAS3_ACCESS_KEY', '')
@@ -125,12 +160,17 @@ def download_file(url: str, dest_path: str, session: requests.Session, progress_
                     request_kwargs['auth'] = HTTPBasicAuth(access_key, secret_key)
 
             with session.get(url, **request_kwargs) as response:
-                response.raise_for_status()
-
                 content_type = (response.headers.get('content-type', '') or '').lower()
+                if response.status_code >= 400:
+                    snippet = _response_preview(response)
+                    if _looks_like_cloudflare_block(response, snippet):
+                        raise DownloadNetworkError(
+                            f"Blocage Cloudflare ({response.status_code}) pour {response.url}: {snippet}"
+                        )
+                    response.raise_for_status()
+
                 if 'text/html' in content_type and not url.lower().endswith('.html'):
-                    preview = response.raw.read(512, decode_content=True)
-                    snippet = preview.decode('utf-8', errors='ignore').strip()[:200]
+                    snippet = _response_preview(response)
                     raise DownloadNetworkError(
                         f"Reponse HTML inattendue (Cloudflare?): {snippet}"
                     )

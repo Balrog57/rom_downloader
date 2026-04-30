@@ -50,14 +50,50 @@ def get_lolroms_session():
     global LOLROMS_SESSION
 
     if LOLROMS_SESSION is None:
+        user_agent = os.environ.get(
+            'LOLROMS_USER_AGENT',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
+            '(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        )
         LOLROMS_SESSION = cloudscraper.create_scraper(
             browser={'browser': 'chrome', 'platform': 'windows', 'mobile': False}
         )
         LOLROMS_SESSION.headers.update({
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            'User-Agent': user_agent,
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
+            'Referer': LOLROMS_BASE,
         })
+        cookie = os.environ.get('LOLROMS_COOKIE', '').strip()
+        if cookie:
+            LOLROMS_SESSION.headers['Cookie'] = cookie
 
     return LOLROMS_SESSION
+
+
+def download_lolroms_file(url: str, dest_path: str, progress_callback=None,
+                          timeout_seconds: int = 120, progress_detail_callback=None) -> bool:
+    """Telecharge un fichier LoLROMs avec les en-tetes attendus par Cloudflare."""
+    from .downloads import download_file
+
+    session = get_lolroms_session()
+    directory_url = url.rsplit('/', 1)[0] + '/' if '/' in url else LOLROMS_BASE
+    headers = {
+        'Accept': 'application/octet-stream,application/x-7z-compressed,*/*;q=0.8',
+        'Referer': directory_url,
+        'Sec-Fetch-Dest': 'empty',
+        'Sec-Fetch-Mode': 'cors',
+        'Sec-Fetch-Site': 'same-origin',
+    }
+    return download_file(
+        url,
+        dest_path,
+        session,
+        progress_callback,
+        timeout_seconds,
+        progress_detail_callback,
+        extra_headers=headers,
+    )
 
 
 
@@ -1391,6 +1427,7 @@ def resolve_romsxisos_game(game_info: dict, system_slug: str, session: requests.
 
 __all__ = [
     'get_lolroms_session',
+    'download_lolroms_file',
     'get_vimm_session',
     'build_lolroms_url',
     'resolve_lolroms_system_path',
