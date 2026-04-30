@@ -13,6 +13,8 @@ from src.core import (  # noqa: E402
     find_listing_match,
     listing_cache_prefixes_for_source,
     normalize_system_name,
+    normalize_external_game_name,
+    iter_game_candidate_names,
     optional_positive_int,
     parse_candidate_limit,
     prepare_sources_for_profile,
@@ -83,6 +85,103 @@ def main() -> None:
         match_entry and "Special Disc" in match_entry["filename"],
         "LoLROMs fuzzy match should preserve special disc qualifiers",
     )
+
+    # ── Normalisation edge cases ──
+    norm = normalize_external_game_name
+    assert_true(norm("") == "", "empty string normalisation failed")
+    assert_true(norm("Game (USA).7z") == "game usa", "basic normalisation failed")
+    assert_true(norm("Game (USA) (Disc 1).iso") == "game usa disc 1", "disc normalisation failed")
+    assert_true(norm("Game (USA) (Rev 2).bin") == "game usa rev 2", "rev normalisation failed")
+    assert_true(norm("Super Mario 64 (USA).z64") == "super mario 64 usa", "n64 normalisation failed")
+    assert_true(norm("Resident Evil 4 (USA) (Disc 1).7z") == "resident evil 4 usa disc 1", "gc multi-disc failed")
+    assert_true(norm("Crash Bandicoot (Europe) (En,Fr,De,Es,It,Nl).cue") == "crash bandicoot europe en fr de es it nl", "psx multilang failed")
+    assert_true(norm("Game & Watch Gallery 4 (USA, Australia).gba") == "game and watch gallery 4 usa australia", "ampersand failed")
+    assert_true(norm("Pok\u00e9mon Version Rouge (France).gbc") == "pokemon version rouge france", "accent normalisation failed")
+    assert_true(norm("Final Fantasy VII (USA) (Disc 2) (v1.1).cue") == "final fantasy vii usa disc 2 rev 1 1", "combined qualifiers failed")
+
+    # ── Candidate names ──
+    candidates = iter_game_candidate_names({
+        "game_name": "Super Mario Sunshine",
+        "primary_rom": "Super Mario Sunshine (USA).iso",
+        "roms": [{"name": "Super Mario Sunshine (USA) (Rev 1).iso"}],
+    })
+    assert_true(len(candidates) >= 2, "candidate generation produced too few entries")
+    assert_true("Super Mario Sunshine (USA)" in candidates[0], "first candidate should be primary rom")
+
+    # ── Matching edge cases GameCube ──
+    gc_listing = {
+        "resident evil 4 (usa) (disc 1)": {
+            "full_name": "Resident Evil 4 (USA) (Disc 1)",
+            "filename": "Resident Evil 4 (USA) (Disc 1).7z",
+        },
+        "resident evil 4 (usa) (disc 2)": {
+            "full_name": "Resident Evil 4 (USA) (Disc 2)",
+            "filename": "Resident Evil 4 (USA) (Disc 2).7z",
+        },
+        "metroid prime (usa)": {
+            "full_name": "Metroid Prime (USA)",
+            "filename": "Metroid Prime (USA).7z",
+        },
+    }
+    _mn, re4_match = find_listing_match({
+        "game_name": "Resident Evil 4 (USA)",
+        "primary_rom": "Resident Evil 4 (USA) (Disc 1).iso",
+        "roms": [{"name": "Resident Evil 4 (USA) (Disc 1).iso"}],
+    }, gc_listing)
+    assert_true(re4_match and "Disc 1" in re4_match["filename"], "GC multi-disc matching failed - disc 1 should match")
+
+    _mn2, mp_match = find_listing_match({
+        "game_name": "Metroid Prime (USA)",
+        "primary_rom": "Metroid Prime (USA).iso",
+    }, gc_listing)
+    assert_true(mp_match and "Metroid Prime (USA).7z" == mp_match["filename"], "GC exact matching failed")
+
+    # ── Matching edge cases PlayStation ──
+    psx_listing = {
+        "crash bandicoot (europe)": {
+            "full_name": "Crash Bandicoot (Europe)",
+            "filename": "Crash Bandicoot (Europe).7z",
+        },
+        "crash bandicoot (usa)": {
+            "full_name": "Crash Bandicoot (USA)",
+            "filename": "Crash Bandicoot (USA).7z",
+        },
+        "final fantasy vii (usa) (disc 1)": {
+            "full_name": "Final Fantasy VII (USA) (Disc 1)",
+            "filename": "Final Fantasy VII (USA) (Disc 1).7z",
+        },
+        "final fantasy vii (usa) (disc 2)": {
+            "full_name": "Final Fantasy VII (USA) (Disc 2)",
+            "filename": "Final Fantasy VII (USA) (Disc 2).7z",
+        },
+        "final fantasy vii (usa) (disc 3)": {
+            "full_name": "Final Fantasy VII (USA) (Disc 3)",
+            "filename": "Final Fantasy VII (USA) (Disc 3).7z",
+        },
+    }
+    _mn3, ff7_d1 = find_listing_match({
+        "game_name": "Final Fantasy VII (USA)",
+        "primary_rom": "Final Fantasy VII (USA) (Disc 1).cue",
+        "roms": [{"name": "Final Fantasy VII (USA) (Disc 1).cue"}],
+    }, psx_listing)
+    assert_true(ff7_d1 and "Disc 1" in ff7_d1["filename"], "PSX multi-disc matching failed - disc 1 should match")
+
+    _mn4, ff7_d3 = find_listing_match({
+        "game_name": "Final Fantasy VII (USA)",
+        "primary_rom": "Final Fantasy VII (USA) (Disc 3).cue",
+        "roms": [{"name": "Final Fantasy VII (USA) (Disc 3).cue"}],
+    }, psx_listing)
+    assert_true(ff7_d3 and "Disc 3" in ff7_d3["filename"], "PSX multi-disc matching failed - disc 3 should match")
+
+    _mn5, cb_eu = find_listing_match({
+        "game_name": "Crash Bandicoot (Europe) (En,Fr,De,Es,It,Nl)",
+        "primary_rom": "Crash Bandicoot (Europe) (En,Fr,De,Es,It,Nl).cue",
+    }, psx_listing)
+    assert_true(cb_eu and "Crash Bandicoot (Europe)" in cb_eu["filename"], "PSX multilang fuzzy matching failed")
+
+    # ── Normalisation preserves disc after cleanup ──
+    assert_true(norm("Game (USA) (Disc 1) (Rev 2).iso") == "game usa disc 1 rev 2", "disc rev combo failed")
+    assert_true(norm("Game (USA) (Demo).zip") == "game usa", "demo qualifier stripped")
 
     usage = {}
     assert_true(reserve_source_quota("EdgeEmu", [source], usage)[0], "first quota reservation failed")

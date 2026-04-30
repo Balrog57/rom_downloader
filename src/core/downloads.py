@@ -113,19 +113,28 @@ def _looks_like_cloudflare_block(response: requests.Response, snippet: str) -> b
     server = (response.headers.get('server') or '').lower()
     content_type = (response.headers.get('content-type') or '').lower()
     text = (snippet or '').lower()
-    if response.status_code not in {403, 429, 503}:
-        return False
-    if 'cloudflare' not in server and 'text/html' not in content_type:
-        return False
-    if not text:
-        return True
-    return any(marker in text for marker in (
-        'just a moment',
-        'attention required',
-        'cloudflare',
-        'cf-ray',
-        'challenge-platform',
-    ))
+
+    cf_headers = {'cf-ray', 'cf-cache-status', 'cf-request-id'}
+    if cf_headers.intersection(set(k.lower() for k in response.headers.keys())):
+        if response.status_code >= 400:
+            return True
+
+    if response.status_code in {403, 429, 503}:
+        if 'cloudflare' in server or 'text/html' in content_type:
+            if not text:
+                return True
+            return any(marker in text for marker in (
+                'just a moment',
+                'attention required',
+                'cloudflare',
+                'cf-ray',
+                'challenge-platform',
+                'ddos-guard',
+                'under attack mode',
+                'checking your browser',
+                'enable javascript',
+            ))
+    return False
 
 
 def download_file(url: str, dest_path: str, session: requests.Session, progress_callback=None,
@@ -171,6 +180,10 @@ def download_file(url: str, dest_path: str, session: requests.Session, progress_
 
                 if 'text/html' in content_type and not url.lower().endswith('.html'):
                     snippet = _response_preview(response)
+                    if _looks_like_cloudflare_block(response, snippet):
+                        raise DownloadNetworkError(
+                            f"Blocage Cloudflare ({response.status_code}) pour {response.url}: {snippet}"
+                        )
                     raise DownloadNetworkError(
                         f"Reponse HTML inattendue (Cloudflare?): {snippet}"
                     )
