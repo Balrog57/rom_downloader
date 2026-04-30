@@ -28,7 +28,7 @@ from .sources import (
 from .dat_profile import finalize_dat_profile, prepare_sources_for_profile, describe_dat_profile
 from .search_pipeline import search_all_sources
 from .scrapers import (
-    get_lolroms_session,
+    download_lolroms_file,
     get_vimm_session,
 )
 from .downloads import download_file, download_from_archive_org
@@ -98,7 +98,7 @@ def attempt_download_from_resolved_provider(game_info: dict, output_folder: str,
             success = download_planetemu(page_url, dest_path, session, progress_callback)
 
     elif source == 'LoLROMs' and download_url:
-        success = download_file(download_url, dest_path, get_lolroms_session(), progress_callback, download_timeout, progress_detail_callback)
+        success = download_lolroms_file(download_url, dest_path, progress_callback, download_timeout, progress_detail_callback)
 
     elif source == 'Vimm\'s Lair':
         from .scrapers import download_vimm
@@ -474,15 +474,18 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
                 log_func(f"  Retry avec: {current_game.get('source', 'unknown')}")
             continue
         except DownloadNetworkError as exc:
+            detail = str(exc)
             provider_attempts.append({
                 'source': source,
                 'status': 'failed',
                 'duration_seconds': round(time.time() - attempt_started, 3),
-                'detail': 'network_error',
+                'detail': detail or 'network_error',
             })
             if circuit_breaker:
                 circuit_breaker.record_failure(source)
-            log_func(f"  Provider {source} erreur reseau, recherche d'un autre provider...")
+            suffix = f": {detail[:180]}" if detail else ""
+            log_func(f"  Provider {source} erreur reseau{suffix}")
+            log_func("  Recherche d'un autre provider...")
             current_game = resolve_next_provider(
                 original_game,
                 sources,
