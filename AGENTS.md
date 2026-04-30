@@ -45,3 +45,31 @@ There is no pytest. Tests are plain scripts that call `main()` and raise `System
 
 - Version lives in `VERSION` file (SemVer: `MAJOR.MINOR.PATCH`), read by `--version`, GUI, and release workflow.
 - CI runs on `windows-latest` with Python 3.13.
+
+## Download pipeline (LoLROMs & .7z handling)
+
+- **LoLROMs scraper** (`src/core/scrapers.py`): Uses `cloudscraper` to bypass Cloudflare. Scrapes HTML directory listings, recurses into subdirectories (`Multi-Boot`, `eReader`, `Video`, `Play-Yan`, `Hacks (Color)`, `T-En`) for GBA. Files are `.7z` archives containing `.gba` ROMs.
+- **Search pipeline** (`src/core/search_pipeline.py`): For LoLROMs, resolves system path, scrapes listing, matches via `iter_game_candidate_names()` (exact lower-case match first, then normalised fuzzy match). Results include `download_url` pointing to `.7z` files.
+- **Download pipeline** (`src/core/downloads.py`): `download_file()` with retry (3 attempts, exponential backoff), resumable `.part` files, Cloudflare HTML detection. When `content-type` is `text/html` for a non-HTML URL, raises `DownloadNetworkError` to avoid saving Cloudflare challenge pages as ROM files.
+- **Download orchestrator** (`src/core/download_orchestrator.py`): Downloads `.7z` via `download_file()` using the cloudscraper session. The download destination uses the server filename (`.7z`), not the DAT's `.gba` extension. LoLROMs downloads include a configurable delay (`delay_seconds` in source policies, default 2s) to avoid Cloudflare rate-limiting.
+- **MD5 verification** (`src/core/verification.py`): Supports `.7z` — iterates archive entries and compares `.gba` MD5 against the DAT. Works correctly for No-Intro DATs (which reference `.gba` ROMs directly).
+- **TorrentZip repack** (`src/core/torrentzip.py`): `repack_verified_archives_to_torrentzip()` extracts `.gba` from `.7z`/`.zip`/`.rar`, creates TorrentZip-compatible `.zip` files, and deletes the source archive. Only runs if `--clean-torrentzip` or `clean_torrentzip=True` is set.
+- **Key issue**: If `clean_torrentzip` is not enabled, downloaded `.7z` files stay as `.7z` in the ROM folder. RomVault expects `.zip`. Always run with `--clean-torrentzip` for GBA sets downloaded from LoLROMs.
+
+## SYSTEM_MAPPINGS (sources.py)
+
+- `SYSTEM_MAPPINGS` maps DAT system names to source-specific slugs for each provider (`lolroms`, `vimm`, `edgeemu`, `planetemu`, `romhustler`, `coolrom`, `retrogamesets`, `romsxisos`, `startgame`, `hshop`, `nopaystation`).
+- LoLROMs paths use the exact directory name on the site (e.g. `'Nintendo - Game Boy Advance'`, `'SEGA/Mega Drive'`, `'SONY/PlayStation'`).
+- Subdirectory aliases for GBA LoLROMs are defined in `LOLROMS_SUBDIR_ALIASES` in `scrapers.py`.
+- CDRomance has been fully removed (site dead since January 2026). No `cdromance` type, no `CDROMANCE_BASE`, no `resolve_cdromance_game`, no `download_cdromance`, no `get_cdromance_session`.
+
+## Download delay & Cloudflare protection
+
+- `download_file()` in `downloads.py` now detects HTML content-type responses (Cloudflare challenge pages) and raises `DownloadNetworkError` instead of saving garbage.
+- `source_delay_seconds(source_config, default)` in `sources.py` reads `delay_seconds` from source policies. LoLROMs uses a 3s delay between downloads to avoid Cloudflare rate-limiting.
+- When LoLROMs downloads fail repeatedly, the `SourceCircuitBreaker` trips after 10 failures and blocks the source for 300s. Reducing `parallel_downloads` to 1 and adding `delay_seconds` mitigates this.
+
+## Provider stats
+
+- `provider_stats` in `.rom_downloader_preferences.json` tracks `attempts`, `downloaded`, `failed`, `skipped`, `dry_run`, `quota_skipped`, `seconds` per provider.
+- The `SourceCircuitBreaker` (threshold=10 failures, recovery=300s) can block a provider mid-session if downloads fail repeatedly.

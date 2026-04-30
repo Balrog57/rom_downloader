@@ -28,7 +28,6 @@ from .minerva import (
 )
 from .dat_profile import finalize_dat_profile, prepare_sources_for_profile, describe_dat_profile
 from .scrapers import (
-    get_cdromance_session,
     get_vimm_session,
     get_lolroms_session,
     resolve_lolroms_system_path,
@@ -37,7 +36,6 @@ from .scrapers import (
     iter_game_candidate_names,
     resolve_edgeemu_game,
     list_planetemu_directory,
-    resolve_cdromance_game,
     resolve_vimm_game,
     resolve_retrogamesets_game,
     match_myrient_files,
@@ -176,24 +174,6 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
                                 remaining.append(game_info)
                         all_found.extend(newly_found)
                         still_missing = remaining
-
-            elif source['type'] == 'cdromance':
-                print(f"\n--- Recherche sur CDRomance ---")
-                cd_session = get_cdromance_session()
-                newly_found = []
-                remaining = []
-                for game_info in still_missing:
-                    cd_match = resolve_cdromance_game(game_info, cd_session)
-                    if cd_match:
-                        game_info['page_url'] = cd_match['page_url']
-                        game_info['source'] = 'CDRomance'
-                        game_info['download_filename'] = f"{game_info['game_name']}.zip"
-                        newly_found.append(game_info)
-                        print(f"  [CDRomance] {game_info['game_name']} trouve")
-                    else:
-                        remaining.append(game_info)
-                all_found.extend(newly_found)
-                still_missing = remaining
 
             elif source['type'] == 'vimm':
                 slug = mappings.get('vimm')
@@ -342,7 +322,7 @@ def search_all_sources(
     """
     Recherche des jeux manquants selon le pipeline prioritaire:
     1. Base locale (liens DDL uniquement -- 1fichier, autres hebergeurs directs)
-    2. Sources DDL live (EdgeEmu, PlanetEmu, LoLROMs, CDRomance, Vimm, RetroGameSets)
+    2. Sources DDL live (EdgeEmu, PlanetEmu, LoLROMs, Vimm, RetroGameSets)
     3. Torrent Minerva (base locale torrent + browse Minerva)
     4. archive.org (dernier recours)
     """
@@ -356,6 +336,17 @@ def search_all_sources(
         for source_name in (excluded_sources or set())
         if source_name
     }
+    prefer_1fichier = any(
+        _source_is_usable(source)
+        and source.get('type') in {'retrogamesets', 'startgame'}
+        and int(source.get('order', 99)) <= 11
+        for source in sources
+    )
+    sources = prepare_sources_for_profile(
+        [source.copy() for source in (sources or [])],
+        dat_profile,
+        prefer_1fichier=prefer_1fichier
+    )
 
     all_found = []
     still_missing = missing_games.copy()
@@ -534,25 +525,6 @@ def search_all_sources(
                         all_found.extend(newly_found)
                         ddl_found.extend(newly_found)
                         still_missing = remaining
-
-            elif source['type'] == 'cdromance':
-                if still_missing:
-                    print(f"\n--- Recherche sur CDRomance ---")
-                    cd_session = get_cdromance_session()
-                    def _cd_fields(merged, result):
-                        merged['page_url'] = result['page_url']
-                        merged['download_filename'] = f"{merged['game_name']}.zip"
-                    newly_found, remaining = _resolve_games_parallel(
-                        still_missing,
-                        lambda gi: resolve_cdromance_game(gi, cd_session),
-                        "resolve:cdromance",
-                        "CDRomance",
-                        system_name,
-                        extra_fields_fn=_cd_fields,
-                    )
-                    all_found.extend(newly_found)
-                    ddl_found.extend(newly_found)
-                    still_missing = remaining
 
             elif source['type'] == 'vimm':
                 slug = mappings.get('vimm')

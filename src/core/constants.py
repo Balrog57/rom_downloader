@@ -34,7 +34,7 @@ MINERVA_TORRENT_BASE_CANDIDATES = (
     'https://cdn.minerva-archive.org/'
 )
 LOLROMS_BASE = 'https://lolroms.com/'
-CDROMANCE_BASE = 'https://cdromance.org/'
+
 VIMM_BASE = 'https://vimm.net/'
 RETRO_GAME_SETS_BASE = 'https://retrogamesets.fr/'
 ROMHUSTLER_BASE = 'https://romhustler.org/'
@@ -77,7 +77,6 @@ __all__ = [
     'MINERVA_BROWSE_BASE',
     'MINERVA_TORRENT_BASE_CANDIDATES',
     'LOLROMS_BASE',
-    'CDROMANCE_BASE',
     'VIMM_BASE',
     'RETRO_GAME_SETS_BASE',
     'ROMHUSTLER_BASE',

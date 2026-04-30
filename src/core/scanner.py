@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-from .dat_parser import normalize_checksum, parse_rom_size, strip_rom_extension, add_local_name_reference
+from .dat_parser import normalize_checksum, parse_rom_size, parse_dat_file, strip_rom_extension, add_local_name_reference
 from .signatures import (
     build_target_signature_sets,
     hash_file_signatures,
@@ -221,8 +221,8 @@ def build_analysis_summary(dat_file: str, rom_folder: str, dat_games: dict, miss
 def analyze_dat_folder(dat_file: str, rom_folder: str, include_tosort: bool = False,
                        custom_sources: list | None = None, candidate_limit: int = 0) -> dict:
     """Analyse un couple DAT/dossier avant tout telechargement."""
-    from .dat_profile import detect_dat_profile, finalize_dat_profile
-    from .sources import prepare_sources_for_profile, get_default_sources, parse_candidate_limit
+    from .dat_profile import detect_dat_profile, finalize_dat_profile, prepare_sources_for_profile
+    from .sources import get_default_sources, parse_candidate_limit
     dat_games = parse_dat_file(dat_file)
     dat_profile = finalize_dat_profile(detect_dat_profile(dat_file))
     sources = prepare_sources_for_profile(

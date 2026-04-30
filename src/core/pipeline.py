@@ -23,7 +23,7 @@ from .scanner import (
     print_analysis_summary,
 )
 from .dat_profile import detect_dat_profile, finalize_dat_profile, prepare_sources_for_profile, describe_dat_profile
-from .sources import get_default_sources, build_custom_source, normalize_source_label
+from .sources import get_default_sources, build_custom_source, normalize_source_label, apply_source_policies
 from .reports import write_download_report
 from .torrentzip import repack_verified_archives_to_torrentzip
 from .download_orchestrator import (
@@ -36,10 +36,8 @@ from .download_orchestrator import (
 )
 from .scrapers import (
     download_planetemu,
-    download_cdromance,
     download_vimm,
     get_lolroms_session,
-    get_cdromance_session,
     get_vimm_session,
 )
 from .search_pipeline import search_all_sources, search_all_sources_legacy
@@ -93,6 +91,8 @@ def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_ru
     sources = [source.copy() for source in (custom_sources if custom_sources else get_default_sources())]
     if myrient_url and myrient_url not in [s['base_url'] for s in sources]:
         sources.insert(0, build_custom_source(myrient_url))
+    from ._facade import load_preferences
+    sources = apply_source_policies(sources, load_preferences().get('source_policies', {}))
     sources = prepare_sources_for_profile(sources, dat_profile)
     report_active_sources = [source['name'] for source in sources if source.get('enabled', True)]
     print_analysis_summary(build_analysis_summary(dat_file, rom_folder, dat_games, missing_games, dat_profile, sources))
@@ -165,11 +165,6 @@ def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_ru
 
                 elif source == 'LoLROMs' and download_url:
                     success = download_file(download_url, dest_path, get_lolroms_session())
-
-                elif source == 'CDRomance':
-                    page_url = game_info.get('page_url')
-                    if page_url:
-                        success = download_cdromance(page_url, dest_path, get_cdromance_session())
 
                 elif source == 'Vimm\'s Lair':
                     page_url = game_info.get('page_url')
@@ -264,6 +259,16 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
     sources = [source.copy() for source in (custom_sources if custom_sources else get_default_sources())]
     if myrient_url and myrient_url not in [s['base_url'] for s in sources]:
         sources.insert(0, build_custom_source(myrient_url))
+    from ._facade import load_preferences
+    _prefs = load_preferences()
+    _policies = _prefs.get('source_policies', {})
+    _parallel = _prefs.get('parallel_downloads') if parallel_downloads is None else parallel_downloads
+    if _parallel is not None:
+        try:
+            parallel_downloads = int(_parallel)
+        except (TypeError, ValueError):
+            pass
+    sources = apply_source_policies(sources, _policies)
     sources = prepare_sources_for_profile(sources, dat_profile, prefer_1fichier=prefer_1fichier)
     report_active_sources = [source['name'] for source in sources if source.get('enabled', True)]
     print_analysis_summary(build_analysis_summary(dat_file, rom_folder, dat_games, missing_games, dat_profile, sources))
@@ -279,6 +284,7 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
         if myrient_url and myrient_url not in [s['base_url'] for s in sources]:
             sources.insert(0, build_custom_source(myrient_url))
 
+        sources = apply_source_policies(sources, _policies)
         sources = prepare_sources_for_profile(sources, dat_profile, prefer_1fichier=prefer_1fichier)
         sources = prioritize_sources(sources, session_metrics)
         report_active_sources = [source['name'] for source in sources if source.get('enabled', True)]

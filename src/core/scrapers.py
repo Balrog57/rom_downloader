@@ -60,10 +60,6 @@ def get_lolroms_session():
     return LOLROMS_SESSION
 
 
-def get_cdromance_session():
-    """Retourne une session Cloudflare-compatible pour CDRomance."""
-    return get_lolroms_session()
-
 
 def get_vimm_session():
     """Retourne une session avec les bons headers pour Vimm's Lair."""
@@ -525,72 +521,6 @@ def download_planetemu(page_url: str, dest_path: str, session: requests.Session,
         
     except Exception as e:
         print(f"  [PlanetEmu] Erreur: {e}")
-        return False
-
-def resolve_cdromance_game(game_info: dict, session: requests.Session) -> dict | None:
-    """Recherche un jeu sur CDRomance via leur moteur de recherche."""
-    for candidate_name in iter_game_candidate_names(game_info):
-        search_url = f"{CDROMANCE_BASE}?s={quote(candidate_name)}"
-        try:
-            resp = session.get(search_url, timeout=30)
-            if resp.status_code != 200: continue
-            
-            soup = BeautifulSoup(resp.text, 'html.parser')
-            for link in soup.find_all('a', href=True):
-                if CDROMANCE_BASE in link['href'] and any(x in link['href'] for x in ['-iso', '-rom', '-roms']):
-                    title = link.get('title', '').lower() or link.get_text().strip().lower()
-                    clean_title = re.sub(r'[^a-z0-9]', '', title)
-                    clean_candidate = re.sub(r'[^a-z0-9]', '', candidate_name.lower())
-                    
-                    if clean_candidate in clean_title or clean_title in clean_candidate:
-                        return {
-                            'full_name': candidate_name,
-                            'page_url': link['href'],
-                            'source': 'CDRomance'
-                        }
-        except Exception as e:
-            print(f"  [CDRomance] Erreur recherche: {e}")
-            continue
-    return None
-
-def download_cdromance(page_url: str, dest_path: str, session: requests.Session, progress_callback=None) -> bool:
-    """Télécharge un jeu depuis CDRomance en gérant le système de tickets."""
-    try:
-        resp = session.get(page_url, timeout=30)
-        soup = BeautifulSoup(resp.text, 'html.parser')
-        
-        ticket = None
-        ticket_el = soup.find('input', {'id': 'cdr_ticket_input'}) or soup.find('span', {'id': 'cdr_ticket'})
-        if ticket_el:
-            ticket = ticket_el.get('value') or ticket_el.get_text().strip()
-            
-        if not ticket:
-            match = re.search(r'cdr_ticket\s*=\s*["\']([^"\']+)["\']', resp.text)
-            if match: ticket = match.group(1)
-
-        if not ticket:
-            print("  [CDRomance] Ticket introuvable")
-            return False
-            
-        post_data = {'cdrTicketInput': ticket}
-        resp = session.post(CDROMANCE_BASE, data=post_data, timeout=30)
-        soup = BeautifulSoup(resp.text, 'html.parser')
-        
-        dl_links = []
-        for a in soup.find_all('a', href=True):
-            if 'download.php' in a['href']:
-                dl_links.append(urljoin(CDROMANCE_BASE, a['href']))
-        
-        if not dl_links:
-            print("  [CDRomance] Aucun lien de téléchargement trouvé après validation du ticket")
-            return False
-            
-        download_url = dl_links[0]
-        from .downloads import download_file
-        return download_file(download_url, dest_path, session, progress_callback)
-        
-    except Exception as e:
-        print(f"  [CDRomance] Erreur téléchargement: {e}")
         return False
 
 def resolve_vimm_game(game_info: dict, system_slug: str, session: requests.Session) -> dict | None:
@@ -1463,7 +1393,6 @@ def resolve_romsxisos_game(game_info: dict, system_slug: str, session: requests.
 
 __all__ = [
     'get_lolroms_session',
-    'get_cdromance_session',
     'get_vimm_session',
     'build_lolroms_url',
     'resolve_lolroms_system_path',
@@ -1477,8 +1406,6 @@ __all__ = [
     'resolve_edgeemu_game',
     'list_planetemu_directory',
     'download_planetemu',
-    'resolve_cdromance_game',
-    'download_cdromance',
     'resolve_vimm_game',
     'download_vimm',
     'RETRO_GAME_SETS_DB',

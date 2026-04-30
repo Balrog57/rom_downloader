@@ -579,10 +579,16 @@ def gui_mode():
                     policy = self.source_policies.get(item['name'], {})
                     timeout = optional_positive_int(policy.get('timeout_seconds'), minimum=3, maximum=1800)
                     quota = optional_positive_int(policy.get('quota_per_run'), minimum=1, maximum=100000)
+                    delay = policy.get('delay_seconds')
                     if timeout is not None:
                         item['timeout_seconds'] = timeout
                     if quota is not None:
                         item['quota_per_run'] = quota
+                    if delay is not None:
+                        try:
+                            item['delay_seconds'] = max(0.0, min(float(delay), 60.0))
+                        except (TypeError, ValueError):
+                            pass
                     sources.append(item)
                 return prepare_sources_for_profile(sources, self.dat_profile, prefer_1fichier=bool(self.prefer_1fichier_var.get()))
 

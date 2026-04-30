@@ -99,6 +99,7 @@ dat_size_summary.tsv
 dat/romset_dat_sizes.xlsx
 .rom_downloader_scan_cache.json
 .rom_downloader_preferences.json
+.rom_downloader_provider_metrics.json
 .rom_downloader_resolution_cache.json
 .rom_downloader_listing_cache.json
 *.part
