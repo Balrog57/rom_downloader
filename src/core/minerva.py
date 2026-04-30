@@ -158,15 +158,31 @@ def list_minerva_directory(minerva_url: str, session) -> tuple[set, list]:
     return files, directories
 
 
-def collect_minerva_files_from_url(minerva_url: str, session, depth: int = 0) -> set:
-    files, directories = list_minerva_directory(minerva_url, session)
+def collect_minerva_files_from_url(minerva_url: str, session, depth: int = 0) -> dict:
+    """Retourne un dict {nom_normalise: {full_name, filename}} compatible find_listing_match."""
+    files_set, directories = list_minerva_directory(minerva_url, session)
+    result = _minerva_files_to_dict(files_set)
     if depth <= 0 or not directories:
-        return files
-
-    collected = set(files)
+        return result
     for directory in directories:
-        collected.update(collect_minerva_files_from_url(directory['url'], session, depth - 1))
-    return collected
+        sub = collect_minerva_files_from_url(directory['url'], session, depth - 1)
+        result.update(sub)
+    return result
+
+
+def _minerva_files_to_dict(files: set) -> dict[str, dict]:
+    """Convertit un set de noms de fichiers en dict compatible find_listing_match."""
+    from .dat_parser import strip_rom_extension
+    result = {}
+    for f in files:
+        display_name = strip_rom_extension(f)
+        key = display_name.lower()
+        result[key] = {
+            'full_name': display_name,
+            'filename': f,
+            'url': '',
+        }
+    return result
 
 
 def select_ddl_result(db_results: list, prefer_1fichier: bool = True) -> dict | None:

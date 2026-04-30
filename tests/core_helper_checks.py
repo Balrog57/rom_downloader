@@ -209,6 +209,23 @@ def main() -> None:
     merged = merge_provider_metrics({"EdgeEmu": {"attempts": 1, "failed": 1}}, {"EdgeEmu": {"attempts": 2, "downloaded": 1}})
     assert_true(merged["EdgeEmu"]["attempts"] == 3 and merged["EdgeEmu"]["downloaded"] == 1, "provider metric merge failed")
 
+    # ── System name cleanup: format suffixes ──
+    nsys = normalize_system_name
+    assert_true(nsys("Atari - Atari 7800 (BIN)") == "Atari - Atari 7800", "format suffix (BIN) not stripped")
+    assert_true(nsys("Atari - Atari Jaguar (J64)") == "Atari - Atari Jaguar", "format suffix (J64) not stripped")
+    assert_true(nsys("Atari - Atari Lynx (LYX)") == "Atari - Atari Lynx", "format suffix (LYX) not stripped")
+    assert_true(nsys("Nintendo - Nintendo Entertainment System (Headered)") == "Nintendo - Nintendo Entertainment System", "headered suffix survives")
+    assert_true(nsys("Nintendo - Game Boy (WIP)") == "Nintendo - Game Boy", "WIP suffix not stripped")
+    assert_true(nsys("Sony - PlayStation 3 (PSN) (DLC)") == "Sony - PlayStation 3", "PSN DLC not stripped")
+    assert_true(nsys("NEC - PC-88 series (KryoFlux)") == "NEC - PC-88 series", "KryoFlux suffix not stripped")
+    assert_true(nsys("Nintendo - Nintendo 64 (BigEndian)") == "Nintendo - Nintendo 64", "BigEndian suffix not stripped")
+    assert_true(nsys("Sony - PlayStation Portable (PSN) (Encrypted)") == "Sony - PlayStation Portable", "PSN Encrypted not stripped")
+    assert_true(nsys("Nintendo - Nintendo 3DS (Digital) (CDN)") == "Nintendo - Nintendo 3DS", "Digital CDN not stripped")
+    assert_true(nsys("Sony - PlayStation Vita (PSN) (NoNpDrm)") == "Sony - PlayStation Vita", "NoNpDrm not stripped")
+    assert_true(nsys("Nintendo - Nintendo DS (Decrypted)") == "Nintendo - Nintendo DS", "Decrypted not stripped")
+    assert_true(nsys("Nintendo - Family Computer Disk System (FDS)") == "Nintendo - Family Computer Disk System", "FDS suffix not stripped")
+    assert_true(nsys("IBM - PC and Compatibles (Digital) (Steam)") == "IBM - PC and Compatibles", "Digital Steam not stripped")
+
     game = {"roms": [{"size": "4"}]}
     assert_true(expected_game_sizes(game) == {4}, "expected size extraction failed")
 
