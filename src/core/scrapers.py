@@ -193,11 +193,11 @@ def list_lolroms_directory(system_path: str, include_subdirs: bool = True) -> di
 
             if href.endswith('/'):
                 subdir_name = text.strip()
-                if subdir_name and include_subdirs:
+                if subdir_name and subdir_name not in {'/', './', '../'} and include_subdirs:
                     subdirs.append(subdir_name)
                 continue
 
-            full_url = urljoin(LOLROMS_BASE, href)
+            full_url = urljoin(url.rstrip('/') + '/', href)
             parsed_name = os.path.basename(unquote(href))
             filename = parsed_name if any(parsed_name.lower().endswith(ext) for ext in ROM_EXTENSIONS) else ''
             if not filename:
@@ -236,7 +236,7 @@ def list_lolroms_directory(system_path: str, include_subdirs: bool = True) -> di
                             continue
                         if '/.' in href:
                             continue
-                        full_url = urljoin(LOLROMS_BASE, href)
+                        full_url = urljoin(subdir_url.rstrip('/') + '/', href)
                         parsed_name = os.path.basename(unquote(href))
                         filename = parsed_name if any(parsed_name.lower().endswith(ext) for ext in ROM_EXTENSIONS) else ''
                         if not filename:
@@ -336,9 +336,7 @@ def normalize_external_game_name(name: str) -> str:
     value = strip_rom_extension(value)
     value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
     value = value.lower().replace('&', ' and ')
-    value = re.sub(r'[\(\[]\s*((?:disc|disk|cd)\s*\d+)\s*[\)\]]', r' \1 ', value)
-    value = re.sub(r'[\(\[][^\)\]]*[\)\]]', ' ', value)
-    value = re.sub(r'\b(?:rev|version|v)\s*\d+(?:\.\d+)*\b', ' ', value)
+    value = re.sub(r'\b(?:rev|version|v)\s*(\d+(?:\.\d+)*)\b', r'rev \1', value)
     value = re.sub(r'\b(?:disc|disk|cd)\s*(\d+)\b', r'disc \1', value)
     value = re.sub(r'[^a-z0-9]+', ' ', value)
     return re.sub(r'\s+', ' ', value).strip()
