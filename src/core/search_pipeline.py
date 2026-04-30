@@ -39,7 +39,6 @@ from .scrapers import (
     list_planetemu_directory,
     resolve_vimm_game,
     resolve_retrogamesets_game,
-    match_myrient_files,
     search_archive_org_for_games,
     list_romhustler_directory,
     resolve_romhustler_game,
@@ -232,11 +231,21 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
                     print(f"  Avertissement: torrent Minerva introuvable pour {source['name']} ({probe_url})")
                     continue
 
-                found, still_missing = match_myrient_files(still_missing, minerva_files, source['name'])
-                for f in found:
-                    f['torrent_url'] = torrent_url
-                    f['source'] = source['name']
-                all_found.extend(found)
+                newly_found = []
+                remaining = []
+                for game_info in still_missing:
+                    _matched_name, matched = find_listing_match(game_info, minerva_files)
+                    if matched:
+                        game_info['download_filename'] = matched.get('filename', f"{game_info['game_name']}.zip")
+                        game_info['torrent_url'] = torrent_url
+                        game_info['source'] = source['name']
+                        newly_found.append(game_info)
+                        detail = f" -> {matched.get('filename')}" if matched.get('filename') else ''
+                        print(f"  [{source['name']}] {game_info['game_name']} trouve{detail}")
+                    else:
+                        remaining.append(game_info)
+                all_found.extend(newly_found)
+                still_missing = remaining
 
     archive_sources = [
         s for s in sources
@@ -772,12 +781,22 @@ def search_all_sources(
                 print(f"  Avertissement: torrent Minerva introuvable pour {source['name']} ({probe_url})")
                 continue
 
-            found, still_missing = match_myrient_files(still_missing, minerva_files, source['name'])
-            for game in found:
-                game['torrent_url'] = torrent_url
-                game['source'] = source['name']
-            minerva_found.extend(found)
-            all_found.extend(found)
+            newly_found = []
+            remaining = []
+            for game_info in still_missing:
+                _matched_name, matched = find_listing_match(game_info, minerva_files)
+                if matched:
+                    game_info['download_filename'] = matched.get('filename', f"{game_info['game_name']}.zip")
+                    game_info['torrent_url'] = torrent_url
+                    game_info['source'] = source['name']
+                    newly_found.append(game_info)
+                    detail = f" -> {matched.get('filename')}" if matched.get('filename') else ''
+                    print(f"  [{source['name']}] {game_info['game_name']} trouve{detail}")
+                else:
+                    remaining.append(game_info)
+            minerva_found.extend(newly_found)
+            all_found.extend(newly_found)
+            still_missing = remaining
 
         print(f"\n  Trouve via Minerva (torrent): {len(minerva_found)} jeux")
         print(f"  Restants apres Minerva: {len(still_missing)} jeux")

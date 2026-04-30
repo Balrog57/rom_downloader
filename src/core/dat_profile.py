@@ -20,6 +20,7 @@ def normalize_system_name(system_name: str) -> str:
 
     cleanup_patterns = [
         r'\s*[\(\[]\s*(?:retool|1g1r)[^\)\]]*[\)\]]\s*$',
+        r'\s*[\(\[]\s*(?:fds|bin|j64|lyx|lzx|a2r|bigendian|headered|headerless|decrypted|encrypted|wip|deprecated|digital|steam|desura|groupees|dlc|theme|update|avatar|content|crypte|flux|waveform|kryoflux|mame|cardimage|cdn|psn|psn minis|psp eboot|psx2psp|umd|nonpdrm|vpk|wad|cia|noscan|hentai|dev|pre-install|spotpass|lotcheck|starlight)[^\)\]]*[\)\]]\s*$',
         r'\s*-\s*datfile\b.*$',
         r'\s+datfile\b.*$',
         r'\s*-\s*retool\s*$',
