@@ -427,7 +427,8 @@ def get_default_sources():
             'type': 'lolroms',
             'enabled': True,
             'description': 'Fallback direct via Cloudflare-compatible listing',
-            'priority': 3
+            'priority': 3,
+            'delay_seconds': 3,
         },
         {
             'name': 'Vimm\'s Lair',

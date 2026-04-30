@@ -53,20 +53,28 @@ def get_lolroms_session():
         user_agent = os.environ.get(
             'LOLROMS_USER_AGENT',
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
-            '(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+            '(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'
         )
         LOLROMS_SESSION = cloudscraper.create_scraper(
-            browser={'browser': 'chrome', 'platform': 'windows', 'mobile': False}
+            browser={'browser': 'chrome', 'platform': 'windows', 'mobile': False},
+            delay=10,
         )
         LOLROMS_SESSION.headers.update({
             'User-Agent': user_agent,
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
             'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
-            'Referer': LOLROMS_BASE,
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Cache-Control': 'no-cache',
+            'DNT': '1',
+            'Upgrade-Insecure-Requests': '1',
         })
         cookie = os.environ.get('LOLROMS_COOKIE', '').strip()
         if cookie:
             LOLROMS_SESSION.headers['Cookie'] = cookie
+            for pair in cookie.split(';'):
+                if '=' in pair:
+                    key, val = pair.split('=', 1)
+                    LOLROMS_SESSION.cookies.set(key.strip(), val.strip(), domain='lolroms.com')
 
     return LOLROMS_SESSION
 
@@ -79,11 +87,15 @@ def download_lolroms_file(url: str, dest_path: str, progress_callback=None,
     session = get_lolroms_session()
     directory_url = url.rsplit('/', 1)[0] + '/' if '/' in url else LOLROMS_BASE
     headers = {
-        'Accept': 'application/octet-stream,application/x-7z-compressed,*/*;q=0.8',
+        'Accept': 'application/octet-stream,application/x-7z-compressed,application/zip,*/*;q=0.8',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
         'Referer': directory_url,
         'Sec-Fetch-Dest': 'empty',
         'Sec-Fetch-Mode': 'cors',
         'Sec-Fetch-Site': 'same-origin',
+        'Sec-Fetch-User': '?1',
+        'Connection': 'keep-alive',
     }
     return download_file(
         url,
@@ -373,13 +385,16 @@ def normalize_external_game_name(name: str) -> str:
     value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
     value = value.lower().replace('&', ' and ')
     value = re.sub(r'\b(?:rev|version|v)\s*(\d+(?:\.\d+)*)\b', r'rev \1', value)
-    value = re.sub(r'\b(?:disc|disk|cd)\s*(\d+)\b', r'disc \1', value)
+    value = re.sub(r'\b(?:disc|disk|cd)\s*(\d+(?:\.\d+)*)\b', r'disc \1', value)
+    value = re.sub(r'\b(?:demo|sample|prototype|proto|beta|alpha|unl|unlicensed|debug|press[-\s]?kit|promo)\b', '', value)
     value = re.sub(r'[^a-z0-9]+', ' ', value)
+    value = re.sub(r'\s+', ' ', value).strip()
+    value = re.sub(r'\bdisc\s', ' disc ', value)
     return re.sub(r'\s+', ' ', value).strip()
 
 
 def find_listing_match(game_info: dict, listing: dict, min_score: float = 0.92) -> tuple[str, dict] | tuple[None, None]:
-    """Trouve le meilleur resultat d'un listing avec exact + normalisation."""
+    """Trouve le meilleur resultat d'un listing avec exact + normalisation + fuzzy + containment."""
     if not listing:
         return None, None
 
@@ -397,7 +412,9 @@ def find_listing_match(game_info: dict, listing: dict, min_score: float = 0.92) 
                 if normalized not in normalized_names:
                     normalized_names.append(normalized)
 
-    for candidate_name in iter_game_candidate_names(game_info):
+    candidates = iter_game_candidate_names(game_info)
+
+    for candidate_name in candidates:
         raw = candidate_name.lower()
         if raw in raw_index:
             return candidate_name, raw_index[raw]
@@ -420,6 +437,15 @@ def find_listing_match(game_info: dict, listing: dict, min_score: float = 0.92) 
 
         if best_score >= min_score:
             return candidate_name, normalized_index[best_name]
+
+    for candidate_name in candidates:
+        normalized_candidate = normalize_external_game_name(candidate_name)
+        if not normalized_candidate:
+            continue
+        for normalized_name in normalized_names:
+            shorter, longer = sorted([normalized_candidate, normalized_name], key=len)
+            if len(shorter) >= 8 and (shorter in longer or longer in shorter):
+                return candidate_name, normalized_index[normalized_name]
 
     return None, None
 
