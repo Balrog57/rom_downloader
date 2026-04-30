@@ -10,6 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from src.core import (  # noqa: E402
     cache_entry_matches_source,
     expected_game_sizes,
+    find_listing_match,
     listing_cache_prefixes_for_source,
     normalize_system_name,
     optional_positive_int,
@@ -60,6 +61,28 @@ def main() -> None:
     assert_true(compatibility["EdgeEmu"], "EdgeEmu should be usable when explicitly enabled")
     assert_true(not compatibility["Minerva No-Intro"], "No-Intro Minerva should not match a Redump DAT")
     assert_true(compatibility["Minerva Redump"], "Redump Minerva should match a Redump DAT")
+
+    listing = {
+        "kidou senshi gundam - senshitachi no kiseki (japan)": {
+            "full_name": "Kidou Senshi Gundam - Senshitachi no Kiseki (Japan)",
+            "filename": "Kidou Senshi Gundam - Senshitachi no Kiseki (Japan).7z",
+        },
+        "kidou senshi gundam - senshitachi no kiseki (japan) (special disc)": {
+            "full_name": "Kidou Senshi Gundam - Senshitachi no Kiseki (Japan) (Special Disc)",
+            "filename": "Kidou Senshi Gundam - Senshitachi no Kiseki (Japan) (Special Disc).7z",
+        },
+    }
+    _match_name, match_entry = find_listing_match(
+        {
+            "game_name": "Kidou Senshi Gundam - Senshi-tachi no Kiseki (Japan) (Special Disc)",
+            "primary_rom": "Kidou Senshi Gundam - Senshi-tachi no Kiseki (Japan) (Special Disc).iso",
+        },
+        listing,
+    )
+    assert_true(
+        match_entry and "Special Disc" in match_entry["filename"],
+        "LoLROMs fuzzy match should preserve special disc qualifiers",
+    )
 
     usage = {}
     assert_true(reserve_source_quota("EdgeEmu", [source], usage)[0], "first quota reservation failed")

@@ -34,6 +34,7 @@ from .scrapers import (
     list_lolroms_directory,
     _lolroms_subdir_for_system,
     iter_game_candidate_names,
+    find_listing_match,
     resolve_edgeemu_game,
     list_planetemu_directory,
     resolve_vimm_game,
@@ -507,18 +508,15 @@ def search_all_sources(
                         newly_found = []
                         remaining = []
                         for game_info in still_missing:
-                            matched = None
-                            for candidate_name in iter_game_candidate_names(game_info):
-                                matched = lolroms_files.get(candidate_name.lower())
-                                if matched:
-                                    break
+                            _matched_name, matched = find_listing_match(game_info, lolroms_files)
 
                             if matched and isinstance(matched, dict):
                                 game_info['download_url'] = matched.get('url', '')
                                 game_info['source'] = 'LoLROMs'
                                 game_info['download_filename'] = matched.get('filename', f"{game_info['game_name']}.zip")
                                 newly_found.append(game_info)
-                                print(f"  [LoLROMs] {game_info['game_name']} trouve")
+                                detail = f" -> {matched.get('filename')}" if matched.get('filename') else ''
+                                print(f"  [LoLROMs] {game_info['game_name']} trouve{detail}")
                             else:
                                 remaining.append(game_info)
 
