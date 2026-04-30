@@ -19,6 +19,7 @@ from .sources import (
     normalize_source_label,
     find_source_config,
     source_timeout_seconds,
+    source_delay_seconds,
     source_policy_summary,
     reserve_source_quota,
     resolve_game_sources_with_cache,
@@ -28,7 +29,6 @@ from .dat_profile import finalize_dat_profile, prepare_sources_for_profile, desc
 from .search_pipeline import search_all_sources
 from .scrapers import (
     get_lolroms_session,
-    get_cdromance_session,
     get_vimm_session,
 )
 from .downloads import download_file, download_from_archive_org
@@ -78,6 +78,11 @@ def attempt_download_from_resolved_provider(game_info: dict, output_folder: str,
     source_config = find_source_config(sources, source)
     download_timeout = source_timeout_seconds(source_config, 120)
 
+    _delay = source_delay_seconds(source_config, 0.0)
+    if _delay and not torrent_url:
+        log_func(f"  Delai {_delay:.1f}s avant telechargement ({source})...")
+        time.sleep(_delay)
+
     if source == 'archive_org':
         identifier = game_info.get('archive_org_identifier', '')
         if identifier and filename:
@@ -94,12 +99,6 @@ def attempt_download_from_resolved_provider(game_info: dict, output_folder: str,
 
     elif source == 'LoLROMs' and download_url:
         success = download_file(download_url, dest_path, get_lolroms_session(), progress_callback, download_timeout, progress_detail_callback)
-
-    elif source == 'CDRomance':
-        from .scrapers import download_cdromance
-        page_url = game_info.get('page_url')
-        if page_url:
-            success = download_cdromance(page_url, dest_path, get_cdromance_session(), progress_callback)
 
     elif source == 'Vimm\'s Lair':
         from .scrapers import download_vimm

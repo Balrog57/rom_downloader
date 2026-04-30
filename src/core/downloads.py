@@ -127,6 +127,14 @@ def download_file(url: str, dest_path: str, session: requests.Session, progress_
             with session.get(url, **request_kwargs) as response:
                 response.raise_for_status()
 
+                content_type = (response.headers.get('content-type', '') or '').lower()
+                if 'text/html' in content_type and not url.lower().endswith('.html'):
+                    preview = response.raw.read(512, decode_content=True)
+                    snippet = preview.decode('utf-8', errors='ignore').strip()[:200]
+                    raise DownloadNetworkError(
+                        f"Reponse HTML inattendue (Cloudflare?): {snippet}"
+                    )
+
                 server_filename = ''
                 cd = response.headers.get('content-disposition', '')
                 match = re.search(r'filename=(?:"([^"]+)"|([^;]+))', cd, re.IGNORECASE)

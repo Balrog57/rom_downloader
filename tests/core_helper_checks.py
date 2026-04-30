@@ -11,8 +11,10 @@ from src.core import (  # noqa: E402
     cache_entry_matches_source,
     expected_game_sizes,
     listing_cache_prefixes_for_source,
+    normalize_system_name,
     optional_positive_int,
     parse_candidate_limit,
+    prepare_sources_for_profile,
     reserve_source_quota,
     source_quota_limit,
     source_timeout_seconds,
@@ -35,10 +37,29 @@ def main() -> None:
     assert_true(optional_positive_int("0") is None, "zero should be ignored")
     assert_true(parse_candidate_limit("all", 42) == 42, "candidate limit all failed")
     assert_true(parse_candidate_limit("7", 42) == 7, "candidate limit number failed")
+    assert_true(
+        normalize_system_name("Nintendo - GameCube - Datfile (2019) (2026-03-31 11-37-45)") == "Nintendo - GameCube",
+        "DAT filename cleanup failed",
+    )
 
     source = {"name": "EdgeEmu", "type": "edgeemu", "timeout_seconds": "45", "quota_per_run": "2"}
     assert_true(source_timeout_seconds(source) == 45, "source timeout failed")
     assert_true(source_quota_limit(source) == 2, "source quota failed")
+
+    redump_profile = {"family": "redump", "family_label": "Redump", "system_name": "Sony - PlayStation"}
+    redump_sources = prepare_sources_for_profile([
+        {"name": "LoLROMs", "type": "lolroms", "enabled": True},
+        {"name": "PlanetEmu", "type": "planetemu", "enabled": True},
+        {"name": "EdgeEmu", "type": "edgeemu", "enabled": True},
+        {"name": "Minerva No-Intro", "type": "minerva", "collection": "No-Intro", "enabled": True},
+        {"name": "Minerva Redump", "type": "minerva", "collection": "Redump", "enabled": True},
+    ], redump_profile)
+    compatibility = {item["name"]: item.get("compatible") for item in redump_sources}
+    assert_true(compatibility["LoLROMs"], "LoLROMs should be usable as a Redump fallback")
+    assert_true(compatibility["PlanetEmu"], "PlanetEmu should be usable as a Redump fallback")
+    assert_true(compatibility["EdgeEmu"], "EdgeEmu should be usable when explicitly enabled")
+    assert_true(not compatibility["Minerva No-Intro"], "No-Intro Minerva should not match a Redump DAT")
+    assert_true(compatibility["Minerva Redump"], "Redump Minerva should match a Redump DAT")
 
     usage = {}
     assert_true(reserve_source_quota("EdgeEmu", [source], usage)[0], "first quota reservation failed")

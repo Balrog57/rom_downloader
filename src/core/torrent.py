@@ -267,11 +267,9 @@ def download_from_minerva_torrent(torrent_url: str, target_filename: str, dest_p
             return True
         if backend in ('aria2', 'aria2c'):
             return False
-
-    if not is_libtorrent_session_usable():
         if not MINERVA_TORRENT_BACKEND_WARNING_SHOWN:
-            print("  Minerva torrent ignore: backend libtorrent instable ou indisponible.")
-            print("  Installe aria2c ou definis MINERVA_TORRENT_BACKEND=aria2 pour utiliser le backend externe.")
+            print("  Avertissement: aria2c n'a pas pu telecharger le torrent. Installe aria2c")
+            print("  (winget install aria2) si ce n'est pas deja fait, ou verifie la connectivite.")
             MINERVA_TORRENT_BACKEND_WARNING_SHOWN = True
         return False
 
@@ -282,8 +280,8 @@ def download_from_minerva_torrent(torrent_url: str, target_filename: str, dest_p
             import_error = OPTIONAL_IMPORT_ERRORS.get('libtorrent', 'module introuvable')
             print("  Minerva torrent ignore: backend libtorrent indisponible.")
             print(f"  Python courant: {py_version}; erreur import: {import_error}")
-            print("  Solution: installer un binding libtorrent compatible avec cet interpreteur")
-            print("  et placer libcrypto-1_1-x64.dll/libssl-1_1-x64.dll dans PATH,")
+            print("  Solution: utiliser aria2c (winget install aria2) ou")
+            print("  placer libcrypto-1_1-x64.dll/libssl-1_1-x64.dll dans PATH,")
             print("  ou definir LIBTORRENT_DLL_DIR dans .env vers le dossier qui les contient.")
             MINERVA_TORRENT_BACKEND_WARNING_SHOWN = True
         return False

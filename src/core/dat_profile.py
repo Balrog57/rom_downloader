@@ -13,6 +13,8 @@ def normalize_system_name(system_name: str) -> str:
 
     cleanup_patterns = [
         r'\s*[\(\[]\s*(?:retool|1g1r)[^\)\]]*[\)\]]\s*$',
+        r'\s*-\s*datfile\b.*$',
+        r'\s+datfile\b.*$',
         r'\s*-\s*retool\s*$',
         r'\s+retool\s*$'
     ]
@@ -55,16 +57,33 @@ def detect_dat_profile(dat_file_path: str) -> dict:
     header_url_lower = header_url.lower()
     header_name_lower = header_name.lower()
     header_description_lower = header_description.lower()
+    fallback_name_lower = fallback_name.lower()
+    dat_path_lower = dat_file_path.replace('\\', '/').lower()
 
     family = 'unknown'
     family_label = 'Inconnu'
-    if 'redump.org' in header_url_lower or 'redump' in header_name_lower:
+    if (
+        'redump.org' in header_url_lower
+        or 'redump' in header_name_lower
+        or '/redump/' in dat_path_lower
+        or re.search(r'\bredump\b', fallback_name_lower)
+    ):
         family = 'redump'
         family_label = 'Redump'
-    elif 'no-intro.org' in header_url_lower or 'no-intro' in header_name_lower:
+    elif (
+        'no-intro.org' in header_url_lower
+        or 'no-intro' in header_name_lower
+        or '/no-intro/' in dat_path_lower
+        or re.search(r'\bno-intro\b', fallback_name_lower)
+    ):
         family = 'no-intro'
         family_label = 'No-Intro'
-    elif 'tosec' in header_url_lower or 'tosec' in header_name_lower:
+    elif (
+        'tosec' in header_url_lower
+        or 'tosec' in header_name_lower
+        or '/tosec/' in dat_path_lower
+        or re.search(r'\btosec\b', fallback_name_lower)
+    ):
         family = 'tosec'
         family_label = 'TOSEC'
 
@@ -133,12 +152,6 @@ def is_source_compatible_with_profile(source: dict, dat_profile: dict | None) ->
     if source_type == 'minerva':
         source_family = get_source_family(source)
         return source_family in {'', 'custom', family}
-
-    if family == 'redump' and source_type in {'edgeemu', 'planetemu', 'lolroms'}:
-        return False
-
-    if source_type in {'edgeemu', 'cdromance'}:
-        return False
 
     return True
 

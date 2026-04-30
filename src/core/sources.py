@@ -4,7 +4,6 @@ import re
 import time
 
 from .constants import (
-    CDROMANCE_BASE,
     LOLROMS_BASE,
     MINERVA_BROWSE_BASE,
     RETRO_GAME_SETS_BASE,
@@ -98,7 +97,6 @@ SOURCE_TYPE_ORDER = {
     'retrogamesets': 70,
     'startgame': 72,
     'free_host': 78,
-    'cdromance': 800,
     'edgeemu': 850,
     'minerva': 900,
     'archive_org': 1000,
@@ -285,9 +283,42 @@ def source_timeout_seconds(source: dict | None, default: int = 120) -> int:
     return optional_positive_int((source or {}).get('timeout_seconds'), minimum=3, maximum=1800) or default
 
 
+def source_delay_seconds(source: dict | None, default: float = 0.0) -> float:
+    """Delai (secondes) avant chaque telechargement pour eviter le rate-limiting."""
+    val = (source or {}).get('delay_seconds')
+    if val is None:
+        return default
+    try:
+        f = float(val)
+    except (TypeError, ValueError):
+        return default
+    return max(0.0, min(f, 60.0))
+
+
 def source_quota_limit(source: dict | None) -> int | None:
     """Quota de tentatives par run pour une source, None = illimite."""
     return optional_positive_int((source or {}).get('quota_per_run'), minimum=1, maximum=100000)
+
+
+def apply_source_policies(sources: list, policies: dict) -> list:
+    """Applique les politiques utilisateur (timeout, quota, delai) aux sources."""
+    for source in sources:
+        policy = policies.get(source.get('name', ''), {})
+        if not policy:
+            continue
+        timeout = optional_positive_int(policy.get('timeout_seconds'), minimum=3, maximum=1800)
+        if timeout is not None:
+            source['timeout_seconds'] = timeout
+        quota = optional_positive_int(policy.get('quota_per_run'), minimum=1, maximum=100000)
+        if quota is not None:
+            source['quota_per_run'] = quota
+        delay = policy.get('delay_seconds')
+        if delay is not None:
+            try:
+                source['delay_seconds'] = max(0.0, min(float(delay), 60.0))
+            except (TypeError, ValueError):
+                pass
+    return sources
 
 
 def source_policy_summary(source: dict) -> str:
@@ -399,14 +430,6 @@ def get_default_sources():
             'priority': 3
         },
         {
-            'name': 'CDRomance',
-            'base_url': CDROMANCE_BASE,
-            'type': 'cdromance',
-            'enabled': False,
-            'description': 'Site archive depuis janv 2026 (plus de telechargements)',
-            'priority': 3
-        },
-        {
             'name': 'Vimm\'s Lair',
             'base_url': VIMM_BASE,
             'type': 'vimm',
@@ -475,35 +498,37 @@ def get_default_sources():
 
 
 SYSTEM_MAPPINGS = {
+    # ── Nintendo ──
     'Nintendo - Game Boy': {
         'edgeemu': 'nintendo-gameboy',
         'planetemu': 'nintendo-game-boy',
         'lolroms': 'Nintendo - Game Boy',
-        'vimm': 'GB',
         'retrogamesets': 'Game Boy (Archive)',
         'romhustler': 'gbc',
         'coolrom': 'gb',
         'romsxisos': 'gameboy',
+        'startgame': 'nintendo-game-boy',
+        'vimm': 'GB',
     },
     'Nintendo - Game Boy Color': {
         'edgeemu': 'nintendo-gameboycolor',
         'planetemu': 'nintendo-game-boy-color',
         'lolroms': 'Nintendo - Game Boy Color',
-        'vimm': 'GBC',
         'retrogamesets': 'Game Boy Color (Archive)',
         'romhustler': 'gbc',
         'coolrom': 'gbc',
         'romsxisos': 'gameboycolor',
+        'vimm': 'GBC',
     },
     'Nintendo - Game Boy Advance': {
         'edgeemu': 'nintendo-gba',
         'planetemu': 'nintendo-game-boy-advance',
         'lolroms': 'Nintendo - Game Boy Advance',
-        'vimm': 'GBA',
         'retrogamesets': 'Game Boy Advance (Archive)',
         'romhustler': 'gba',
         'coolrom': 'gba',
         'romsxisos': 'gba',
+        'vimm': 'GBA',
     },
     'Nintendo - Game Boy Advance (Multiboot)': {
         'lolroms': 'Nintendo - Game Boy Advance/Multi-Boot',
@@ -515,236 +540,359 @@ SYSTEM_MAPPINGS = {
         'edgeemu': 'nintendo-nes',
         'planetemu': 'nintendo-entertainment-system',
         'lolroms': 'Nintendo - Famicom/Headerless',
-        'vimm': 'NES',
         'retrogamesets': 'NES (Archive)',
         'romhustler': 'nes',
         'coolrom': 'nes',
         'romsxisos': 'nes',
+        'vimm': 'NES',
     },
     'Nintendo - Nintendo Entertainment System (Headered)': {
         'edgeemu': 'nintendo-nes',
         'planetemu': 'nintendo-entertainment-system',
         'lolroms': 'Nintendo - Famicom/Headered',
-        'vimm': 'NES',
         'romhustler': 'nes',
         'coolrom': 'nes',
+        'vimm': 'NES',
     },
     'Nintendo - Super Nintendo Entertainment System': {
         'edgeemu': 'nintendo-snes',
         'planetemu': 'nintendo-super-nintendo-entertainment-system',
         'lolroms': 'Nintendo - Super Famicom',
-        'vimm': 'SNES',
         'retrogamesets': 'SNES (Archive)',
         'romhustler': 'snes',
         'coolrom': 'snes',
         'romsxisos': 'snes',
+        'vimm': 'SNES',
     },
     'Nintendo - Nintendo 64': {
         'edgeemu': 'nintendo-n64',
         'planetemu': 'nintendo-64',
         'lolroms': 'Nintendo - 64',
-        'vimm': 'N64',
         'retrogamesets': 'Nintendo 64 (Archive)',
         'romhustler': 'n64',
         'coolrom': 'n64',
         'romsxisos': 'n64',
+        'vimm': 'N64',
     },
     'Nintendo - DS': {
         'lolroms': 'Nintendo - DS',
-        'vimm': 'DS',
+        'planetemu': 'nintendo-ds',
         'retrogamesets': 'Nintendo DS (LolRoms)',
         'romhustler': 'nds',
         'coolrom': 'nds',
-        'romsxisos': 'nds',
+        'vimm': 'DS',
     },
     'Nintendo - 3DS': {
         'lolroms': 'Nintendo - 3DS',
-        'vimm': '3DS',
+        'planetemu': 'nintendo-3ds',
         'retrogamesets': '3DS (Archive)',
-        'romhustler': '3ds',
+        'coolrom': '3ds',
         'hshop': 'games',
-        'romsxisos': '3ds',
+        'vimm': '3DS',
     },
     'Nintendo - GameCube': {
+        'edgeemu': 'nintendo-gamecube',
         'lolroms': 'Nintendo - GameCube',
-        'vimm': 'GameCube',
+        'planetemu': 'nintendo-gamecube',
         'retrogamesets': 'Game Cube (Archive)',
         'romhustler': 'gamecube',
         'coolrom': 'gamecube',
         'romsxisos': 'gamecube',
+        'startgame': 'nintendo-gamecube',
+        'vimm': 'GameCube',
     },
     'Nintendo - Wii': {
         'lolroms': 'Nintendo - Wii',
-        'vimm': 'Wii',
+        'planetemu': 'nintendo-wii',
         'retrogamesets': 'Wii (Archive)',
         'romhustler': 'wii',
         'coolrom': 'wii',
         'romsxisos': 'wii',
+        'vimm': 'Wii',
     },
     'Nintendo - Wii U': {
         'lolroms': 'Nintendo - Wii U',
-        'vimm': 'WiiU',
+        'planetemu': 'nintendo-wii-u',
         'retrogamesets': 'Wii U (EU) (1Fichier)',
-        'romhustler': 'wii-u',
+        'coolrom': 'wii-u',
+        'vimm': 'WiiU',
     },
     'Nintendo - Virtual Boy': {
         'lolroms': 'Nintendo - Virtual Boy',
-        'vimm': 'VirtualBoy',
+        'planetemu': 'nintendo-virtual-boy',
         'retrogamesets': 'Virtual Boy (Archive)',
-        'romhustler': 'virtual-boy',
+        'coolrom': 'vb',
         'romsxisos': 'virtualboy',
+        'vimm': 'VB',
     },
     'Nintendo - Pokémon Mini': {
         'lolroms': 'Nintendo - Pokémon Mini',
+        'planetemu': 'nintendo-pokemon-mini',
         'retrogamesets': 'Pokemon Mini (Archive)',
         'romsxisos': 'pokemonmini',
+        'coolrom': 'pokemonmini',
     },
+
+    # ── Sega ──
     'Sega - Mega Drive - Genesis': {
         'edgeemu': 'sega-genesis',
-        'planetemu': 'sega-mega-drive',
         'lolroms': 'SEGA/Mega Drive',
-        'vimm': 'Genesis',
+        'planetemu': 'sega-mega-drive',
         'retrogamesets': 'Mega Drive (Archive)',
         'romhustler': 'genesis',
         'coolrom': 'genesis',
         'romsxisos': 'segagenesis',
         'startgame': 'sega-mega-drive-genesis',
+        'vimm': 'Genesis',
     },
     'Sega - Master System - Mark III': {
         'edgeemu': 'sega-mastersystem',
-        'planetemu': 'sega-master-system',
         'lolroms': 'SEGA/Master System',
-        'vimm': 'SMS',
+        'planetemu': 'sega-master-system',
         'retrogamesets': 'Master System (Archive)',
         'romhustler': 'sms',
         'coolrom': 'sms',
-        'romsxisos': 'master_system',
         'startgame': 'sega-master-system-mark-iii',
+        'vimm': 'SMS',
     },
     'Sega - Game Gear': {
         'edgeemu': 'sega-gamegear',
-        'planetemu': 'sega-game-gear',
         'lolroms': 'SEGA/Game Gear',
-        'vimm': 'GameGear',
+        'planetemu': 'sega-game-gear',
         'retrogamesets': 'Game Gear (Archive)',
-        'romhustler': 'game-gear',
         'coolrom': 'gamegear',
         'romsxisos': 'gamegear',
         'startgame': 'sega-game-gear',
+        'vimm': 'GG',
     },
-    'NEC - PC Engine - TurboGrafx 16': {
-        'edgeemu': 'nec-pcengine',
-        'planetemu': 'nec-pc-engine-turbografx-16-entertainment-super-system',
-        'vimm': 'Engine',
-        'retrogamesets': 'PC Engine (Archive)',
-        'romhustler': 'pcengine',
-        'coolrom': 'tg16',
-        'startgame': 'nec-pc-engine-turbografx-16',
+    'Sega - Saturn': {
+        'edgeemu': 'sega-saturn',
+        'lolroms': 'SEGA/Saturn',
+        'planetemu': 'sega-saturn',
+        'retrogamesets': 'Saturn (Archive)',
+        'romhustler': 'saturn',
+        'coolrom': 'saturn',
+        'romsxisos': 'saturn',
+        'startgame': 'sega-saturn',
+        'vimm': 'Saturn',
     },
-    'SNK - Neo Geo Pocket Color': {
-        'edgeemu': 'snk-neogeopocketcolor',
-        'planetemu': 'snk-neo-geo-pocket-color',
-        'lolroms': 'SNK/NeoGeo Pocket Color',
-        'retrogamesets': 'Neo-Geo Pocket Color (Archive)',
-        'romhustler': 'neogeo-pocket',
-        'romsxisos': 'pocket_color',
-        'startgame': 'snk-neo-geo-pocket-color',
+    'Sega - Dreamcast': {
+        'edgeemu': 'sega-dreamcast',
+        'lolroms': 'SEGA/Dreamcast',
+        'planetemu': 'sega-dreamcast',
+        'retrogamesets': 'Dreamcast (Archive)',
+        'romhustler': 'dreamcast',
+        'coolrom': 'dc',
+        'romsxisos': 'dreamcast',
+        'startgame': 'sega-dreamcast',
+        'vimm': 'Dreamcast',
     },
+    'Sega - Mega CD - Sega CD': {
+        'edgeemu': 'sega-segacd',
+        'lolroms': 'SEGA/Mega CD',
+        'planetemu': 'sega-mega-cd',
+        'retrogamesets': 'Sega CD (Archive)',
+        'romhustler': 'segacd',
+        'coolrom': 'segacd',
+        'romsxisos': 'segacd',
+        'startgame': 'sega-mega-cd-sega-cd',
+        'vimm': 'SegaCD',
+    },
+    'Sega - 32X': {
+        'edgeemu': 'sega-32x',
+        'lolroms': 'SEGA/32X',
+        'planetemu': 'sega-32x',
+        'retrogamesets': '32X (Archive)',
+        'coolrom': '32x',
+        'romsxisos': '32x',
+        'startgame': 'sega-32x',
+        'vimm': '32X',
+    },
+
+    # ── Sony ──
     'Sony - PlayStation': {
+        'edgeemu': 'sony-playstation',
         'lolroms': 'SONY/PlayStation',
-        'vimm': 'PS1',
+        'planetemu': 'sony-playstation',
         'retrogamesets': 'PlayStation (Archive)',
         'romhustler': 'psx',
         'coolrom': 'psx',
         'romsxisos': 'ps1',
         'startgame': 'sony-playstation',
+        'vimm': 'PS1',
         'nopaystation': 'PSX_GAMES',
     },
     'Sony - PlayStation Portable': {
+        'edgeemu': 'sony-psp',
         'lolroms': 'SONY/PlayStation Portable',
-        'vimm': 'PSP',
+        'planetemu': 'sony-psp',
         'retrogamesets': 'PlayStation Portable (Archive)',
         'romhustler': 'playstation-portable',
         'coolrom': 'psp',
         'romsxisos': 'psp',
         'startgame': 'sony-playstation-portable',
+        'vimm': 'PSP',
         'nopaystation': 'PSP_GAMES',
     },
     'Sony - PlayStation 2': {
+        'edgeemu': 'sony-playstation-2',
+        'lolroms': 'SONY/PlayStation 2',
+        'planetemu': 'sony-playstation-2',
+        'retrogamesets': 'PS2 (Archive)',
         'romhustler': 'playstation2',
         'coolrom': 'ps2',
+        'romsxisos': 'ps2',
         'startgame': 'sony-playstation-2',
+        'vimm': 'PS2',
     },
     'Sony - PlayStation 3': {
+        'edgeemu': 'sony-playstation-3',
+        'lolroms': 'SONY/PlayStation 3',
+        'planetemu': 'sony-playstation-3',
+        'retrogamesets': 'PS3 (Archive)',
         'romhustler': 'ps3',
-        'startgame': 'sony-playstation-3',
+        'coolrom': 'ps3',
+        'romsxisos': 'ps3',
+        'vimm': 'PS3',
         'nopaystation': 'PS3_GAMES',
     },
     'Sony - PlayStation Vita': {
+        'edgeemu': 'sony-psvita',
+        'lolroms': 'SONY/PlayStation Vita',
+        'planetemu': 'sony-psvita',
+        'retrogamesets': 'PS Vita (Archive)',
         'romhustler': 'ps-vita',
-        'romsxisos': 'psvita',
+        'coolrom': 'psvita',
         'nopaystation': 'PSV_GAMES',
     },
-    'Sega - Saturn': {
-        'romhustler': 'saturn',
-        'coolrom': 'saturn',
-        'romsxisos': 'saturn',
-        'startgame': 'sega-saturn',
-    },
-    'Sega - Dreamcast': {
-        'romhustler': 'dreamcast',
-        'coolrom': 'dc',
-        'romsxisos': 'dreamcast',
-        'startgame': 'sega-dreamcast',
-    },
-    'Sega - Mega CD - Sega CD': {
-        'romhustler': 'segacd',
-        'coolrom': 'segacd',
-        'startgame': 'sega-mega-cd-sega-cd',
-    },
-    'Sega - 32X': {
-        'romhustler': 'sega-32x',
-        'coolrom': '32x',
-        'startgame': 'sega-32x',
-    },
+
+    # ── Atari ──
     'Atari - 2600': {
+        'edgeemu': 'atari-2600',
+        'lolroms': 'Atari/2600',
+        'planetemu': 'atari-2600',
         'romhustler': 'atari2600',
         'coolrom': 'atari2600',
+        'romsxisos': 'atari2600',
         'startgame': 'atari-2600',
-    },
-    'Atari - 7800': {
-        'romhustler': 'atari7800',
-        'startgame': 'atari-7800',
-    },
-    'Atari - Jaguar': {
-        'romhustler': 'jaguar',
-        'startgame': 'atari-jaguar',
+        'vimm': 'Atari2600',
     },
     'Atari - Atari 2600': {
+        'edgeemu': 'atari-2600',
+        'lolroms': 'Atari/2600',
+        'planetemu': 'atari-2600',
         'romhustler': 'atari2600',
         'coolrom': 'atari2600',
+        'romsxisos': 'atari2600',
         'startgame': 'atari-2600',
+        'vimm': 'Atari2600',
+    },
+    'Atari - 5200': {
+        'edgeemu': 'atari-5200',
+        'lolroms': 'Atari/5200',
+        'planetemu': 'atari-5200',
+        'romhustler': 'atari5200',
+        'coolrom': 'atari5200',
+        'romsxisos': 'atari5200',
+        'vimm': 'Atari5200',
+    },
+    'Atari - Atari 5200': {
+        'edgeemu': 'atari-5200',
+        'lolroms': 'Atari/5200',
+        'planetemu': 'atari-5200',
+        'romhustler': 'atari5200',
+        'coolrom': 'atari5200',
+        'romsxisos': 'atari5200',
+        'vimm': 'Atari5200',
+    },
+    'Atari - 7800': {
+        'edgeemu': 'atari-7800',
+        'lolroms': 'Atari/7800',
+        'planetemu': 'atari-7800',
+        'romhustler': 'atari7800',
+        'coolrom': 'atari7800',
+        'startgame': 'atari-7800',
+        'vimm': 'Atari7800',
     },
     'Atari - Atari 7800': {
+        'edgeemu': 'atari-7800',
+        'lolroms': 'Atari/7800',
+        'planetemu': 'atari-7800',
         'romhustler': 'atari7800',
+        'coolrom': 'atari7800',
         'startgame': 'atari-7800',
+        'vimm': 'Atari7800',
+    },
+    'Atari - Jaguar': {
+        'edgeemu': 'atari-jaguar',
+        'lolroms': 'Atari/Jaguar',
+        'planetemu': 'atari-jaguar',
+        'romhustler': 'jaguar',
+        'coolrom': 'atarijaguar',
+        'romsxisos': 'atarijaguar',
+        'startgame': 'atari-jaguar',
+        'vimm': 'Jaguar',
     },
     'Atari - Atari Jaguar': {
+        'edgeemu': 'atari-jaguar',
+        'lolroms': 'Atari/Jaguar',
+        'planetemu': 'atari-jaguar',
         'romhustler': 'jaguar',
+        'coolrom': 'atarijaguar',
+        'romsxisos': 'atarijaguar',
         'startgame': 'atari-jaguar',
+        'vimm': 'Jaguar',
     },
-    'Arcade - MAME': {
-        'romhustler': 'mame',
-        'coolrom': 'arcade',
+
+    # ── NEC / TurboGrafx ──
+    'NEC - PC Engine - TurboGrafx 16': {
+        'edgeemu': 'nec-pcengine',
+        'lolroms': 'NEC/PC Engine',
+        'planetemu': 'nec-pc-engine-turbografx-16-entertainment-super-system',
+        'retrogamesets': 'PC Engine (Archive)',
+        'romhustler': 'pcengine',
+        'coolrom': 'tg16',
+        'startgame': 'nec-pc-engine-turbografx-16',
+        'vimm': 'TG16',
     },
+    'NEC - PC-FX': {
+        'edgeemu': 'nec-pcfx',
+        'lolroms': 'NEC/PC-FX',
+        'planetemu': 'nec-pc-fx',
+        'coolrom': 'pcfx',
+        'startgame': 'nec-pc-fx',
+    },
+
+    # ── SNK ──
+    'SNK - Neo Geo Pocket Color': {
+        'edgeemu': 'snk-neogeopocketcolor',
+        'lolroms': 'SNK/NeoGeo Pocket Color',
+        'planetemu': 'snk-neo-geo-pocket-color',
+        'retrogamesets': 'Neo-Geo Pocket Color (Archive)',
+        'coolrom': 'ngpc',
+        'romsxisos': 'pocket_color',
+        'startgame': 'snk-neo-geo-pocket-color',
+    },
+
+    # ── Bandai ──
     'Bandai - WonderSwan': {
+        'edgeemu': 'bandai-wonderswan',
+        'lolroms': 'Bandai/WonderSwan',
+        'planetemu': 'bandai-wonderswan',
+        'retrogamesets': 'WonderSwan (Archive)',
         'romhustler': 'wonderswan',
+        'coolrom': 'ws',
         'romsxisos': 'wonderswan',
         'startgame': 'bandai-wonderswan',
     },
-    'NEC - PC-FX': {
-        'romhustler': 'pc-fx',
-        'startgame': 'nec-pc-fx',
+
+    # ── Arcade ──
+    'Arcade - MAME': {
+        'edgeemu': 'arcade-mame',
+        'lolroms': 'Arcade/MAME',
+        'planetemu': 'arcade',
+        'romhustler': 'mame',
+        'coolrom': 'arcade',
     },
 }
 
@@ -825,9 +973,11 @@ __all__ = [
     'optional_positive_int',
     'parse_candidate_limit',
     'source_timeout_seconds',
+    'source_delay_seconds',
     'source_quota_limit',
     'source_policy_summary',
     'reserve_source_quota',
+    'apply_source_policies',
     'get_default_sources',
     'SYSTEM_MAPPINGS',
     'build_custom_source',
