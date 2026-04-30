@@ -7,7 +7,14 @@ from .sources import ONEFICHIER_SOURCE_TYPES, normalize_source_label
 
 
 def normalize_system_name(system_name: str) -> str:
+    import unicodedata as _ucd
     cleaned = re.sub(r'\s+', ' ', (system_name or '')).strip()
+    cleaned = _ucd.normalize('NFKD', cleaned).encode('ascii', 'ignore').decode('ascii')
+    cleaned = re.sub(r'\s+NeoGeo\s+', ' Neo Geo ', cleaned)
+    cleaned = re.sub(r'\s+NeoGeo$', ' Neo Geo', cleaned)
+    cleaned = re.sub(r'^NeoGeo\s+', 'Neo Geo ', cleaned)
+    cleaned = re.sub(r'(?<=TurboGrafx)-(?=1[6-9]|CD)', ' ', cleaned)
+    cleaned = re.sub(r'\s+', ' ', cleaned).strip()
     if not cleaned:
         return ''
 

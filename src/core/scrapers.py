@@ -128,36 +128,136 @@ def build_lolroms_url(path: str) -> str:
 
 
 def resolve_lolroms_system_path(system_name: str) -> str:
-    """Résout le chemin LoLROMs correspondant au système demandé."""
+    """Resout le chemin LoLROMs correspondant au systeme demande.
+    Essaie le mapping explicite SYSTEM_MAPPINGS, puis construit
+    automatiquement des variantes (split vendeur/systeme, variantes
+    sans accents, avec/sans Headered) et les teste via HTTP."""
     if not system_name:
         return ''
 
     mappings = SYSTEM_MAPPINGS.get(system_name, {})
-    candidate_paths = []
-
     mapped_path = mappings.get('lolroms')
-    if mapped_path:
-        candidate_paths.append(mapped_path)
+    explicit = [mapped_path] if mapped_path else []
 
-    candidate_paths.append(system_name.strip())
-    candidate_paths.append(re.sub(r'\s*\(Headered\)\s*$', '', system_name).strip())
-    candidate_paths.append(re.sub(r'\s*\(Headerless\)\s*$', '', system_name).strip())
+    normalized = _normalize_system_name_for_lolroms(system_name)
+    base = re.sub(r'\s*\((?:Headered|Headerless)\)\s*$', '', system_name).strip()
+    base_normalized = _normalize_system_name_for_lolroms(base)
 
-    session = get_lolroms_session()
+    parts = [p.strip() for p in system_name.split(' - ') if p.strip()]
+    if len(parts) >= 2:
+        vendor = _normalize_system_name_for_lolroms(parts[0])
+        rest = ' - '.join(parts[1:])
+        rest_normalized = _normalize_system_name_for_lolroms(rest)
+    else:
+        vendor = ''
+        rest = system_name
+        rest_normalized = normalized
+
+    candidates = []
+
+    for path in explicit:
+        candidates.append(path)
+        alt = _lolroms_alt_paths(path)
+        for a in alt:
+            if a not in candidates:
+                candidates.append(a)
+
+    candidates.append(system_name.strip())
+    candidates.append(base)
+    candidates.append(normalized)
+    candidates.append(base_normalized)
+
+    if vendor and rest:
+        candidates.append(f"{vendor}/{rest}")
+        candidates.append(f"{vendor}/{rest_normalized}")
+        candidates.append(rest)
+        candidates.append(rest_normalized)
+        if vendor.lower() == 'sony':
+            candidates.append(f"SONY/{rest}")
+            candidates.append(f"SONY/{rest_normalized}")
+        elif vendor.lower() == 'sega':
+            candidates.append(f"SEGA/{rest}")
+            candidates.append(f"SEGA/{rest_normalized}")
+        elif vendor.lower() in {'nintendo', 'atari', 'nec', 'snk', 'bandai', 'microsoft', 'commodore', 'philips', 'panasonic'}:
+            vcap = vendor.capitalize()
+            candidates.append(f"{vcap}/{rest}")
+            candidates.append(f"{vcap}/{rest_normalized}")
+
+    if vendor and len(parts) >= 3:
+        mid = parts[1].strip()
+        tail = ' - '.join(parts[2:]).strip()
+        mid_normalized = _normalize_system_name_for_lolroms(mid)
+        candidates.append(f"{vendor}/{mid} - {tail}")
+        candidates.append(f"{vendor}/{mid}/{tail}")
+        candidates.append(f"{vendor}/{mid_normalized}")
+        candidates.append(f"{vendor}/{mid}")
+        candidates.append(mid)
+        candidates.append(mid_normalized)
+        for i in range(3, len(parts) + 1):
+            shorter_tail = ' - '.join(parts[- (len(parts) - i):]).strip() if i < len(parts) else tail
+            candidates.append(f"{vendor}/{mid}/{shorter_tail}")
+
+    candidates.append(re.sub(r'\s*\(Headered\)\s*$', '', system_name).strip())
+    candidates.append(re.sub(r'\s*\(Headerless\)\s*$', '', system_name).strip())
+
     seen = set()
-    for candidate in candidate_paths:
-        normalized = candidate.strip().strip('/')
-        if not normalized or normalized.lower() in seen:
+    session = get_lolroms_session()
+    for candidate in candidates:
+        norm = candidate.strip().strip('/')
+        if not norm or norm.lower() in seen:
             continue
-        seen.add(normalized.lower())
+        seen.add(norm.lower())
+        if len(norm) > 128:
+            continue
         try:
-            response = session.get(build_lolroms_url(normalized), timeout=45)
+            response = session.get(build_lolroms_url(norm), timeout=45)
             if response.status_code == 200 and 'Just a moment...' not in response.text:
-                return normalized
+                return norm
         except Exception:
             continue
 
     return ''
+
+
+def _normalize_system_name_for_lolroms(name: str) -> str:
+    """Nettoie un nom de systeme pour comparer avec les dossiers LoLROMs."""
+    import unicodedata as _ucd
+    value = (name or '').strip()
+    value = _ucd.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
+    value = re.sub(r'\s+NeoGeo\s+', ' Neo Geo ', value)
+    value = re.sub(r'\s+NeoGeo$', ' Neo Geo', value)
+    value = re.sub(r'^NeoGeo\s+', 'Neo Geo ', value)
+    value = re.sub(r'(?<=TurboGrafx)-(?=1[6-9]|CD)', ' ', value)
+    value = re.sub(r'(?<=Pok)[eéèê]mon', 'Pokemon', value, flags=re.IGNORECASE)
+    value = re.sub(r'\s+', ' ', value).strip()
+    return value
+
+
+def _lolroms_alt_paths(explicit: str) -> list[str]:
+    """Genere des chemins alternatifs pour un repertoire LoLROMs connu."""
+    alts = []
+    parts = [p.strip() for p in explicit.split('/') if p.strip()]
+    if not parts:
+        return alts
+    if len(parts) == 1:
+        name = parts[0]
+        if name.startswith('Nintendo - '):
+            suffix = name[len('Nintendo - '):]
+            alts.append(suffix)
+            alts.append(f"Nintendo/{suffix}")
+        elif name.startswith('SEGA - ') or name.startswith('Sega - '):
+            suffix = name[6:]
+            alts.append(f"SEGA/{suffix}")
+        elif name.startswith('SONY - ') or name.startswith('Sony - '):
+            suffix = name[6:]
+            alts.append(f"SONY/{suffix}")
+        elif name.startswith('Atari - '):
+            suffix = name[7:]
+            alts.append(f"Atari/{suffix}")
+        elif name.startswith('NEC - '):
+            suffix = name[5:]
+            alts.append(f"NEC/{suffix}")
+    return [a for a in alts if a != explicit]
 
 
 LOLROMS_SUBDIR_ALIASES = {

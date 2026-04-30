@@ -886,6 +886,214 @@ SYSTEM_MAPPINGS = {
         'romsxisos': 'wonderswan',
         'startgame': 'bandai-wonderswan',
     },
+    # ── Additional Nintendo (variantes avec sous-dossiers) ──
+    'Nintendo - Game Boy Advance (e-Reader)': {
+        'lolroms': 'Nintendo - Game Boy Advance/e-Reader',
+    },
+    'Nintendo - Game Boy Advance (Play-Yan)': {
+        'lolroms': 'Nintendo - Game Boy Advance/Play-Yan',
+    },
+    'Nintendo - Game Boy Advance (Video)': {
+        'lolroms': 'Nintendo - Game Boy Advance/Video',
+    },
+    'Nintendo - New Nintendo 3DS': {
+        'lolroms': 'Nintendo - New 3DS',
+    },
+    'Nintendo - Nintendo DSi': {
+        'lolroms': 'Nintendo - DSi',
+    },
+    'Nintendo - Nintendo 64DD': {
+        'lolroms': 'Nintendo - 64/64DD',
+    },
+    'Nintendo - Satellaview': {
+        'lolroms': 'Nintendo - Satellaview',
+    },
+    'Nintendo - Sufami Turbo': {
+        'lolroms': 'Nintendo - SuFami Turbo',
+    },
+    'Nintendo - Family Computer Disk System': {
+        'lolroms': 'Nintendo - Famicom/FDS',
+    },
+
+    # ── Sega supplémentaires ──
+    'Sega - PICO': {
+        'lolroms': 'SEGA/PICO',
+    },
+    'Sega - SG-1000': {
+        'lolroms': 'SEGA/SG-1000',
+    },
+
+    # ── SNK variantes ──
+    'SNK - Neo Geo CD': {
+        'lolroms': 'SNK/Neo Geo CD',
+    },
+    'SNK - NeoGeo Pocket': {
+        'lolroms': 'SNK/NeoGeo Pocket',
+    },
+    'SNK - NeoGeo Pocket Color': {
+        'lolroms': 'SNK/NeoGeo Pocket Color',
+    },
+
+    # ── Panasonic ──
+    'Panasonic - 3DO Interactive Multiplayer': {
+        'lolroms': 'Panasonic - 3DO',
+    },
+
+    # ── NEC variantes ──
+    'NEC - PC Engine CD & TurboGrafx CD': {
+        'lolroms': 'NEC/PC Engine CD',
+    },
+    'NEC - PC-88 series': {
+        'lolroms': 'NEC/PC-88',
+    },
+    'NEC - PC-98 series': {
+        'lolroms': 'NEC/PC-98',
+    },
+    'NEC - PC-FX & PC-FXGA': {
+        'lolroms': 'NEC/PC-FX',
+    },
+
+    # ── Microsoft ──
+    'Microsoft - Xbox': {
+        'lolroms': 'Microsoft/Xbox',
+    },
+    'Microsoft - Xbox 360': {
+        'lolroms': 'Microsoft/Xbox 360',
+    },
+    'Microsoft - MSX': {
+        'lolroms': 'Microsoft/MSX',
+    },
+    'Microsoft - MSX2': {
+        'lolroms': 'Microsoft/MSX2',
+    },
+
+    # ── Commodore ──
+    'Commodore - Amiga CD': {
+        'lolroms': 'Commodore/Amiga CD',
+    },
+    'Commodore - Amiga CD32': {
+        'lolroms': 'Commodore/Amiga CD32',
+    },
+    'Commodore - Amiga CDTV': {
+        'lolroms': 'Commodore/Amiga CDTV',
+    },
+    'Commodore - Commodore 64': {
+        'lolroms': 'Commodore/C64',
+    },
+
+    # ── Bandai supplémentaires ──
+    'Bandai - WonderSwan Color': {
+        'lolroms': 'Bandai/WonderSwan Color',
+    },
+
+    # ── Phillips ──
+    'Philips - CD-i': {
+        'lolroms': 'Philips/CD-i',
+    },
+    'Philips - Videopac+': {
+        'lolroms': 'Philips - Videopac+',
+    },
+
+    # ── Atari supplémentaires ──
+    'Atari - Atari Lynx': {
+        'lolroms': 'Atari/Lynx',
+    },
+    'Atari - Atari ST': {
+        'lolroms': 'Atari/ST',
+    },
+    'Atari - Jaguar CD Interactive Multimedia System': {
+        'lolroms': 'Atari/Jaguar CD',
+    },
+    'Atari - 8-bit Family': {
+        'lolroms': 'Atari/8-bit',
+    },
+
+    # ── Apple ──
+    'Apple - Macintosh': {
+        'lolroms': 'Apple/Macintosh',
+    },
+
+    # ── Fujitsu ──
+    'Fujitsu - FM-Towns': {
+        'lolroms': 'Fujitsu/FM-Towns',
+    },
+
+    # ── Sharp ──
+    'Sharp - X68000': {
+        'lolroms': 'Sharp/X68000',
+    },
+
+    # ── Sega Arcade CD ──
+    'Sega - Mega CD & Sega CD': {
+        'edgeemu': 'sega-segacd',
+        'lolroms': 'SEGA/Mega CD',
+        'planetemu': 'sega-mega-cd',
+    },
+
+    # ── Watara ──
+    'Watara - Supervision': {
+        'lolroms': 'Watara - Supervision',
+    },
+
+    # ── VTech ──
+    'VTech - CreatiVision': {
+        'lolroms': 'VTech/CreatiVision',
+    },
+    'VTech - V.Smile': {
+        'lolroms': 'VTech/V.Smile',
+    },
+    'VTech - Mobigo': {
+        'lolroms': 'VTech/Mobigo',
+    },
+    'VTech - V.Flash & V.Smile Pro': {
+        'lolroms': 'VTech/V.Flash',
+    },
+
+    # ── Mattel ──
+    'Mattel - HyperScan': {
+        'lolroms': 'Mattel/HyperScan',
+    },
+    'Mattel - Intellivision': {
+        'lolroms': 'Mattel/Intellivision',
+    },
+    'Mattel - Fisher-Price iXL': {
+        'lolroms': 'Mattel/Fisher-Price iXL',
+    },
+
+    # ── GCE ──
+    'GCE - Vectrex': {
+        'lolroms': 'GCE - Vectrex',
+    },
+
+    # ── Fairchild ──
+    'Fairchild - Channel F': {
+        'lolroms': 'Fairchild - Channel F',
+    },
+
+    # ── Magnavox ──
+    'Magnavox - Odyssey 2': {
+        'lolroms': 'Magnavox - Odyssey 2',
+    },
+
+    # ── Emerson ──
+    'Emerson - Arcadia 2001': {
+        'lolroms': 'Emerson - Arcadia 2001',
+    },
+
+    # ── Entex ──
+    'Entex - Adventure Vision': {
+        'lolroms': 'Entex - Adventure Vision',
+    },
+
+    # ── RCA ──
+    'RCA - Studio II': {
+        'lolroms': 'RCA - Studio II',
+    },
+
+    # ── Interton ──
+    'Interton - VC 4000': {
+        'lolroms': 'Interton - VC 4000',
+    },
 
     # ── Arcade ──
     'Arcade - MAME': {
