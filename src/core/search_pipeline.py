@@ -752,12 +752,19 @@ def search_all_sources(
             if not still_missing:
                 break
             print(f"\n--- Recherche torrent sur {source['name']} ---")
+
+            torrent_url = resolve_minerva_torrent_url(source, system_name, session)
+            if not torrent_url:
+                candidates = build_minerva_torrent_urls(source, system_name)
+                probe_url = candidates[0] if candidates else 'aucune URL candidate'
+                print(f"  Avertissement: torrent Minerva introuvable pour {source['name']} ({probe_url})")
+                continue
+
             base_url = build_minerva_directory_url(source, system_name)
             listing_key = f"listing:minerva:{base_url}"
             session_cache = get_session_cache()
             minerva_files = session_cache.get_listing(listing_key)
 
-            # Pre-fetch async si aiohttp dispo
             if _AIOHTTP_AVAILABLE and minerva_files is None:
                 prefetch_urls = [base_url]
                 try:
@@ -770,14 +777,17 @@ def search_all_sources(
             if minerva_files is None:
                 minerva_files = collect_minerva_files_from_url(base_url, session, source.get('scan_depth', 0))
                 session_cache.set_listing(listing_key, minerva_files)
-            if not minerva_files:
-                continue
 
-            torrent_url = resolve_minerva_torrent_url(source, system_name, session)
-            if not torrent_url:
-                candidates = build_minerva_torrent_urls(source, system_name)
-                probe_url = candidates[0] if candidates else 'aucune URL candidate'
-                print(f"  Avertissement: torrent Minerva introuvable pour {source['name']} ({probe_url})")
+            if not minerva_files:
+                print(f"  Listing Minerva vide mais torrent dispo, telechargement du torrent complet")
+                print(f"  Torrent: {torrent_url[:100]}...")
+                for game_info in list(still_missing):
+                    game_info['download_filename'] = game_info.get('primary_rom', f"{game_info['game_name']}.zip")
+                    game_info['torrent_url'] = torrent_url
+                    game_info['source'] = source['name']
+                    minerva_found.append(game_info)
+                    all_found.append(game_info)
+                still_missing = []
                 continue
 
             newly_found = []
