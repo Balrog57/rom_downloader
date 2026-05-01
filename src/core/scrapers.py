@@ -3,6 +3,7 @@ import csv
 import json
 import os
 import re
+import time
 import unicodedata
 from difflib import SequenceMatcher
 from urllib.parse import quote, unquote, urljoin
@@ -43,10 +44,17 @@ from .archive_org import (
 
 
 LOLROMS_SESSION = None
+LOLROMS_WARMED = False
+
+
+def _has_lolroms_env_cookie() -> bool:
+    return bool(os.environ.get('LOLROMS_COOKIE', '').strip())
 
 
 def get_lolroms_session():
-    """Retourne une session Cloudflare-compatible pour LoLROMs."""
+    """Retourne une session Cloudflare-compatible pour LoLROMs.
+    Si un cookie LOLROMS_COOKIE est fourni dans .env, il contourne Cloudflare.
+    Sinon, cloudscraper resout les challenges JS automatiquement."""
     global LOLROMS_SESSION
 
     if LOLROMS_SESSION is None:
@@ -57,7 +65,8 @@ def get_lolroms_session():
         )
         LOLROMS_SESSION = cloudscraper.create_scraper(
             browser={'browser': 'chrome', 'platform': 'windows', 'mobile': False},
-            delay=10,
+            delay=15,
+            interpreter='native',
         )
         LOLROMS_SESSION.headers.update({
             'User-Agent': user_agent,
@@ -79,12 +88,41 @@ def get_lolroms_session():
     return LOLROMS_SESSION
 
 
-def download_lolroms_file(url: str, dest_path: str, progress_callback=None,
-                          timeout_seconds: int = 120, progress_detail_callback=None) -> bool:
-    """Telecharge un fichier LoLROMs avec les en-tetes attendus par Cloudflare."""
-    from .downloads import download_file
+def _warmup_lolroms_session(url_hint: str = ''):
+    """Visite la racine LoLROMs pour absorber le challenge Cloudflare initial.
+    Retourne True si la session est fonctionnelle."""
+    global LOLROMS_WARMED
+    if LOLROMS_WARMED and _has_lolroms_env_cookie():
+        return True
 
     session = get_lolroms_session()
+    warmup_url = url_hint or LOLROMS_BASE
+    try:
+        resp = session.get(warmup_url, timeout=60)
+        if resp.status_code == 200 and 'Just a moment...' not in resp.text:
+            LOLROMS_WARMED = True
+            return True
+        if resp.status_code == 200 and 'Just a moment...' in resp.text:
+            print("  Cloudflare challenge en cours sur LoLROMs, attente resolution...")
+    except Exception:
+        pass
+    return LOLROMS_WARMED
+
+
+def _rebuild_lolroms_session():
+    """Detruit et recree la session LoLROMs pour contourner un blocage."""
+    global LOLROMS_SESSION, LOLROMS_WARMED
+    LOLROMS_SESSION = None
+    LOLROMS_WARMED = False
+    return get_lolroms_session()
+
+
+def download_lolroms_file(url: str, dest_path: str, progress_callback=None,
+                          timeout_seconds: int = 120, progress_detail_callback=None) -> bool:
+    """Telecharge un fichier LoLROMs avec contournement Cloudflare robuste.
+    Tente jusqu'a 3 strategies: session existante -> rechallenge -> nouvelle session."""
+    from .downloads import download_file
+
     directory_url = url.rsplit('/', 1)[0] + '/' if '/' in url else LOLROMS_BASE
     headers = {
         'Accept': 'application/octet-stream,application/x-7z-compressed,application/zip,*/*;q=0.8',
@@ -97,15 +135,54 @@ def download_lolroms_file(url: str, dest_path: str, progress_callback=None,
         'Sec-Fetch-User': '?1',
         'Connection': 'keep-alive',
     }
-    return download_file(
-        url,
-        dest_path,
-        session,
-        progress_callback,
-        timeout_seconds,
-        progress_detail_callback,
-        extra_headers=headers,
-    )
+
+    strategies = [
+        ('session existante', lambda: get_lolroms_session()),
+        ('rechallenge Cloudflare', lambda: _solve_cloudflare_before_download(directory_url)),
+        ('nouvelle session', lambda: _rebuild_lolroms_session()),
+    ]
+
+    last_error = ''
+    for label, session_fn in strategies:
+        try:
+            session = session_fn()
+            success = download_file(
+                url, dest_path, session,
+                progress_callback, timeout_seconds,
+                progress_detail_callback, extra_headers=headers,
+            )
+            if success:
+                return True
+            last_error = 'download_file a retourne False'
+        except SystemExit:
+            raise
+        except Exception as e:
+            last_error = str(e)
+            if 'Blocage Cloudflare' in last_error or 'cloudflare' in last_error.lower():
+                print(f"  [{label}] Blocage Cloudflare detecte, tentative suivante...")
+                continue
+            raise
+
+    print(f"  LoLROMs: echec sur les 3 strategies. Derniere erreur: {last_error[:200]}")
+    return False
+
+
+def _solve_cloudflare_before_download(directory_url: str):
+    """Visite le dossier LoLROMs en HTML pour absorber le challenge Cloudflare,
+    puis retourne la session prete pour le telechargement."""
+    session = get_lolroms_session()
+    try:
+        resp = session.get(directory_url, timeout=60)
+        if resp.status_code == 200 and 'Just a moment...' not in resp.text:
+            return session
+        if 'Just a moment...' in resp.text:
+            time.sleep(12)
+            resp = session.get(directory_url, timeout=60)
+            if resp.status_code == 200 and 'Just a moment...' not in resp.text:
+                return session
+    except Exception:
+        pass
+    return _rebuild_lolroms_session()
 
 
 
@@ -322,6 +399,7 @@ def list_lolroms_directory(system_path: str, include_subdirs: bool = True) -> di
     mapping = {}
     subdirs = []
     try:
+        _warmup_lolroms_session(url)
         response = get_lolroms_session().get(url, timeout=60)
         if response.status_code != 200 or 'Just a moment...' in response.text:
             print(f"Erreur LoLROMs ({response.status_code}) pour {url}")
