@@ -684,25 +684,45 @@ def download_planetemu(page_url: str, dest_path: str, session: requests.Session,
         return False
 
 def resolve_vimm_game(game_info: dict, system_slug: str, session: requests.Session) -> dict | None:
-    """Recherche un jeu sur Vimm's Lair."""
+    """Recherche un jeu sur Vimm's Lair avec matching normalise."""
     if not system_slug: return None
     
     for candidate_name in iter_game_candidate_names(game_info):
-        search_url = f"{VIMM_BASE}vault/?p=list&system={system_slug}&q={quote(candidate_name)}"
+        normalized_candidate = normalize_external_game_name(candidate_name)
+        search_url = f"{VIMM_BASE}vault/?p=list&system={system_slug}&q={quote(candidate_name[:80])}"
         try:
             resp = session.get(search_url, timeout=30)
             if resp.status_code != 200: continue
             
             soup = BeautifulSoup(resp.text, 'html.parser')
+            best_link = None
+            best_score = 0.0
             for a in soup.find_all('a', href=True):
-                if '/vault/' in a['href']:
-                    title = a.get_text().strip().lower()
-                    if candidate_name.lower() in title or title in candidate_name.lower():
-                        return {
-                            'full_name': title,
-                            'page_url': urljoin(VIMM_BASE, a['href']),
-                            'source': 'Vimm\'s Lair'
-                        }
+                if '/vault/' not in a.get('href', ''):
+                    continue
+                title = a.get_text().strip()
+                normalized_title = normalize_external_game_name(title)
+                if not normalized_title:
+                    continue
+                if normalized_candidate == normalized_title:
+                    best_link = a
+                    best_score = 1.0
+                    break
+                score = SequenceMatcher(None, normalized_candidate, normalized_title).ratio()
+                if score > best_score:
+                    best_score = score
+                    best_link = a
+                elif normalized_candidate and len(normalized_candidate) >= 8:
+                    if normalized_candidate in normalized_title or normalized_title in normalized_candidate:
+                        best_link = a
+                        best_score = 0.95
+            
+            if best_link and best_score >= 0.85:
+                return {
+                    'full_name': best_link.get_text().strip(),
+                    'page_url': urljoin(VIMM_BASE, best_link['href']),
+                    'source': "Vimm's Lair"
+                }
         except Exception as e:
             print(f"  [Vimm] Erreur recherche: {e}")
             continue

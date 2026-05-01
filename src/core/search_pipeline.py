@@ -163,9 +163,9 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
                         newly_found = []
                         remaining = []
                         for game_info in still_missing:
-                            name_lower = game_info['game_name'].lower()
-                            if name_lower in planet_files:
-                                game_info['page_url'] = planet_files[name_lower]['page_url']
+                            _matched_name, entry = find_listing_match(game_info, planet_files)
+                            if entry and isinstance(entry, dict):
+                                game_info['page_url'] = entry.get('page_url', '')
                                 game_info['source'] = 'PlanetEmu'
                                 game_info['download_filename'] = f"{game_info['game_name']}.zip"
                                 newly_found.append(game_info)
@@ -473,8 +473,7 @@ def search_all_sources(
                         newly_found = []
                         remaining = []
                         for game_info in still_missing:
-                            name_lower = game_info['game_name'].lower()
-                            entry = planet_files.get(name_lower)
+                            _matched_name, entry = find_listing_match(game_info, planet_files)
                             if entry and isinstance(entry, dict):
                                 game_info['page_url'] = entry.get('page_url', '')
                                 game_info['source'] = 'PlanetEmu'
@@ -797,6 +796,9 @@ def search_all_sources(
             minerva_found.extend(newly_found)
             all_found.extend(newly_found)
             still_missing = remaining
+
+        if not minerva_found and still_missing:
+            print("  Aucun jeu trouve via Minerva (listing vide ou introuvable)")
 
         print(f"\n  Trouve via Minerva (torrent): {len(minerva_found)} jeux")
         print(f"  Restants apres Minerva: {len(still_missing)} jeux")
