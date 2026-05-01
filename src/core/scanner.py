@@ -152,21 +152,26 @@ def find_missing_games(dat_games: dict, local_roms: set, local_roms_normalized: 
     signature_index = signature_index or {'md5': {}, 'crc': {}, 'sha1': {}}
     missing = []
     for game_name, game_info in dat_games.items():
-        found = False
+        roms = game_info.get('roms', [])
+        if not roms:
+            missing.append(game_info)
+            continue
 
-        has_md5 = any(normalize_checksum(rom_info.get('md5', ''), 'md5') for rom_info in game_info.get('roms', []))
-        checksum_order = ('md5', 'crc', 'sha1') if has_md5 else ('crc', 'sha1')
-
-        for checksum_type in checksum_order:
-            for rom_info in game_info.get('roms', []):
+        all_found = True
+        for rom_info in roms:
+            has_md5 = bool(normalize_checksum(rom_info.get('md5', ''), 'md5'))
+            checksum_order = ('md5', 'crc', 'sha1') if has_md5 else ('crc', 'sha1')
+            rom_found = False
+            for checksum_type in checksum_order:
                 checksum_value = normalize_checksum(rom_info.get(checksum_type, ''), checksum_type)
                 if checksum_value and checksum_value in signature_index.get(checksum_type, {}):
-                    found = True
+                    rom_found = True
                     break
-            if found:
+            if not rom_found:
+                all_found = False
                 break
 
-        if not found:
+        if not all_found:
             missing.append(game_info)
 
     print(f"Found {len(missing)} missing games")
