@@ -363,6 +363,9 @@ def gui_mode():
                     path = path[1:-1]
                 return path.split('\n')[0].strip()
 
+            def _path_key(self, path):
+                return os.path.normcase(os.path.abspath(path))
+
             def _ui(self, callback):
                 if threading.current_thread() is threading.main_thread():
                     callback()
@@ -423,6 +426,10 @@ def gui_mode():
                 search.pack(fill='x', padx=8, pady=(8, 6), ipady=6)
                 filter_row = tk.Frame(controls, bg=UI_COLOR_INPUT_BG)
                 filter_row.pack(fill='x', padx=8, pady=(0, 6))
+                selection_row = tk.Frame(controls, bg=UI_COLOR_INPUT_BG)
+                selection_row.pack(fill='x', padx=8, pady=(0, 8))
+                selection_label = tk.Label(selection_row, text="", bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_SUB, font=(self.font, 9), anchor='w')
+                selection_label.pack(side='left', fill='x', expand=True)
 
                 canvas = tk.Canvas(outer, bg=UI_COLOR_INPUT_BG, highlightthickness=0, bd=0, height=320)
                 scrollbar = tk.Scrollbar(outer, orient='vertical', command=canvas.yview)
@@ -481,11 +488,27 @@ def gui_mode():
                         grouped.append((current_section, current_files))
                     return grouped
 
+                def refresh_selection_label():
+                    count = len(self.selected_dat_paths())
+                    selection_label.configure(text=f"{count} DAT selectionne(s)")
+
+                def selected_keys():
+                    return {self._path_key(path) for path in self.selected_dat_paths()}
+
+                def toggle_menu_item(path):
+                    self.toggle_dat_selection(path)
+                    render_items()
+
+                def clear_selection():
+                    self.set_dat_selection([])
+                    render_items()
+
                 def render_items(*_args):
                     for child in content.winfo_children():
                         child.destroy()
                     row = 0
                     file_count = 0
+                    current_selection = selected_keys()
                     for section, files in visible_items():
                         label = tk.Label(content, text=section, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_ACCENT, font=section_font, anchor='w', padx=12, pady=8)
                         label.grid(row=row, column=0, sticky='ew')
@@ -494,13 +517,17 @@ def gui_mode():
                         for item in files:
                             file_count += 1
                             item_label = item['label']
+                            is_selected = self._path_key(item['path']) in current_selection
+                            bg_color = UI_COLOR_ACCENT if is_selected else UI_COLOR_INPUT_BG
+                            active_bg = UI_COLOR_ACCENT_HOVER if is_selected else UI_COLOR_GHOST_HOVER
+                            row_text = f"[x] {item_label}" if is_selected else f"[ ] {item_label}"
                             button = tk.Button(
                                 content,
-                                text=item_label,
-                                command=lambda path=item['path'], label=item_label: self.select_dat(path, label),
-                                bg=UI_COLOR_INPUT_BG,
+                                text=row_text,
+                                command=lambda path=item['path']: toggle_menu_item(path),
+                                bg=bg_color,
                                 fg=UI_COLOR_TEXT_MAIN,
-                                activebackground=UI_COLOR_GHOST_HOVER,
+                                activebackground=active_bg,
                                 activeforeground=UI_COLOR_TEXT_MAIN,
                                 relief='flat',
                                 bd=0,
@@ -511,13 +538,13 @@ def gui_mode():
                                 cursor='hand2',
                             )
                             button.grid(row=row, column=0, sticky='ew')
-                            button.bind('<Double-Button-1>', lambda _event, path=item['path'], label=item_label: self.select_dat(path, label))
                             bind_scroll(button)
                             row += 1
                     if file_count == 0:
                         empty = tk.Label(content, text="Aucun DAT ne correspond au filtre", bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_SUB, font=item_font, anchor='w', padx=12, pady=10)
                         empty.grid(row=0, column=0, sticky='ew')
                         bind_scroll(empty)
+                    refresh_selection_label()
                     update_scrollregion()
 
                 def set_family(value):
@@ -541,11 +568,41 @@ def gui_mode():
                         font=(self.font, 9),
                         cursor='hand2',
                     ).pack(side='left', padx=(0, 6))
+                tk.Button(
+                    selection_row,
+                    text="Effacer",
+                    command=clear_selection,
+                    bg=UI_COLOR_GHOST,
+                    fg=UI_COLOR_TEXT_MAIN,
+                    activebackground=UI_COLOR_GHOST_HOVER,
+                    activeforeground=UI_COLOR_TEXT_MAIN,
+                    relief='flat',
+                    bd=0,
+                    padx=10,
+                    pady=4,
+                    font=(self.font, 9),
+                    cursor='hand2',
+                ).pack(side='left', padx=(8, 0))
+                tk.Button(
+                    selection_row,
+                    text="Fermer",
+                    command=self.close_dat_dropdown,
+                    bg=UI_COLOR_GHOST,
+                    fg=UI_COLOR_TEXT_MAIN,
+                    activebackground=UI_COLOR_GHOST_HOVER,
+                    activeforeground=UI_COLOR_TEXT_MAIN,
+                    relief='flat',
+                    bd=0,
+                    padx=10,
+                    pady=4,
+                    font=(self.font, 9),
+                    cursor='hand2',
+                ).pack(side='left', padx=(6, 0))
 
                 filter_var.trace_add('write', render_items)
                 content.bind('<Configure>', update_scrollregion)
                 canvas.bind('<Configure>', update_scrollregion)
-                for widget in (dropdown, outer, controls, filter_row, search, canvas, content):
+                for widget in (dropdown, outer, controls, filter_row, selection_row, search, canvas, content):
                     bind_scroll(widget)
 
                 dropdown.bind('<Escape>', lambda _event: self.close_dat_dropdown())
@@ -567,7 +624,7 @@ def gui_mode():
                 seen = set()
                 for path in paths or []:
                     clean_path = self._clean(str(path))
-                    key = os.path.normcase(os.path.abspath(clean_path))
+                    key = self._path_key(clean_path)
                     if clean_path and os.path.exists(clean_path) and key not in seen:
                         valid_paths.append(clean_path)
                         seen.add(key)
@@ -584,6 +641,22 @@ def gui_mode():
                     self.dat_display.set("Selectionner un DAT")
                 if persist:
                     self.persist_preferences()
+
+            def toggle_dat_selection(self, path):
+                clean_path = self._clean(str(path))
+                if not clean_path or not os.path.exists(clean_path):
+                    return
+                target_key = self._path_key(clean_path)
+                current_paths = self.selected_dat_paths()
+                current_keys = [self._path_key(item) for item in current_paths]
+                if target_key in current_keys:
+                    next_paths = [
+                        item for item in current_paths
+                        if self._path_key(item) != target_key
+                    ]
+                else:
+                    next_paths = current_paths + [clean_path]
+                self.set_dat_selection(next_paths)
 
             def selected_dat_paths(self):
                 paths = list(getattr(self, 'dat_files', []) or [])
