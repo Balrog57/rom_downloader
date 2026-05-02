@@ -140,6 +140,7 @@ def gui_mode():
                 self.dat_display = tk.StringVar(value="Selectionner un DAT")
                 self.dat_dropdown = None
                 self.dat_menu_items = []
+                self.dat_files = []
                 self.rom_folder = tk.StringVar()
                 self.output_root_by_dat_var = tk.BooleanVar(value=bool(self.preferences.get('output_root_by_dat', False)))
                 self.myrient_url = tk.StringVar()
@@ -229,10 +230,15 @@ def gui_mode():
 
             def apply_preferences(self):
                 dat_path = self.preferences.get('dat_file', '')
+                dat_files = [
+                    path for path in self.preferences.get('dat_files', [])
+                    if path and os.path.exists(path)
+                ]
+                if not dat_files and dat_path and os.path.exists(dat_path):
+                    dat_files = [dat_path]
                 rom_folder = self.preferences.get('rom_folder', '')
-                if dat_path and os.path.exists(dat_path):
-                    self.dat_file.set(dat_path)
-                    self.dat_display.set(self.preferences.get('dat_label') or os.path.basename(dat_path))
+                if dat_files:
+                    self.set_dat_selection(dat_files, persist=False)
                 if rom_folder and os.path.isdir(rom_folder):
                     self.rom_folder.set(rom_folder)
 
@@ -240,6 +246,7 @@ def gui_mode():
                 self.preferences.update({
                     'dat_file': self.dat_file.get().strip(),
                     'dat_label': self.dat_display.get().strip(),
+                    'dat_files': self.selected_dat_paths(),
                     'rom_folder': self.rom_folder.get().strip(),
                     'output_root_by_dat': bool(self.output_root_by_dat_var.get()),
                     'move_to_tosort': bool(getattr(self, 'move_to_tosort_var', tk.BooleanVar(value=False)).get()),
@@ -300,13 +307,13 @@ def gui_mode():
                 self.clean_torrentzip_var.set(bool(self.preferences.get('clean_torrentzip', False)))
                 self.toggle(sources, "Deplacer les ROMs hors DAT dans un sous-dossier ToSort", self.move_to_tosort_var).grid(row=4, column=0, sticky='w', pady=(14, 0))
                 self.toggle(sources, "Privilegier les sources 1fichier (RetroGameSets, StartGame)", self.prefer_1fichier_var).grid(row=5, column=0, sticky='w', pady=(8, 0))
+                self.toggle(sources, "Apres verification MD5, recompresser les archives en ZIP TorrentZip/RomVault", self.clean_torrentzip_var).grid(row=6, column=0, sticky='w', pady=(8, 0))
                 parallel_row = tk.Frame(sources, bg=UI_COLOR_CARD_BG)
                 parallel_row.grid(row=7, column=0, sticky='w', pady=(10, 0))
                 tk.Label(parallel_row, text="Telechargements simultanes", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 10)).pack(side='left')
                 parallel_spin = tk.Spinbox(parallel_row, from_=1, to=12, textvariable=self.parallel_var, width=5, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, buttonbackground=UI_COLOR_GHOST, relief='flat', font=(self.font, 10), command=self.persist_preferences)
                 parallel_spin.pack(side='left', padx=(10, 0))
                 parallel_spin.bind('<FocusOut>', lambda _event: self.persist_preferences())
-                self.toggle(sources, "Apres verification MD5, recompresser les archives en ZIP TorrentZip/RomVault", self.clean_torrentzip_var).grid(row=7, column=0, sticky='w', pady=(8, 0))
 
                 progress = self.card(main, 3)
                 progress.columnconfigure(0, weight=1)
@@ -337,9 +344,15 @@ def gui_mode():
 
             def _drop(self, variable, event):
                 value = self._clean(event.data)
-                variable.set(value)
                 if variable is self.dat_file:
-                    self.dat_display.set(os.path.basename(value))
+                    try:
+                        values = [self._clean(item) for item in self.root.tk.splitlist(event.data)]
+                    except Exception:
+                        values = [value]
+                    self.set_dat_selection(values)
+                else:
+                    variable.set(value)
+                    self.persist_preferences()
                 return event.action
 
             def _clean(self, path):
@@ -542,14 +555,41 @@ def gui_mode():
 
             def select_dat(self, path, label=None):
                 self.close_dat_dropdown()
-                self.dat_file.set(path)
-                self.dat_display.set(label or os.path.basename(path))
-                self.persist_preferences()
+                self.set_dat_selection([path], [label] if label else None)
 
             def browse_dat(self):
-                filename = filedialog.askopenfilename(title="Selectionner le fichier DAT", filetypes=[("DAT files", "*.dat"), ("All files", "*.*")])
-                if filename:
-                    self.select_dat(filename)
+                filenames = filedialog.askopenfilenames(title="Selectionner un ou plusieurs fichiers DAT", filetypes=[("DAT files", "*.dat"), ("All files", "*.*")])
+                if filenames:
+                    self.set_dat_selection(list(filenames))
+
+            def set_dat_selection(self, paths, labels=None, persist=True):
+                valid_paths = []
+                seen = set()
+                for path in paths or []:
+                    clean_path = self._clean(str(path))
+                    key = os.path.normcase(os.path.abspath(clean_path))
+                    if clean_path and os.path.exists(clean_path) and key not in seen:
+                        valid_paths.append(clean_path)
+                        seen.add(key)
+                self.dat_files = valid_paths
+                if valid_paths:
+                    self.dat_file.set(valid_paths[0])
+                    if len(valid_paths) == 1:
+                        label = (labels or [None])[0] or os.path.basename(valid_paths[0])
+                        self.dat_display.set(label)
+                    else:
+                        self.dat_display.set(f"{len(valid_paths)} DAT selectionnes")
+                else:
+                    self.dat_file.set('')
+                    self.dat_display.set("Selectionner un DAT")
+                if persist:
+                    self.persist_preferences()
+
+            def selected_dat_paths(self):
+                paths = list(getattr(self, 'dat_files', []) or [])
+                if not paths and self.dat_file.get().strip():
+                    paths = [self.dat_file.get().strip()]
+                return [path for path in paths if path and os.path.exists(path)]
 
             def browse_rom(self):
                 title = "Selectionner le dossier racine" if self.output_root_by_dat_var.get() else "Selectionner le dossier de sortie"
@@ -558,9 +598,9 @@ def gui_mode():
                     self.rom_folder.set(folder)
                     self.persist_preferences()
 
-            def effective_rom_folder(self, create=False):
+            def effective_rom_folder(self, dat_path=None, create=False):
                 folder = resolve_dat_output_folder(
-                    self.dat_file.get().strip(),
+                    (dat_path or self.dat_file.get()).strip(),
                     self.rom_folder.get().strip(),
                     bool(self.output_root_by_dat_var.get()),
                 )
@@ -586,7 +626,8 @@ def gui_mode():
                 if self.mode_badge:
                     self.mode_badge.configure(text="Retool / 1G1R" if profile.get('is_retool') else "DAT brut", bg=UI_COLOR_SUCCESS if profile.get('is_retool') else UI_COLOR_GHOST_HOVER)
 
-            def selected_sources(self):
+            def selected_sources(self, dat_profile=None):
+                profile = dat_profile or self.dat_profile
                 order = {name: index for index, name in enumerate(self.source_order)}
                 ordered_sources = sorted(
                     self.default_sources,
@@ -610,7 +651,7 @@ def gui_mode():
                         except (TypeError, ValueError):
                             pass
                     sources.append(item)
-                return prepare_sources_for_profile(sources, self.dat_profile, prefer_1fichier=bool(self.prefer_1fichier_var.get()))
+                return prepare_sources_for_profile(sources, profile, prefer_1fichier=bool(self.prefer_1fichier_var.get()))
 
             def provider_stats_text(self, source_name):
                 stats = self.provider_stats.get(source_name)
@@ -874,15 +915,17 @@ def gui_mode():
                 self._ui(lambda msg=message: self.append_log(msg))
 
             def validate_paths(self):
-                if not self.dat_file.get() or not os.path.exists(self.dat_file.get()):
-                    messagebox.showerror("Erreur", "Veuillez selectionner un fichier DAT valide")
+                dat_paths = self.selected_dat_paths()
+                if not dat_paths:
+                    messagebox.showerror("Erreur", "Veuillez selectionner au moins un fichier DAT valide")
                     return False
                 if not self.rom_folder.get() or not os.path.exists(self.rom_folder.get()):
                     messagebox.showerror("Erreur", "Veuillez selectionner un dossier de sortie valide")
                     return False
                 if self.output_root_by_dat_var.get():
                     try:
-                        self.effective_rom_folder(create=True)
+                        for dat_path in dat_paths:
+                            self.effective_rom_folder(dat_path, create=True)
                     except Exception as e:
                         messagebox.showerror("Erreur", f"Impossible de creer le sous-dossier DAT:\n{e}")
                         return False
@@ -899,11 +942,13 @@ def gui_mode():
 
             def run_analysis(self):
                 try:
+                    dat_path = self.selected_dat_paths()[0]
+                    dat_profile = finalize_dat_profile(detect_dat_profile(dat_path))
                     summary = analyze_dat_folder(
-                        self.dat_file.get().strip(),
-                        self.effective_rom_folder(create=True),
+                        dat_path,
+                        self.effective_rom_folder(dat_path, create=True),
                         include_tosort=self.move_to_tosort_var.get(),
-                        custom_sources=self.selected_sources(),
+                        custom_sources=self.selected_sources(dat_profile),
                         candidate_limit=self.analysis_candidate_var.get().strip()
                     )
                     message = format_analysis_summary(summary)
@@ -989,20 +1034,48 @@ def gui_mode():
                 self.status_var.set("Arret en cours...")
 
             def run_download(self):
+                dat_paths = self.selected_dat_paths()
+                total = len(dat_paths)
+                totals = {'downloaded': 0, 'failed': 0, 'skipped': 0, 'completed': 0}
+                for dat_index, dat_path in enumerate(dat_paths, start=1):
+                    if not self.running:
+                        break
+                    if total > 1:
+                        label = os.path.basename(dat_path)
+                        self.log(f"DAT {dat_index}/{total}: {label}")
+                        self._ui(lambda idx=dat_index, count=total, name=label: self.status_var.set(f"DAT {idx}/{count}: {name}"))
+                    result = self.run_download_one(dat_path, dat_index, total)
+                    if result:
+                        totals['completed'] += 1
+                        totals['downloaded'] += int(result.get('downloaded', 0) or 0)
+                        totals['failed'] += int(result.get('failed', 0) or 0)
+                        totals['skipped'] += int(result.get('skipped', 0) or 0)
+                if total > 1 and totals['completed']:
+                    self._ui(lambda data=totals: messagebox.showinfo(
+                        "Termine",
+                        "Telechargements DAT termines.\n\n"
+                        f"DAT traites: {data['completed']}/{total}\n"
+                        f"Telecharges: {data['downloaded']}\n"
+                        f"Echecs: {data['failed']}\n"
+                        f"Ignores: {data['skipped']}"
+                    ))
+
+            def run_download_one(self, dat_path=None, dat_index=1, dat_total=1):
                 try:
-                    dat_path = self.dat_file.get().strip()
-                    rom_folder = self.effective_rom_folder(create=True)
+                    dat_path = (dat_path or self.dat_file.get()).strip()
+                    rom_folder = self.effective_rom_folder(dat_path, create=True)
+                    prefix = f"DAT {dat_index}/{dat_total} - " if dat_total > 1 else ""
                     source_url = ''
                     dat_profile = finalize_dat_profile(detect_dat_profile(dat_path))
                     system_name = dat_profile.get('system_name') or detect_system_name(dat_path)
-                    sources = self.selected_sources()
+                    sources = self.selected_sources(dat_profile)
                     dat_games = parse_dat_file(dat_path)
                     local_roms, local_roms_normalized, local_game_names, signature_index = scan_local_roms(rom_folder, dat_games)
                     missing_games = find_missing_games(dat_games, local_roms, local_roms_normalized, local_game_names, signature_index)
                     analysis_summary = build_analysis_summary(dat_path, rom_folder, dat_games, missing_games, dat_profile, sources)
                     self.log(format_analysis_summary(analysis_summary))
-                    self._ui(lambda summary=analysis_summary: self.status_var.set(
-                        f"Analyse: {summary['present_games']} presents, {summary['missing_games']} manquants"
+                    self._ui(lambda summary=analysis_summary, msg_prefix=prefix: self.status_var.set(
+                        f"{msg_prefix}Analyse: {summary['present_games']} presents, {summary['missing_games']} manquants"
                     ))
                     downloaded_items = []
                     failed_items = []
@@ -1048,9 +1121,10 @@ def gui_mode():
                             'torrentzip_deleted': torrentzip_summary.get('deleted', 0),
                             'torrentzip_failed': torrentzip_summary.get('failed', 0),
                         })
-                        self.status_var.set("Termine - dossier deja complet")
-                        self._ui(lambda path=report_path: messagebox.showinfo("Termine", f"Tous les jeux du DAT sont deja presents localement.\n\nRapport:\n{path}"))
-                        return
+                        self.status_var.set(f"{prefix}Termine - dossier deja complet")
+                        if dat_total <= 1:
+                            self._ui(lambda path=report_path: messagebox.showinfo("Termine", f"Tous les jeux du DAT sont deja presents localement.\n\nRapport:\n{path}"))
+                        return {'downloaded': 0, 'failed': 0, 'skipped': 0}
                     self.log(f"DAT detecte: {describe_dat_profile(dat_profile)}")
                     self.log(f"Sources actives: {', '.join([s['name'] for s in sources if s.get('enabled', True)])}")
                     progress = lambda value: self._ui(lambda: self.progress_var.set(value))
@@ -1086,9 +1160,10 @@ def gui_mode():
                         for game in not_available[:20]:
                             self.log(f"  - {game['game_name']}")
                     if not to_download and not not_available:
-                        self.status_var.set("Aucun jeu trouve sur les sources")
-                        self._ui(lambda: messagebox.showwarning("Attention", "Aucun jeu manquant n'a ete trouve sur les sources actives."))
-                        return
+                        self.status_var.set(f"{prefix}Aucun jeu trouve sur les sources")
+                        if dat_total <= 1:
+                            self._ui(lambda: messagebox.showwarning("Attention", "Aucun jeu manquant n'a ete trouve sur les sources actives."))
+                        return {'downloaded': 0, 'failed': 0, 'skipped': 0}
                     downloaded = result['downloaded']
                     failed = result['failed']
                     skipped = result['skipped']
@@ -1128,16 +1203,21 @@ def gui_mode():
                         'torrentzip_deleted': torrentzip_summary.get('deleted', 0),
                         'torrentzip_failed': torrentzip_summary.get('failed', 0),
                     })
-                    self.status_var.set(f"Termine - {downloaded} telecharge(s)")
-                    self._ui(lambda path=report_path: messagebox.showinfo("Termine", f"Telechargement termine.\n\nTelecharges: {downloaded}\nEchecs: {failed}\nIgnores: {skipped}\n\nRapport:\n{path}"))
+                    self.status_var.set(f"{prefix}Termine - {downloaded} telecharge(s)")
+                    if dat_total <= 1:
+                        self._ui(lambda path=report_path: messagebox.showinfo("Termine", f"Telechargement termine.\n\nTelecharges: {downloaded}\nEchecs: {failed}\nIgnores: {skipped}\n\nRapport:\n{path}"))
+                    return {'downloaded': downloaded, 'failed': failed, 'skipped': skipped}
                 except Exception as e:
+                    self.running = False
                     error_message = str(e)
                     self.log(f"ERREUR: {error_message}")
                     self.status_var.set("Erreur")
                     self._ui(lambda msg=error_message: messagebox.showerror("Erreur", f"Une erreur est survenue:\n{msg}"))
                 finally:
-                    self.running = False
-                    self._ui(lambda: (self.start_button.configure(state=tk.NORMAL), self.stop_button.configure(state=tk.DISABLED)))
+                    should_finish = dat_total <= 1 or dat_index >= dat_total or not self.running
+                    if should_finish:
+                        self.running = False
+                        self._ui(lambda: (self.start_button.configure(state=tk.NORMAL), self.stop_button.configure(state=tk.DISABLED)))
 
         root = tk.Tk()
         tkinterdnd2 = enable_tkinterdnd(root)
