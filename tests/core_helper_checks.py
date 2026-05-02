@@ -56,6 +56,9 @@ def main() -> None:
         == str(Path(r"S:\downloads") / "Nintendo - GameCube Datfile (2026)"),
         "dat output folder resolution failed",
     )
+    gc_output = resolve_dat_output_folder(r"C:\DAT\Nintendo - GameCube.dat", r"S:\downloads", True)
+    jag_output = resolve_dat_output_folder(r"C:\DAT\Atari - Jaguar CD.dat", r"S:\downloads", True)
+    assert_true(gc_output != jag_output, "multi-DAT output folders should differ by DAT stem")
     assert_true(strip_rom_extension("Game.nkit.gcz") == "Game", "nkit.gcz stripping failed")
     assert_true(strip_rom_extension("Game.nkit.iso") == "Game", "nkit.iso stripping failed")
     assert_true(strip_rom_extension("Game.rvz") == "Game", "rvz stripping failed")
