@@ -83,10 +83,11 @@ def attempt_download_from_resolved_provider(game_info: dict, output_folder: str,
         log_func(f"  Delai {_delay:.1f}s avant telechargement ({source})...")
         time.sleep(_delay)
 
-    if source == 'archive_org':
+    if source in {'archive_org', 'archive.org cible'}:
         identifier = game_info.get('archive_org_identifier', '')
-        if identifier and filename:
-            success = download_from_archive_org(identifier, filename, dest_path, progress_callback)
+        archive_filename = game_info.get('archive_org_filename') or filename
+        if identifier and archive_filename:
+            success = download_from_archive_org(identifier, archive_filename, dest_path, progress_callback)
 
     elif source == 'EdgeEmu' and download_url:
         success = download_file(download_url, dest_path, session, progress_callback, download_timeout, progress_detail_callback)

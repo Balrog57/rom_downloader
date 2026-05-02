@@ -16,7 +16,7 @@ from .diagnostics import (
     provider_healthcheck,
 )
 from .scanner import analyze_dat_folder, print_analysis_summary
-from .dat_profile import detect_dat_profile, finalize_dat_profile
+from .dat_profile import detect_dat_profile, finalize_dat_profile, resolve_dat_output_folder
 from .pipeline import run_download
 from .cli import cli_mode
 from .gui import gui_mode
@@ -47,6 +47,7 @@ Exemples:
     parser.add_argument('--tosort', action='store_true', help='Deplacer les ROMs non presentes dans le DAT vers un sous-dossier ToSort')
     parser.add_argument('--clean-torrentzip', action='store_true', help='Recompresser les archives validees MD5 en ZIP TorrentZip/RomVault')
     parser.add_argument('--parallel', type=int, default=DEFAULT_PARALLEL_DOWNLOADS, help=f'Nombre de telechargements simultanes (defaut: {DEFAULT_PARALLEL_DOWNLOADS})')
+    parser.add_argument('--output-root-by-dat', action='store_true', help='Utiliser rom_folder/output comme racine et creer un sous-dossier nomme comme le DAT')
     parser.add_argument('--prefer-1fichier', action='store_true', help='Prioriser RetroGameSets/StartGame avant les DDL directs')
     parser.add_argument('--sources', action='store_true', help='Afficher les sources de telechargement')
     parser.add_argument('--version', action='version', version=f'ROM Downloader {APP_VERSION}', help='Afficher la version puis quitter')
@@ -107,13 +108,19 @@ Exemples:
         return
 
     if args.dat_file and args.rom_folder:
+        effective_rom_folder = resolve_dat_output_folder(
+            args.dat_file,
+            args.output or args.rom_folder,
+            args.output_root_by_dat,
+        )
         if args.refresh_cache:
             _facade.clear_resolution_cache()
             _facade.clear_listing_cache()
         if args.analyze:
+            os.makedirs(effective_rom_folder, exist_ok=True)
             print_analysis_summary(analyze_dat_folder(
                 args.dat_file,
-                args.rom_folder,
+                effective_rom_folder,
                 include_tosort=args.tosort,
                 candidate_limit=args.analyze_candidates
             ))

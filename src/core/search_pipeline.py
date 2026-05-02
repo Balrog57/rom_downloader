@@ -37,6 +37,7 @@ from .scrapers import (
     find_listing_match,
     resolve_edgeemu_game,
     list_planetemu_directory,
+    resolve_archive_org_collection_game,
     resolve_vimm_game,
     resolve_retrogamesets_game,
     search_archive_org_for_games,
@@ -332,7 +333,7 @@ def search_all_sources(
     """
     Recherche des jeux manquants selon le pipeline prioritaire:
     1. Base locale (liens DDL uniquement -- 1fichier, autres hebergeurs directs)
-    2. Sources DDL live (EdgeEmu, PlanetEmu, LoLROMs, Vimm, RetroGameSets)
+    2. Sources DDL live (EdgeEmu, PlanetEmu, LoLROMs, Vimm, RetroGameSets, archive.org cible)
     3. Torrent Minerva (base locale torrent + browse Minerva)
     4. archive.org (dernier recours)
     """
@@ -692,6 +693,27 @@ def search_all_sources(
                         "RomsXISOs",
                         system_name,
                         extra_fields_fn=_rx_fields,
+                    )
+                    all_found.extend(newly_found)
+                    ddl_found.extend(newly_found)
+                    still_missing = remaining
+
+            elif source['type'] == 'archive_org_collection':
+                identifiers = mappings.get('archive_org_collection')
+                if identifiers and still_missing:
+                    print(f"\n--- Recherche sur archive.org cible ({', '.join(identifiers) if isinstance(identifiers, list) else identifiers}) ---")
+                    def _ia_fields(merged, result):
+                        merged['archive_org_identifier'] = result.get('identifier', '')
+                        archive_filename = result.get('filename', f"{merged['game_name']}.zip")
+                        merged['archive_org_filename'] = archive_filename
+                        merged['download_filename'] = archive_filename.rsplit('/', 1)[-1]
+                    newly_found, remaining = _resolve_games_parallel(
+                        still_missing,
+                        lambda gi: resolve_archive_org_collection_game(gi, identifiers, session),
+                        "resolve:archive_org_collection",
+                        "archive.org cible",
+                        system_name,
+                        extra_fields_fn=_ia_fields,
                     )
                     all_found.extend(newly_found)
                     ddl_found.extend(newly_found)

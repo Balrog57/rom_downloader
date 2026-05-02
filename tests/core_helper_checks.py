@@ -18,9 +18,12 @@ from src.core import (  # noqa: E402
     optional_positive_int,
     parse_candidate_limit,
     prepare_sources_for_profile,
+    resolve_dat_output_folder,
+    safe_dat_folder_name,
     reserve_source_quota,
     source_quota_limit,
     source_timeout_seconds,
+    strip_rom_extension,
     verify_downloaded_md5,
 )
 from src.pipeline import build_pipeline_summary, merge_provider_metrics  # noqa: E402
@@ -44,6 +47,53 @@ def main() -> None:
         normalize_system_name("Nintendo - GameCube - Datfile (2019) (2026-03-31 11-37-45)") == "Nintendo - GameCube",
         "DAT filename cleanup failed",
     )
+    assert_true(
+        safe_dat_folder_name(r"C:\DAT\Nintendo - GameCube: Datfile? (2026).dat") == "Nintendo - GameCube Datfile (2026)",
+        "dat folder sanitizing failed",
+    )
+    assert_true(
+        resolve_dat_output_folder(r"C:\DAT\Nintendo - GameCube: Datfile? (2026).dat", r"S:\downloads", True)
+        == str(Path(r"S:\downloads") / "Nintendo - GameCube Datfile (2026)"),
+        "dat output folder resolution failed",
+    )
+    assert_true(strip_rom_extension("Game.nkit.gcz") == "Game", "nkit.gcz stripping failed")
+    assert_true(strip_rom_extension("Game.nkit.iso") == "Game", "nkit.iso stripping failed")
+    assert_true(strip_rom_extension("Game.rvz") == "Game", "rvz stripping failed")
+    assert_true(strip_rom_extension("Game.cue") == "Game", "cue stripping failed")
+    assert_true(strip_rom_extension("Game.bin") == "Game", "bin stripping failed")
+
+    redump_candidates = iter_game_candidate_names({
+        "game_name": "Baldies (World)",
+        "primary_rom": "Baldies (World) (Track 01).bin",
+        "roms": [{"name": "Baldies (World) (Track 02).bin"}],
+    })
+    assert_true("Baldies (World)" in redump_candidates, "redump track variant missing")
+
+    match_cases = [
+        (
+            {"game_name": "Super Mario Sunshine (USA)", "primary_rom": "Super Mario Sunshine (USA).iso", "roms": []},
+            {"Super Mario Sunshine (USA).nkit.gcz": {"full_name": "Super Mario Sunshine (USA).nkit.gcz"}},
+            "gamecube redump match failed",
+        ),
+        (
+            {"game_name": "Baldies (World)", "primary_rom": "Baldies (World) (Track 01).bin", "roms": []},
+            {"Baldies (World).chd": {"full_name": "Baldies (World).chd"}},
+            "jaguar cd redump match failed",
+        ),
+        (
+            {"game_name": "Sonic Adventure (USA) (Disc 1)", "primary_rom": "Sonic Adventure (USA) (Disc 1).gdi", "roms": []},
+            {"Sonic Adventure (USA) (Disc 1).chd": {"full_name": "Sonic Adventure (USA) (Disc 1).chd"}},
+            "dreamcast redump match failed",
+        ),
+        (
+            {"game_name": "Final Fantasy VII (USA) (Disc 1)", "primary_rom": "Final Fantasy VII (USA) (Disc 1).cue", "roms": []},
+            {"Final Fantasy VII (USA) (Disc 1).chd": {"full_name": "Final Fantasy VII (USA) (Disc 1).chd"}},
+            "playstation redump match failed",
+        ),
+    ]
+    for game_info, listing, message in match_cases:
+        _candidate, entry = find_listing_match(game_info, listing)
+        assert_true(entry is not None, message)
 
     source = {"name": "EdgeEmu", "type": "edgeemu", "timeout_seconds": "45", "quota_per_run": "2"}
     assert_true(source_timeout_seconds(source) == 45, "source timeout failed")

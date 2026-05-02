@@ -4,6 +4,7 @@ import re
 import time
 
 from .constants import (
+    ARCHIVE_ORG_DOWNLOAD_BASE,
     LOLROMS_BASE,
     MINERVA_BROWSE_BASE,
     RETRO_GAME_SETS_BASE,
@@ -97,6 +98,7 @@ SOURCE_TYPE_ORDER = {
     'retrogamesets': 70,
     'startgame': 72,
     'free_host': 78,
+    'archive_org_collection': 82,
     'edgeemu': 850,
     'minerva': 900,
     'archive_org': 1000,
@@ -114,6 +116,7 @@ DDL_SOURCE_TYPES = {
     'retrogamesets',
     'startgame',
     'free_host',
+    'archive_org_collection',
 }
 
 ONEFICHIER_SOURCE_TYPES = {'retrogamesets', 'startgame'}
@@ -226,6 +229,9 @@ def source_is_excluded(source: dict, excluded_sources: set[str]) -> bool:
     if source.get('type') == 'archive_org':
         labels.add('archive.org')
         labels.add('archive_org')
+    if source.get('type') == 'archive_org_collection':
+        labels.add('archive.org cible')
+        labels.add('archive_org_collection')
     return bool(labels & excluded_sources)
 
 
@@ -240,6 +246,8 @@ def source_matches_label(source: dict, source_label: str) -> bool:
     }
     if source.get('type') == 'archive_org':
         labels.update({'archive.org', 'archive_org'})
+    if source.get('type') == 'archive_org_collection':
+        labels.update({'archive.org cible', 'archive_org_collection'})
     return normalized in labels
 
 
@@ -494,6 +502,14 @@ def get_default_sources():
             'description': 'GitHub Pages - Google Drive / directs non-Myrient',
             'priority': 3
         },
+        {
+            'name': 'archive.org cible',
+            'base_url': ARCHIVE_ORG_DOWNLOAD_BASE,
+            'type': 'archive_org_collection',
+            'enabled': True,
+            'description': 'Collections archive.org fixes pour Redump GameCube et Jaguar CD',
+            'priority': 90
+        },
     ]
     return sorted(sources, key=source_order_key)
 
@@ -601,6 +617,7 @@ SYSTEM_MAPPINGS = {
         'romsxisos': 'gamecube',
         'startgame': 'nintendo-gamecube',
         'vimm': 'GameCube',
+        'archive_org_collection': ['GCRedumpNKitPart1', 'GCRedumpNKitPart2'],
     },
     'Nintendo - Wii': {
         'lolroms': 'Nintendo - Wii',
@@ -777,6 +794,12 @@ SYSTEM_MAPPINGS = {
         'romsxisos': 'atari2600',
         'startgame': 'atari-2600',
         'vimm': 'Atari2600',
+    },
+    'Atari - Jaguar CD Interactive Multimedia System': {
+        'archive_org_collection': ['redump.jaguar.revival'],
+    },
+    'Atari - Jaguar CD': {
+        'archive_org_collection': ['redump.jaguar.revival'],
     },
     'Atari - Atari 2600': {
         'edgeemu': 'atari-2600',

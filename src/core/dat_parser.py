@@ -65,7 +65,7 @@ def parse_rom_size(value) -> int | None:
 def strip_rom_extension(filename: str) -> str:
     """Retire l'extension ROM reconnue d'un nom de fichier."""
     name_no_ext = filename
-    for ext in ROM_EXTENSIONS:
+    for ext in sorted(ROM_EXTENSIONS, key=len, reverse=True):
         if name_no_ext.lower().endswith(ext):
             return name_no_ext[:-len(ext)]
     return name_no_ext
