@@ -150,10 +150,11 @@ def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_ru
                 download_url = game_info.get('download_url')
                 torrent_url = game_info.get('torrent_url')
                 
-                if source == 'archive_org':
+                if source in {'archive_org', 'archive.org cible'}:
                     identifier = game_info.get('archive_org_identifier', '')
-                    if identifier and filename:
-                        success = download_from_archive_org(identifier, filename, dest_path)
+                    archive_filename = game_info.get('archive_org_filename') or filename
+                    if identifier and archive_filename:
+                        success = download_from_archive_org(identifier, archive_filename, dest_path)
 
                 elif source == 'EdgeEmu':
                     success = download_file(download_url, dest_path, session)

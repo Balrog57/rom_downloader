@@ -1,9 +1,17 @@
 import os
 import re
 import xml.etree.ElementTree as ET
+from pathlib import Path
 
 from .constants import SOURCE_FAMILY_MAP
 from .sources import ONEFICHIER_SOURCE_TYPES, normalize_source_label
+
+
+WINDOWS_RESERVED_NAMES = {
+    'CON', 'PRN', 'AUX', 'NUL',
+    'COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6', 'COM7', 'COM8', 'COM9',
+    'LPT1', 'LPT2', 'LPT3', 'LPT4', 'LPT5', 'LPT6', 'LPT7', 'LPT8', 'LPT9',
+}
 
 
 def normalize_system_name(system_name: str) -> str:
@@ -33,7 +41,37 @@ def normalize_system_name(system_name: str) -> str:
         for pattern in cleanup_patterns:
             cleaned = re.sub(pattern, '', cleaned, flags=re.IGNORECASE).strip()
 
-    return re.sub(r'\s+', ' ', cleaned).strip()
+    cleaned = re.sub(r'\s+', ' ', cleaned).strip()
+    aliases = {
+        'Atari - Jaguar CD': 'Atari - Jaguar CD Interactive Multimedia System',
+        'Atari - Atari Jaguar CD': 'Atari - Jaguar CD Interactive Multimedia System',
+        'Atari - Jaguar CD Interactive Multimedia': 'Atari - Jaguar CD Interactive Multimedia System',
+        'Nintendo - GameCube - Discs': 'Nintendo - GameCube',
+        'Nintendo - GameCube Datfile': 'Nintendo - GameCube',
+        'Sega - Dreamcast - Discs': 'Sega - Dreamcast',
+        'Sony - PlayStation - Discs': 'Sony - PlayStation',
+    }
+    return aliases.get(cleaned, cleaned)
+
+
+def safe_dat_folder_name(dat_file_path: str) -> str:
+    """Construit un nom de dossier Windows depuis le nom du DAT."""
+    stem = Path(dat_file_path or '').stem or 'DAT'
+    sanitized = re.sub(r'[<>:"/\\|?*\x00-\x1f]+', ' ', stem)
+    sanitized = re.sub(r'\s+', ' ', sanitized).strip(' .')
+    if not sanitized:
+        sanitized = 'DAT'
+    if sanitized.upper() in WINDOWS_RESERVED_NAMES:
+        sanitized = f"_{sanitized}"
+    return sanitized
+
+
+def resolve_dat_output_folder(dat_file_path: str, root_folder: str, use_dat_subfolder: bool = False) -> str:
+    """Retourne le dossier effectif selon l'option de sous-dossier DAT."""
+    root = os.path.normpath(str(root_folder or '').strip())
+    if not use_dat_subfolder:
+        return root
+    return os.path.join(root, safe_dat_folder_name(dat_file_path))
 
 
 def detect_dat_profile(dat_file_path: str) -> dict:
@@ -212,6 +250,8 @@ def describe_dat_profile(dat_profile: dict | None) -> str:
 
 __all__ = [
     'normalize_system_name',
+    'safe_dat_folder_name',
+    'resolve_dat_output_folder',
     'detect_dat_profile',
     'build_profile_default_source_url',
     'finalize_dat_profile',

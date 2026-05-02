@@ -6,11 +6,11 @@ ROM_EXTENSIONS = (
     '.nes', '.smc', '.sfc', '.fig',
     '.n64', '.z64', '.v64', '.ndd',
     '.nds', '.dsi', '.3ds', '.cia', '.cxi',
-    '.gcm', '.rvz', '.ciso', '.gcz', '.wbfs', '.nkit.iso', '.nkit.gcm', '.nkit.rvz',
+    '.gcm', '.rvz', '.ciso', '.gcz', '.wbfs', '.nkit.iso', '.nkit.gcm', '.nkit.rvz', '.nkit.gcz',
     '.sms', '.gg', '.sg',
     '.md', '.gen', '.smd',
     '.32x', '.cdx',
-    '.chd', '.cue', '.iso', '.bin', '.img', '.ccd', '.sub',
+    '.chd', '.cue', '.gdi', '.iso', '.bin', '.img', '.ccd', '.sub',
     '.psx', '.psf', '.pbp', '.ecm',
     '.pce', '.pcfx',
     '.ngp', '.ngc', '.neo',
@@ -34,7 +34,6 @@ MINERVA_TORRENT_BASE_CANDIDATES = (
     'https://cdn.minerva-archive.org/'
 )
 LOLROMS_BASE = 'https://lolroms.com/'
-
 VIMM_BASE = 'https://vimm.net/'
 RETRO_GAME_SETS_BASE = 'https://retrogamesets.fr/'
 ROMHUSTLER_BASE = 'https://romhustler.org/'
@@ -43,6 +42,7 @@ NOPAYSTATION_BASE = 'https://nopaystation.com/'
 STARTGAME_BASE = 'https://startgame.world/'
 HSHOP_BASE = 'https://hshop.erista.me/'
 ROMSXISOS_BASE = 'https://romsxisos.github.io/'
+ARCHIVE_ORG_DOWNLOAD_BASE = 'https://archive.org/download/'
 BALROG_ASSETS_DIR = APP_ROOT / 'assets'
 BALROG_WINDOW_ICON = BALROG_ASSETS_DIR / 'Retrogaming-Toolkit-AIO.ico'
 BALROG_1G1R_ICON = BALROG_ASSETS_DIR / 'icon_1g1r.png'
@@ -85,6 +85,7 @@ __all__ = [
     'STARTGAME_BASE',
     'HSHOP_BASE',
     'ROMSXISOS_BASE',
+    'ARCHIVE_ORG_DOWNLOAD_BASE',
     'BALROG_ASSETS_DIR',
     'BALROG_WINDOW_ICON',
     'BALROG_1G1R_ICON',

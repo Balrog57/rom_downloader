@@ -193,7 +193,6 @@ def download_lolroms_file(url: str, dest_path: str, progress_callback=None,
     return False
 
 
-
 def get_vimm_session():
     """Retourne une session avec les bons headers pour Vimm's Lair."""
     session = cloudscraper.create_scraper(
@@ -546,20 +545,40 @@ def iter_game_candidate_names(game_info: dict) -> list:
     """Retourne les meilleurs noms candidats pour résoudre un jeu sur une source externe."""
     candidates = []
 
-    primary_rom = strip_rom_extension(game_info.get('primary_rom', '')).strip()
-    if primary_rom and primary_rom not in candidates:
-        candidates.append(primary_rom)
+    def add_candidate(value: str):
+        raw = strip_rom_extension(value or '').strip()
+        variants = [raw]
+        variants.extend(_redump_name_variants(raw))
+        for candidate in variants:
+            if candidate and candidate not in candidates:
+                candidates.append(candidate)
+
+    add_candidate(game_info.get('primary_rom', ''))
 
     for rom_info in game_info.get('roms', []):
-        rom_name = strip_rom_extension(rom_info.get('name', '')).strip()
-        if rom_name and rom_name not in candidates:
-            candidates.append(rom_name)
+        add_candidate(rom_info.get('name', ''))
 
-    game_name = (game_info.get('game_name') or '').strip()
-    if game_name and game_name not in candidates:
-        candidates.append(game_name)
+    add_candidate(game_info.get('game_name') or '')
 
     return candidates
+
+
+def _redump_name_variants(name: str) -> list[str]:
+    """Ajoute des variantes robustes pour les dumps CD/DVD Redump."""
+    if not name:
+        return []
+    variants = []
+    cleaned = re.sub(r'\s*[\(\[]\s*(?:track|audio track)\s*\d+[^\)\]]*[\)\]]', ' ', name, flags=re.IGNORECASE)
+    cleaned = re.sub(r'\s*[\(\[]\s*(?:track|audio track)\s*[a-z0-9 -]+[\)\]]', ' ', cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r'\s+-\s*(?:track|audio track)\s*\d+\b.*$', ' ', cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r'\s+', ' ', cleaned).strip()
+    if cleaned and cleaned != name:
+        variants.append(cleaned)
+    no_format = re.sub(r'\s*[\(\[]\s*(?:nkit|rvz|gcz|ciso|wbfs|cue|bin|iso)[^\)\]]*[\)\]]', ' ', cleaned or name, flags=re.IGNORECASE)
+    no_format = re.sub(r'\s+', ' ', no_format).strip()
+    if no_format and no_format not in variants and no_format != name:
+        variants.append(no_format)
+    return variants
 
 
 def normalize_external_game_name(name: str) -> str:
@@ -569,6 +588,9 @@ def normalize_external_game_name(name: str) -> str:
     value = strip_rom_extension(value)
     value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
     value = value.lower().replace('&', ' and ')
+    value = re.sub(r'[\(\[]\s*(?:track|audio track)\s*\d+[^\)\]]*[\)\]]', ' ', value)
+    value = re.sub(r'\s+-\s*(?:track|audio track)\s*\d+\b.*$', ' ', value)
+    value = re.sub(r'[\(\[]\s*(?:nkit|rvz|gcz|ciso|wbfs|cue|bin|iso)[^\)\]]*[\)\]]', ' ', value)
     value = re.sub(r'\b(?:rev|version|v)\s*(\d+(?:\.\d+)*)\b', r'rev \1', value)
     value = re.sub(r'\b(?:disc|disk|cd)\s*(\d+(?:\.\d+)*)\b', r'disc \1', value)
     value = re.sub(r'\b(?:demo|sample|prototype|proto|beta|alpha|unl|unlicensed|debug|press[-\s]?kit|promo)\b', '', value)
@@ -767,6 +789,64 @@ def download_planetemu(page_url: str, dest_path: str, session: requests.Session,
     except Exception as e:
         print(f"  [PlanetEmu] Erreur: {e}")
         return False
+
+def list_archive_org_collection(identifier: str, session: requests.Session) -> dict:
+    """Liste les fichiers ROM d'un item archive.org cible."""
+    if not identifier:
+        return {}
+    metadata_url = f"https://archive.org/metadata/{quote(identifier)}"
+    print(f"Scraping archive.org cible: {metadata_url}")
+    from . import _facade
+    cache = _facade.load_listing_cache()
+    cache_key = f"archive_org_collection:{identifier}"
+    cached = _facade.listing_cache_get(cache, cache_key)
+    if cached:
+        print("  Listing archive.org cible depuis le cache")
+        return dict(cached)
+
+    mapping = {}
+    try:
+        resp = session.get(metadata_url, timeout=60)
+        if resp.status_code != 200:
+            print(f"Erreur archive.org cible ({resp.status_code}) pour {identifier}")
+            return mapping
+        data = resp.json()
+        for file_info in data.get('files', []):
+            filename = file_info.get('name', '')
+            if not filename or not filename.lower().endswith(ROM_EXTENSIONS):
+                continue
+            name_no_ext = strip_rom_extension(os.path.basename(filename))
+            mapping[name_no_ext.lower()] = {
+                'full_name': name_no_ext,
+                'filename': filename,
+                'identifier': identifier,
+            }
+        _facade.listing_cache_set(cache, cache_key, mapping)
+        _facade.save_listing_cache(cache)
+        print(f"Found {len(mapping)} fichiers sur archive.org cible")
+    except Exception as e:
+        print(f"Erreur archive.org cible: {e}")
+    return mapping
+
+
+def resolve_archive_org_collection_game(game_info: dict, identifiers, session: requests.Session) -> dict | None:
+    """Résout un jeu dans une ou plusieurs collections archive.org fixes."""
+    if not identifiers:
+        return None
+    if isinstance(identifiers, str):
+        identifiers = [identifiers]
+    for identifier in identifiers:
+        listing = list_archive_org_collection(identifier, session)
+        if not listing:
+            continue
+        candidate_name, entry = find_listing_match(game_info, listing, min_score=0.91)
+        if entry:
+            return {
+                'full_name': entry.get('full_name') or candidate_name,
+                'identifier': entry.get('identifier') or identifier,
+                'filename': entry.get('filename', f"{candidate_name}.zip"),
+            }
+    return None
 
 def resolve_vimm_game(game_info: dict, system_slug: str, session: requests.Session) -> dict | None:
     """Recherche un jeu sur Vimm's Lair avec matching normalise."""
@@ -1672,6 +1752,8 @@ __all__ = [
     'resolve_edgeemu_game',
     'list_planetemu_directory',
     'download_planetemu',
+    'list_archive_org_collection',
+    'resolve_archive_org_collection_game',
     'resolve_vimm_game',
     'download_vimm',
     'RETRO_GAME_SETS_DB',

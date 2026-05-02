@@ -6,17 +6,19 @@ from ..version import APP_VERSION
 from .env import *
 from .constants import *
 from .dependencies import *
+from .dat_profile import resolve_dat_output_folder
 from .pipeline import run_download
 
 
 def cli_mode(args):
     """Run in command-line mode."""
-    output_folder = args.output if args.output else args.rom_folder
+    output_root = args.output if args.output else args.rom_folder
+    output_folder = resolve_dat_output_folder(args.dat_file, output_root, bool(getattr(args, 'output_root_by_dat', False)))
     os.makedirs(output_folder, exist_ok=True)
 
     run_download(
         args.dat_file,
-        args.rom_folder,
+        output_folder,
         '',
         output_folder,
         args.dry_run,

@@ -27,7 +27,13 @@ from .scanner import (
     analyze_dat_folder,
     print_analysis_summary,
 )
-from .dat_profile import detect_dat_profile, finalize_dat_profile, prepare_sources_for_profile, describe_dat_profile
+from .dat_profile import (
+    detect_dat_profile,
+    finalize_dat_profile,
+    prepare_sources_for_profile,
+    describe_dat_profile,
+    resolve_dat_output_folder,
+)
 from .sources import (
     get_default_sources,
     build_custom_source,
@@ -135,6 +141,7 @@ def gui_mode():
                 self.dat_dropdown = None
                 self.dat_menu_items = []
                 self.rom_folder = tk.StringVar()
+                self.output_root_by_dat_var = tk.BooleanVar(value=bool(self.preferences.get('output_root_by_dat', False)))
                 self.myrient_url = tk.StringVar()
                 self.parallel_var = tk.IntVar(value=max(1, int(self.preferences.get('parallel_downloads', DEFAULT_PARALLEL_DOWNLOADS) or DEFAULT_PARALLEL_DOWNLOADS)))
                 self.analysis_candidate_var = tk.StringVar(value=str(self.preferences.get('analysis_candidate_limit', '8') or '8'))
@@ -234,6 +241,7 @@ def gui_mode():
                     'dat_file': self.dat_file.get().strip(),
                     'dat_label': self.dat_display.get().strip(),
                     'rom_folder': self.rom_folder.get().strip(),
+                    'output_root_by_dat': bool(self.output_root_by_dat_var.get()),
                     'move_to_tosort': bool(getattr(self, 'move_to_tosort_var', tk.BooleanVar(value=False)).get()),
                     'prefer_1fichier': bool(getattr(self, 'prefer_1fichier_var', tk.BooleanVar(value=False)).get()),
                     'clean_torrentzip': bool(self.clean_torrentzip_var.get()),
@@ -278,7 +286,8 @@ def gui_mode():
                 self.rom_entry = self.entry(fields, self.rom_folder)
                 self.rom_entry.grid(row=2, column=1, sticky='ew', padx=(14, 12), pady=(14, 0), ipady=10)
                 self.button(fields, "Parcourir", self.browse_rom, kind='ghost', width=12).grid(row=2, column=2, sticky='e', pady=(14, 0))
-                tk.Label(fields, textvariable=self.hint_var, bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, justify='left', wraplength=860, font=(self.font, 9)).grid(row=3, column=0, columnspan=3, sticky='w', pady=(10, 0))
+                self.toggle(fields, "Utiliser un sous-dossier nomme comme le DAT", self.output_root_by_dat_var).grid(row=3, column=1, columnspan=2, sticky='w', padx=(14, 0), pady=(8, 0))
+                tk.Label(fields, textvariable=self.hint_var, bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, justify='left', wraplength=860, font=(self.font, 9)).grid(row=4, column=0, columnspan=3, sticky='w', pady=(10, 0))
 
                 sources = self.card(main, 2)
                 tk.Label(sources, text="Sources de telechargement", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 13, 'bold')).grid(row=0, column=0, sticky='w')
@@ -292,7 +301,7 @@ def gui_mode():
                 self.toggle(sources, "Deplacer les ROMs hors DAT dans un sous-dossier ToSort", self.move_to_tosort_var).grid(row=4, column=0, sticky='w', pady=(14, 0))
                 self.toggle(sources, "Privilegier les sources 1fichier (RetroGameSets, StartGame)", self.prefer_1fichier_var).grid(row=5, column=0, sticky='w', pady=(8, 0))
                 parallel_row = tk.Frame(sources, bg=UI_COLOR_CARD_BG)
-                parallel_row.grid(row=6, column=0, sticky='w', pady=(10, 0))
+                parallel_row.grid(row=7, column=0, sticky='w', pady=(10, 0))
                 tk.Label(parallel_row, text="Telechargements simultanes", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 10)).pack(side='left')
                 parallel_spin = tk.Spinbox(parallel_row, from_=1, to=12, textvariable=self.parallel_var, width=5, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, buttonbackground=UI_COLOR_GHOST, relief='flat', font=(self.font, 10), command=self.persist_preferences)
                 parallel_spin.pack(side='left', padx=(10, 0))
@@ -543,10 +552,21 @@ def gui_mode():
                     self.select_dat(filename)
 
             def browse_rom(self):
-                folder = filedialog.askdirectory(title="Selectionner le dossier de sortie")
+                title = "Selectionner le dossier racine" if self.output_root_by_dat_var.get() else "Selectionner le dossier de sortie"
+                folder = filedialog.askdirectory(title=title)
                 if folder:
                     self.rom_folder.set(folder)
                     self.persist_preferences()
+
+            def effective_rom_folder(self, create=False):
+                folder = resolve_dat_output_folder(
+                    self.dat_file.get().strip(),
+                    self.rom_folder.get().strip(),
+                    bool(self.output_root_by_dat_var.get()),
+                )
+                if create and folder:
+                    os.makedirs(folder, exist_ok=True)
+                return folder
 
             def auto_source(self):
                 default_url = self.dat_profile.get('default_source_url', '')
@@ -830,7 +850,7 @@ def gui_mode():
                 )
 
             def export_diagnostic(self):
-                base_folder = self.rom_folder.get().strip() if self.rom_folder.get().strip() else str(APP_ROOT)
+                base_folder = self.effective_rom_folder() if self.rom_folder.get().strip() else str(APP_ROOT)
                 if not os.path.isdir(base_folder):
                     base_folder = str(APP_ROOT)
                 filename = f"rom_downloader_diagnostic_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
@@ -860,6 +880,12 @@ def gui_mode():
                 if not self.rom_folder.get() or not os.path.exists(self.rom_folder.get()):
                     messagebox.showerror("Erreur", "Veuillez selectionner un dossier de sortie valide")
                     return False
+                if self.output_root_by_dat_var.get():
+                    try:
+                        self.effective_rom_folder(create=True)
+                    except Exception as e:
+                        messagebox.showerror("Erreur", f"Impossible de creer le sous-dossier DAT:\n{e}")
+                        return False
                 return True
 
             def start_analysis(self):
@@ -875,7 +901,7 @@ def gui_mode():
                 try:
                     summary = analyze_dat_folder(
                         self.dat_file.get().strip(),
-                        self.rom_folder.get().strip(),
+                        self.effective_rom_folder(create=True),
                         include_tosort=self.move_to_tosort_var.get(),
                         custom_sources=self.selected_sources(),
                         candidate_limit=self.analysis_candidate_var.get().strip()
@@ -965,7 +991,7 @@ def gui_mode():
             def run_download(self):
                 try:
                     dat_path = self.dat_file.get().strip()
-                    rom_folder = self.rom_folder.get().strip()
+                    rom_folder = self.effective_rom_folder(create=True)
                     source_url = ''
                     dat_profile = finalize_dat_profile(detect_dat_profile(dat_path))
                     system_name = dat_profile.get('system_name') or detect_system_name(dat_path)
