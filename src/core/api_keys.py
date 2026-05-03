@@ -1,11 +1,12 @@
 import json
 import os
 
+from .env import APP_ROOT
 from . import rom_database as _rom_db
 from .rom_database import load_rom_database
 
 
-API_CONFIG_FILE = 'api_keys.json'
+API_CONFIG_FILE = APP_ROOT / 'api_keys.json'
 
 
 def load_api_keys() -> dict:
@@ -17,7 +18,7 @@ def load_api_keys() -> dict:
         'archive_secret_key': os.environ.get('IA_S3_SECRET_KEY', ''),
     }
 
-    if os.path.exists(API_CONFIG_FILE):
+    if API_CONFIG_FILE.exists():
         try:
             with open(API_CONFIG_FILE, 'r', encoding='utf-8') as f:
                 json_keys = json.load(f)
@@ -32,7 +33,7 @@ def load_api_keys() -> dict:
 
 def save_api_keys(keys: dict) -> bool:
     try:
-        env_path = '.env'
+        env_path = APP_ROOT / '.env'
         lines = []
         if os.path.exists(env_path):
             with open(env_path, 'r', encoding='utf-8') as f:

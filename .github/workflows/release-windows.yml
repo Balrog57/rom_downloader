@@ -60,22 +60,32 @@ jobs:
           python tests\core_helper_checks.py
           python main.py --version
           python main.py --sources
+          python main.py --diagnose
 
       - name: Build executable
         shell: pwsh
         env:
           ROM_DOWNLOADER_VERSION: ${{ steps.version.outputs.version }}
         run: |
-          pyinstaller `
-            --noconfirm `
-            --clean `
-            --name ROMDownloader `
-            --onefile `
-            --add-data "assets;assets" `
-            --add-data "dat;dat" `
-            --add-data "db;db" `
-            --add-data "VERSION;." `
-            main.py
+          pyinstaller --noconfirm --clean ROMDownloader.spec
+
+      - name: Validate executable
+        shell: pwsh
+        run: |
+          dist\ROMDownloader.exe --version
+          dist\ROMDownloader.exe --sources
+          $diagnose = dist\ROMDownloader.exe --diagnose
+          $diagnose | Set-Content ROMDownloader.diagnose.txt -Encoding UTF8
+          $diagnose
+          $diagnoseText = $diagnose -join "`n"
+          if ($diagnoseText -match 'Racine app: .*_MEI') {
+            throw "L'exe portable ecrit son etat dans le dossier temporaire PyInstaller."
+          }
+          foreach ($dependency in @('py7zr', 'rarfile', 'tkinterdnd2')) {
+            if ($diagnoseText -notmatch "  - $dependency`: ok") {
+              throw "Dependance absente dans l'exe portable: $dependency"
+            }
+          }
 
       - name: Generate SHA-256 checksum
         id: checksum
@@ -87,12 +97,13 @@ jobs:
           }
 
       - name: Upload build artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ROMDownloader-windows-${{ steps.version.outputs.version }}
           path: |
             dist/ROMDownloader.exe
             ROMDownloader.exe.sha256
+            ROMDownloader.diagnose.txt
 
       - name: Publish GitHub Release
         if: startsWith(github.ref, 'refs/tags/v')

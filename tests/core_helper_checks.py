@@ -9,6 +9,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src.core import (  # noqa: E402
     cache_entry_matches_source,
+    archive_org_collection_identifiers,
+    build_custom_source,
     expected_game_sizes,
     find_listing_match,
     listing_cache_prefixes_for_source,
@@ -21,8 +23,14 @@ from src.core import (  # noqa: E402
     resolve_dat_output_folder,
     safe_dat_folder_name,
     reserve_source_quota,
+    APP_ROOT,
+    RESOURCE_ROOT,
+    PREFERENCES_FILE,
+    RESOLUTION_CACHE_FILE,
     source_quota_limit,
+    source_policy_summary,
     source_timeout_seconds,
+    select_archive_org_collection_specs_for_game,
     strip_rom_extension,
     verify_downloaded_md5,
 )
@@ -37,6 +45,10 @@ def assert_true(condition, message: str) -> None:
 
 def main() -> None:
     assert_true(format_duration(65) == "1m05s", "duration formatting failed")
+    assert_true(APP_ROOT.exists(), "app root should exist")
+    assert_true(RESOURCE_ROOT.exists(), "resource root should exist")
+    assert_true(PREFERENCES_FILE.parent == APP_ROOT, "preferences should live under app root")
+    assert_true(RESOLUTION_CACHE_FILE.parent == APP_ROOT, "resolution cache should live under app root")
     meter = DownloadProgressMeter(total_size=100, resume_from=20, report_interval=0.1)
     assert_true(meter.snapshot(50) is None, "progress meter reported too early")
     assert_true(optional_positive_int("12", maximum=10) == 10, "integer clamp failed")
@@ -101,6 +113,37 @@ def main() -> None:
     source = {"name": "EdgeEmu", "type": "edgeemu", "timeout_seconds": "45", "quota_per_run": "2"}
     assert_true(source_timeout_seconds(source) == 45, "source timeout failed")
     assert_true(source_quota_limit(source) == 2, "source quota failed")
+    delayed = {"name": "LoLROMs", "type": "lolroms", "delay_seconds": "2.5"}
+    assert_true("delai 2.5s" in source_policy_summary(delayed), "source delay summary failed")
+
+    archive_source = build_custom_source("https://archive.org/download/tp-roms_0/TeknoParrot/")
+    assert_true(archive_source["type"] == "archive_org_collection", "archive.org custom source detection failed")
+    assert_true(
+        archive_source["identifiers"] == [{"identifier": "tp-roms_0", "path_prefix": "TeknoParrot"}],
+        "archive.org download URL parsing failed",
+    )
+    assert_true(
+        archive_org_collection_identifiers("ps2_archive")[:2] == ["sony_playstation2_numberssymbols", "sony_playstation2_a"],
+        "RomGoGetter archive group expansion failed",
+    )
+    selected_specs = select_archive_org_collection_specs_for_game(
+        [
+            "sony_playstation2_a",
+            "sony_playstation2_b",
+            "sony_playstation2_c",
+            "sony_playstation2_d_part1",
+            "sony_playstation2_e",
+            "sony_playstation2_f",
+            "sony_playstation2_g",
+            "sony_playstation2_h",
+            "sony_playstation2_numberssymbols",
+        ],
+        {"game_name": "Final Fantasy X", "primary_rom": "Final Fantasy X (USA).iso"},
+    )
+    assert_true(
+        [spec["identifier"] for spec in selected_specs] == ["sony_playstation2_f"],
+        "archive.org shard selection failed",
+    )
 
     redump_profile = {"family": "redump", "family_label": "Redump", "system_name": "Sony - PlayStation"}
     redump_sources = prepare_sources_for_profile([
@@ -242,6 +285,10 @@ def main() -> None:
     quota_ok, quota_detail = reserve_source_quota("EdgeEmu", [source], usage)
     assert_true(not quota_ok and "quota atteint" in quota_detail, "quota limit not enforced")
     assert_true(listing_cache_prefixes_for_source("Minerva No-Intro") == {"minerva"}, "listing cache prefix failed")
+    assert_true(
+        listing_cache_prefixes_for_source("archive.org cible") == {"archive_org_collection"},
+        "archive.org cache prefix failed",
+    )
     assert_true(
         cache_entry_matches_source({"sources": ["minerva no-intro"], "found_sources": []}, "Minerva"),
         "resolution cache source match failed",

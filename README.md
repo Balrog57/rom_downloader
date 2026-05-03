@@ -1,18 +1,31 @@
 # ROM Downloader
 
-Application Python pour comparer un DAT 1G1R a un dossier de ROMs, detecter les jeux manquants et tenter leur recuperation via les sources integrees.
+ROM Downloader compare un DAT No-Intro, Redump ou Retool a un dossier de ROMs, detecte les jeux manquants et tente de les recuperer via les sources configurees.
 
-## Utilisation
+Version courante: `0.1.4`.
 
-Installation Windows depuis GitHub Releases:
+## Installation Windows
+
+### Exe portable
+
+Telechargez `ROMDownloader.exe` depuis la derniere release GitHub, placez-le dans le dossier de votre choix, puis lancez-le directement.
+
+En mode exe portable:
+
+- les ressources embarquees (`assets/`, `dat/`, `db/`, `VERSION`) sont lues depuis l'exe;
+- les fichiers utilisateur sont crees a cote de `ROMDownloader.exe`: `.env`, preferences, caches, metriques provider;
+- une reinstall ou un deplacement du dossier conserve donc la configuration si ces fichiers restent avec l'exe.
+
+Installation rapide depuis PowerShell:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/Balrog57/rom_downloader/main/install.ps1 | iex"
 ```
 
-Interface graphique:
+### Depuis Python
 
 ```powershell
+python -m pip install -r requirements.txt
 python main.py --gui
 ```
 
@@ -22,158 +35,103 @@ Sans argument, l'application lance aussi la GUI:
 python main.py
 ```
 
-Ligne de commande:
+## Utilisation CLI
 
 ```powershell
 python main.py <fichier.dat> <dossier_roms> [--dry-run] [--limit N] [--parallel N] [--tosort] [--clean-torrentzip]
 ```
 
-Exemples:
+Commandes utiles:
 
 ```powershell
-python main.py "dat\retool - french no unl\Nintendo - Game Boy (20260405-031740) (Retool 2026-04-06 18-53-11) (602) (-nz) [-AaBbcDdefkMmopPruv].dat" "Roms\Game Boy"
-python main.py "dat\retool - french no unl\Sony - PlayStation 2 (2026-04-05 01-38-25) (Retool 2026-04-06 18-57-20) (2,560) (-nz) [-AaBbcDdefkMmopPruv].dat" "Roms\PS2" --limit 10
-python main.py "dat\retool - french no unl\Nintendo - Game Boy (20260405-031740) (Retool 2026-04-06 18-53-11) (602) (-nz) [-AaBbcDdefkMmopPruv].dat" "Roms\Game Boy" --tosort
-python main.py "dat\retool - french no unl\Nintendo - Game Boy (20260405-031740) (Retool 2026-04-06 18-53-11) (602) (-nz) [-AaBbcDdefkMmopPruv].dat" "Roms\Game Boy" --analyze
-python main.py "dat\retool - french no unl\Nintendo - Game Boy (20260405-031740) (Retool 2026-04-06 18-53-11) (602) (-nz) [-AaBbcDdefkMmopPruv].dat" "Roms\Game Boy" --analyze --analyze-candidates 10
-python main.py "dat\retool - french no unl\Nintendo - Game Boy (20260405-031740) (Retool 2026-04-06 18-53-11) (602) (-nz) [-AaBbcDdefkMmopPruv].dat" "Roms\Game Boy" --analyze --analyze-candidates all
-python main.py --sources
 python main.py --version
+python main.py --sources
+python main.py --diagnose
 python main.py --healthcheck-sources
 python main.py --provider-registry
 python main.py --clear-listing-cache
-python main.py --clear-cache-source Minerva
+python main.py --clear-cache-source LoLROMs
 ```
 
-## Structure du depot
+Pour les sets GBA LoLROMs, utilisez `--clean-torrentzip` si vous voulez des ZIP compatibles RomVault: LoLROMs fournit souvent des `.7z` contenant les ROMs attendues par les DAT.
 
-- `main.py`: point d'entree de l'application.
-- `VERSION`: version applicative courante, utilisee par `--version`, la GUI et les releases.
-- `src/`: code Python de l'application.
-- `src/pipeline.py`: agregations testables du pipeline resolution/telechargement.
-- `src/progress.py`: helpers de progression, debit et ETA des transferts.
-- `src/core/`: 27 modules extraits de l'ancien monolithe `core.py`.
-- `src/network/`: modules reseau (sessions, circuits, exceptions, cache, metrics, downloads, search, async_search).
-- `assets/`: images et icones utilisees par l'interface.
-- `dat/`: fichiers DAT disponibles dans le menu de selection.
-- `db/shard_*.zip`: shards SQLite compresses pour la recherche locale par MD5.
-- `.env.example`: exemple de configuration locale.
-- `requirements.txt`: dependances Python.
-- `install.ps1`: installateur Windows qui telecharge la derniere release GitHub.
-- `release.ps1`: helper mainteneur pour mettre a jour `VERSION`, commit, tag et pousser une release.
+## Sources et fiabilite
 
-Le depot ne contient plus de runtime externe ni de dossier de generation. Les fichiers temporaires, caches, rapports locaux et donnees extraites restent ignores par Git.
+Le pipeline essaie les providers dans cet ordre logique:
 
-## Interface
+1. base locale shardee par checksum;
+2. sources DDL directes: PlanetEmu, RomHustler, CoolROM, RomsXISOs, NoPayStation, hShop, Vimm's Lair, LoLROMs, RetroGameSets, StartGame;
+3. collections archive.org ciblees par systeme, dont des groupes issus de RomGoGetter pour PS1/PS2/PS3/Xbox/Xbox 360/NDS/3DS/Wii U/PSP;
+4. Minerva par torrent;
+5. archive.org general en dernier recours.
 
-Le champ DAT de la GUI est un menu deroulant alimente par `dat/**/*.dat`, avec recherche texte et filtres par section.
-Les dossiers directs de `dat/` sont affiches comme titres de section en italique et ne sont pas selectionnables. Les fichiers DAT sous chaque section sont selectionnables.
-Le bouton `Parcourir` reste disponible comme secours pour choisir un DAT externe.
-La GUI retient localement le dernier DAT, le dernier dossier, les options ToSort/TorrentZip, le parallelisme et l'etat des logs.
-Le panneau `Logs` est repliable et affiche le detail des operations sans quitter la fenetre.
-L'ecran `Configurer les sources` permet aussi de changer l'ordre des sources directes, les activer/desactiver, fixer un timeout et un quota par run, saisir les cles API locales dans `.env`, voir l'etat des caches, vider tous les caches, invalider la source selectionnee et consulter les statistiques cumulees par provider. `Passerelle 1fichier` represente l'hebergeur utilise quand un site renvoie un lien 1fichier; ce n'est pas un site de recherche.
+La fiabilite repose sur:
 
-Les sources de telechargement sont automatiques: les sources directes sont essayees avant Minerva, puis archive.org en dernier recours.
-La resolution des providers est mise en cache temporairement dans `.rom_downloader_resolution_cache.json` pour eviter de refaire les memes recherches pendant plusieurs essais; `--refresh-cache` force une reconstruction.
-Les listings distants scrapes sont mis en cache 24 h dans `.rom_downloader_listing_cache.json`; `--clear-listing-cache` supprime tous les listings et `--clear-cache-source <source>` invalide les caches associes a une source.
-Les telechargements HTTP utilisent des fichiers `.part`, reprennent quand le serveur accepte les requetes `Range`, journalisent debit/ETA pendant les gros transferts et remontent ces infos dans la barre de statut GUI.
-Les quotas par source sont appliques pendant les retries: quand une source atteint sa limite de tentatives sur un run, le moteur passe au provider suivant.
-Avant d'ignorer un fichier deja present, l'application valide le MD5 DAT quand il existe, puis la taille DAT si aucun MD5 n'est disponible.
+- fichiers `.part` et reprise HTTP quand le serveur accepte `Range`;
+- redemarrage propre si un serveur refuse la reprise ou retourne HTTP 416;
+- detection des pages HTML/Cloudflare pour eviter de sauvegarder une page de challenge comme ROM;
+- validation finale MD5, puis taille DAT si aucun MD5 n'est disponible;
+- fallback provider apres erreur reseau, timeout, quota, rate-limit ou validation KO;
+- circuit-breaker par source pendant la session;
+- metriques provider persistantes pour reordonner les sources les plus fiables.
 
-## Architecture reseau (`src/network/`)
+Les politiques par source se reglent dans la GUI: activation, ordre, timeout, quota par run et delai avant telechargement. LoLROMs utilise par defaut un delai pour limiter les blocages Cloudflare.
 
-Le module `src/network/` contient les composants reseau isoles et testables :
+## Configuration
 
-| Module | Role |
-|--------|------|
-| `sessions.py` | `create_optimized_session()` avec pooling urllib3 (20 connexions), retry 502/503/504, chunks 256KB |
-| `circuits.py` | `SourceCircuitBreaker` - exclut les sources defaillantes (threshold=10, recovery=300s) |
-| `exceptions.py` | Exceptions custom : `SourceTimeoutError`, `ChecksumMismatchError`, `DownloadNetworkError`, `ResumeNotSupportedError`, etc. |
-| `cache_runtime.py` | `RuntimeCache` LRU thread-safe (listings + resolutions en memoire) |
-| `cache.py` | Cache persistant JSON (7 jours) |
-| `metrics.py` | `load/save_provider_metrics()`, `prioritize_sources()`, `record_provider_attempt()` |
-| `downloads.py` | `ParallelDownloadPool` avec callback `download_fn`, circuit-breaker, metrics |
-| `search.py` | `ParallelSearchPool` pour recherche/listings paralleles |
-| `async_search.py` | Pre-fetch async via `aiohttp` + fallback synchrone transparent |
-| `utils.py` | Utilitaires purs |
+Copiez `.env.example` vers `.env`.
 
-## Architecture pipeline (`src/core/`)
+Variables courantes:
 
-L'ancien monolithe `core.py` (8367 lignes) a ete eclate en 27 modules :
+- `ONE_FICHIER_API_KEY`
+- `ALLDEBRID_API_KEY`
+- `REALDEBRID_API_KEY`
+- `IA_S3_ACCESS_KEY`
+- `IA_S3_SECRET_KEY`
+- `LIBTORRENT_DLL_DIR` si vous utilisez le backend Python libtorrent avec DLL OpenSSL 1.1.
 
-- `pipeline.py` : orchestrateur principal `run_download()`
-- `download_orchestrator.py` : `download_with_provider_retries()` + `download_missing_games_sequentially()` avec ParallelDownloadPool
-- `search_pipeline.py` : `search_all_sources()` avec `_resolve_games_parallel()` (5 workers)
-- `downloads.py` : `download_file()` avec resume `.part` + Range headers
-- `verification.py` : `verify_downloaded_md5()` + `validate_download_checksum()`
-- `scrapers.py` : EdgeEmu, PlanetEmu, LoLROMs, CDRomance, Vimm, RetroGameSets
-  - LoLROMs scrape recursivement les sous-repertoires (Multi-Boot, eReader, Video, etc.) et les fusionne dans le listing principal
-  - Les DATs avec sous-ensemble comme `Nintendo - Game Boy Advance (Multiboot)` resolvent automatiquement vers le sous-repertoire LoLROMs correspondant (`Multi-Boot`)
-- Et 21 autres modules (env, constants, sources, dat_parser, minerva, etc.)
+`aria2c` est le backend torrent Minerva prioritaire quand il est present dans le `PATH` ou installe via Winget/Chocolatey. Si `aria2c` et `libtorrent` sont absents, seules les sources HTTP/DDL restent disponibles.
 
-## Optimisations implementees
+## Structure
 
-| Optimisation | Impact rapidite | Impact fiabilite |
-|---|---|---|
-| Sessions HTTP optimisees (pooling, retry, 256KB chunks) | ** | ** |
-| Telechargements paralleles (ParallelDownloadPool) | *** | * |
-| Recherche parallele (ParallelSearchPool, 5 workers) | *** | * |
-| Pre-fetch async des listings (aiohttp) | *** | * |
-| Circuit-breaker (10 echecs = source ignoree 5 min) | ** | *** |
-| Resume robuste (`.part` + Range headers) | * | *** |
-| Validation MD5 finale obligatoire | - | *** |
-| Cache LRU runtime (listings + resolutions) | ** | ** |
-| Metriques persistantes + prioritisation dynamique des sources | ** | ** |
-| Exceptions custom (7 types hierarchises) | * | *** |
+- `main.py`: point d'entree.
+- `VERSION`: version SemVer utilisee par CLI, GUI et releases.
+- `ROMDownloader.spec`: configuration PyInstaller officielle.
+- `src/core/`: pipeline applicatif, GUI, DAT, scrapers, verification, torrentzip.
+- `src/network/`: sessions, caches, circuit-breaker, metriques, pools.
+- `src/providers/`: interface provider commune.
+- `assets/`: icones/images GUI.
+- `dat/`: DAT proposes dans le menu GUI.
+- `db/shard_*.zip`: base locale de recherche checksum.
+- `.github/workflows/`: CI, packaging Windows, release Windows.
 
-## Dependances
-
-Dependances Python principales:
-
-- `requests` - sessions HTTP avec pooling et retry
-- `beautifulsoup4` - parsing HTML des scrapers
-- `internetarchive` - recherche et telechargement archive.org
-- `cloudscraper` - contournement Cloudflare
-- `py7zr` - lecture/verification des archives `.7z`
-- `rarfile` - lecture/verification des archives `.rar`
-- `tkinterdnd2` - glisser-deposer GUI (optionnel)
-- `aiohttp` - pre-fetch async des listings (fallback synchrone si absent)
-
-`charset_normalizer` n'est pas liste directement car il est installe comme dependance transitive de `requests`.
-Le programme tente encore d'installer certaines dependances optionnelles si elles manquent au moment d'une verification d'archive.
-Les torrents Minerva utilisent `aria2c` en priorite. Le binding Python `libtorrent` reste optionnel et n'est pas liste dans `requirements.txt` car les wheels disponibles dependent fortement de la version Python et de Windows. Si `libtorrent` est absent ou renvoie `DLL load failed`, seuls les telechargements Minerva via ce backend sont affectes; les sources HTTP, la DB locale, l'analyse DAT et la GUI restent fonctionnelles. Sous Windows, si `libtorrent` reclame OpenSSL 1.1, renseigner `LIBTORRENT_DLL_DIR` dans `.env` vers le dossier contenant `libcrypto-1_1-x64.dll` et `libssl-1_1-x64.dll`.
-
-## Base locale
-
-La recherche locale utilise les shards compresses `db/shard_*.zip`.
-Ces fichiers doivent etre presents dans le depot pour activer la recherche MD5 hors ligne.
-
-Le cache local `db/retrogamesets/`, les rapports de sortie et les caches Python sont ignores par Git.
-
-## Verification
+## Verification locale
 
 ```powershell
 $files = @("main.py") + (Get-ChildItem src,tests -Recurse -Filter *.py | ForEach-Object { $_.FullName })
 python -m py_compile @files
 python tests\smoke_checks.py
 python tests\core_helper_checks.py
-python tests\test_integration_gw.py
-python tests\test_network_modules.py
-python main.py --sources
 python main.py --version
-python main.py --clear-listing-cache
+python main.py --sources
+python main.py --diagnose
 ```
 
-## Versioning et releases Windows
-
-Le depot utilise un versioning SemVer dans `VERSION` (`MAJOR.MINOR.PATCH`).
-
-Pour publier une version:
+Build exe portable:
 
 ```powershell
-.\release.ps1 -Version 0.1.0 -Push
+pyinstaller --noconfirm --clean ROMDownloader.spec
+dist\ROMDownloader.exe --version
+dist\ROMDownloader.exe --sources
+dist\ROMDownloader.exe --diagnose
 ```
 
-Le workflow GitHub Actions `Release Windows` compile `ROMDownloader.exe`, cree `ROMDownloader-windows-<version>.zip`, publie le checksum SHA256 et attache les fichiers a la release GitHub.
+Dans le diagnostic de l'exe, `Racine app` doit pointer vers le dossier contenant `ROMDownloader.exe`, pas vers un dossier temporaire `_MEI...`.
 
-L'installateur Windows telecharge la derniere release publique, l'installe dans `%LOCALAPPDATA%\ROMDownloader`, cree les raccourcis Menu Demarrer/Bureau, et conserve `.env` ainsi que les preferences lors d'une reinstall avec `-Force`.
+## Release mainteneur
+
+```powershell
+.\release.ps1 -Version 0.1.4 -Push
+```
+
+Le workflow `Release Windows` construit `ROMDownloader.exe`, genere `ROMDownloader.exe.sha256`, valide l'exe portable et attache les assets a la release GitHub quand le tag `v*` est pousse.

@@ -7,11 +7,11 @@ from pathlib import Path
 from tempfile import NamedTemporaryFile
 from urllib.parse import quote, urljoin
 
-from .env import APP_ROOT
+from .env import RESOURCE_ROOT
 
 
-ROM_DATABASE_FILE = APP_ROOT / 'rom_database.zip'
-ROM_DATABASE_SHARDS_DIR = APP_ROOT / 'db'
+ROM_DATABASE_FILE = RESOURCE_ROOT / 'rom_database.zip'
+ROM_DATABASE_SHARDS_DIR = RESOURCE_ROOT / 'db'
 DEFAULT_CONFIG_URLS = {
     'archive_org': 'https://archive.org/download/',
     'edgeemu_base': 'https://edgeemu.net',

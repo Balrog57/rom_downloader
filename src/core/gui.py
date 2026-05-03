@@ -794,7 +794,11 @@ def gui_mode():
                 tk.Label(side, text="Quota essais/run", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, font=(self.font, 9)).pack(anchor='w', pady=(4, 2))
                 quota_var = tk.StringVar()
                 quota_entry = tk.Entry(side, textvariable=quota_var, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, insertbackground=UI_COLOR_TEXT_MAIN, relief='flat', width=10, font=(self.font, 10))
-                quota_entry.pack(fill='x', pady=(0, 10), ipady=4)
+                quota_entry.pack(fill='x', pady=(0, 6), ipady=4)
+                tk.Label(side, text="Delai telechargement (s)", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, font=(self.font, 9)).pack(anchor='w', pady=(4, 2))
+                delay_var = tk.StringVar()
+                delay_entry = tk.Entry(side, textvariable=delay_var, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, insertbackground=UI_COLOR_TEXT_MAIN, relief='flat', width=10, font=(self.font, 10))
+                delay_entry.pack(fill='x', pady=(0, 10), ipady=4)
                 tk.Label(side, text="Les passerelles servent uniquement quand une source renvoie un lien heberge.", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, justify='left', wraplength=155, font=(self.font, 8)).pack(anchor='w', pady=(0, 8))
                 current_policy_name = {'name': None}
 
@@ -805,6 +809,7 @@ def gui_mode():
                     policy = policies_by_name.setdefault(name, {})
                     timeout = optional_positive_int(timeout_var.get().strip(), minimum=3, maximum=1800)
                     quota = optional_positive_int(quota_var.get().strip(), minimum=1, maximum=100000)
+                    delay_text = delay_var.get().strip()
                     if timeout is None:
                         policy.pop('timeout_seconds', None)
                     else:
@@ -813,6 +818,13 @@ def gui_mode():
                         policy.pop('quota_per_run', None)
                     else:
                         policy['quota_per_run'] = quota
+                    if not delay_text:
+                        policy.pop('delay_seconds', None)
+                    else:
+                        try:
+                            policy['delay_seconds'] = max(0.0, min(float(delay_text), 60.0))
+                        except (TypeError, ValueError):
+                            policy.pop('delay_seconds', None)
                     if not policy:
                         policies_by_name.pop(name, None)
 
@@ -821,6 +833,7 @@ def gui_mode():
                     policy = policies_by_name.get(name, {})
                     timeout_var.set(str(policy.get('timeout_seconds', '')))
                     quota_var.set(str(policy.get('quota_per_run', '')))
+                    delay_var.set(str(policy.get('delay_seconds', '')))
 
                 def render_list(selected_index=None):
                     listbox.delete(0, 'end')
@@ -900,6 +913,7 @@ def gui_mode():
                 enabled_check.configure(command=sync_enabled)
                 timeout_entry.bind('<FocusOut>', lambda _event: save_policy_fields())
                 quota_entry.bind('<FocusOut>', lambda _event: save_policy_fields())
+                delay_entry.bind('<FocusOut>', lambda _event: save_policy_fields())
                 self.button(side, "Monter", lambda: move(-1), width=10).pack(fill='x', pady=(0, 8))
                 self.button(side, "Descendre", lambda: move(1), width=10).pack(fill='x', pady=(0, 8))
                 self.button(side, "Cles API", self.open_api_settings, width=10).pack(fill='x', pady=(8, 8))

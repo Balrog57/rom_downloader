@@ -33,7 +33,7 @@ def cli_mode(args):
 
 def discover_dat_menu_items(dat_root: Path | None = None) -> list[dict]:
     """Retourne les sections et DAT disponibles pour le menu GUI."""
-    dat_root = dat_root or (APP_ROOT / 'dat')
+    dat_root = dat_root or (RESOURCE_ROOT / 'dat')
     items = []
     if not dat_root.exists():
         return items

@@ -18,7 +18,14 @@ from .dependencies import *
 from .dat_parser import strip_rom_extension, normalize_checksum
 from . import rom_database as _rom_db
 from .rom_database import load_rom_database, database_result_filename
-from .sources import SYSTEM_MAPPINGS, normalize_source_label, source_is_excluded, source_order_key
+from .sources import (
+    SYSTEM_MAPPINGS,
+    normalize_source_label,
+    parse_archive_org_collection_spec,
+    parse_archive_org_collection_specs,
+    source_is_excluded,
+    source_order_key,
+)
 from .minerva import (
     search_minerva_hash_database_for_games,
     build_minerva_directory_url,
@@ -790,15 +797,68 @@ def download_planetemu(page_url: str, dest_path: str, session: requests.Session,
         print(f"  [PlanetEmu] Erreur: {e}")
         return False
 
-def list_archive_org_collection(identifier: str, session: requests.Session) -> dict:
+def _archive_collection_spec_cache_key(spec: dict) -> str:
+    identifier = spec.get('identifier', '')
+    path_prefix = spec.get('path_prefix', '')
+    suffix = f":{path_prefix}" if path_prefix else ''
+    return f"archive_org_collection:{identifier}{suffix}"
+
+
+def _archive_org_shard_key(identifier: str) -> str:
+    """Detecte les collections archive.org alphabétiques de RomGoGetter."""
+    value = (identifier or '').lower()
+    match = re.search(r'_(numberssymbols|[a-z])(?:_part\d+)?$', value)
+    return match.group(1) if match else ''
+
+
+def _candidate_initials_for_archive_group(game_info: dict) -> set[str]:
+    initials = set()
+    for candidate_name in iter_game_candidate_names(game_info):
+        normalized = normalize_external_game_name(candidate_name)
+        if not normalized:
+            continue
+        variants = [normalized]
+        without_article = re.sub(r'^(?:the|a|an|le|la|les|l)\s+', '', normalized).strip()
+        if without_article:
+            variants.append(without_article)
+        for value in variants:
+            first = value[:1]
+            if first:
+                initials.add(first if first.isalpha() else 'numberssymbols')
+    return initials or {'numberssymbols'}
+
+
+def select_archive_org_collection_specs_for_game(identifiers, game_info: dict) -> list:
+    """Filtre les gros groupes archive.org alphabétiques selon l'initiale du jeu."""
+    specs = parse_archive_org_collection_specs(identifiers)
+    if len(specs) <= 8:
+        return specs
+
+    initials = _candidate_initials_for_archive_group(game_info)
+    selected = []
+    unsharded = []
+    for spec in specs:
+        shard = _archive_org_shard_key(spec.get('identifier', ''))
+        if not shard:
+            unsharded.append(spec)
+        elif shard in initials:
+            selected.append(spec)
+
+    return selected + unsharded if selected or unsharded else specs
+
+
+def list_archive_org_collection(identifier, session: requests.Session) -> dict:
     """Liste les fichiers ROM d'un item archive.org cible."""
-    if not identifier:
+    spec = parse_archive_org_collection_spec(identifier)
+    if not spec:
         return {}
+    identifier = spec.get('identifier', '')
+    path_prefix = spec.get('path_prefix', '').strip('/')
     metadata_url = f"https://archive.org/metadata/{quote(identifier)}"
     print(f"Scraping archive.org cible: {metadata_url}")
     from . import _facade
     cache = _facade.load_listing_cache()
-    cache_key = f"archive_org_collection:{identifier}"
+    cache_key = _archive_collection_spec_cache_key(spec)
     cached = _facade.listing_cache_get(cache, cache_key)
     if cached:
         print("  Listing archive.org cible depuis le cache")
@@ -814,6 +874,8 @@ def list_archive_org_collection(identifier: str, session: requests.Session) -> d
         for file_info in data.get('files', []):
             filename = file_info.get('name', '')
             if not filename or not filename.lower().endswith(ROM_EXTENSIONS):
+                continue
+            if path_prefix and not filename.strip('/').startswith(path_prefix.rstrip('/') + '/'):
                 continue
             name_no_ext = strip_rom_extension(os.path.basename(filename))
             mapping[name_no_ext.lower()] = {
@@ -833,17 +895,15 @@ def resolve_archive_org_collection_game(game_info: dict, identifiers, session: r
     """Résout un jeu dans une ou plusieurs collections archive.org fixes."""
     if not identifiers:
         return None
-    if isinstance(identifiers, str):
-        identifiers = [identifiers]
-    for identifier in identifiers:
-        listing = list_archive_org_collection(identifier, session)
+    for spec in select_archive_org_collection_specs_for_game(identifiers, game_info):
+        listing = list_archive_org_collection(spec, session)
         if not listing:
             continue
         candidate_name, entry = find_listing_match(game_info, listing, min_score=0.91)
         if entry:
             return {
                 'full_name': entry.get('full_name') or candidate_name,
-                'identifier': entry.get('identifier') or identifier,
+                'identifier': entry.get('identifier') or spec.get('identifier', ''),
                 'filename': entry.get('filename', f"{candidate_name}.zip"),
             }
     return None
@@ -1753,6 +1813,7 @@ __all__ = [
     'list_planetemu_directory',
     'download_planetemu',
     'list_archive_org_collection',
+    'select_archive_org_collection_specs_for_game',
     'resolve_archive_org_collection_game',
     'resolve_vimm_game',
     'download_vimm',

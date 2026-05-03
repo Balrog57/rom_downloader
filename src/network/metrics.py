@@ -5,8 +5,10 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from ..core.env import APP_ROOT
 
-METRICS_FILE = Path(".rom_downloader_provider_metrics.json")
+
+METRICS_FILE = APP_ROOT / ".rom_downloader_provider_metrics.json"
 
 
 def load_provider_metrics(path: Path | str | None = None) -> dict[str, dict]:

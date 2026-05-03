@@ -21,21 +21,33 @@ jobs:
         run: |
           $files = @("main.py") + (Get-ChildItem src,tests -Recurse -Filter *.py | ForEach-Object { $_.FullName })
           python -m py_compile @files
+          python tests\smoke_checks.py
+          python tests\core_helper_checks.py
       - name: Build executable
         shell: pwsh
         run: |
-          pyinstaller `
-            --noconfirm `
-            --clean `
-            --name ROMDownloader `
-            --onefile `
-            --add-data "assets;assets" `
-            --add-data "dat;dat" `
-            --add-data "db;db" `
-            --add-data "VERSION;." `
-            main.py
+          pyinstaller --noconfirm --clean ROMDownloader.spec
+      - name: Validate executable
+        shell: pwsh
+        run: |
+          dist\ROMDownloader.exe --version
+          dist\ROMDownloader.exe --sources
+          $diagnose = dist\ROMDownloader.exe --diagnose
+          $diagnose | Set-Content ROMDownloader.diagnose.txt -Encoding UTF8
+          $diagnose
+          $diagnoseText = $diagnose -join "`n"
+          if ($diagnoseText -match 'Racine app: .*_MEI') {
+            throw "L'exe portable ecrit son etat dans le dossier temporaire PyInstaller."
+          }
+          foreach ($dependency in @('py7zr', 'rarfile', 'tkinterdnd2')) {
+            if ($diagnoseText -notmatch "  - $dependency`: ok") {
+              throw "Dependance absente dans l'exe portable: $dependency"
+            }
+          }
       - name: Upload executable
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ROMDownloader-windows
-          path: dist/ROMDownloader.exe
+          path: |
+            dist/ROMDownloader.exe
+            ROMDownloader.diagnose.txt

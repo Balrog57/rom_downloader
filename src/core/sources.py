@@ -2,6 +2,7 @@ import hashlib
 import json
 import re
 import time
+from urllib.parse import unquote, urlparse
 
 from .constants import (
     ARCHIVE_ORG_DOWNLOAD_BASE,
@@ -122,6 +123,200 @@ DDL_SOURCE_TYPES = {
 ONEFICHIER_SOURCE_TYPES = {'retrogamesets', 'startgame'}
 
 
+ROMGOGETTER_ARCHIVE_ORG_COLLECTION_GROUPS = {
+    'ps1_archive': [
+        'sony_playstation_part1',
+        'sony_playstation_part2',
+        'sony_playstation_part3',
+        'sony_playstation_part4',
+        'sony_playstation_part5',
+    ],
+    'ps2_archive': [
+        'sony_playstation2_numberssymbols',
+        'sony_playstation2_a',
+        'sony_playstation2_b',
+        'sony_playstation2_c',
+        'sony_playstation2_d_part1',
+        'sony_playstation2_d_part2',
+        'sony_playstation2_e',
+        'sony_playstation2_f',
+        'sony_playstation2_g',
+        'sony_playstation2_h',
+        'sony_playstation2_i',
+        'sony_playstation2_j',
+        'sony_playstation2_k',
+        'sony_playstation2_l',
+        'sony_playstation2_m_part1',
+        'sony_playstation2_m_part2',
+        'sony_playstation2_n',
+        'sony_playstation2_o_part1',
+        'sony_playstation2_o_part2',
+        'sony_playstation2_p',
+        'sony_playstation2_q',
+        'sony_playstation2_r',
+        'sony_playstation2_s_part1',
+        'sony_playstation2_s_part2',
+        'sony_playstation2_s_part3',
+        'sony_playstation2_s_part4',
+        'sony_playstation2_t',
+        'sony_playstation2_u',
+        'sony_playstation2_v',
+        'sony_playstation2_w',
+        'sony_playstation2_x',
+        'sony_playstation2_z',
+    ],
+    'ps3_archive': [
+        'sony_playstation3_numberssymbols',
+        'sony_playstation3_a_part1',
+        'sony_playstation3_a_part2',
+        'sony_playstation3_a_part3',
+        'sony_playstation3_b_part1',
+        'sony_playstation3_b_part2',
+        'sony_playstation3_b_part3',
+        'sony_playstation3_c_part1',
+        'sony_playstation3_c_part2',
+        'sony_playstation3_c_part3',
+        'sony_playstation3_d_part1',
+        'sony_playstation3_d_part2',
+        'sony_playstation3_d_part3',
+        'sony_playstation3_d_part4',
+        'sony_playstation3_d_part5',
+        'sony_playstation3_e',
+        'sony_playstation3_f_part1',
+        'sony_playstation3_f_part2',
+        'sony_playstation3_f_part3',
+        'sony_playstation3_g_part1',
+        'sony_playstation3_g_part2',
+        'sony_playstation3_g_part3',
+        'sony_playstation3_h_part1',
+        'sony_playstation3_h_part2',
+        'sony_playstation3_i',
+        'sony_playstation3_j',
+        'sony_playstation3_k',
+        'sony_playstation3_l_part1',
+        'sony_playstation3_l_part2',
+        'sony_playstation3_l_part3',
+        'sony_playstation3_m_part1',
+        'sony_playstation3_m_part2',
+        'sony_playstation3_m_part3',
+        'sony_playstation3_m_part4',
+        'sony_playstation3_m_part5',
+        'sony_playstation3_n_part1',
+        'sony_playstation3_n_part2',
+        'sony_playstation3_n_part3',
+        'sony_playstation3_o_part1',
+        'sony_playstation3_o_part2',
+        'sony_playstation3_o_part3',
+        'sony_playstation3_p_part1',
+        'sony_playstation3_p_part2',
+        'sony_playstation3_q',
+        'sony_playstation3_r_part1',
+        'sony_playstation3_r_part2',
+        'sony_playstation3_r_part3',
+        'sony_playstation3_r_part4',
+        'sony_playstation3_s_part1',
+        'sony_playstation3_s_part2',
+        'sony_playstation3_s_part3',
+        'sony_playstation3_s_part4',
+        'sony_playstation3_s_part5',
+        'sony_playstation3_s_part6',
+        'sony_playstation3_t_part1',
+        'sony_playstation3_t_part2',
+        'sony_playstation3_t_part3',
+        'sony_playstation3_t_part4',
+        'sony_playstation3_u_part1',
+        'sony_playstation3_u_part2',
+        'sony_playstation3_v',
+        'sony_playstation3_w_part1',
+        'sony_playstation3_w_part2',
+        'sony_playstation3_x',
+        'sony_playstation3_y',
+        'sony_playstation3_z',
+    ],
+    'xbox_archive': [
+        'microsoft_xbox_numberssymbols',
+        'microsoft_xbox_a',
+        'microsoft_xbox_b',
+        'microsoft_xbox_c_part1',
+        'microsoft_xbox_c_part2',
+        'microsoft_xbox_d_part1',
+        'microsoft_xbox_d_part2',
+        'microsoft_xbox_e',
+        'microsoft_xbox_f',
+        'microsoft_xbox_g',
+        'microsoft_xbox_h',
+        'microsoft_xbox_i',
+        'microsoft_xbox_j',
+        'microsoft_xbox_k',
+        'microsoft_xbox_l',
+        'microsoft_xbox_m_part1',
+        'microsoft_xbox_m_part2',
+        'microsoft_xbox_n_part1',
+        'microsoft_xbox_n_part2',
+        'microsoft_xbox_o_part1',
+        'microsoft_xbox_o_part2',
+        'microsoft_xbox_p',
+        'microsoft_xbox_q',
+        'microsoft_xbox_r',
+        'microsoft_xbox_s_part1',
+        'microsoft_xbox_s_part2',
+        'microsoft_xbox_t_part1',
+        'microsoft_xbox_t_part2',
+        'microsoft_xbox_u',
+        'microsoft_xbox_v',
+        'microsoft_xbox_w',
+        'microsoft_xbox_x',
+        'microsoft_xbox_y',
+        'microsoft_xbox_z',
+    ],
+    'xbox360_archive': [
+        'microsoft_xbox360_numberssymbols',
+        'microsoft_xbox360_a_part1',
+        'microsoft_xbox360_a_part2',
+        'microsoft_xbox360_b_part1',
+        'microsoft_xbox360_b_part2',
+        'microsoft_xbox360_c_part1',
+        'microsoft_xbox360_c_part2',
+        'microsoft_xbox360_d_part1',
+        'microsoft_xbox360_d_part2',
+        'microsoft_xbox360_d_part3',
+        'microsoft_xbox360_e',
+        'microsoft_xbox360_f_part1',
+        'microsoft_xbox360_f_part2',
+        'microsoft_xbox360_g',
+        'microsoft_xbox360_h',
+        'microsoft_xbox360_i',
+        'microsoft_xbox360_j',
+        'microsoft_xbox360_k',
+        'microsoft_xbox360_l',
+        'microsoft_xbox360_m_part1',
+        'microsoft_xbox360_m_part2',
+        'microsoft_xbox360_n_part1',
+        'microsoft_xbox360_n_part2',
+        'microsoft_xbox360_o',
+        'microsoft_xbox360_p',
+        'microsoft_xbox360_q',
+        'microsoft_xbox360_r',
+        'microsoft_xbox360_r_part1',
+        'microsoft_xbox360_s_part1',
+        'microsoft_xbox360_s_part2',
+        'microsoft_xbox360_t_part1',
+        'microsoft_xbox360_t_part2',
+        'microsoft_xbox360_u',
+        'microsoft_xbox360_v',
+        'microsoft_xbox360_w',
+        'microsoft_xbox360_x_part1',
+        'microsoft_xbox360_x_part2',
+        'microsoft_xbox360_y',
+        'microsoft_xbox360_z',
+    ],
+    'nds_decrypted_archive': ['pack-roms-nintendo-ds-eu-usa-jap-rabbits-games'],
+    '3ds_encrypted_archive': ['3ds-main-encrypted', '3ds-main-encrypted-p2'],
+    'wiiu_archive': ['nointro_wiiu_cdn_nov_2020'],
+    'psp_archive': ['psp_20220507', 'psp_20220507_2', 'psp-minis-chd'],
+}
+
+
 def source_order_key(source: dict) -> tuple:
     """Trie les sources avec archive.org en tout dernier recours."""
     return (
@@ -129,6 +324,75 @@ def source_order_key(source: dict) -> tuple:
         source.get('priority', 50),
         source.get('name', '').lower()
     )
+
+
+def expand_collection_group(group_name: str) -> list[str]:
+    """Retourne les identifiants archive.org d'un groupe RomGoGetter."""
+    return list(ROMGOGETTER_ARCHIVE_ORG_COLLECTION_GROUPS.get(group_name, []))
+
+
+def parse_archive_org_collection_spec(value) -> dict | None:
+    """Normalise un identifiant ou une URL archive.org /download en spec cible."""
+    if isinstance(value, dict):
+        identifier = str(value.get('identifier', '')).strip()
+        if not identifier:
+            return None
+        spec = {'identifier': identifier}
+        path_prefix = str(value.get('path_prefix', '') or '').strip().strip('/')
+        if path_prefix:
+            spec['path_prefix'] = path_prefix
+        return spec
+
+    raw = str(value or '').strip()
+    if not raw:
+        return None
+
+    if raw in ROMGOGETTER_ARCHIVE_ORG_COLLECTION_GROUPS:
+        return {'group': raw}
+
+    if raw.startswith(('http://', 'https://')):
+        parsed = urlparse(raw)
+        parts = [unquote(part) for part in parsed.path.split('/') if part]
+        if parsed.netloc.endswith('archive.org') and len(parts) >= 2 and parts[0] in {'download', 'metadata', 'details'}:
+            spec = {'identifier': parts[1]}
+            if parts[0] == 'download' and len(parts) > 2:
+                spec['path_prefix'] = '/'.join(parts[2:]).strip('/')
+            return spec
+        return None
+
+    return {'identifier': raw}
+
+
+def parse_archive_org_collection_specs(values) -> list:
+    """Aplati des identifiants, groupes ou URLs archive.org en specs dedupliquees."""
+    if not values:
+        return []
+    raw_values = values if isinstance(values, (list, tuple, set)) else [values]
+    specs = []
+    seen = set()
+    for value in raw_values:
+        parsed = parse_archive_org_collection_spec(value)
+        if not parsed:
+            continue
+        if parsed.get('group'):
+            group_values = expand_collection_group(parsed['group'])
+            group_specs = parse_archive_org_collection_specs(group_values)
+            for spec in group_specs:
+                key = (spec.get('identifier', ''), spec.get('path_prefix', ''))
+                if key not in seen:
+                    seen.add(key)
+                    specs.append(spec)
+            continue
+        key = (parsed.get('identifier', ''), parsed.get('path_prefix', ''))
+        if key not in seen:
+            seen.add(key)
+            specs.append(parsed)
+    return specs
+
+
+def archive_org_collection_identifiers(values) -> list[str]:
+    """Retourne seulement les identifiants archive.org normalises."""
+    return [spec['identifier'] for spec in parse_archive_org_collection_specs(values)]
 
 
 def normalize_source_label(value: str) -> str:
@@ -337,6 +601,9 @@ def source_policy_summary(source: dict) -> str:
     quota = source_quota_limit(source)
     if quota is not None:
         parts.append(f"quota {quota}/run")
+    delay = source_delay_seconds(source, 0.0)
+    if delay:
+        parts.append(f"delai {delay:g}s")
     return ", ".join(parts)
 
 
@@ -507,7 +774,7 @@ def get_default_sources():
             'base_url': ARCHIVE_ORG_DOWNLOAD_BASE,
             'type': 'archive_org_collection',
             'enabled': True,
-            'description': 'Collections archive.org fixes pour Redump GameCube et Jaguar CD',
+            'description': 'Collections archive.org fixes par systeme (RomGoGetter, Redump, No-Intro)',
             'priority': 90
         },
     ]
@@ -598,6 +865,7 @@ SYSTEM_MAPPINGS = {
         'romhustler': 'nds',
         'coolrom': 'nds',
         'vimm': 'DS',
+        'archive_org_collection': expand_collection_group('nds_decrypted_archive'),
     },
     'Nintendo - 3DS': {
         'lolroms': 'Nintendo - 3DS',
@@ -606,6 +874,7 @@ SYSTEM_MAPPINGS = {
         'coolrom': '3ds',
         'hshop': 'games',
         'vimm': '3DS',
+        'archive_org_collection': expand_collection_group('3ds_encrypted_archive'),
     },
     'Nintendo - GameCube': {
         'edgeemu': 'nintendo-gamecube',
@@ -634,6 +903,7 @@ SYSTEM_MAPPINGS = {
         'retrogamesets': 'Wii U (EU) (1Fichier)',
         'coolrom': 'wii-u',
         'vimm': 'WiiU',
+        'archive_org_collection': expand_collection_group('wiiu_archive'),
     },
     'Nintendo - Virtual Boy': {
         'lolroms': 'Nintendo - Virtual Boy',
@@ -739,6 +1009,7 @@ SYSTEM_MAPPINGS = {
         'startgame': 'sony-playstation',
         'vimm': 'PS1',
         'nopaystation': 'PSX_GAMES',
+        'archive_org_collection': expand_collection_group('ps1_archive'),
     },
     'Sony - PlayStation Portable': {
         'edgeemu': 'sony-psp',
@@ -751,6 +1022,7 @@ SYSTEM_MAPPINGS = {
         'startgame': 'sony-playstation-portable',
         'vimm': 'PSP',
         'nopaystation': 'PSP_GAMES',
+        'archive_org_collection': expand_collection_group('psp_archive'),
     },
     'Sony - PlayStation 2': {
         'edgeemu': 'sony-playstation-2',
@@ -762,6 +1034,7 @@ SYSTEM_MAPPINGS = {
         'romsxisos': 'ps2',
         'startgame': 'sony-playstation-2',
         'vimm': 'PS2',
+        'archive_org_collection': expand_collection_group('ps2_archive'),
     },
     'Sony - PlayStation 3': {
         'edgeemu': 'sony-playstation-3',
@@ -773,6 +1046,7 @@ SYSTEM_MAPPINGS = {
         'romsxisos': 'ps3',
         'vimm': 'PS3',
         'nopaystation': 'PS3_GAMES',
+        'archive_org_collection': expand_collection_group('ps3_archive'),
     },
     'Sony - PlayStation Vita': {
         'edgeemu': 'sony-psvita',
@@ -979,9 +1253,11 @@ SYSTEM_MAPPINGS = {
     # ── Microsoft ──
     'Microsoft - Xbox': {
         'lolroms': 'Microsoft/Xbox',
+        'archive_org_collection': expand_collection_group('xbox_archive'),
     },
     'Microsoft - Xbox 360': {
         'lolroms': 'Microsoft/Xbox 360',
+        'archive_org_collection': expand_collection_group('xbox360_archive'),
     },
     'Microsoft - MSX': {
         'lolroms': 'Microsoft/MSX',
@@ -1134,6 +1410,23 @@ def build_custom_source(source_url: str) -> dict:
     normalized_url = (source_url or '').strip()
     lower_url = normalized_url.lower()
 
+    archive_specs = parse_archive_org_collection_specs([
+        line.strip()
+        for line in normalized_url.splitlines()
+        if line.strip()
+    ])
+    if archive_specs and all(spec.get('identifier') for spec in archive_specs):
+        return {
+            'name': 'archive.org Custom',
+            'base_url': ARCHIVE_ORG_DOWNLOAD_BASE,
+            'type': 'archive_org_collection',
+            'enabled': True,
+            'description': 'Collections archive.org personnalisees',
+            'identifiers': archive_specs,
+            'order': 0,
+            'priority': 0
+        }
+
     if 'minerva-archive.org/browse/' in lower_url:
         if '/browse/no-intro' in lower_url:
             fixed_directory = '/browse/no-intro/' in lower_url and not lower_url.endswith('/browse/no-intro/')
@@ -1194,7 +1487,12 @@ __all__ = [
     'SOURCE_TYPE_ORDER',
     'DDL_SOURCE_TYPES',
     'ONEFICHIER_SOURCE_TYPES',
+    'ROMGOGETTER_ARCHIVE_ORG_COLLECTION_GROUPS',
     'source_order_key',
+    'expand_collection_group',
+    'parse_archive_org_collection_spec',
+    'parse_archive_org_collection_specs',
+    'archive_org_collection_identifiers',
     'normalize_source_label',
     'active_source_labels',
     'resolution_cache_key',

@@ -699,9 +699,10 @@ def search_all_sources(
                     still_missing = remaining
 
             elif source['type'] == 'archive_org_collection':
-                identifiers = mappings.get('archive_org_collection')
+                identifiers = source.get('identifiers') or mappings.get('archive_org_collection')
                 if identifiers and still_missing:
-                    print(f"\n--- Recherche sur archive.org cible ({', '.join(identifiers) if isinstance(identifiers, list) else identifiers}) ---")
+                    identifier_count = len(identifiers) if isinstance(identifiers, list) else 1
+                    print(f"\n--- Recherche sur archive.org cible ({identifier_count} collection(s)) ---")
                     def _ia_fields(merged, result):
                         merged['archive_org_identifier'] = result.get('identifier', '')
                         archive_filename = result.get('filename', f"{merged['game_name']}.zip")

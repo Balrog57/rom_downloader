@@ -1,7 +1,29 @@
 import os
+import sys
 from pathlib import Path
 
-APP_ROOT = Path(__file__).resolve().parents[2]
+
+def _repo_root() -> Path:
+    return Path(__file__).resolve().parents[2]
+
+
+def _resource_root() -> Path:
+    bundle_root = getattr(sys, "_MEIPASS", None)
+    return Path(bundle_root).resolve() if bundle_root else _repo_root()
+
+
+def _app_root() -> Path:
+    override = os.environ.get("ROM_DOWNLOADER_APP_ROOT", "").strip()
+    if override:
+        return Path(override).expanduser().resolve()
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).resolve().parent
+    return _repo_root()
+
+
+RESOURCE_ROOT = _resource_root()
+APP_ROOT = _app_root()
+IS_FROZEN = bool(getattr(sys, "frozen", False))
 SCAN_CACHE_FILENAME = ".rom_downloader_scan_cache.json"
 DEFAULT_PARALLEL_DOWNLOADS = 3
 PREFERENCES_FILE = APP_ROOT / ".rom_downloader_preferences.json"
@@ -45,6 +67,8 @@ if 'IA_S3_SECRET_KEY' in os.environ and 'IAS3_SECRET_KEY' not in os.environ:
 
 __all__ = [
     'APP_ROOT',
+    'RESOURCE_ROOT',
+    'IS_FROZEN',
     'SCAN_CACHE_FILENAME',
     'DEFAULT_PARALLEL_DOWNLOADS',
     'PREFERENCES_FILE',

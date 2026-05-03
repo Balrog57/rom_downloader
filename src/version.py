@@ -8,11 +8,12 @@ from pathlib import Path
 
 
 def _candidate_version_files() -> list[Path]:
-    root = Path(__file__).resolve().parents[1]
-    candidates = [root / "VERSION"]
     bundle_root = getattr(sys, "_MEIPASS", None)
-    if bundle_root:
-        candidates.append(Path(bundle_root) / "VERSION")
+    resource_root = Path(bundle_root).resolve() if bundle_root else Path(__file__).resolve().parents[1]
+    app_root = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else resource_root
+    candidates = [resource_root / "VERSION"]
+    if app_root != resource_root:
+        candidates.append(app_root / "VERSION")
     return candidates
 
 
