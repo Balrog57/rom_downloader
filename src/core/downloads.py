@@ -170,6 +170,17 @@ def download_file(url: str, dest_path: str, session: requests.Session, progress_
 
             with session.get(url, **request_kwargs) as response:
                 content_type = (response.headers.get('content-type', '') or '').lower()
+                if response.status_code == 416 and resume_from:
+                    response.close()
+                    try:
+                        os.remove(part_path)
+                    except FileNotFoundError:
+                        pass
+                    print("  Reprise impossible: fragment .part invalide, redemarrage a zero...")
+                    if attempt < max_retries - 1:
+                        continue
+                    raise ResumeNotSupportedError("Fragment .part refuse par le serveur (HTTP 416)")
+
                 if response.status_code >= 400:
                     snippet = _response_preview(response)
                     if _looks_like_cloudflare_block(response, snippet):
@@ -213,9 +224,15 @@ def download_file(url: str, dest_path: str, session: requests.Session, progress_
                     total_size = content_length + resume_from
 
                 if resume_from and response.status_code != 206:
-                    raise ResumeNotSupportedError(
-                        f"Serveur retourne {response.status_code} au lieu de 206 pour Range bytes={resume_from}-"
+                    try:
+                        os.remove(part_path)
+                    except FileNotFoundError:
+                        pass
+                    print(
+                        f"  Reprise non supportee ({response.status_code} au lieu de 206), "
+                        "redemarrage du telechargement..."
                     )
+                    resume_from = 0
 
                 downloaded = resume_from
                 progress_meter = DownloadProgressMeter(total_size, resume_from)

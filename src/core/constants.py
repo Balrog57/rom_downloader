@@ -1,4 +1,4 @@
-from .env import APP_ROOT
+from .env import RESOURCE_ROOT
 
 ROM_EXTENSIONS = (
     '.zip', '.7z', '.rar', '.gz', '.z', '.tar', '.tar.gz',
@@ -43,7 +43,7 @@ STARTGAME_BASE = 'https://startgame.world/'
 HSHOP_BASE = 'https://hshop.erista.me/'
 ROMSXISOS_BASE = 'https://romsxisos.github.io/'
 ARCHIVE_ORG_DOWNLOAD_BASE = 'https://archive.org/download/'
-BALROG_ASSETS_DIR = APP_ROOT / 'assets'
+BALROG_ASSETS_DIR = RESOURCE_ROOT / 'assets'
 BALROG_WINDOW_ICON = BALROG_ASSETS_DIR / 'Retrogaming-Toolkit-AIO.ico'
 BALROG_1G1R_ICON = BALROG_ASSETS_DIR / 'icon_1g1r.png'
 

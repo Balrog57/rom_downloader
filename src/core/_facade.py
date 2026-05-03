@@ -129,9 +129,24 @@ def listing_cache_prefixes_for_source(source_name: str) -> set[str]:
     """Retourne les prefixes de cache listing lies a une source."""
     label = normalize_source_label(source_name)
     prefixes = set()
-    for token in ('minerva', 'lolroms', 'edgeemu', 'planetemu'):
+    token_prefixes = {
+        'minerva': 'minerva',
+        'lolroms': 'lolroms',
+        'edgeemu': 'edgeemu',
+        'planetemu': 'planetemu',
+        'archive': 'archive_org_collection',
+        'vimm': 'vimm',
+        'retrogamesets': 'retrogamesets',
+        'romhustler': 'romhustler',
+        'coolrom': 'coolrom',
+        'nopaystation': 'nopaystation',
+        'startgame': 'startgame',
+        'hshop': 'hshop',
+        'romsxisos': 'romsxisos',
+    }
+    for token, prefix in token_prefixes.items():
         if token in label:
-            prefixes.add(token)
+            prefixes.add(prefix)
     return prefixes
 
 

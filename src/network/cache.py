@@ -6,17 +6,9 @@ import time
 from pathlib import Path
 
 from .utils import load_json_file, save_json_file
+from ..core.env import LISTING_CACHE_FILE, RESOLUTION_CACHE_FILE
 
 
-def _get_cache_file(name: str) -> Path:
-    """Determine le fichier cache depuis les variables d'environnement ou defaut."""
-    from pathlib import Path
-    root = Path(__file__).resolve().parents[2]
-    return root / f".rom_downloader_{name}_cache.json"
-
-
-RESOLUTION_CACHE_FILE = _get_cache_file("resolution")
-LISTING_CACHE_FILE = _get_cache_file("listing")
 RESOLUTION_CACHE_TTL = 7 * 24 * 60 * 60
 LISTING_CACHE_TTL = 24 * 60 * 60
 

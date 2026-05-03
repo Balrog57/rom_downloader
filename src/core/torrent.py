@@ -215,6 +215,9 @@ def is_libtorrent_session_usable() -> bool:
     global LIBTORRENT_SESSION_USABLE
     if LIBTORRENT_SESSION_USABLE is not None:
         return LIBTORRENT_SESSION_USABLE
+    if getattr(sys, 'frozen', False):
+        LIBTORRENT_SESSION_USABLE = False
+        return False
 
     code = (
         "from src.core import import_optional_package;"

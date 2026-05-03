@@ -49,23 +49,7 @@ from .torrent import download_from_minerva_torrent
 
 def _extract_session_metrics(result: dict) -> dict:
     """Extract provider metrics from download result for persistence."""
-    if not result:
-        return {}
-    metrics = {}
-    for item in result.get('resolved_items', []) + result.get('failed_items', []):
-        source = item.get('source', 'unknown')
-        if source not in metrics:
-            metrics[source] = {'attempts': 0, 'downloaded': 0, 'failed': 0, 'dry_run': 0}
-        metrics[source]['attempts'] = metrics[source]['attempts'] + 1
-    for item in result.get('downloaded_items', []):
-        source = item.get('source', 'unknown')
-        if source in metrics:
-            metrics[source]['downloaded'] = metrics[source].get('downloaded', 0) + 1
-    for item in result.get('failed_items', []):
-        source = item.get('source', 'unknown')
-        if source in metrics:
-            metrics[source]['failed'] = metrics[source].get('failed', 0) + 1
-    return metrics
+    return build_pipeline_summary(result or {}).get('provider_metrics', {})
 
 
 def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_run, limit, move_to_tosort=False, custom_sources=None):

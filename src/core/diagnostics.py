@@ -6,7 +6,7 @@ import time
 import traceback
 from pathlib import Path
 
-from .env import APP_ROOT, LISTING_CACHE_FILE, LISTING_CACHE_TTL_SECONDS, PREFERENCES_FILE, RESOLUTION_CACHE_FILE, RESOLUTION_CACHE_TTL_SECONDS
+from .env import APP_ROOT, RESOURCE_ROOT, IS_FROZEN, LISTING_CACHE_FILE, LISTING_CACHE_TTL_SECONDS, PREFERENCES_FILE, RESOLUTION_CACHE_FILE, RESOLUTION_CACHE_TTL_SECONDS
 from .constants import BALROG_ASSETS_DIR
 from .rom_database import ROM_DATABASE_SHARDS_DIR
 
@@ -164,6 +164,8 @@ def build_diagnostic_report() -> dict:
         'executable': sys.executable,
         'platform': safe_platform_label(),
         'app_root': str(APP_ROOT),
+        'resource_root': str(RESOURCE_ROOT),
+        'frozen': IS_FROZEN,
         'cwd': os.getcwd(),
         'dat_sections': [item['label'] for item in dat_items if item.get('type') == 'section'],
         'dat_files': sum(1 for item in dat_items if item.get('type') == 'file'),
@@ -198,6 +200,7 @@ def print_diagnostic_report(report: dict) -> None:
     print(f"Python: {report['python']} ({report['executable']})")
     print(f"Plateforme: {report['platform']}")
     print(f"Racine app: {report['app_root']}")
+    print(f"Racine ressources: {report.get('resource_root', report['app_root'])}")
     print(f"DAT: {report['dat_files']} fichiers, sections: {', '.join(report['dat_sections']) or 'aucune'}")
     print(f"DB shards: {report['db_shards']}")
     print(f"Assets presents: {'oui' if report['assets_present'] else 'non'}")
