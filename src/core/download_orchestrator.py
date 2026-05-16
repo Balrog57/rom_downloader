@@ -533,6 +533,26 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
             item_copy['provider_attempts'] = provider_attempts.copy()
             return 'downloaded', item_copy
 
+        provider_attempts.append({
+            'source': source,
+            'status': 'failed',
+            'duration_seconds': round(time.time() - attempt_started, 3),
+            'detail': 'download_failed',
+        })
+        if circuit_breaker:
+            circuit_breaker.record_failure(source)
+        log_func(f"  Provider {source} sans fichier valide, recherche d'un autre provider...")
+        current_game = resolve_next_provider(
+            original_game,
+            sources,
+            session,
+            system_name,
+            dat_profile,
+            attempted_sources
+        )
+        if current_game:
+            log_func(f"  Retry avec: {current_game.get('source', 'unknown')}")
+
     item_copy = (current_game or game_info).copy()
     item_copy['attempted_sources'] = attempted_sources.copy()
     item_copy['provider_attempts'] = provider_attempts.copy()

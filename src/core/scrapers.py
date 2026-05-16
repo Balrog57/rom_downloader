@@ -6,7 +6,7 @@ import re
 import time
 import unicodedata
 from difflib import SequenceMatcher
-from urllib.parse import quote, unquote, urljoin
+from urllib.parse import quote, unquote, urljoin, urlsplit, urlunsplit
 
 import cloudscraper
 import requests
@@ -145,9 +145,10 @@ def download_lolroms_file(url: str, dest_path: str, progress_callback=None,
                           timeout_seconds: int = 120, progress_detail_callback=None) -> bool:
     """Telecharge un fichier LoLROMs en simulant une navigation reelle.
     Avant chaque download: visite racine + dossier pour absorber Cloudflare.
-    En cas d'echec Cloudflare: backoff 10s -> rebuild session -> bypass Playwright -> abandon."""
+    En cas de challenge Cloudflare sur le .7z: bascule vers un vrai download navigateur."""
     from .downloads import download_file
 
+    url = _normalize_lolroms_file_url(url)
     directory_url = url.rsplit('/', 1)[0] + '/' if '/' in url else LOLROMS_BASE
 
     headers = {
@@ -165,6 +166,7 @@ def download_lolroms_file(url: str, dest_path: str, progress_callback=None,
     global _LOLROMS_DOWNLOAD_COUNT, _LOLROMS_LAST_DOWNLOAD_TS
 
     warmup_ok = _lolroms_warmup_for_directory(directory_url)
+    cloudflare_blocked = False
 
     for attempt in range(3):
         _LOLROMS_DOWNLOAD_COUNT += 1
@@ -193,29 +195,38 @@ def download_lolroms_file(url: str, dest_path: str, progress_callback=None,
         except Exception as e:
             msg = str(e)
             if 'Blocage Cloudflare' in msg or 'cloudflare' in msg.lower():
-                # Dernier recours : bypass Playwright pour recuperer les cookies
-                if attempt == 2:
-                    try:
-                        from ..network.cloudflare_bypass import cloudflare_bypass_fetch_with_cookies
-                        print("  Tentative bypass Cloudflare via Playwright headless...")
-                        _, cookies = cloudflare_bypass_fetch_with_cookies(url, timeout_ms=90000, headless=True)
-                        if cookies:
-                            session = _rebuild_lolroms_session()
-                            for cname, cval in cookies.items():
-                                session.cookies.set(cname, cval, domain='lolroms.com')
-                            success = download_file(
-                                url, dest_path, session,
-                                progress_callback, timeout_seconds,
-                                progress_detail_callback, extra_headers=headers,
-                            )
-                            if success:
-                                return True
-                    except Exception:
-                        pass
-                continue
+                cloudflare_blocked = True
+                break
             if '403' in msg or '429' in msg or '503' in msg:
                 continue
             raise
+
+    if cloudflare_blocked:
+        try:
+            from ..network.cloudflare_bypass import cloudflare_browser_download_file
+            success, cookies = cloudflare_browser_download_file(
+                url, dest_path, timeout_ms=max(180000, int(timeout_seconds) * 1000),
+                progress_callback=progress_callback,
+            )
+            if cookies:
+                session = _rebuild_lolroms_session()
+                for cname, cval in cookies.items():
+                    session.cookies.set(cname, cval, domain='lolroms.com')
+            if success:
+                return True
+            if cookies:
+                try:
+                    success = download_file(
+                        url, dest_path, session,
+                        progress_callback, timeout_seconds,
+                        progress_detail_callback, extra_headers=headers,
+                    )
+                    if success:
+                        return True
+                except Exception:
+                    pass
+        except Exception as e:
+            print(f"  Fallback navigateur LoLROMs indisponible: {e}")
 
     return False
 
@@ -236,6 +247,16 @@ def build_lolroms_url(path: str) -> str:
     """Construit une URL LoLROMs depuis un chemin logique avec slashs."""
     segments = [quote(segment) for segment in str(path or '').split('/') if segment]
     return urljoin(LOLROMS_BASE, '/'.join(segments))
+
+
+def _normalize_lolroms_file_url(url: str) -> str:
+    """Encode proprement les espaces LoLROMs sans doubler les %xx existants."""
+    try:
+        parts = urlsplit(url)
+        path = quote(unquote(parts.path), safe='/')
+        return urlunsplit((parts.scheme, parts.netloc, path, parts.query, parts.fragment))
+    except Exception:
+        return url
 
 
 def resolve_lolroms_system_path(system_name: str) -> str:
@@ -455,7 +476,7 @@ def _parse_lolroms_items(soup, base_url: str):
                 continue
             if '/.' in href:
                 continue
-            full_url = urljoin(base_url.rstrip('/') + '/', href)
+            full_url = _normalize_lolroms_file_url(urljoin(base_url.rstrip('/') + '/', href))
             parsed_name = os.path.basename(unquote(href))
             filename = parsed_name if any(parsed_name.lower().endswith(ext) for ext in ROM_EXTENSIONS) else ''
             if not filename:
@@ -482,7 +503,7 @@ def _parse_lolroms_items(soup, base_url: str):
                 if subdir_name and subdir_name not in {'/', './', '../'}:
                     subdirs.append(subdir_name)
                 continue
-            full_url = urljoin(base_url.rstrip('/') + '/', href)
+            full_url = _normalize_lolroms_file_url(urljoin(base_url.rstrip('/') + '/', href))
             parsed_name = os.path.basename(unquote(href))
             filename = parsed_name if any(parsed_name.lower().endswith(ext) for ext in ROM_EXTENSIONS) else ''
             if not filename:
