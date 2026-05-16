@@ -25,6 +25,7 @@ from .sources import (
     parse_archive_org_collection_specs,
     source_is_excluded,
     source_order_key,
+    resolve_system_mapping,
 )
 from .minerva import (
     search_minerva_hash_database_for_games,
@@ -144,7 +145,7 @@ def download_lolroms_file(url: str, dest_path: str, progress_callback=None,
                           timeout_seconds: int = 120, progress_detail_callback=None) -> bool:
     """Telecharge un fichier LoLROMs en simulant une navigation reelle.
     Avant chaque download: visite racine + dossier pour absorber Cloudflare.
-    En cas d'echec Cloudflare: backoff 10s -> rebuild session -> 30s -> abandon."""
+    En cas d'echec Cloudflare: backoff 10s -> rebuild session -> bypass Playwright -> abandon."""
     from .downloads import download_file
 
     directory_url = url.rsplit('/', 1)[0] + '/' if '/' in url else LOLROMS_BASE
@@ -192,6 +193,25 @@ def download_lolroms_file(url: str, dest_path: str, progress_callback=None,
         except Exception as e:
             msg = str(e)
             if 'Blocage Cloudflare' in msg or 'cloudflare' in msg.lower():
+                # Dernier recours : bypass Playwright pour recuperer les cookies
+                if attempt == 2:
+                    try:
+                        from ..network.cloudflare_bypass import cloudflare_bypass_fetch_with_cookies
+                        print("  Tentative bypass Cloudflare via Playwright headless...")
+                        _, cookies = cloudflare_bypass_fetch_with_cookies(url, timeout_ms=90000, headless=True)
+                        if cookies:
+                            session = _rebuild_lolroms_session()
+                            for cname, cval in cookies.items():
+                                session.cookies.set(cname, cval, domain='lolroms.com')
+                            success = download_file(
+                                url, dest_path, session,
+                                progress_callback, timeout_seconds,
+                                progress_detail_callback, extra_headers=headers,
+                            )
+                            if success:
+                                return True
+                    except Exception:
+                        pass
                 continue
             if '403' in msg or '429' in msg or '503' in msg:
                 continue
@@ -220,14 +240,17 @@ def build_lolroms_url(path: str) -> str:
 
 def resolve_lolroms_system_path(system_name: str) -> str:
     """Resout le chemin LoLROMs correspondant au systeme demande.
-    Essaie le mapping explicite SYSTEM_MAPPINGS, puis construit
-    automatiquement des variantes (split vendeur/systeme, variantes
-    sans accents, avec/sans Headered) et les teste via HTTP."""
+    Essaie le mapping explicite SYSTEM_MAPPINGS et resolve_system_mapping,
+    puis construit automatiquement des variantes (split vendeur/systeme,
+    variantes sans accents, avec/sans Headered) et les teste via HTTP.
+    En cas de blocage Cloudflare, utilise le bypass Playwright headless."""
     if not system_name:
         return ''
 
-    mappings = SYSTEM_MAPPINGS.get(system_name, {})
-    mapped_path = mappings.get('lolroms')
+    # 1. Mapping direct ou via resolve_system_mapping (fallback iteratif sur suffixes)
+    mapped_path = SYSTEM_MAPPINGS.get(system_name, {}).get('lolroms')
+    if not mapped_path:
+        mapped_path = resolve_system_mapping(system_name, provider='lolroms')
     explicit = [mapped_path] if mapped_path else []
 
     normalized = _normalize_system_name_for_lolroms(system_name)
@@ -306,6 +329,23 @@ def resolve_lolroms_system_path(system_name: str) -> str:
                 return norm
         except Exception:
             continue
+
+    # Fallback Playwright headless si Cloudflare bloque toutes les requetes
+    try:
+        from ..network.cloudflare_bypass import cloudflare_bypass_fetch
+        for candidate in candidates:
+            norm = candidate.strip().strip('/')
+            if not norm or norm.lower() in seen:
+                continue
+            seen.add(norm.lower())
+            if len(norm) > 128:
+                continue
+            url = build_lolroms_url(norm)
+            html = cloudflare_bypass_fetch(url, timeout_ms=45000, headless=True)
+            if html and 'Just a moment' not in html and 'Cloudflare' not in html and len(html) > 5000:
+                return norm
+    except Exception:
+        pass
 
     return ''
 
@@ -392,10 +432,75 @@ def _lolroms_subdir_for_system(system_name: str) -> str | None:
     return aliases.get(qualifier)
 
 
+def _parse_lolroms_items(soup, base_url: str):
+    """Parse le HTML LoLROMs moderne (li folder-item/file-item) ou legacy (a href)."""
+    files = {}
+    subdirs = []
+    # Format moderne
+    for li in soup.find_all('li', class_='folder-item'):
+        a = li.find('a', href=True)
+        if a:
+            href = html_module.unescape(a.get('href', '')).strip()
+            text = html_module.unescape(a.get_text(strip=True))
+            if href and text and text not in {'RSS', 'Donate', 'Main', '../'}:
+                subdirs.append(text)
+    for li in soup.find_all('li', class_='file-item'):
+        a = li.find('a', href=True)
+        if a:
+            href = html_module.unescape(a.get('href', '')).strip()
+            text = html_module.unescape(a.get_text(strip=True))
+            if not href or not text or text in {'RSS', 'Donate', 'Main', '../'}:
+                continue
+            if href.lower().endswith('/feed'):
+                continue
+            if '/.' in href:
+                continue
+            full_url = urljoin(base_url.rstrip('/') + '/', href)
+            parsed_name = os.path.basename(unquote(href))
+            filename = parsed_name if any(parsed_name.lower().endswith(ext) for ext in ROM_EXTENSIONS) else ''
+            if not filename:
+                continue
+            display_name = strip_rom_extension(filename)
+            files[display_name.lower()] = {
+                'full_name': display_name,
+                'filename': filename,
+                'url': full_url
+            }
+    # Fallback legacy (ancien parsing par href)
+    if not files and not subdirs:
+        for link in soup.find_all('a', href=True):
+            href = html_module.unescape(link.get('href', '')).strip()
+            text = html_module.unescape(link.get_text().strip())
+            if not href or not text or text in {'RSS', 'Donate', 'Main', '../'}:
+                continue
+            if href.lower().endswith('/feed'):
+                continue
+            if '/.' in href:
+                continue
+            if href.endswith('/'):
+                subdir_name = text.strip()
+                if subdir_name and subdir_name not in {'/', './', '../'}:
+                    subdirs.append(subdir_name)
+                continue
+            full_url = urljoin(base_url.rstrip('/') + '/', href)
+            parsed_name = os.path.basename(unquote(href))
+            filename = parsed_name if any(parsed_name.lower().endswith(ext) for ext in ROM_EXTENSIONS) else ''
+            if not filename:
+                continue
+            display_name = strip_rom_extension(filename)
+            files[display_name.lower()] = {
+                'full_name': display_name,
+                'filename': filename,
+                'url': full_url
+            }
+    return files, subdirs
+
+
 def list_lolroms_directory(system_path: str, include_subdirs: bool = True) -> dict:
     """Scrape LoLROMs pour un systeme donne et retourne un mapping par nom normalise.
     Si include_subdirs=True, scrape aussi les sous-repertoires (Multi-Boot, eReader, etc.)
     et fusionne leurs fichiers dans le listing principal.
+    En cas de blocage Cloudflare, utilise le bypass Playwright headless.
     """
     if not system_path:
         return {}
@@ -412,97 +517,70 @@ def list_lolroms_directory(system_path: str, include_subdirs: bool = True) -> di
 
     mapping = {}
     subdirs = []
+    html = ''
+    status_code = 0
     try:
         response = get_lolroms_session().get(url, timeout=60)
-        if response.status_code != 200 or 'Just a moment...' in response.text:
-            print(f"Erreur LoLROMs ({response.status_code}) pour {url}")
-            return mapping
+        status_code = response.status_code
+        if response.status_code == 200 and 'Just a moment...' not in response.text:
+            html = response.text
+    except Exception:
+        pass
 
-        soup = BeautifulSoup(response.text, 'html.parser')
-        for link in soup.find_all('a', href=True):
-            href = html_module.unescape(link.get('href', '')).strip()
-            text = html_module.unescape(link.get_text().strip())
+    if not html or 'Just a moment' in html:
+        # Fallback Playwright headless
+        try:
+            from ..network.cloudflare_bypass import cloudflare_bypass_fetch
+            html = cloudflare_bypass_fetch(url, timeout_ms=90000, headless=True)
+            if html:
+                status_code = 200
+        except Exception as e:
+            print(f"  Playwright fallback echoue pour {url}: {e}")
 
-            if not href or not text or text in {'RSS', 'Donate', 'Main', '../'}:
+    if not html or status_code != 200 or 'Just a moment' in html:
+        print(f"Erreur LoLROMs ({status_code}) pour {url}")
+        return mapping
+
+    soup = BeautifulSoup(html, 'html.parser')
+    mapping, subdirs = _parse_lolroms_items(soup, url)
+
+    if include_subdirs and subdirs:
+        print(f"  Sous-repertoires LoLROMs detectes: {', '.join(subdirs)}")
+        for subdir_name in subdirs:
+            subdir_path = f"{system_path}/{subdir_name}"
+            subdir_url = build_lolroms_url(subdir_path)
+            subdir_cache_key = f"lolroms:{subdir_url}"
+            subdir_cached = _facade.listing_cache_get(cache, subdir_cache_key)
+            if subdir_cached:
+                print(f"  Sous-repertoire {subdir_name} depuis le cache ({len(subdir_cached)} fichiers)")
+                mapping.update(subdir_cached)
                 continue
-            if href.lower().endswith('/feed'):
-                continue
-            if '/.' in href:
-                continue
-
-            if href.endswith('/'):
-                subdir_name = text.strip()
-                if subdir_name and subdir_name not in {'/', './', '../'} and include_subdirs:
-                    subdirs.append(subdir_name)
-                continue
-
-            full_url = urljoin(url.rstrip('/') + '/', href)
-            parsed_name = os.path.basename(unquote(href))
-            filename = parsed_name if any(parsed_name.lower().endswith(ext) for ext in ROM_EXTENSIONS) else ''
-            if not filename:
-                continue
-
-            display_name = strip_rom_extension(filename)
-            mapping[display_name.lower()] = {
-                'full_name': display_name,
-                'filename': filename,
-                'url': full_url
-            }
-
-        if subdirs:
-            print(f"  Sous-repertoires LoLROMs detectes: {', '.join(subdirs)}")
-            for subdir_name in subdirs:
-                subdir_path = f"{system_path}/{subdir_name}"
-                subdir_url = build_lolroms_url(subdir_path)
-                subdir_cache_key = f"lolroms:{subdir_url}"
-                subdir_cached = _facade.listing_cache_get(cache, subdir_cache_key)
-                if subdir_cached:
-                    print(f"  Sous-repertoire {subdir_name} depuis le cache ({len(subdir_cached)} fichiers)")
-                    mapping.update(subdir_cached)
-                    continue
+            subdir_html = ''
+            try:
+                subdir_resp = get_lolroms_session().get(subdir_url, timeout=60)
+                if subdir_resp.status_code == 200 and 'Just a moment...' not in subdir_resp.text:
+                    subdir_html = subdir_resp.text
+            except Exception:
+                pass
+            if not subdir_html or 'Just a moment' in subdir_html:
                 try:
-                    subdir_resp = get_lolroms_session().get(subdir_url, timeout=60)
-                    if subdir_resp.status_code != 200 or 'Just a moment...' in subdir_resp.text:
-                        continue
-                    subdir_soup = BeautifulSoup(subdir_resp.text, 'html.parser')
-                    subdir_count = 0
-                    for link in subdir_soup.find_all('a', href=True):
-                        href = html_module.unescape(link.get('href', '')).strip()
-                        text = html_module.unescape(link.get_text().strip())
-                        if not href or not text or text in {'RSS', 'Donate', 'Main', '../'}:
-                            continue
-                        if href.endswith('/') or href.lower().endswith('/feed'):
-                            continue
-                        if '/.' in href:
-                            continue
-                        full_url = urljoin(subdir_url.rstrip('/') + '/', href)
-                        parsed_name = os.path.basename(unquote(href))
-                        filename = parsed_name if any(parsed_name.lower().endswith(ext) for ext in ROM_EXTENSIONS) else ''
-                        if not filename:
-                            continue
-                        display_name = strip_rom_extension(filename)
-                        mapping[display_name.lower()] = {
-                            'full_name': display_name,
-                            'filename': filename,
-                            'url': full_url
-                        }
-                        subdir_count += 1
-                    if subdir_count:
-                        print(f"  Sous-repertoire {subdir_name}: {subdir_count} fichiers")
-                        subdir_mapping = {
-                            k: v for k, v in mapping.items()
-                            if v['url'].startswith(subdir_url)
-                        }
-                        _facade.listing_cache_set(cache, subdir_cache_key, subdir_mapping)
-                except Exception as e:
-                    print(f"  Erreur sous-repertoire LoLROMs {subdir_name}: {e}")
-
+                    from ..network.cloudflare_bypass import cloudflare_bypass_fetch
+                    subdir_html = cloudflare_bypass_fetch(subdir_url, timeout_ms=90000, headless=True)
+                except Exception:
+                    pass
+            if not subdir_html or 'Just a moment' in subdir_html:
+                continue
+            subdir_soup = BeautifulSoup(subdir_html, 'html.parser')
+            subdir_files, _ = _parse_lolroms_items(subdir_soup, subdir_url)
+            if subdir_files:
+                print(f"  Sous-repertoire {subdir_name}: {len(subdir_files)} fichiers")
+                mapping.update(subdir_files)
+                _facade.listing_cache_set(cache, subdir_cache_key, subdir_files)
+    
+    if mapping:
         print(f"Found {len(mapping)} files on LoLROMs")
-        _facade.listing_cache_set(cache, cache_key, mapping)
-        _facade.save_listing_cache(cache)
-    except Exception as e:
-        print(f"Erreur scraping LoLROMs: {e}")
-
+    _facade.listing_cache_set(cache, cache_key, mapping)
+    _facade.save_listing_cache(cache)
     return mapping
 
 

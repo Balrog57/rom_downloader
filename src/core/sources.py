@@ -786,7 +786,7 @@ SYSTEM_MAPPINGS = {
     'Nintendo - Game Boy': {
         'edgeemu': 'nintendo-gameboy',
         'planetemu': 'nintendo-game-boy',
-        'lolroms': 'Nintendo - Game Boy',
+        'lolroms': 'Nintendo/Game Boy',
         'retrogamesets': 'Game Boy (Archive)',
         'romhustler': 'gbc',
         'coolrom': 'gb',
@@ -797,7 +797,7 @@ SYSTEM_MAPPINGS = {
     'Nintendo - Game Boy Color': {
         'edgeemu': 'nintendo-gameboycolor',
         'planetemu': 'nintendo-game-boy-color',
-        'lolroms': 'Nintendo - Game Boy Color',
+        'lolroms': 'Nintendo/Game Boy Color',
         'retrogamesets': 'Game Boy Color (Archive)',
         'romhustler': 'gbc',
         'coolrom': 'gbc',
@@ -807,7 +807,7 @@ SYSTEM_MAPPINGS = {
     'Nintendo - Game Boy Advance': {
         'edgeemu': 'nintendo-gba',
         'planetemu': 'nintendo-game-boy-advance',
-        'lolroms': 'Nintendo - Game Boy Advance',
+        'lolroms': 'Nintendo/Game Boy Advance',
         'retrogamesets': 'Game Boy Advance (Archive)',
         'romhustler': 'gba',
         'coolrom': 'gba',
@@ -815,15 +815,15 @@ SYSTEM_MAPPINGS = {
         'vimm': 'GBA',
     },
     'Nintendo - Game Boy Advance (Multiboot)': {
-        'lolroms': 'Nintendo - Game Boy Advance/Multi-Boot',
+        'lolroms': 'Nintendo/Game Boy Advance/Multiboot',
     },
     'Nintendo - Game Boy Advance (eReader)': {
-        'lolroms': 'Nintendo - Game Boy Advance/eReader',
+        'lolroms': 'Nintendo/Game Boy Advance/e-Reader',
     },
     'Nintendo - Nintendo Entertainment System': {
         'edgeemu': 'nintendo-nes',
         'planetemu': 'nintendo-entertainment-system',
-        'lolroms': 'Nintendo - Famicom/Headerless',
+        'lolroms': 'Nintendo/Nintendo Entertainment System/Headerless',
         'retrogamesets': 'NES (Archive)',
         'romhustler': 'nes',
         'coolrom': 'nes',
@@ -833,7 +833,7 @@ SYSTEM_MAPPINGS = {
     'Nintendo - Nintendo Entertainment System (Headered)': {
         'edgeemu': 'nintendo-nes',
         'planetemu': 'nintendo-entertainment-system',
-        'lolroms': 'Nintendo - Famicom/Headered',
+        'lolroms': 'Nintendo/Nintendo Entertainment System',
         'romhustler': 'nes',
         'coolrom': 'nes',
         'vimm': 'NES',
@@ -841,7 +841,7 @@ SYSTEM_MAPPINGS = {
     'Nintendo - Super Nintendo Entertainment System': {
         'edgeemu': 'nintendo-snes',
         'planetemu': 'nintendo-super-nintendo-entertainment-system',
-        'lolroms': 'Nintendo - Super Famicom',
+        'lolroms': 'Nintendo/Super Nintendo Entertainment System',
         'retrogamesets': 'SNES (Archive)',
         'romhustler': 'snes',
         'coolrom': 'snes',
@@ -851,7 +851,7 @@ SYSTEM_MAPPINGS = {
     'Nintendo - Nintendo 64': {
         'edgeemu': 'nintendo-n64',
         'planetemu': 'nintendo-64',
-        'lolroms': 'Nintendo - 64',
+        'lolroms': 'Nintendo/Nintendo 64',
         'retrogamesets': 'Nintendo 64 (Archive)',
         'romhustler': 'n64',
         'coolrom': 'n64',
@@ -859,7 +859,7 @@ SYSTEM_MAPPINGS = {
         'vimm': 'N64',
     },
     'Nintendo - DS': {
-        'lolroms': 'Nintendo - DS',
+        'lolroms': 'Nintendo/DS',
         'planetemu': 'nintendo-ds',
         'retrogamesets': 'Nintendo DS (LolRoms)',
         'romhustler': 'nds',
@@ -868,7 +868,7 @@ SYSTEM_MAPPINGS = {
         'archive_org_collection': expand_collection_group('nds_decrypted_archive'),
     },
     'Nintendo - 3DS': {
-        'lolroms': 'Nintendo - 3DS',
+        'lolroms': 'Nintendo/3DS',
         'planetemu': 'nintendo-3ds',
         'retrogamesets': '3DS (Archive)',
         'coolrom': '3ds',
@@ -878,7 +878,7 @@ SYSTEM_MAPPINGS = {
     },
     'Nintendo - GameCube': {
         'edgeemu': 'nintendo-gamecube',
-        'lolroms': 'Nintendo - GameCube',
+        'lolroms': 'Nintendo/GameCube',
         'planetemu': 'nintendo-gamecube',
         'retrogamesets': 'Game Cube (Archive)',
         'romhustler': 'gamecube',
@@ -889,7 +889,7 @@ SYSTEM_MAPPINGS = {
         'archive_org_collection': ['GCRedumpNKitPart1', 'GCRedumpNKitPart2'],
     },
     'Nintendo - Wii': {
-        'lolroms': 'Nintendo - Wii',
+        'lolroms': 'Nintendo/Wii',
         'planetemu': 'nintendo-wii',
         'retrogamesets': 'Wii (Archive)',
         'romhustler': 'wii',
@@ -898,7 +898,7 @@ SYSTEM_MAPPINGS = {
         'vimm': 'Wii',
     },
     'Nintendo - Wii U': {
-        'lolroms': 'Nintendo - Wii U',
+        'lolroms': 'Nintendo/Wii U',
         'planetemu': 'nintendo-wii-u',
         'retrogamesets': 'Wii U (EU) (1Fichier)',
         'coolrom': 'wii-u',
@@ -906,7 +906,7 @@ SYSTEM_MAPPINGS = {
         'archive_org_collection': expand_collection_group('wiiu_archive'),
     },
     'Nintendo - Virtual Boy': {
-        'lolroms': 'Nintendo - Virtual Boy',
+        'lolroms': 'Nintendo/Virtual Boy',
         'planetemu': 'nintendo-virtual-boy',
         'retrogamesets': 'Virtual Boy (Archive)',
         'coolrom': 'vb',
@@ -914,7 +914,7 @@ SYSTEM_MAPPINGS = {
         'vimm': 'VB',
     },
     'Nintendo - Pokémon Mini': {
-        'lolroms': 'Nintendo - Pokémon Mini',
+        'lolroms': 'Nintendo/Pokémon Mini',
         'planetemu': 'nintendo-pokemon-mini',
         'retrogamesets': 'Pokemon Mini (Archive)',
         'romsxisos': 'pokemonmini',
@@ -924,7 +924,7 @@ SYSTEM_MAPPINGS = {
     # ── Sega ──
     'Sega - Mega Drive - Genesis': {
         'edgeemu': 'sega-genesis',
-        'lolroms': 'SEGA/Mega Drive',
+        'lolroms': 'SEGA/Mega Drive - Genesis',
         'planetemu': 'sega-mega-drive',
         'retrogamesets': 'Mega Drive (Archive)',
         'romhustler': 'genesis',
@@ -935,7 +935,7 @@ SYSTEM_MAPPINGS = {
     },
     'Sega - Master System - Mark III': {
         'edgeemu': 'sega-mastersystem',
-        'lolroms': 'SEGA/Master System',
+        'lolroms': 'SEGA/Master System - Mark III',
         'planetemu': 'sega-master-system',
         'retrogamesets': 'Master System (Archive)',
         'romhustler': 'sms',
@@ -977,7 +977,7 @@ SYSTEM_MAPPINGS = {
     },
     'Sega - Mega CD - Sega CD': {
         'edgeemu': 'sega-segacd',
-        'lolroms': 'SEGA/Mega CD',
+        'lolroms': 'SEGA/Mega Drive - Genesis/Mega-CD',
         'planetemu': 'sega-mega-cd',
         'retrogamesets': 'Sega CD (Archive)',
         'romhustler': 'segacd',
@@ -988,7 +988,7 @@ SYSTEM_MAPPINGS = {
     },
     'Sega - 32X': {
         'edgeemu': 'sega-32x',
-        'lolroms': 'SEGA/32X',
+        'lolroms': 'SEGA/Mega Drive - Genesis/32X',
         'planetemu': 'sega-32x',
         'retrogamesets': '32X (Archive)',
         'coolrom': '32x',
@@ -1038,7 +1038,7 @@ SYSTEM_MAPPINGS = {
     },
     'Sony - PlayStation 3': {
         'edgeemu': 'sony-playstation-3',
-        'lolroms': 'SONY/PlayStation 3',
+        'lolroms': 'SONY/PlayStation 3 (T-En)',
         'planetemu': 'sony-playstation-3',
         'retrogamesets': 'PS3 (Archive)',
         'romhustler': 'ps3',
@@ -1050,7 +1050,7 @@ SYSTEM_MAPPINGS = {
     },
     'Sony - PlayStation Vita': {
         'edgeemu': 'sony-psvita',
-        'lolroms': 'SONY/PlayStation Vita',
+        'lolroms': 'SONY/PlayStation Portable',
         'planetemu': 'sony-psvita',
         'retrogamesets': 'PS Vita (Archive)',
         'romhustler': 'ps-vita',
@@ -1070,6 +1070,7 @@ SYSTEM_MAPPINGS = {
         'vimm': 'Atari2600',
     },
     'Atari - Jaguar CD Interactive Multimedia System': {
+        'vimm': 'JaguarCD',
         'archive_org_collection': ['redump.jaguar.revival'],
     },
     'Atari - Jaguar CD': {
@@ -1145,7 +1146,7 @@ SYSTEM_MAPPINGS = {
     # ── NEC / TurboGrafx ──
     'NEC - PC Engine - TurboGrafx 16': {
         'edgeemu': 'nec-pcengine',
-        'lolroms': 'NEC/PC Engine',
+        'lolroms': 'NEC/PC-Engine',
         'planetemu': 'nec-pc-engine-turbografx-16-entertainment-super-system',
         'retrogamesets': 'PC Engine (Archive)',
         'romhustler': 'pcengine',
@@ -1154,6 +1155,7 @@ SYSTEM_MAPPINGS = {
         'vimm': 'TG16',
     },
     'NEC - PC-FX': {
+        'vimm': 'PCFX',
         'edgeemu': 'nec-pcfx',
         'lolroms': 'NEC/PC-FX',
         'planetemu': 'nec-pc-fx',
@@ -1162,7 +1164,12 @@ SYSTEM_MAPPINGS = {
     },
 
     # ── SNK ──
+    'SNK - Neo Geo Pocket': {
+        'vimm': 'NGP',
+        'lolroms': 'SNK/NeoGeo Pocket',
+    },
     'SNK - Neo Geo Pocket Color': {
+        'vimm': 'NGPC',
         'edgeemu': 'snk-neogeopocketcolor',
         'lolroms': 'SNK/NeoGeo Pocket Color',
         'planetemu': 'snk-neo-geo-pocket-color',
@@ -1174,6 +1181,7 @@ SYSTEM_MAPPINGS = {
 
     # ── Bandai ──
     'Bandai - WonderSwan': {
+        'vimm': 'WS',
         'edgeemu': 'bandai-wonderswan',
         'lolroms': 'Bandai/WonderSwan',
         'planetemu': 'bandai-wonderswan',
@@ -1185,31 +1193,31 @@ SYSTEM_MAPPINGS = {
     },
     # ── Additional Nintendo (variantes avec sous-dossiers) ──
     'Nintendo - Game Boy Advance (e-Reader)': {
-        'lolroms': 'Nintendo - Game Boy Advance/e-Reader',
+        'lolroms': 'Nintendo/Game Boy Advance/e-Reader',
     },
     'Nintendo - Game Boy Advance (Play-Yan)': {
-        'lolroms': 'Nintendo - Game Boy Advance/Play-Yan',
+        'lolroms': 'Nintendo/Game Boy Advance/Play-Yan',
     },
     'Nintendo - Game Boy Advance (Video)': {
-        'lolroms': 'Nintendo - Game Boy Advance/Video',
+        'lolroms': 'Nintendo/Game Boy Advance/Video',
     },
     'Nintendo - New Nintendo 3DS': {
-        'lolroms': 'Nintendo - New 3DS',
+        'lolroms': 'Nintendo/3DS/New 3DS',
     },
     'Nintendo - Nintendo DSi': {
-        'lolroms': 'Nintendo - DSi',
+        'lolroms': 'Nintendo/DS/DSi',
     },
     'Nintendo - Nintendo 64DD': {
-        'lolroms': 'Nintendo - 64/64DD',
+        'lolroms': 'Nintendo/Nintendo 64/64DD',
     },
     'Nintendo - Satellaview': {
-        'lolroms': 'Nintendo - Satellaview',
+        'lolroms': 'Nintendo/Super Nintendo Entertainment System/Satellaview',
     },
     'Nintendo - Sufami Turbo': {
-        'lolroms': 'Nintendo - SuFami Turbo',
+        'lolroms': 'Nintendo/Super Nintendo Entertainment System/SuFami Turbo',
     },
     'Nintendo - Family Computer Disk System': {
-        'lolroms': 'Nintendo - Famicom/FDS',
+        'lolroms': 'Nintendo/Nintendo Entertainment System/Disk System',
     },
 
     # ── Sega supplémentaires ──
@@ -1217,12 +1225,12 @@ SYSTEM_MAPPINGS = {
         'lolroms': 'SEGA/PICO',
     },
     'Sega - SG-1000': {
-        'lolroms': 'SEGA/SG-1000',
+        'lolroms': 'SEGA/SG-1000 - SC-3000',
     },
 
     # ── SNK variantes ──
     'SNK - Neo Geo CD': {
-        'lolroms': 'SNK/Neo Geo CD',
+        'lolroms': 'SNK/NeoGeo CD',
     },
     'SNK - NeoGeo Pocket': {
         'lolroms': 'SNK/NeoGeo Pocket',
@@ -1238,13 +1246,20 @@ SYSTEM_MAPPINGS = {
 
     # ── NEC variantes ──
     'NEC - PC Engine CD & TurboGrafx CD': {
-        'lolroms': 'NEC/PC Engine CD',
+        'vimm': 'TGCD',
+        'lolroms': 'NEC/PC-Engine',
     },
-    'NEC - PC-88 series': {
+    'NEC - PC-88': {
         'lolroms': 'NEC/PC-88',
     },
-    'NEC - PC-98 series': {
+    'NEC - PC-88 series': {
+        'lolroms': 'NEC/PC8 Series',
+    },
+    'NEC - PC-98': {
         'lolroms': 'NEC/PC-98',
+    },
+    'NEC - PC-98 series': {
+        'lolroms': 'NEC/PC98',
     },
     'NEC - PC-FX & PC-FXGA': {
         'lolroms': 'NEC/PC-FX',
@@ -1267,6 +1282,9 @@ SYSTEM_MAPPINGS = {
     },
 
     # ── Commodore ──
+    'Commodore - Amiga': {
+        'lolroms': 'Commodore/Amiga',
+    },
     'Commodore - Amiga CD': {
         'lolroms': 'Commodore/Amiga CD',
     },
@@ -1277,7 +1295,7 @@ SYSTEM_MAPPINGS = {
         'lolroms': 'Commodore/Amiga CDTV',
     },
     'Commodore - Commodore 64': {
-        'lolroms': 'Commodore/C64',
+        'lolroms': 'Commodore/64',
     },
 
     # ── Bandai supplémentaires ──
@@ -1295,16 +1313,18 @@ SYSTEM_MAPPINGS = {
 
     # ── Atari supplémentaires ──
     'Atari - Atari Lynx': {
+        'vimm': 'Lynx',
         'lolroms': 'Atari/Lynx',
     },
     'Atari - Atari ST': {
+        'vimm': 'ST',
         'lolroms': 'Atari/ST',
     },
     'Atari - Jaguar CD Interactive Multimedia System': {
-        'lolroms': 'Atari/Jaguar CD',
+        'lolroms': 'Atari/Jaguar/CD',
     },
     'Atari - 8-bit Family': {
-        'lolroms': 'Atari/8-bit',
+        'lolroms': 'Atari/800',
     },
 
     # ── Apple ──
@@ -1314,7 +1334,7 @@ SYSTEM_MAPPINGS = {
 
     # ── Fujitsu ──
     'Fujitsu - FM-Towns': {
-        'lolroms': 'Fujitsu/FM-Towns',
+        'lolroms': 'Fujitsu/FM Towns',
     },
 
     # ── Sharp ──
@@ -1325,7 +1345,7 @@ SYSTEM_MAPPINGS = {
     # ── Sega Arcade CD ──
     'Sega - Mega CD & Sega CD': {
         'edgeemu': 'sega-segacd',
-        'lolroms': 'SEGA/Mega CD',
+        'lolroms': 'SEGA/Mega Drive - Genesis/Mega-CD',
         'planetemu': 'sega-mega-cd',
     },
 
@@ -1345,7 +1365,7 @@ SYSTEM_MAPPINGS = {
         'lolroms': 'VTech/Mobigo',
     },
     'VTech - V.Flash & V.Smile Pro': {
-        'lolroms': 'VTech/V.Flash',
+        'lolroms': 'VTech/V.Flash & V.Smile Pro',
     },
 
     # ── Mattel ──
@@ -1353,6 +1373,7 @@ SYSTEM_MAPPINGS = {
         'lolroms': 'Mattel/HyperScan',
     },
     'Mattel - Intellivision': {
+        'vimm': 'Intellivision',
         'lolroms': 'Mattel/Intellivision',
     },
     'Mattel - Fisher-Price iXL': {
@@ -1361,6 +1382,7 @@ SYSTEM_MAPPINGS = {
 
     # ── GCE ──
     'GCE - Vectrex': {
+        'vimm': 'Vectrex',
         'lolroms': 'GCE - Vectrex',
     },
 
@@ -1371,6 +1393,7 @@ SYSTEM_MAPPINGS = {
 
     # ── Magnavox ──
     'Magnavox - Odyssey 2': {
+        'vimm': 'Odyssey2',
         'lolroms': 'Magnavox - Odyssey 2',
     },
 
@@ -1394,6 +1417,652 @@ SYSTEM_MAPPINGS = {
         'lolroms': 'Interton - VC 4000',
     },
 
+    'Acorn - Archimedes': {
+        'lolroms': 'Acorn/Archimedes',
+    },
+    'Acorn - Atom (Tapes) (Bitstream)': {
+        'lolroms': 'Acorn/Atom',
+    },
+    'Acorn - Risc PC': {
+        'lolroms': 'Acorn/Risc PC',
+    },
+    'Acorn RISC OS - Flash Media (Misc)': {
+        'lolroms': 'Acorn/Risc PC',
+    },
+    'ACT - Apricot PC Xi': {
+        'lolroms': 'ACT - Apricot PC Xi',
+    },
+    'Amstrad - CPC': {
+        'lolroms': 'Amstrad - CPC',
+    },
+    'APF - Imagination Machine': {
+        'lolroms': 'APF/Imagination Machine',
+    },
+    'APF - MP-1000': {
+        'lolroms': 'APF/MP-1000',
+    },
+    'Apple - I (Tapes)': {
+        'lolroms': 'Apple/I',
+    },
+    'Apple - II': {
+        'lolroms': 'Apple/II',
+    },
+    'Apple - II Plus': {
+        'lolroms': 'Apple/II Plus',
+    },
+    'Apple - IIe': {
+        'lolroms': 'Apple/IIe',
+    },
+    'Apple - IIGS': {
+        'lolroms': 'Apple/IIGS',
+    },
+    'Apple - Macintosh (BETA)': {
+        'lolroms': 'Apple/Macintosh',
+    },
+    'Apple-Bandai - Pippin (Floppies)': {
+        'lolroms': 'Apple/Pippin',
+    },
+    'Arcade - Konami - e-Amusement': {
+        'lolroms': 'Arcade/Konami e-Amusement',
+    },
+    'Arcade - Konami - FireBeat': {
+        'lolroms': 'Arcade/Konami FireBeat',
+    },
+    'Arcade - Konami - System 573': {
+        'lolroms': 'Arcade/Konami System 573',
+    },
+    'Arcade - Konami - System GV': {
+        'lolroms': 'Arcade/Konami System GV',
+    },
+    'Arcade - Namco - Sega - Nintendo - Triforce': {
+        'lolroms': 'Arcade/Triforce',
+    },
+    'Arcade - Namco - System 246': {
+        'lolroms': 'Arcade/Namco System 246',
+    },
+    'Arcade - PC-based': {
+        'lolroms': 'Arcade/PC-based',
+    },
+    'Arcade - Sega - Chihiro': {
+        'lolroms': 'Arcade/Sega Chihiro',
+    },
+    'Arcade - Sega - Lindbergh': {
+        'lolroms': 'Arcade/Sega Lindbergh',
+    },
+    'Arcade - Sega - Naomi': {
+        'lolroms': 'Arcade/Sega Naomi',
+    },
+    'Arcade - Sega - Naomi 2': {
+        'lolroms': 'Arcade/Sega Naomi 2',
+    },
+    'Arcade - Sega - RingEdge': {
+        'lolroms': 'Arcade/Sega RingEdge',
+    },
+    'Arcade - Sega - RingEdge 2': {
+        'lolroms': 'Arcade/Sega RingEdge 2',
+    },
+    'Arduboy Inc - Arduboy': {
+        'lolroms': 'Arduboy',
+    },
+    'Bally - Astrocade': {
+        'lolroms': 'Bally - Astrocade',
+    },
+    'Bally - Astrocade (Tapes)': {
+        'lolroms': 'Bally - Astrocade',
+    },
+    'Bandai - Design Master Denshi Mangajuku': {
+        'lolroms': 'Bandai/Design Master Denshi Mangajuku',
+    },
+    'Bandai - Gundam RX-78': {
+        'lolroms': 'Bandai/Gundam RX-78',
+    },
+    'Bandai - Pippin': {
+        'lolroms': 'Bandai/Pippin',
+    },
+    'Bandai - Playdia Quick Interactive System': {
+        'lolroms': 'Bandai/Playdia',
+    },
+    'Bandai Little Jammer': {
+        'lolroms': 'Bandai/Little Jammer',
+    },
+    'Bandai Little Jammer Pro': {
+        'lolroms': 'Bandai/Little Jammer Pro',
+    },
+    'Benesse - Pocket Challenge V2': {
+        'lolroms': 'Benesse/Pocket Challenge V2',
+    },
+    'Benesse - Pocket Challenge W': {
+        'lolroms': 'Benesse/Pocket Challenge W',
+    },
+    'Bit Corporation - Gamate': {
+        'lolroms': 'Bit Corporation - Gamate',
+    },
+    'Blaze Entertainment - Evercade': {
+        'lolroms': 'Evercade',
+    },
+    'Casio - Loopy': {
+        'lolroms': 'CASIO/Loopy',
+    },
+    'Casio - PV-1000': {
+        'lolroms': 'CASIO/PV-1000',
+    },
+    'CD-ROM': {
+        'lolroms': 'CD-ROM',
+    },
+    'Coleco - ColecoVision': {
+        'vimm': 'ColecoVision',
+        'lolroms': 'ColecoVision',
+    },
+    'Commodore - Commodore 64 (PP)': {
+        'lolroms': 'Commodore/64',
+    },
+    'Commodore - Commodore 64 (Tapes)': {
+        'lolroms': 'Commodore/64',
+    },
+    'Commodore - Plus-4': {
+        'lolroms': 'Commodore/Plus-4',
+    },
+    'Commodore - VIC-20': {
+        'lolroms': 'Commodore/VIC-20',
+    },
+    'Digital Media Cartridge - Firecore': {
+        'lolroms': 'Firecore',
+    },
+    'DVD-ROM': {
+        'lolroms': 'DVD-ROM',
+    },
+    'Epoch - Game Pocket Computer': {
+        'lolroms': 'Epoch/Game Pocket Computer',
+    },
+    'Epoch - Super Cassette Vision': {
+        'lolroms': 'Epoch/Super Cassette Vision',
+    },
+    'Fujitsu - FM Towns': {
+        'lolroms': 'Fujitsu/FM Towns',
+    },
+    'Fujitsu - FM-7': {
+        'lolroms': 'Fujitsu/FM-7',
+    },
+    'Fujitsu - FM-7 (Tapes)': {
+        'lolroms': 'Fujitsu/FM-7',
+    },
+    'Fujitsu - FMR50': {
+        'lolroms': 'Fujitsu/FMR50',
+    },
+    'Fukutake Publishing - StudyBox': {
+        'lolroms': 'Fukutake Publishing/StudyBox',
+    },
+    'Funtech - Super Acan': {
+        'lolroms': 'Funtech - Super Acan',
+    },
+    'funworld - Photo Play': {
+        'lolroms': 'funworld/Photo Play',
+    },
+    'GamePark - GP2X': {
+        'lolroms': 'GamePark/GP2X',
+    },
+    'GamePark - GP32': {
+        'lolroms': 'GamePark/GP32',
+    },
+    'Hartung - Game Master': {
+        'lolroms': 'Hartung - Game Master',
+    },
+    'Hitachi - S1': {
+        'lolroms': 'Hitachi - S1',
+    },
+    'IBM - PC and Compatibles': {
+        'lolroms': 'IBM - PC & Compatibles',
+    },
+    'IBM - PC and Compatibles (Digital) (JAST USA)': {
+        'lolroms': 'IBM - PC & Compatibles',
+    },
+    'IBM - PC and Compatibles (Digital) (Misc)': {
+        'lolroms': 'IBM - PC & Compatibles',
+    },
+    'IBM - PC and Compatibles (Digital) (Unknown)': {
+        'lolroms': 'IBM - PC & Compatibles',
+    },
+    'IBM - PC and Compatibles (Flash Media)': {
+        'lolroms': 'IBM - PC & Compatibles',
+    },
+    'IBM - PC compatible': {
+        'lolroms': 'IBM - PC & Compatibles',
+    },
+    'Incredible Technologies - Eagle': {
+        'lolroms': 'Incredible Technologies/Eagle',
+    },
+    'iQue - iQue': {
+        'lolroms': 'iQue',
+    },
+    'Konami - Picno': {
+        'lolroms': 'Konami - Picno',
+    },
+    'LeapFrog - Explorer': {
+        'lolroms': 'LeapFrog/Explorer',
+    },
+    'LeapFrog - LeapPad': {
+        'lolroms': 'LeapFrog/LeapPad',
+    },
+    'LeapFrog - Leapster Learning Game System': {
+        'lolroms': 'LeapFrog/Leapster',
+    },
+    'Luxor - ABC 800': {
+        'lolroms': 'Luxor - ABC 800',
+    },
+    'Memorex - Visual Information System': {
+        'lolroms': 'Memorex/Visual Information System',
+    },
+    'Microsoft - Xbox One': {
+        'lolroms': 'Microsoft/Xbox One',
+    },
+    'Milton-Bradley - Omni': {
+        'lolroms': 'Milton-Bradley/Omni',
+    },
+    'Mobile - J2ME': {
+        'lolroms': 'Mobile/J2ME',
+    },
+    'Mobile - Palm OS': {
+        'lolroms': 'Mobile/Palm OS',
+    },
+    'Mobile - Pocket PC': {
+        'lolroms': 'Mobile/Pocket PC',
+    },
+    'Mobile - Symbian': {
+        'lolroms': 'Mobile/Symbian',
+    },
+    'MP3 CD': {
+        'lolroms': 'MP3 CD',
+    },
+    'NEC - PC Engine SuperGrafx': {
+        'lolroms': 'NEC/PC-Engine/SuperGrafx',
+    },
+    'Nichibutsu - My Vision': {
+        'lolroms': 'Nichibutsu - My Vision',
+    },
+    'Nintendo - amiibo': {
+        'lolroms': 'Nintendo/amiibo',
+    },
+    'Nintendo - Family BASIC (Tapes)': {
+        'lolroms': 'Nintendo/Family BASIC',
+    },
+    'Nintendo - Family Computer Network System': {
+        'lolroms': 'Nintendo/Family Computer Network System',
+    },
+    'Nintendo - Game & Watch': {
+        'lolroms': 'Nintendo/Game & Watch',
+    },
+    'Nintendo - Kiosk Video Compact Flash': {
+        'lolroms': 'Nintendo/Kiosk Video Compact Flash',
+    },
+    'Nintendo - Misc': {
+        'lolroms': 'Nintendo/Misc',
+    },
+    'Nintendo - Nintendo 3DS': {
+        'lolroms': 'Nintendo/3DS',
+    },
+    'Nintendo - Nintendo 64 (Mario no Photopi SmartMedia)': {
+        'lolroms': 'Nintendo/Nintendo 64',
+    },
+    'Nintendo - Nintendo DS': {
+        'lolroms': 'Nintendo/DS',
+    },
+    'Nintendo - Nintendo DS (Download Play)': {
+        'lolroms': 'Nintendo/DS',
+    },
+    'Nintendo - Nintendo DS (DSvision SD cards)': {
+        'lolroms': 'Nintendo/DS',
+    },
+    'Nintendo - Nintendo GameCube (Memory Card)': {
+        'lolroms': 'Nintendo/GameCube',
+    },
+    'Nintendo - Nintendo GameCube (NPDP Carts)': {
+        'lolroms': 'Nintendo/GameCube',
+    },
+    'Nintendo - Pokemon Mini': {
+        'lolroms': 'Nintendo/Pokémon Mini',
+    },
+    'Nintendo - Wallpapers': {
+        'lolroms': 'Nintendo/Wallpapers',
+    },
+    'Nokia - N-Gage': {
+        'lolroms': 'Nokia/N-Gage',
+    },
+    'Non-Redump - Apple-Bandai - Pippin': {
+        'lolroms': 'Non-Redump/Apple-Bandai Pippin',
+    },
+    'Non-Redump - Atari - Atari Jaguar CD': {
+        'lolroms': 'Non-Redump/Atari Jaguar CD',
+    },
+    'Non-Redump - Audio CD': {
+        'lolroms': 'Non-Redump/Audio CD',
+    },
+    'Non-Redump - BD-Video': {
+        'lolroms': 'Non-Redump/BD-Video',
+    },
+    'Non-Redump - Capcom - Play System III': {
+        'lolroms': 'Non-Redump/Capcom Play System III',
+    },
+    'Non-Redump - Commodore - Amiga CD': {
+        'lolroms': 'Non-Redump/Commodore Amiga CD',
+    },
+    'Non-Redump - DVD-Video': {
+        'lolroms': 'Non-Redump/DVD-Video',
+    },
+    'Non-Redump - FuRyu & Omron - Purikura': {
+        'lolroms': 'Non-Redump/FuRyu & Omron Purikura',
+    },
+    'Non-Redump - Hasbro - iON Educational Gaming System': {
+        'lolroms': 'Non-Redump/Hasbro iON',
+    },
+    'Non-Redump - IBM - PC Compatible (Discs)': {
+        'lolroms': 'Non-Redump/IBM PC Compatible',
+    },
+    'Non-Redump - Konami - M2': {
+        'lolroms': 'Non-Redump/Konami M2',
+    },
+    'Non-Redump - Konami - Python 2': {
+        'lolroms': 'Non-Redump/Konami Python 2',
+    },
+    'Non-Redump - Merit Megatouch': {
+        'lolroms': 'Non-Redump/Merit Megatouch',
+    },
+    'Non-Redump - Microsoft - Pocket PC': {
+        'lolroms': 'Non-Redump/Microsoft Pocket PC',
+    },
+    'Non-Redump - Microsoft - Xbox': {
+        'lolroms': 'Non-Redump/Microsoft Xbox',
+    },
+    'Non-Redump - Microsoft - Xbox 360': {
+        'lolroms': 'Non-Redump/Microsoft Xbox 360',
+    },
+    'Non-Redump - Namco - Purikura': {
+        'lolroms': 'Non-Redump/Namco Purikura',
+    },
+    'Non-Redump - NEC - PC Engine CD + TurboGrafx CD': {
+        'lolroms': 'Non-Redump/NEC PC Engine CD',
+    },
+    'Non-Redump - NEC - PC-88': {
+        'lolroms': 'Non-Redump/NEC PC-88',
+    },
+    'Non-Redump - Nintendo - Nintendo GameCube': {
+        'lolroms': 'Non-Redump/Nintendo GameCube',
+    },
+    'Non-Redump - Nintendo - Wii': {
+        'lolroms': 'Non-Redump/Nintendo Wii',
+    },
+    'Non-Redump - Nintendo - Wii U': {
+        'lolroms': 'Non-Redump/Nintendo Wii U',
+    },
+    'Non-Redump - Panasonic - 3DO Interactive Multiplayer': {
+        'lolroms': 'Non-Redump/Panasonic 3DO',
+    },
+    'Non-Redump - Philips - CD-i': {
+        'lolroms': 'Non-Redump/Philips CD-i',
+    },
+    'Non-Redump - Playmaji - Polymega': {
+        'lolroms': 'Non-Redump/Playmaji Polymega',
+    },
+    'Non-Redump - Psion - Psion Series': {
+        'lolroms': 'Non-Redump/Psion',
+    },
+    'Non-Redump - Sega - ALLS': {
+        'lolroms': 'Non-Redump/Sega ALLS',
+    },
+    'Non-Redump - Sega - Dreamcast': {
+        'lolroms': 'Non-Redump/Sega Dreamcast',
+    },
+    'Non-Redump - Sega - Nu': {
+        'lolroms': 'Non-Redump/Sega Nu',
+    },
+    'Non-Redump - Sega - Nu 1.1': {
+        'lolroms': 'Non-Redump/Sega Nu 1.1',
+    },
+    'Non-Redump - Sega - Nu 2': {
+        'lolroms': 'Non-Redump/Sega Nu 2',
+    },
+    'Non-Redump - Sega - Nu SX': {
+        'lolroms': 'Non-Redump/Sega Nu SX',
+    },
+    'Non-Redump - Sega - Sega Mega CD + Sega CD': {
+        'lolroms': 'Non-Redump/Sega Mega CD',
+    },
+    'Non-Redump - Sega - Sega Saturn': {
+        'lolroms': 'Non-Redump/Sega Saturn',
+    },
+    'Non-Redump - Sega NAOMI Satellite Terminal PC': {
+        'lolroms': 'Non-Redump/Sega NAOMI Satellite Terminal PC',
+    },
+    'Non-Redump - Sharp - Zaurus': {
+        'lolroms': 'Non-Redump/Sharp Zaurus',
+    },
+    'Non-Redump - Sony - PlayStation': {
+        'lolroms': 'Non-Redump/Sony PlayStation',
+    },
+    'Non-Redump - Sony - PlayStation 2': {
+        'lolroms': 'Non-Redump/Sony PlayStation 2',
+    },
+    'Non-Redump - Sony - PlayStation 3': {
+        'lolroms': 'Non-Redump/Sony PlayStation 3',
+    },
+    'Non-Redump - Sony - PlayStation Portable': {
+        'lolroms': 'Non-Redump/Sony PSP',
+    },
+    'Non-Redump - Sony Electronic Book': {
+        'lolroms': 'Non-Redump/Sony Electronic Book',
+    },
+    'Non-Redump - VM Labs - NUON': {
+        'lolroms': 'Non-Redump/VM Labs NUON',
+    },
+    'Non-Redump - ZAPiT Games - Game Wave Family Entertainment System': {
+        'lolroms': 'Non-Redump/ZAPiT Game Wave',
+    },
+    'Ouya - Ouya': {
+        'lolroms': 'Ouya',
+    },
+    'Palm': {
+        'lolroms': 'Palm',
+    },
+    'Photo CD': {
+        'lolroms': 'Photo CD',
+    },
+    'PlayStation GameShark Updates': {
+        'lolroms': 'PlayStation GameShark Updates',
+    },
+    'Pocket PC': {
+        'lolroms': 'Pocket PC',
+    },
+    'Project EGG': {
+        'lolroms': 'Project EGG',
+    },
+    'Sanyo - MBC-550': {
+        'lolroms': 'Sanyo - MBC-550',
+    },
+    'Sega - Beena': {
+        'lolroms': 'SEGA/Beena',
+    },
+    'Sega - Dreamcast (Visual Memory Unit)': {
+        'lolroms': 'SEGA/Dreamcast',
+    },
+    'Sega - Prologue 21': {
+        'lolroms': 'SEGA/Prologue 21',
+    },
+    'Sega - SG-1000 - SC-3000': {
+        'lolroms': 'SEGA/SG-1000 - SC-3000',
+    },
+    'Seta - Aleck64': {
+        'lolroms': 'Seta/Aleck64',
+    },
+    'Sharp - MZ-2200': {
+        'lolroms': 'Sharp/MZ-2200',
+    },
+    'Sharp - MZ-700': {
+        'lolroms': 'Sharp/MZ-700',
+    },
+    'Sharp - X1': {
+        'lolroms': 'Sharp/X1',
+    },
+    'Sinclair - ZX Spectrum +3': {
+        'lolroms': 'Sinclair - ZX Spectrum +3',
+    },
+    'Sony - PlayStation (PS one Classics)': {
+        'lolroms': 'SONY/PlayStation',
+    },
+    'Sony - PlayStation Mobile': {
+        'lolroms': 'SONY/PlayStation Mobile',
+    },
+    'Sony - PlayStation Portable (PSN) (Minis)': {
+        'lolroms': 'SONY/PlayStation Portable',
+    },
+    'Source Code - Apple - II': {
+        'lolroms': 'Source Code/Apple II',
+    },
+    'Source Code - Apple - IIGS': {
+        'lolroms': 'Source Code/Apple IIGS',
+    },
+    'Source Code - Arcade': {
+        'lolroms': 'Source Code/Arcade',
+    },
+    'Source Code - Atari - 8-bit Family': {
+        'lolroms': 'Source Code/Atari 8-bit',
+    },
+    'Source Code - Atari - Atari 2600': {
+        'lolroms': 'Source Code/Atari 2600',
+    },
+    'Source Code - IBM - PC and Compatibles': {
+        'lolroms': 'Source Code/IBM PC',
+    },
+    'Source Code - Mobile - Palm OS': {
+        'lolroms': 'Source Code/Mobile Palm OS',
+    },
+    'Source Code - Nintendo - Game Boy Advance': {
+        'lolroms': 'Source Code/Nintendo GBA',
+    },
+    'Source Code - Nintendo - Game Boy Color': {
+        'lolroms': 'Source Code/Nintendo GBC',
+    },
+    'Source Code - Nintendo - Nintendo DS': {
+        'lolroms': 'Source Code/Nintendo DS',
+    },
+    'Source Code - Nintendo - Nintendo Entertainment System': {
+        'lolroms': 'Source Code/Nintendo NES',
+    },
+    'Source Code - Nintendo - Nintendo GameCube': {
+        'lolroms': 'Source Code/Nintendo GameCube',
+    },
+    'Source Code - Nintendo - Super Nintendo Entertainment System': {
+        'lolroms': 'Source Code/Nintendo SNES',
+    },
+    'Source Code - Panasonic - 3DO Interactive Multiplayer': {
+        'lolroms': 'Source Code/Panasonic 3DO',
+    },
+    'Source Code - Panasonic - M2': {
+        'lolroms': 'Source Code/Panasonic M2',
+    },
+    'Source Code - Sega - DreamCast': {
+        'lolroms': 'Source Code/Sega Dreamcast',
+    },
+    'Source Code - Various': {
+        'lolroms': 'Source Code/Various',
+    },
+    'Source Code - VM Labs - NUON': {
+        'lolroms': 'Source Code/VM Labs NUON',
+    },
+    'TAB-Austria - Quizard': {
+        'lolroms': 'TAB-Austria/Quizard',
+    },
+    'TeleNova - Compis': {
+        'lolroms': 'TeleNova - Compis',
+    },
+    'Texas Instruments - TI-99-4A': {
+        'lolroms': 'Texas Instruments - 99-4A',
+    },
+    'Tiger - Game.com': {
+        'lolroms': 'Tiger/Game.com',
+    },
+    'Tiger - Gizmondo': {
+        'lolroms': 'Tiger/Gizmondo',
+    },
+    'Tomy - Kiss-Site': {
+        'lolroms': 'Tomy/Kiss-Site',
+    },
+    'Toshiba - Pasopia': {
+        'lolroms': 'Toshiba/Pasopia',
+    },
+    'Toshiba - Visicom': {
+        'lolroms': 'Toshiba/Visicom',
+    },
+    'Unofficial - Microsoft - Xbox 360 (Title Updates)': {
+        'lolroms': 'Unofficial/Microsoft Xbox 360 Title Updates',
+    },
+    'Unofficial - Nintendo - Nintendo 3DS': {
+        'lolroms': 'Unofficial/Nintendo 3DS',
+    },
+    'Unofficial - Nintendo - Wii': {
+        'lolroms': 'Unofficial/Nintendo Wii',
+    },
+    'Unofficial - Nintendo - Wii (Digital) (Split DLC)': {
+        'lolroms': 'Unofficial/Nintendo Wii',
+    },
+    'Unofficial - Nintendo - Wii U': {
+        'lolroms': 'Unofficial/Nintendo Wii U',
+    },
+    'Unofficial - Obscure Gamers': {
+        'lolroms': 'Unofficial/Obscure Gamers',
+    },
+    'Unofficial - Sony - PlayStation 3': {
+        'lolroms': 'Unofficial/Sony PlayStation 3',
+    },
+    'Unofficial - Sony - PlayStation 3 (BD-Video Extras)': {
+        'lolroms': 'Unofficial/Sony PlayStation 3 BD-Video Extras',
+    },
+    'Unofficial - Sony - PlayStation 4': {
+        'lolroms': 'Unofficial/Sony PlayStation 4',
+    },
+    'Unofficial - Sony - PlayStation Portable': {
+        'lolroms': 'Unofficial/Sony PSP',
+    },
+    'Unofficial - Sony - PlayStation Vita': {
+        'lolroms': 'Unofficial/Sony PlayStation Vita',
+    },
+    'Unofficial - Super Mario Maker Courses (WARC)': {
+        'lolroms': 'Unofficial/Super Mario Maker Courses',
+    },
+    'Unofficial - Video Game Documents (PDF)': {
+        'lolroms': 'Unofficial/Video Game Documents PDF',
+    },
+    'Unofficial - Video Game Magazine Scans (RAW)': {
+        'lolroms': 'Unofficial/Video Game Magazine Scans',
+    },
+    'Unofficial - Video Game Manual Scans (JPEG)': {
+        'lolroms': 'Unofficial/Video Game Manual Scans',
+    },
+    'Unofficial - Video Game OSTs (Digital) (RAW)': {
+        'lolroms': 'Unofficial/Video Game OSTs Digital',
+    },
+    'Unofficial - Video Game OSTs (Hardware Recordings)': {
+        'lolroms': 'Unofficial/Video Game OSTs Hardware',
+    },
+    'Unofficial - Video Game OSTs (Playbutton)': {
+        'lolroms': 'Unofficial/Video Game OSTs Playbutton',
+    },
+    'Unofficial - Video Game Scans (RAW)': {
+        'lolroms': 'Unofficial/Video Game Scans',
+    },
+    'VM Labs - NUON': {
+        'lolroms': 'VM Labs/NUON',
+    },
+    'Welback - Mega Duck': {
+        'lolroms': 'Welback - Mega Duck',
+    },
+    'Yamaha - Copera': {
+        'lolroms': 'Yamaha - Copera',
+    },
+    'ZAPiT Games - Game Wave Family Entertainment System': {
+        'lolroms': 'ZAPiT Games/Game Wave',
+    },
+    'Zeebo - Zeebo': {
+        'lolroms': 'Zeebo',
+    },
     # ── Arcade ──
     'Arcade - MAME': {
         'edgeemu': 'arcade-mame',
@@ -1404,6 +2073,70 @@ SYSTEM_MAPPINGS = {
     },
 }
 
+
+
+
+def resolve_system_mapping(system_name: str, provider: str = 'lolroms') -> str | None:
+    """Resout le mapping d'un systeme pour un provider donne.
+    Essaie le mapping explicite SYSTEM_MAPPINGS, puis nettoie iterativement
+    les suffixes parenthetiques (date, format, Retool, etc.) et reteste.
+    Retourne le chemin/slug mappe ou None si introuvable.
+    """
+    if not system_name:
+        return None
+
+    # Mapping direct
+    direct = SYSTEM_MAPPINGS.get(system_name, {}).get(provider)
+    if direct:
+        return direct
+
+    # Aliases directs
+    aliases = {
+        'Nintendo - Nintendo 3DS': 'Nintendo - 3DS',
+        'Nintendo - Nintendo DS': 'Nintendo - DS',
+        'Nintendo - Nintendo 64': 'Nintendo - Nintendo 64',
+        'Nintendo - Pokemon Mini': 'Nintendo - Pokémon Mini',
+        'Nintendo - Nintendo Entertainment System (Headered)': 'Nintendo - Nintendo Entertainment System',
+        'Nintendo - Nintendo Entertainment System': 'Nintendo - Nintendo Entertainment System',
+        'Nintendo - Nintendo GameCube': 'Nintendo - GameCube',
+        'Sony - PlayStation (PS one Classics)': 'Sony - PlayStation',
+        'Sony - PlayStation Portable (PSN) (Minis)': 'Sony - PlayStation Portable',
+        'Sega - SG-1000 - SC-3000': 'Sega - SG-1000',
+        'Sega - Mega CD & Sega CD': 'Sega - Mega CD - Sega CD',
+        'Atari - Atari 2600': 'Atari - 2600',
+        'Atari - Atari 5200': 'Atari - 5200',
+        'Atari - Atari 7800': 'Atari - 7800',
+        'Atari - Atari Jaguar': 'Atari - Jaguar',
+        'Atari - Atari Lynx': 'Atari - Lynx',
+        'Atari - Atari ST': 'Atari - ST',
+        'NEC - PC Engine CD & TurboGrafx CD': 'NEC - PC Engine CD & TurboGrafx CD',
+        'Commodore - Commodore 64': 'Commodore - 64',
+    }
+    aliased = aliases.get(system_name)
+    if aliased:
+        direct = SYSTEM_MAPPINGS.get(aliased, {}).get(provider)
+        if direct:
+            return direct
+
+    # Nettoyage iteratif des suffixes parenthetiques
+    cleaned = system_name
+    previous = None
+    while cleaned != previous:
+        previous = cleaned
+        # Retirer le dernier segment entre parentheses a la fin
+        m = re.search(r'^(.*?)\s*\([^)]+\)\s*$', cleaned)
+        if m:
+            cleaned = m.group(1).strip()
+            mapped = SYSTEM_MAPPINGS.get(cleaned, {}).get(provider)
+            if mapped:
+                return mapped
+            # Tester aussi l'alias sur le nettoye
+            aliased_clean = aliases.get(cleaned)
+            if aliased_clean:
+                mapped = SYSTEM_MAPPINGS.get(aliased_clean, {}).get(provider)
+                if mapped:
+                    return mapped
+    return None
 
 def build_custom_source(source_url: str) -> dict:
     """Detecte et construit une source personnalisee Minerva ou legacy."""
@@ -1510,5 +2243,6 @@ __all__ = [
     'apply_source_policies',
     'get_default_sources',
     'SYSTEM_MAPPINGS',
+    'resolve_system_mapping',
     'build_custom_source',
 ]
