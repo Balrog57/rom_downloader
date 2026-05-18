@@ -46,6 +46,12 @@ from .verification import (
     clean_download_resolution,
 )
 from .interactive import create_download_session
+from .local_database import (
+    create_download_job,
+    update_download_job,
+    record_download_attempt,
+    record_provider_success,
+)
 
 
 def resolve_next_provider(game_info: dict, sources: list, session, system_name: str,
@@ -328,10 +334,73 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
                                    circuit_breaker=None) -> tuple[str, dict]:
     """Essaie les providers un par un jusqu'a obtenir un fichier valide MD5 DAT."""
     original_game = clean_download_resolution(game_info)
-    current_game = game_info.copy()
+    original_game.pop('provider_candidates', None)
+    provider_candidates = []
+    seen_candidate_keys = set()
+
+    def candidate_key(item: dict) -> tuple:
+        return (
+            normalize_source_label(item.get('source', '')),
+            item.get('download_url') or item.get('torrent_url') or item.get('archive_org_identifier') or item.get('page_url') or '',
+            item.get('download_filename') or '',
+        )
+
+    def add_provider_candidate(item: dict):
+        key = candidate_key(item)
+        if key in seen_candidate_keys:
+            return
+        clean_item = item.copy()
+        clean_item.pop('provider_candidates', None)
+        provider_candidates.append(clean_item)
+        seen_candidate_keys.add(key)
+
+    add_provider_candidate(game_info)
+    for candidate in game_info.get('provider_candidates') or []:
+        add_provider_candidate(candidate)
+
+    def candidates_payload() -> list[dict]:
+        return [candidate.copy() for candidate in provider_candidates]
+
+    for candidate in provider_candidates:
+        candidate['provider_candidates'] = candidates_payload()
+
+    current_game = provider_candidates[0].copy() if provider_candidates else game_info.copy()
     attempted_sources = []
     attempted_source_labels = set()
     provider_attempts = []
+
+    if len(provider_candidates) > 1:
+        provider_names = []
+        for candidate in provider_candidates:
+            name = candidate.get('source', 'unknown')
+            if name not in provider_names:
+                provider_names.append(name)
+        log_func("  Providers trouves: " + " > ".join(provider_names))
+
+    def next_provider_candidate() -> dict | None:
+        for candidate in provider_candidates:
+            source_label = normalize_source_label(candidate.get('source', ''))
+            if source_label and source_label not in attempted_source_labels:
+                next_item = candidate.copy()
+                next_item['provider_candidates'] = candidates_payload()
+                return next_item
+        try:
+            fallback = resolve_next_provider(
+                original_game,
+                sources,
+                session,
+                system_name,
+                dat_profile,
+                attempted_sources
+            )
+        except Exception as exc:
+            log_func(f"  Erreur resolution provider suivant: {str(exc)[:180]}")
+            return None
+        if fallback:
+            add_provider_candidate(fallback)
+            fallback = fallback.copy()
+            fallback['provider_candidates'] = candidates_payload()
+        return fallback
 
     while current_game and is_running():
         attempt_started = time.time()
@@ -350,14 +419,7 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
                 'duration_seconds': round(time.time() - attempt_started, 3),
                 'detail': 'circuit_open',
             })
-            current_game = resolve_next_provider(
-                original_game,
-                sources,
-                session,
-                system_name,
-                dat_profile,
-                attempted_sources
-            )
+            current_game = next_provider_candidate()
             if current_game:
                 log_func(f"  Retry avec: {current_game.get('source', 'unknown')}")
             continue
@@ -371,14 +433,7 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
                 'detail': quota_detail,
             })
             log_func(f"  Provider {source} ignore: {quota_detail}")
-            current_game = resolve_next_provider(
-                original_game,
-                sources,
-                session,
-                system_name,
-                dat_profile,
-                attempted_sources
-            )
+            current_game = next_provider_candidate()
             if current_game:
                 log_func(f"  Retry avec: {current_game.get('source', 'unknown')}")
             continue
@@ -395,6 +450,7 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
             else:
                 log_func(f"  Serait telecharge vers: {output_folder}")
             item_copy = current_game.copy()
+            item_copy['provider_candidates'] = candidates_payload()
             item_copy['attempted_sources'] = attempted_sources.copy()
             item_copy['provider_attempts'] = [{
                 'source': source,
@@ -411,12 +467,15 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
             if md5_ok:
                 item_copy = current_game.copy()
                 item_copy['downloaded_path'] = existing_path
+                item_copy['provider_candidates'] = candidates_payload()
                 item_copy['attempted_sources'] = attempted_sources.copy()
                 provider_attempts.append({
                     'source': source,
                     'status': 'skipped',
                     'duration_seconds': round(time.time() - attempt_started, 3),
                     'detail': 'existing_valid',
+                    'created_at': time.time(),
+                    'bytes': os.path.getsize(existing_path) if os.path.exists(existing_path) else 0,
                 })
                 item_copy['provider_attempts'] = provider_attempts.copy()
                 return 'skipped', item_copy
@@ -442,14 +501,7 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
                 'detail': 'validation',
             })
             log_func(f"  Provider {source} checksum invalide, recherche d'un autre provider...")
-            current_game = resolve_next_provider(
-                original_game,
-                sources,
-                session,
-                system_name,
-                dat_profile,
-                attempted_sources
-            )
+            current_game = next_provider_candidate()
             if current_game:
                 log_func(f"  Retry avec: {current_game.get('source', 'unknown')}")
             continue
@@ -463,14 +515,7 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
             if circuit_breaker:
                 circuit_breaker.record_failure(source)
             log_func(f"  Provider {source} timeout, recherche d'un autre provider...")
-            current_game = resolve_next_provider(
-                original_game,
-                sources,
-                session,
-                system_name,
-                dat_profile,
-                attempted_sources
-            )
+            current_game = next_provider_candidate()
             if current_game:
                 log_func(f"  Retry avec: {current_game.get('source', 'unknown')}")
             continue
@@ -487,14 +532,7 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
             suffix = f": {detail[:180]}" if detail else ""
             log_func(f"  Provider {source} erreur reseau{suffix}")
             log_func("  Recherche d'un autre provider...")
-            current_game = resolve_next_provider(
-                original_game,
-                sources,
-                session,
-                system_name,
-                dat_profile,
-                attempted_sources
-            )
+            current_game = next_provider_candidate()
             if current_game:
                 log_func(f"  Retry avec: {current_game.get('source', 'unknown')}")
             continue
@@ -508,14 +546,7 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
             if circuit_breaker:
                 circuit_breaker.record_failure(source)
             log_func(f"  Provider {source} invalide ou en echec, recherche d'un autre provider...")
-            current_game = resolve_next_provider(
-                original_game,
-                sources,
-                session,
-                system_name,
-                dat_profile,
-                attempted_sources
-            )
+            current_game = next_provider_candidate()
             if current_game:
                 log_func(f"  Retry avec: {current_game.get('source', 'unknown')}")
             continue
@@ -524,11 +555,14 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
                 circuit_breaker.record_success(source)
             item_copy = current_game.copy()
             item_copy['downloaded_path'] = downloaded_path
+            item_copy['provider_candidates'] = candidates_payload()
             item_copy['attempted_sources'] = attempted_sources.copy()
             provider_attempts.append({
                 'source': source,
                 'status': 'downloaded',
                 'duration_seconds': round(time.time() - attempt_started, 3),
+                'created_at': time.time(),
+                'bytes': os.path.getsize(downloaded_path) if downloaded_path and os.path.exists(downloaded_path) else 0,
             })
             item_copy['provider_attempts'] = provider_attempts.copy()
             return 'downloaded', item_copy
@@ -542,18 +576,12 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
         if circuit_breaker:
             circuit_breaker.record_failure(source)
         log_func(f"  Provider {source} sans fichier valide, recherche d'un autre provider...")
-        current_game = resolve_next_provider(
-            original_game,
-            sources,
-            session,
-            system_name,
-            dat_profile,
-            attempted_sources
-        )
+        current_game = next_provider_candidate()
         if current_game:
             log_func(f"  Retry avec: {current_game.get('source', 'unknown')}")
 
     item_copy = (current_game or game_info).copy()
+    item_copy['provider_candidates'] = candidates_payload()
     item_copy['attempted_sources'] = attempted_sources.copy()
     item_copy['provider_attempts'] = provider_attempts.copy()
     return ('stopped' if not is_running() else 'failed'), item_copy
@@ -575,6 +603,8 @@ def download_missing_games_sequentially(
     is_running=lambda: True,
     parallel_downloads: int = 1,
     circuit_breaker=None,
+    job_id: str | None = None,
+    system_id: str | None = None,
 ) -> dict:
     """
     Traite les jeux un par un: resolution DDL, telechargement, validation MD5,
@@ -595,6 +625,13 @@ def download_missing_games_sequentially(
     resolution_cache_dirty = False
     source_usage = {}
     source_usage_lock = threading.Lock()
+    system_id = system_id or next((game.get('system_id') for game in missing_games if game.get('system_id')), '')
+    if not job_id:
+        job_id = create_download_job(
+            system_id,
+            [game.get('game_id', '') for game in missing_games if game.get('game_id')],
+            output_folder,
+        )
 
     total = len(missing_games)
     total_work = min(total, limit) if limit else total
@@ -611,9 +648,40 @@ def download_missing_games_sequentially(
     def mark_game_handled():
         nonlocal completed_work
         completed_work = min(total_work, completed_work + 1)
+        update_download_job(job_id, completed=completed_work)
         report_overall_progress()
         if status_callback:
             status_callback(f"Progression globale: {completed_work}/{total_work} telechargement(s) traites")
+
+    def persist_final_item(status: str, item: dict, default_game_name: str = ""):
+        attempts = item.get('provider_attempts') or []
+        provider = attempts[-1].get('source') if attempts else item.get('source', '')
+        duration = sum(float(attempt.get('duration_seconds', 0) or 0) for attempt in attempts)
+        path = item.get('downloaded_path') or ''
+        size = os.path.getsize(path) if path and os.path.exists(path) else int(item.get('size') or 0)
+        record_download_attempt({
+            'job_id': job_id,
+            'game_id': item.get('game_id') or '',
+            'system_id': item.get('system_id') or system_id or '',
+            'game_name': item.get('game_name') or default_game_name,
+            'provider': provider,
+            'status': status,
+            'detail': item.get('error') or (attempts[-1].get('detail') if attempts else ''),
+            'duration_seconds': duration,
+            'file_path': path,
+            'size': size,
+        })
+        if status == 'completed' and item.get('game_id'):
+            record_provider_success(
+                item.get('game_id'),
+                item,
+                {
+                    'file_path': path,
+                    'size': size,
+                    'duration_seconds': duration,
+                    'average_speed': size / duration if size and duration else 0,
+                },
+            )
 
     report_overall_progress()
 
@@ -694,10 +762,13 @@ def download_missing_games_sequentially(
             if not found:
                 log_func("  Aucun provider disponible")
                 not_available.append((unavailable[0] if unavailable else original_game).copy())
+                persist_final_item('not_found', unavailable[0] if unavailable else original_game, game_name)
                 mark_game_handled()
                 continue
 
             first_resolution = found[0]
+            first_resolution.setdefault('game_id', original_game.get('game_id', ''))
+            first_resolution.setdefault('system_id', original_game.get('system_id') or system_id or '')
             resolved_items.append(first_resolution.copy())
             log_func(f"  Soumis: {game_name} [{first_resolution.get('source', 'unknown')}]")
             future = pool.submit(first_resolution)
@@ -717,22 +788,27 @@ def download_missing_games_sequentially(
                 safe_log(f"  Telecharge: {result_item.get('download_filename', game_name)}")
                 downloaded += 1
                 downloaded_items.append(result_item.copy())
+                persist_final_item('completed', result_item, game_name)
             elif status == 'skipped':
                 skipped += 1
                 skipped_items.append(result_item.copy())
+                persist_final_item('skipped', result_item, game_name)
             elif status == 'stopped':
                 safe_log("Arrete par l'utilisateur.")
+                update_download_job(job_id, status='stopped')
                 break
             else:
                 safe_log(f"  Echec du telechargement: {game_name}")
                 failed += 1
                 failed_items.append(result_item.copy())
+                persist_final_item('failed', result_item, game_name)
             mark_game_handled()
 
         pool.shutdown(wait=False)
 
         if resolution_cache_dirty:
             _facade.save_resolution_cache(resolution_cache)
+        update_download_job(job_id, status='completed' if is_running() else 'stopped', completed=completed_work)
 
         return {
             'resolved_items': resolved_items,
@@ -774,11 +850,14 @@ def download_missing_games_sequentially(
         if not found:
             log_func("  Aucun provider disponible")
             not_available.append((unavailable[0] if unavailable else original_game).copy())
+            persist_final_item('not_found', unavailable[0] if unavailable else original_game, game_name)
             handled += 1
             mark_game_handled()
             continue
 
         first_resolution = found[0]
+        first_resolution.setdefault('game_id', original_game.get('game_id', ''))
+        first_resolution.setdefault('system_id', original_game.get('system_id') or system_id or '')
         log_func(f"  Provider initial: {first_resolution.get('source', 'unknown')}")
         if status_callback:
             status_callback(f"Telechargement {index}/{total}: {game_name[:60]}")
@@ -791,44 +870,65 @@ def download_missing_games_sequentially(
                 f"{_facade.format_bytes(update.get('speed'))}/s - ETA {_facade.format_duration(update.get('eta'))}"
             )
 
-        status, result_item = download_with_provider_retries(
-            first_resolution,
-            sources,
-            session,
-            system_name,
-            dat_profile,
-            output_folder,
-            myrient_url,
-            dry_run,
-            None,
-            log_func,
-            is_running=is_running,
-            source_usage=source_usage,
-            source_usage_lock=source_usage_lock,
-            progress_detail_callback=progress_detail_callback,
-            circuit_breaker=circuit_breaker,
-        )
+        try:
+            status, result_item = download_with_provider_retries(
+                first_resolution,
+                sources,
+                session,
+                system_name,
+                dat_profile,
+                output_folder,
+                myrient_url,
+                dry_run,
+                None,
+                log_func,
+                is_running=is_running,
+                source_usage=source_usage,
+                source_usage_lock=source_usage_lock,
+                progress_detail_callback=progress_detail_callback,
+                circuit_breaker=circuit_breaker,
+            )
+        except Exception as exc:
+            status = 'failed'
+            result_item = {
+                **original_game,
+                'source': first_resolution.get('source', 'unknown'),
+                'provider_candidates': first_resolution.get('provider_candidates') or [first_resolution],
+                'provider_attempts': [{
+                    'source': first_resolution.get('source', 'unknown'),
+                    'status': 'failed',
+                    'duration_seconds': 0,
+                    'detail': str(exc),
+                }],
+                'error': str(exc),
+            }
+            log_func(f"  Erreur non bloquante: {str(exc)[:180]}")
 
         if status == 'downloaded':
             log_func(f"  Telecharge: {result_item.get('download_filename', game_name)}")
             downloaded += 1
             downloaded_items.append(result_item.copy())
             resolved_items.append(result_item.copy())
+            persist_final_item('completed', result_item, game_name)
             time.sleep(0.5)
         elif status == 'skipped':
             skipped += 1
             skipped_items.append(result_item.copy())
             resolved_items.append(result_item.copy())
+            persist_final_item('skipped', result_item, game_name)
         elif status == 'dry_run':
             resolved_items.append(result_item.copy())
+            persist_final_item('dry_run', result_item, game_name)
             handled += 1
         elif status == 'stopped':
             log_func("Arrete par l'utilisateur.")
+            update_download_job(job_id, status='stopped')
             break
         else:
             log_func("  Echec du telechargement")
             failed += 1
             failed_items.append(result_item.copy())
+            persist_final_item('failed', result_item, game_name)
             handled += 1
             mark_game_handled()
             continue
@@ -841,6 +941,7 @@ def download_missing_games_sequentially(
 
     if resolution_cache_dirty:
         _facade.save_resolution_cache(resolution_cache)
+    update_download_job(job_id, status='completed' if is_running() else 'stopped', completed=completed_work)
 
     return {
         'resolved_items': resolved_items,

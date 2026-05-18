@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import time
 from pathlib import Path
 
 from ..core.env import APP_ROOT
@@ -41,13 +42,20 @@ def compute_provider_score(metric: dict) -> float:
     downloaded = metric.get("downloaded", 0)
     failed = metric.get("failed", 0)
     seconds = metric.get("seconds", 0.0)
+    average_speed = metric.get("average_speed", 0.0)
+    last_failure_at = float(metric.get("last_failure_at", 0) or 0)
 
     if attempts == 0:
         return 1.0
 
     success_rate = downloaded / attempts
-    penalty = (failed / attempts) * 0.5 + (seconds / max(attempts, 1)) * 0.01
-    return max(0.0, success_rate - penalty)
+    avg_seconds = seconds / max(attempts, 1)
+    speed_bonus = min(float(average_speed or 0) / (2 * 1024 * 1024), 0.25)
+    recent_failure_penalty = 0.0
+    if last_failure_at and time.time() - last_failure_at < 6 * 60 * 60:
+        recent_failure_penalty = 0.15
+    penalty = (failed / attempts) * 0.5 + avg_seconds * 0.01 + recent_failure_penalty
+    return max(0.0, success_rate + speed_bonus - penalty)
 
 
 def prioritize_sources(
@@ -85,11 +93,20 @@ def record_provider_attempt(
             "dry_run": 0,
             "quota_skipped": 0,
             "seconds": 0.0,
+            "bytes": 0,
+            "average_speed": 0.0,
+            "last_success_at": 0.0,
+            "last_failure_at": 0.0,
         },
     )
     metric["attempts"] += 1
     metric[status] = metric.get(status, 0) + 1
     metric["seconds"] += duration_seconds
+    now = time.time()
+    if status == "downloaded":
+        metric["last_success_at"] = now
+    elif status == "failed":
+        metric["last_failure_at"] = now
     return metric
 
 

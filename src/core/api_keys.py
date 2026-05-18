@@ -10,12 +10,19 @@ API_CONFIG_FILE = APP_ROOT / 'api_keys.json'
 
 
 def load_api_keys() -> dict:
+    archive_username = (
+        os.environ.get('ARCHIVE_ORG_USERNAME', '')
+        or os.environ.get('ARCHIVE_ORG_EMAIL', '')
+    )
+    archive_password = (
+        os.environ.get('ARCHIVE_ORG_PASSWORD', '')
+    )
     keys = {
         '1fichier': os.environ.get('ONE_FICHIER_API_KEY', ''),
         'alldebrid': os.environ.get('ALLDEBRID_API_KEY', ''),
         'realdebrid': os.environ.get('REALDEBRID_API_KEY', ''),
-        'archive_access_key': os.environ.get('IA_S3_ACCESS_KEY', ''),
-        'archive_secret_key': os.environ.get('IA_S3_SECRET_KEY', ''),
+        'archive_username': archive_username,
+        'archive_password': archive_password,
     }
 
     if API_CONFIG_FILE.exists():
@@ -43,9 +50,14 @@ def save_api_keys(keys: dict) -> bool:
             '1fichier': 'ONE_FICHIER_API_KEY',
             'alldebrid': 'ALLDEBRID_API_KEY',
             'realdebrid': 'REALDEBRID_API_KEY',
-            'archive_access_key': 'IA_S3_ACCESS_KEY',
-            'archive_secret_key': 'IA_S3_SECRET_KEY',
+            'archive_username': 'ARCHIVE_ORG_USERNAME',
+            'archive_password': 'ARCHIVE_ORG_PASSWORD',
         }
+        normalized_keys = dict(keys or {})
+        if 'archive_username' not in normalized_keys:
+            normalized_keys['archive_username'] = normalized_keys.get('archive_access_key', '')
+        if 'archive_password' not in normalized_keys:
+            normalized_keys['archive_password'] = normalized_keys.get('archive_secret_key', '')
 
         new_lines = []
         found_keys = set()
@@ -55,7 +67,7 @@ def save_api_keys(keys: dict) -> bool:
             handled = False
             for k, env_name in mapping.items():
                 if stripped.startswith(f"{env_name}="):
-                    new_lines.append(f"{env_name}={keys.get(k, '')}\n")
+                    new_lines.append(f"{env_name}={normalized_keys.get(k, '')}\n")
                     found_keys.add(k)
                     handled = True
                     break
@@ -64,15 +76,13 @@ def save_api_keys(keys: dict) -> bool:
 
         for k, env_name in mapping.items():
             if k not in found_keys:
-                new_lines.append(f"{env_name}={keys.get(k, '')}\n")
+                new_lines.append(f"{env_name}={normalized_keys.get(k, '')}\n")
 
         with open(env_path, 'w', encoding='utf-8') as f:
             f.writelines(new_lines)
 
         for k, env_name in mapping.items():
-            os.environ[env_name] = keys.get(k, '')
-        os.environ['IAS3_ACCESS_KEY'] = keys.get('archive_access_key', '')
-        os.environ['IAS3_SECRET_KEY'] = keys.get('archive_secret_key', '')
+            os.environ[env_name] = normalized_keys.get(k, '')
 
         return True
     except Exception as e:

@@ -60,6 +60,10 @@ Exemples:
     parser.add_argument('--refresh-cache', action='store_true', help='Ignorer et reconstruire le cache de resolution provider')
     parser.add_argument('--clear-listing-cache', action='store_true', help='Vider le cache des listings distants puis quitter')
     parser.add_argument('--clear-cache-source', help='Vider les caches lies a une source precise puis quitter')
+    parser.add_argument('--index-catalog', action='store_true', help='Construire ou rafraichir le catalogue local DAT/jeux')
+    parser.add_argument('--catalog-status', action='store_true', help='Afficher un resume du catalogue local')
+    parser.add_argument('--db-status', action='store_true', help='Afficher un resume de la base SQLite locale')
+    parser.add_argument('--reset-local-db', action='store_true', help='Supprimer la base SQLite locale puis quitter')
 
     args = parser.parse_args()
 
@@ -97,6 +101,40 @@ Exemples:
 
     if args.provider_registry:
         print_provider_registry_info()
+        return
+
+    if args.index_catalog:
+        from .catalog import build_catalog_index
+        result = build_catalog_index(force=True)
+        print(f"Catalogue indexe: {result['systems']} systeme(s), {result['games']} jeu(x)")
+        return
+
+    if args.reset_local_db:
+        from .local_database import reset_local_database
+        reset_local_database()
+        print("Base SQLite locale supprimee.")
+        return
+
+    if args.db_status:
+        from .local_database import database_status
+        status = database_status()
+        print(f"Base SQLite: {status['path']}")
+        print(f"Systemes: {status['systems']}")
+        print(f"Jeux: {status['games']}")
+        print(f"ROMs: {status['roms']}")
+        print(f"Providers valides: {status['provider_successes']}")
+        print(f"Historique: {status['download_attempts']}")
+        return
+
+    if args.catalog_status:
+        from .catalog import list_catalog_systems
+        systems = list_catalog_systems()
+        game_count = sum(int(item.get('game_count', 0) or 0) for item in systems)
+        print(f"Catalogue: {len(systems)} systeme(s), {game_count} jeu(x)")
+        for item in systems[:20]:
+            print(f"  - {item['system_name']} ({item.get('dat_section', 'dat')}): {item['game_count']} jeu(x)")
+        if len(systems) > 20:
+            print(f"  ... {len(systems) - 20} autre(s) systeme(s)")
         return
 
     if args.gui:

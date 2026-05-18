@@ -86,8 +86,8 @@ Variables courantes:
 - `ONE_FICHIER_API_KEY`
 - `ALLDEBRID_API_KEY`
 - `REALDEBRID_API_KEY`
-- `IA_S3_ACCESS_KEY`
-- `IA_S3_SECRET_KEY`
+- `ARCHIVE_ORG_USERNAME`
+- `ARCHIVE_ORG_PASSWORD`
 - `LIBTORRENT_DLL_DIR` si vous utilisez le backend Python libtorrent avec DLL OpenSSL 1.1.
 
 `aria2c` est le backend torrent Minerva prioritaire quand il est present dans le `PATH` ou installe via Winget/Chocolatey. Si `aria2c` et `libtorrent` sont absents, seules les sources HTTP/DDL restent disponibles.
@@ -102,7 +102,7 @@ Variables courantes:
 - `src/providers/`: interface provider commune.
 - `assets/`: icones/images GUI.
 - `dat/`: DAT proposes dans le menu GUI.
-- `db/shard_*.zip`: base locale de recherche checksum.
+- `.rom_downloader.sqlite`: base locale SQLite ignoree par Git, generee par `--index-catalog`.
 - `.github/workflows/`: CI, packaging Windows, release Windows.
 
 ## Verification locale

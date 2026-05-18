@@ -60,11 +60,6 @@ def load_env_file(file_path: str = '.env'):
 
 load_env_file(APP_ROOT / '.env')
 
-if 'IA_S3_ACCESS_KEY' in os.environ and 'IAS3_ACCESS_KEY' not in os.environ:
-    os.environ['IAS3_ACCESS_KEY'] = os.environ['IA_S3_ACCESS_KEY']
-if 'IA_S3_SECRET_KEY' in os.environ and 'IAS3_SECRET_KEY' not in os.environ:
-    os.environ['IAS3_SECRET_KEY'] = os.environ['IA_S3_SECRET_KEY']
-
 __all__ = [
     'APP_ROOT',
     'RESOURCE_ROOT',

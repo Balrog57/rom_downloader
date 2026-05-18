@@ -33,7 +33,17 @@ from src.core import (  # noqa: E402
     select_archive_org_collection_specs_for_game,
     strip_rom_extension,
     verify_downloaded_md5,
+    build_catalog_index,
+    list_catalog_systems,
+    list_catalog_sections,
+    list_catalog_games,
+    record_provider_success,
+    list_validated_providers,
+    record_download_history,
+    list_download_history,
 )
+from src.network.metrics import compute_provider_score  # noqa: E402
+from src.network.exceptions import ChecksumMismatchError  # noqa: E402
 from src.pipeline import build_pipeline_summary, merge_provider_metrics  # noqa: E402
 from src.progress import DownloadProgressMeter, format_duration  # noqa: E402
 
@@ -344,6 +354,150 @@ def main() -> None:
             archive.writestr("game.bin", b"abcd")
         zip_ok, zip_message = verify_downloaded_md5(game, str(zip_path))
         assert_true(zip_ok and "Taille DAT OK" in zip_message, "archive size validation failed")
+
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        tmp_path = Path(tmp_dir)
+        dat_root = tmp_path / "dat"
+        catalog_root = tmp_path / "db"
+        dat_section = dat_root / "No-Intro"
+        dat_section.mkdir(parents=True)
+        dat_file = dat_section / "Nintendo - Test System.dat"
+        dat_file.write_text(
+            """<?xml version="1.0"?>
+<datafile>
+  <header><name>Nintendo - Test System</name><url>https://no-intro.org</url></header>
+  <game name="Alpha Game (USA)">
+    <rom name="Alpha Game (USA).bin" size="4" crc="1a2b3c4d" md5="0123456789abcdef0123456789abcdef" sha1="0123456789abcdef0123456789abcdef01234567" />
+  </game>
+  <game name="Beta Game (Europe)">
+    <rom name="Beta Game (Europe).bin" size="8" crc="2a2b3c4d" md5="1123456789abcdef0123456789abcdef" sha1="1123456789abcdef0123456789abcdef01234567" />
+  </game>
+</datafile>
+""",
+            encoding="utf-8",
+        )
+        catalog_result = build_catalog_index(dat_root, force=True, catalog_dir=catalog_root)
+        assert_true(catalog_result["systems"] == 1 and catalog_result["games"] == 2, "catalog index counts failed")
+        systems = list_catalog_systems(catalog_dir=catalog_root)
+        assert_true(len(systems) == 1 and systems[0]["game_count"] == 2, "catalog system listing failed")
+        assert_true(systems[0]["dat_section"] == "No-Intro", "catalog section should come from DAT folder")
+        assert_true(list_catalog_sections(catalog_dir=catalog_root) == ["No-Intro"], "catalog sections listing failed")
+        assert_true(
+            len(list_catalog_systems({"section": "No-Intro"}, catalog_dir=catalog_root)) == 1,
+            "catalog section filter failed",
+        )
+        games = list_catalog_games(systems[0]["system_id"], query="alpha", catalog_dir=catalog_root)
+        assert_true(len(games) == 1 and games[0]["game_name"].startswith("Alpha"), "catalog game query failed")
+        assert_true(not list_validated_providers(games[0]["game_id"], path=catalog_root), "provider should not persist before success")
+        record_provider_success(
+            games[0]["game_id"],
+            {"source": "ProviderA", "download_url": "https://example.invalid/a.zip", "download_filename": "a.zip"},
+            {"file_path": str(tmp_path / "a.zip"), "size": 4, "duration_seconds": 1.0, "average_speed": 4.0},
+            path=catalog_root,
+        )
+        record_provider_success(
+            games[0]["game_id"],
+            {"source": "ProviderA", "download_url": "https://example.invalid/a.zip", "download_filename": "a.zip"},
+            {"file_path": str(tmp_path / "a.zip"), "size": 4, "duration_seconds": 1.0, "average_speed": 4.0},
+            path=catalog_root,
+        )
+        record_provider_success(
+            games[0]["game_id"],
+            {"source": "ProviderB", "torrent_url": "https://example.invalid/b.torrent", "download_filename": "b.zip"},
+            {"file_path": str(tmp_path / "b.zip"), "size": 4, "duration_seconds": 1.0, "average_speed": 4.0},
+            path=catalog_root,
+        )
+        enriched = list_catalog_games(systems[0]["system_id"], query="alpha", catalog_dir=catalog_root)[0]
+        assert_true(len(enriched["providers"]) == 2, "catalog provider dedup failed")
+
+        history_file = tmp_path / "history.sqlite"
+        record_download_history(
+            {
+                "game_name": "Alpha Game (USA)",
+                "system_name": systems[0]["system_name"],
+                "system_id": systems[0]["system_id"],
+                "provider": "ProviderA",
+                "status": "completed",
+                "size": 4,
+            },
+            path=history_file,
+        )
+        history = list_download_history({"query": "alpha"}, path=history_file)
+        assert_true(len(history) == 1 and history[0]["status"] == "completed", "download history failed")
+
+        from src.core import download_orchestrator as orchestrator
+
+        invalid_dir = tmp_path / "invalid-download"
+        invalid_dir.mkdir()
+        original_download_file = orchestrator.download_file
+        try:
+            def fake_download_file(_url, dest_path, *_args, **_kwargs):
+                Path(dest_path).write_bytes(b"bad")
+                return True
+
+            orchestrator.download_file = fake_download_file
+            try:
+                orchestrator.attempt_download_from_resolved_provider(
+                    {
+                        "source": "database",
+                        "download_url": "https://example.invalid/alpha.bin",
+                        "download_filename": "alpha.bin",
+                        "game_name": "Alpha Game (USA)",
+                        "roms": [{"md5": "0123456789abcdef0123456789abcdef", "size": "4"}],
+                    },
+                    str(invalid_dir),
+                    [],
+                    session=None,
+                )
+                raise SystemExit("invalid checksum should fail")
+            except ChecksumMismatchError:
+                pass
+            assert_true(not (invalid_dir / "alpha.bin").exists(), "invalid MD5 file should be deleted")
+        finally:
+            orchestrator.download_file = original_download_file
+
+        fallback_dir = tmp_path / "fallback-download"
+        fallback_dir.mkdir()
+        valid_path = fallback_dir / "alpha-good.bin"
+        original_attempt_download = orchestrator.attempt_download_from_resolved_provider
+        try:
+            calls = []
+
+            def fake_attempt_download(game_info, *_args, **_kwargs):
+                calls.append(game_info["source"])
+                if game_info["source"] == "ProviderA":
+                    raise ChecksumMismatchError("MD5 DAT KO")
+                valid_path.write_bytes(b"good")
+                return True, str(valid_path)
+
+            orchestrator.attempt_download_from_resolved_provider = fake_attempt_download
+            status, result = orchestrator.download_with_provider_retries(
+                {
+                    "source": "ProviderA",
+                    "download_filename": "alpha-bad.bin",
+                    "game_name": "Alpha Game (USA)",
+                    "provider_candidates": [
+                        {
+                            "source": "ProviderB",
+                            "download_filename": "alpha-good.bin",
+                            "game_name": "Alpha Game (USA)",
+                        }
+                    ],
+                },
+                [],
+                session=None,
+                system_name="Nintendo - Test System",
+                dat_profile=None,
+                output_folder=str(fallback_dir),
+            )
+            assert_true(status == "downloaded" and result["source"] == "ProviderB", "provider fallback failed")
+            assert_true(calls == ["ProviderA", "ProviderB"], "provider fallback order failed")
+        finally:
+            orchestrator.attempt_download_from_resolved_provider = original_attempt_download
+
+    fast_score = compute_provider_score({"attempts": 4, "downloaded": 4, "failed": 0, "seconds": 4.0, "average_speed": 4 * 1024 * 1024})
+    slow_score = compute_provider_score({"attempts": 4, "downloaded": 2, "failed": 2, "seconds": 80.0, "average_speed": 128 * 1024})
+    assert_true(fast_score > slow_score, "provider dynamic score failed")
 
     # ROM_DATABASE stale-binding guard: verify module-level attribute access works
     from src.core import rom_database as _rd_mod

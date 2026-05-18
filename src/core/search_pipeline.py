@@ -277,6 +277,7 @@ def _resolve_games_parallel(
     system_name: str,
     extra_fields_fn=None,
     max_workers: int = 5,
+    timeout_seconds: int = 45,
 ) -> tuple[list, list]:
     """Resout les jeux en parallele via un scraper, retourne (found, remaining)."""
     session_cache = get_session_cache()
@@ -301,21 +302,33 @@ def _resolve_games_parallel(
 
     found = []
     remaining = []
-    for future in concurrent.futures.as_completed(futures):
+    pending = set(futures)
+    try:
+        iterator = concurrent.futures.as_completed(futures, timeout=timeout_seconds)
+        for future in iterator:
+            pending.discard(future)
+            game_info = futures[future]
+            try:
+                _, result = future.result()
+            except Exception:
+                remaining.append(game_info)
+                continue
+            if result:
+                merged = dict(game_info)
+                if extra_fields_fn:
+                    extra_fields_fn(merged, result)
+                merged['source'] = source_label
+                found.append(merged)
+                print(f"  [{source_label}] {game_info['game_name']} trouve")
+            else:
+                remaining.append(game_info)
+    except concurrent.futures.TimeoutError:
+        print(f"  [{source_label}] timeout resolution ({timeout_seconds}s), source ignoree pour les jeux restants")
+
+    for future in pending:
+        future.cancel()
         game_info = futures[future]
-        try:
-            _, result = future.result()
-        except Exception:
-            remaining.append(game_info)
-            continue
-        if result:
-            merged = dict(game_info)
-            if extra_fields_fn:
-                extra_fields_fn(merged, result)
-            merged['source'] = source_label
-            found.append(merged)
-            print(f"  [{source_label}] {game_info['game_name']} trouve")
-        else:
+        if game_info not in remaining:
             remaining.append(game_info)
 
     search_pool.shutdown(wait=False)

@@ -104,6 +104,10 @@ dat/romset_dat_sizes.xlsx
 .rom_downloader_provider_metrics.json
 .rom_downloader_resolution_cache.json
 .rom_downloader_listing_cache.json
+.rom_downloader_download_history.json
+.rom_downloader.sqlite
+.rom_downloader.sqlite-wal
+.rom_downloader.sqlite-shm
 *.part
 x.bin
 

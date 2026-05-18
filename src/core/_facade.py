@@ -62,6 +62,9 @@ from .scan_cache import *  # noqa: F401,F403
 from .scanner import *  # noqa: F401,F403
 from .torrentzip import *  # noqa: F401,F403
 from .reports import *  # noqa: F401,F403
+from .local_database import *  # noqa: F401,F403
+from .catalog import *  # noqa: F401,F403
+from .download_history import *  # noqa: F401,F403
 from .minerva import *  # noqa: F401,F403
 from .dat_profile import *  # noqa: F401,F403
 from .torrent import *  # noqa: F401,F403

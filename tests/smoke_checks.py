@@ -22,8 +22,8 @@ def main() -> None:
         raise SystemExit("no DAT files discovered")
 
     report = build_diagnostic_report()
-    if report["db_shards"] <= 0:
-        raise SystemExit("db shards missing")
+    if "local_database" not in report:
+        raise SystemExit("local database status missing")
 
     providers = build_provider_registry()
     provider_names = {provider.name for provider in providers}

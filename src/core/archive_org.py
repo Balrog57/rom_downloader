@@ -184,8 +184,8 @@ def download_from_ia_zip(identifier: str, zip_path: str, filename: str, dest_pat
         session = requests.Session()
         session.headers.update({'User-Agent': 'Mozilla/5.0'})
 
-        access_key = os.environ.get('IAS3_ACCESS_KEY')
-        secret_key = os.environ.get('IAS3_SECRET_KEY')
+        access_key = os.environ.get('ARCHIVE_ORG_USERNAME')
+        secret_key = os.environ.get('ARCHIVE_ORG_PASSWORD')
         auth = None
         if access_key and secret_key:
             from requests.auth import HTTPBasicAuth
@@ -342,8 +342,8 @@ def download_from_archive_org(identifier: str, filename: str, dest_path: str, se
                     session.headers.update({'User-Agent': 'Mozilla/5.0'})
 
                 auth = None
-                access_key = os.environ.get('IAS3_ACCESS_KEY', '')
-                secret_key = os.environ.get('IAS3_SECRET_KEY', '')
+                access_key = os.environ.get('ARCHIVE_ORG_USERNAME', '')
+                secret_key = os.environ.get('ARCHIVE_ORG_PASSWORD', '')
                 if access_key and secret_key:
                     from requests.auth import HTTPBasicAuth
                     auth = HTTPBasicAuth(access_key, secret_key)

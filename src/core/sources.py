@@ -34,7 +34,8 @@ def get_default_sources_legacy():
             'type': 'archive_org',
             'enabled': True,
             'description': 'Dernier recours HTTP apres DDL et Minerva',
-            'priority': 110
+            'priority': 110,
+            'order': 160,
         },
         {
             'name': 'Myrient No-Intro',
@@ -409,6 +410,32 @@ def active_source_labels(sources: list) -> list[str]:
     return sorted(label for label in labels if label)
 
 
+def provider_exclusion_labels(provider_item: dict) -> set[str]:
+    """Retourne les labels a exclure pour chercher le provider suivant."""
+    source = provider_item.get('source', '')
+    labels = {normalize_source_label(source)}
+    source_type = normalize_source_label(provider_item.get('type', ''))
+    if source_type:
+        labels.add(source_type)
+
+    source_label = normalize_source_label(source)
+    host_label = normalize_source_label(provider_item.get('database_host', ''))
+    if source_label.startswith('database'):
+        labels.add('database')
+    if '1fichier' in source_label or '1fichier' in host_label:
+        labels.add('database (1fichier)')
+        labels.add('1fichier')
+    if 'archive.org' in source_label or 'archive.org' in host_label:
+        labels.add('archive.org')
+        labels.add('archive_org')
+    if 'archive.org cible' in source_label:
+        labels.add('archive_org_collection')
+    if 'minerva' in source_label or 'minerva' in host_label:
+        labels.add('minerva')
+        labels.add('minerva official hashes')
+    return {label for label in labels if label}
+
+
 def resolution_cache_key(game_info: dict, sources: list, system_name: str,
                          dat_profile: dict | None, excluded_sources: set[str] | None = None) -> str:
     """Construit une cle de cache pour une resolution provider."""
@@ -460,14 +487,58 @@ def resolve_game_sources_with_cache(game_info: dict, sources: list, session,
     if cached and now - float(cached.get('created_at', 0)) <= RESOLUTION_CACHE_TTL_SECONDS:
         return [item.copy() for item in cached.get('found', [])], [item.copy() for item in cached.get('unavailable', [])], True
 
-    found, unavailable = search_all_sources(
-        [clean_download_resolution(game_info)],
-        sources,
-        session,
-        system_name,
-        dat_profile,
-        excluded_sources=excluded_sources
-    )
+    found = []
+    unavailable = []
+    seen_sources = set()
+    excluded = {
+        normalize_source_label(source_name)
+        for source_name in (excluded_sources or set())
+        if source_name
+    }
+    max_passes = max(1, len([s for s in sources or [] if s.get('enabled', True)]) + 3)
+
+    for _attempt in range(max_passes):
+        try:
+            pass_found, pass_unavailable = search_all_sources(
+                [clean_download_resolution(game_info)],
+                sources,
+                session,
+                system_name,
+                dat_profile,
+                excluded_sources=excluded
+            )
+        except Exception as exc:
+            unavailable.append({
+                **clean_download_resolution(game_info),
+                'source': 'resolution',
+                'error': str(exc),
+            })
+            break
+
+        if pass_unavailable:
+            unavailable = [item.copy() for item in pass_unavailable]
+        if not pass_found:
+            break
+
+        added = False
+        for item in pass_found:
+            labels = provider_exclusion_labels(item)
+            provider_key = (
+                normalize_source_label(item.get('source', '')),
+                item.get('download_url') or item.get('torrent_url') or item.get('archive_org_identifier') or item.get('page_url') or '',
+                item.get('download_filename') or '',
+            )
+            if provider_key not in seen_sources:
+                found.append(item.copy())
+                seen_sources.add(provider_key)
+                added = True
+            excluded.update(labels)
+        if not added:
+            break
+
+    provider_candidates = [item.copy() for item in found]
+    for item in found:
+        item['provider_candidates'] = [candidate.copy() for candidate in provider_candidates]
     entries[key] = {
         'created_at': now,
         'sources': active_source_labels(sources),
@@ -654,7 +725,8 @@ def get_default_sources():
             'minerva_path_mode': 'single',
             'scan_depth': 0,
             'torrent_scope': 'system',
-            'priority': 90
+            'priority': 90,
+            'order': 130,
         },
         {
             'name': 'Minerva Redump',
@@ -666,7 +738,8 @@ def get_default_sources():
             'minerva_path_mode': 'single',
             'scan_depth': 0,
             'torrent_scope': 'system',
-            'priority': 90
+            'priority': 90,
+            'order': 140,
         },
         {
             'name': 'Minerva TOSEC',
@@ -678,15 +751,17 @@ def get_default_sources():
             'minerva_path_mode': 'split',
             'scan_depth': 2,
             'torrent_scope': 'vendor',
-            'priority': 90
+            'priority': 90,
+            'order': 150,
         },
         {
             'name': 'EdgeEmu',
             'base_url': config.get('edgeemu_browse', ''),
             'type': 'edgeemu',
-            'enabled': False,
-            'description': 'DESACTIVE - Retourne des fichiers vides (0 bytes)',
-            'priority': 3
+            'enabled': True,
+            'description': 'Fallback direct',
+            'priority': 3,
+            'order': 120,
         },
         {
             'name': 'PlanetEmu',
@@ -694,7 +769,8 @@ def get_default_sources():
             'type': 'planetemu',
             'enabled': True,
             'description': 'Lien direct (POST) - Source FR majeure',
-            'priority': 3
+            'priority': 3,
+            'order': 30,
         },
         {
             'name': 'LoLROMs',
@@ -703,6 +779,7 @@ def get_default_sources():
             'enabled': True,
             'description': 'Fallback direct via Cloudflare-compatible listing',
             'priority': 3,
+            'order': 10,
             'delay_seconds': 3,
         },
         {
@@ -711,7 +788,8 @@ def get_default_sources():
             'type': 'vimm',
             'enabled': True,
             'description': 'The Vault - Source de reference historique',
-            'priority': 3
+            'priority': 3,
+            'order': 20,
         },
         {
             'name': 'RetroGameSets',
@@ -719,7 +797,8 @@ def get_default_sources():
             'type': 'retrogamesets',
             'enabled': True,
             'description': 'JSON DB - 1fichier (AllDebrid recommande)',
-            'priority': 2
+            'priority': 2,
+            'order': 90,
         },
         {
             'name': 'RomHustler',
@@ -727,7 +806,8 @@ def get_default_sources():
             'type': 'romhustler',
             'enabled': True,
             'description': 'DDL guest - 500KB/s, jeux populaires bloques',
-            'priority': 3
+            'priority': 3,
+            'order': 40,
         },
         {
             'name': 'CoolROM',
@@ -735,7 +815,8 @@ def get_default_sources():
             'type': 'coolrom',
             'enabled': True,
             'description': 'DDL token - Nintendo supprime, autres OK',
-            'priority': 3
+            'priority': 3,
+            'order': 50,
         },
         {
             'name': 'NoPayStation',
@@ -743,7 +824,8 @@ def get_default_sources():
             'type': 'nopaystation',
             'enabled': True,
             'description': 'Index TSV - PS1/PS2/PS3/PSP/Vita (.pkg expirants)',
-            'priority': 2
+            'priority': 2,
+            'order': 70,
         },
         {
             'name': 'StartGame',
@@ -751,7 +833,8 @@ def get_default_sources():
             'type': 'startgame',
             'enabled': True,
             'description': 'Sets No-Intro/Redump via 1fichier (AllDebrid recommande)',
-            'priority': 2
+            'priority': 2,
+            'order': 100,
         },
         {
             'name': 'hShop',
@@ -759,7 +842,8 @@ def get_default_sources():
             'type': 'hshop',
             'enabled': True,
             'description': '3DS uniquement - .cia cryptes, partiel',
-            'priority': 3
+            'priority': 3,
+            'order': 80,
         },
         {
             'name': 'RomsXISOs',
@@ -767,7 +851,8 @@ def get_default_sources():
             'type': 'romsxisos',
             'enabled': True,
             'description': 'GitHub Pages - Google Drive / directs non-Myrient',
-            'priority': 3
+            'priority': 3,
+            'order': 60,
         },
         {
             'name': 'archive.org cible',
@@ -775,7 +860,8 @@ def get_default_sources():
             'type': 'archive_org_collection',
             'enabled': True,
             'description': 'Collections archive.org fixes par systeme (RomGoGetter, Redump, No-Intro)',
-            'priority': 90
+            'priority': 90,
+            'order': 110,
         },
     ]
     return sorted(sources, key=source_order_key)

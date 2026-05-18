@@ -58,8 +58,8 @@ def timed_request(
     """Requete HTTP avec archive.org auto-auth et timeout configurable."""
     request_kwargs = {"timeout": timeout_seconds, **kwargs}
     if any(host in (url or "").lower() for host in ("archive.org", ".archive.org")):
-        access_key = os.environ.get("IAS3_ACCESS_KEY", "")
-        secret_key = os.environ.get("IAS3_SECRET_KEY", "")
+        access_key = os.environ.get("ARCHIVE_ORG_USERNAME", "")
+        secret_key = os.environ.get("ARCHIVE_ORG_PASSWORD", "")
         if access_key and secret_key:
             from requests.auth import HTTPBasicAuth
             request_kwargs.setdefault("auth", HTTPBasicAuth(access_key, secret_key))

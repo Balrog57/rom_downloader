@@ -780,16 +780,35 @@ def resolve_edgeemu_game(game_info: dict, system_slug: str, session: requests.Se
     if not edgeemu_base:
         return None
 
+    candidates = []
     for candidate_name in iter_game_candidate_names(game_info):
+        if re.search(r'[\(\[]\s*(?:track|audio track)\s*\d+', candidate_name, flags=re.IGNORECASE):
+            continue
+        if candidate_name and candidate_name not in candidates:
+            candidates.append(candidate_name)
+    game_name = game_info.get('game_name') or ''
+    if game_name and game_name not in candidates:
+        candidates.append(game_name)
+
+    timeout = int(os.environ.get('EDGEEMU_RESOLVE_TIMEOUT', '8') or 8)
+    max_candidates = max(1, int(os.environ.get('EDGEEMU_MAX_CANDIDATES', '4') or 4))
+
+    for candidate_name in candidates[:max_candidates]:
         filename = f"{candidate_name}.zip"
         download_url = f"{edgeemu_base}/download/{system_slug}/{quote(filename)}"
+        response = None
         try:
-            response = session.get(download_url, timeout=30, allow_redirects=True, stream=True)
+            response = session.get(
+                download_url,
+                timeout=timeout,
+                allow_redirects=True,
+                stream=True,
+                headers={'Range': 'bytes=0-0'},
+            )
             status_code = response.status_code
             content_type = (response.headers.get('content-type') or '').lower()
             content_disposition = response.headers.get('content-disposition') or ''
             final_url = response.url
-            response.close()
 
             if status_code == 200 and (
                 'application/octet-stream' in content_type
@@ -803,6 +822,12 @@ def resolve_edgeemu_game(game_info: dict, system_slug: str, session: requests.Se
                 }
         except Exception:
             continue
+        finally:
+            if response is not None:
+                try:
+                    response.close()
+                except Exception:
+                    pass
 
     return None
 

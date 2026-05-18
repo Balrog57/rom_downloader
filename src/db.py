@@ -1,4 +1,4 @@
-"""Recherche dans la base locale de shards."""
+"""Compatibilite pour la recherche dans la base locale SQLite."""
 
 from .core import (
     ROM_DATABASE_SHARDS_DIR,
@@ -27,4 +27,3 @@ __all__ = [
     "search_minerva_hash_database_for_game",
     "search_minerva_hash_database_for_games",
 ]
-

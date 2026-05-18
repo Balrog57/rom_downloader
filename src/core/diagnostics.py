@@ -8,7 +8,7 @@ from pathlib import Path
 
 from .env import APP_ROOT, RESOURCE_ROOT, IS_FROZEN, LISTING_CACHE_FILE, LISTING_CACHE_TTL_SECONDS, PREFERENCES_FILE, RESOLUTION_CACHE_FILE, RESOLUTION_CACHE_TTL_SECONDS
 from .constants import BALROG_ASSETS_DIR
-from .rom_database import ROM_DATABASE_SHARDS_DIR
+from .local_database import database_status
 
 
 def safe_platform_label() -> str:
@@ -23,7 +23,7 @@ def print_sources_info():
     from .sources import DDL_SOURCE_TYPES
     print("\n" + "=" * 70)
     print("SOURCES DE TELECHARGEMENT DISPONIBLES")
-    print("Extrait de games.zip RGSX (74,189 URLs analysees)")
+    print("Providers actifs; cache valide enregistre uniquement apres validation MD5")
     print("=" * 70)
 
     print("\n--- Sources DDL prioritaires ---")
@@ -169,7 +169,8 @@ def build_diagnostic_report() -> dict:
         'cwd': os.getcwd(),
         'dat_sections': [item['label'] for item in dat_items if item.get('type') == 'section'],
         'dat_files': sum(1 for item in dat_items if item.get('type') == 'file'),
-        'db_shards': len(list(ROM_DATABASE_SHARDS_DIR.glob('shard_*.zip'))) if ROM_DATABASE_SHARDS_DIR.exists() else 0,
+        'db_shards': 0,
+        'local_database': database_status(),
         'assets_present': BALROG_ASSETS_DIR.exists(),
         'preferences_file': str(PREFERENCES_FILE),
         'resolution_cache_file': str(RESOLUTION_CACHE_FILE),
@@ -181,7 +182,7 @@ def build_diagnostic_report() -> dict:
         'dependencies': dependencies,
         'dependency_errors': dependency_errors,
         'env': {
-            'IA_credentials': bool(os.environ.get('IAS3_ACCESS_KEY') and os.environ.get('IAS3_SECRET_KEY')),
+            'archive_org_credentials': bool(os.environ.get('ARCHIVE_ORG_USERNAME') and os.environ.get('ARCHIVE_ORG_PASSWORD')),
             'fichier_key': bool(os.environ.get('ONEFICHIER_API_KEY')),
             'alldebrid_key': bool(os.environ.get('ALLDEBRID_API_KEY')),
             'realdebrid_key': bool(os.environ.get('REALDEBRID_API_KEY')),
@@ -202,7 +203,10 @@ def print_diagnostic_report(report: dict) -> None:
     print(f"Racine app: {report['app_root']}")
     print(f"Racine ressources: {report.get('resource_root', report['app_root'])}")
     print(f"DAT: {report['dat_files']} fichiers, sections: {', '.join(report['dat_sections']) or 'aucune'}")
-    print(f"DB shards: {report['db_shards']}")
+    local_db = report.get('local_database', {})
+    print(f"Base locale SQLite: {local_db.get('path', '')}")
+    print(f"Catalogue SQLite: {local_db.get('systems', 0)} systeme(s), {local_db.get('games', 0)} jeu(x)")
+    print(f"Providers valides: {local_db.get('provider_successes', 0)}")
     print(f"Assets presents: {'oui' if report['assets_present'] else 'non'}")
     print(f"Cache resolution: {report['resolution_cache_file']}")
     print(f"Cache listings: {report['listing_cache_file']}")

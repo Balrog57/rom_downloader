@@ -29,8 +29,8 @@ def download_file_legacy(url: str, dest_path: str, session: requests.Session, pr
             }
             archive_hosts = ('archive.org', '.archive.org')
             if any(host in (url or '').lower() for host in archive_hosts):
-                access_key = os.environ.get('IAS3_ACCESS_KEY', '')
-                secret_key = os.environ.get('IAS3_SECRET_KEY', '')
+                access_key = os.environ.get('ARCHIVE_ORG_USERNAME', '')
+                secret_key = os.environ.get('ARCHIVE_ORG_PASSWORD', '')
                 if access_key and secret_key:
                     from requests.auth import HTTPBasicAuth
                     request_kwargs['auth'] = HTTPBasicAuth(access_key, secret_key)
@@ -162,8 +162,8 @@ def download_file(url: str, dest_path: str, session: requests.Session, progress_
                 request_kwargs['headers'] = headers
             archive_hosts = ('archive.org', '.archive.org')
             if any(host in (url or '').lower() for host in archive_hosts):
-                access_key = os.environ.get('IAS3_ACCESS_KEY', '')
-                secret_key = os.environ.get('IAS3_SECRET_KEY', '')
+                access_key = os.environ.get('ARCHIVE_ORG_USERNAME', '')
+                secret_key = os.environ.get('ARCHIVE_ORG_PASSWORD', '')
                 if access_key and secret_key:
                     from requests.auth import HTTPBasicAuth
                     request_kwargs['auth'] = HTTPBasicAuth(access_key, secret_key)

@@ -28,14 +28,31 @@ def aggregate_provider_metrics(items: list[dict]) -> dict[str, dict]:
                 "dry_run": 0,
                 "quota_skipped": 0,
                 "seconds": 0.0,
+                "bytes": 0,
+                "average_speed": 0.0,
+                "last_success_at": 0.0,
+                "last_failure_at": 0.0,
             })
             status = attempt.get("status") or "failed"
             metric["attempts"] += 1
             metric[status] = metric.get(status, 0) + 1
             try:
-                metric["seconds"] += float(attempt.get("duration_seconds", 0) or 0)
+                duration = float(attempt.get("duration_seconds", 0) or 0)
+                metric["seconds"] += duration
             except (TypeError, ValueError):
-                pass
+                duration = 0.0
+            try:
+                transferred = int(attempt.get("bytes", 0) or 0)
+            except (TypeError, ValueError):
+                transferred = 0
+            if transferred > 0:
+                metric["bytes"] += transferred
+            if status == "downloaded":
+                metric["last_success_at"] = max(metric.get("last_success_at", 0.0), float(attempt.get("created_at", 0) or 0))
+            elif status == "failed":
+                metric["last_failure_at"] = max(metric.get("last_failure_at", 0.0), float(attempt.get("created_at", 0) or 0))
+            if metric.get("seconds", 0) > 0 and metric.get("bytes", 0) > 0:
+                metric["average_speed"] = metric["bytes"] / metric["seconds"]
     return metrics
 
 
@@ -98,5 +115,12 @@ def merge_provider_metrics(existing: dict | None, incoming: dict | None) -> dict
         })
         for key, value in values.items():
             if isinstance(value, (int, float)):
-                target[key] = target.get(key, 0) + value
+                if key in {"last_success_at", "last_failure_at"}:
+                    target[key] = max(target.get(key, 0), value)
+                elif key == "average_speed":
+                    continue
+                else:
+                    target[key] = target.get(key, 0) + value
+        if target.get("seconds", 0) > 0 and target.get("bytes", 0) > 0:
+            target["average_speed"] = target["bytes"] / target["seconds"]
     return merged
