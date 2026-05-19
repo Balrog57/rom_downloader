@@ -398,6 +398,11 @@ def main() -> None:
         )
         catalog_result = build_catalog_index(dat_root, force=True, catalog_dir=catalog_root)
         assert_true(catalog_result["systems"] == 1 and catalog_result["games"] == 2, "catalog index counts failed")
+        incremental_result = build_catalog_index(dat_root, force=False, catalog_dir=catalog_root)
+        assert_true(
+            incremental_result["systems"] == 0 and incremental_result["games"] == 0 and incremental_result["skipped"] == 1,
+            "catalog incremental skip failed",
+        )
         systems = list_catalog_systems(catalog_dir=catalog_root)
         assert_true(len(systems) == 1 and systems[0]["game_count"] == 2, "catalog system listing failed")
         assert_true(systems[0]["dat_section"] == "No-Intro", "catalog section should come from DAT folder")

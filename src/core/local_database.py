@@ -65,6 +65,8 @@ def init_local_database(path: str | Path | None = None, conn: sqlite3.Connection
             is_retool INTEGER NOT NULL DEFAULT 0,
             game_count INTEGER NOT NULL DEFAULT 0,
             total_size INTEGER NOT NULL DEFAULT 0,
+            dat_mtime REAL NOT NULL DEFAULT 0,
+            dat_file_size INTEGER NOT NULL DEFAULT 0,
             updated_at REAL NOT NULL
         );
         CREATE TABLE IF NOT EXISTS games (
@@ -226,6 +228,8 @@ def init_local_database(path: str | Path | None = None, conn: sqlite3.Connection
         """
     )
     _ensure_column(conn, "download_jobs", "priority", "priority INTEGER NOT NULL DEFAULT 0")
+    _ensure_column(conn, "systems", "dat_mtime", "dat_mtime REAL NOT NULL DEFAULT 0")
+    _ensure_column(conn, "systems", "dat_file_size", "dat_file_size INTEGER NOT NULL DEFAULT 0")
     _ensure_column(conn, "download_jobs", "paused_at", "paused_at REAL NOT NULL DEFAULT 0")
     _ensure_column(conn, "download_jobs", "started_at", "started_at REAL NOT NULL DEFAULT 0")
     _ensure_column(conn, "download_jobs", "finished_at", "finished_at REAL NOT NULL DEFAULT 0")
