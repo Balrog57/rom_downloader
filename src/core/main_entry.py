@@ -76,6 +76,7 @@ Exemples:
     parser.add_argument('--probe-system', '--system', dest='probe_system', help='Systeme catalogue a sonder avec --probe-providers')
     parser.add_argument('--probe-limit', type=int, default=50, help='Nombre de jeux sondes avec --probe-providers')
     parser.add_argument('--reset-local-db', action='store_true', help='Supprimer la base SQLite locale puis quitter')
+    parser.add_argument('--web', nargs='?', const='127.0.0.1:8888', metavar='HOST:PORT', help='Lancer l''interface web locale (defaut: 127.0.0.1:8888)')
 
     args = parser.parse_args()
 
@@ -210,6 +211,14 @@ Exemples:
 
     if args.gui:
         gui_mode()
+        return
+
+    if args.web:
+        parts = str(args.web).split(":", 1)
+        host = parts[0] or "127.0.0.1"
+        port = int(parts[1]) if len(parts) == 2 else 8888
+        from .web_ui import run_web_ui
+        run_web_ui(host, port)
         return
 
     if not args.dat_file and not args.rom_folder:
