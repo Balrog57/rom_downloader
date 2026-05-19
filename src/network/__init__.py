@@ -29,6 +29,7 @@ from .metrics import (
 )
 from .downloads import ParallelDownloadPool
 from .search import ParallelSearchPool
+from .cloudflare_detection import looks_like_cloudflare_block
 
 __all__ = [
     # exceptions
@@ -63,4 +64,6 @@ __all__ = [
     "ParallelDownloadPool",
     # search
     "ParallelSearchPool",
+    # cloudflare
+    "looks_like_cloudflare_block",
 ]

@@ -53,6 +53,7 @@ from src.core import (  # noqa: E402
 )
 from src.network.metrics import compute_provider_score  # noqa: E402
 from src.network.exceptions import ChecksumMismatchError  # noqa: E402
+from src.network.cloudflare_detection import looks_like_cloudflare_block  # noqa: E402
 from src.pipeline import build_pipeline_summary, merge_provider_metrics  # noqa: E402
 from src.progress import DownloadProgressMeter, format_duration  # noqa: E402
 
@@ -64,6 +65,15 @@ def assert_true(condition, message: str) -> None:
 
 def main() -> None:
     assert_true(format_duration(65) == "1m05s", "duration formatting failed")
+    assert_true(
+        looks_like_cloudflare_block(
+            403,
+            {"server": "cloudflare", "content-type": "text/html", "cf-ray": "abc"},
+            "Just a moment...",
+            "https://example.invalid/__cf_chl",
+        ),
+        "cloudflare detection failed",
+    )
     assert_true(APP_ROOT.exists(), "app root should exist")
     assert_true(RESOURCE_ROOT.exists(), "resource root should exist")
     assert_true(PREFERENCES_FILE.parent == APP_ROOT, "preferences should live under app root")

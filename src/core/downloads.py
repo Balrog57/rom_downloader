@@ -9,6 +9,7 @@ from ..progress import DownloadProgressMeter, format_duration
 from ..network.sessions import create_optimized_session
 from ..network.utils import format_bytes
 from ..network.exceptions import SourceTimeoutError, DownloadNetworkError, ResumeNotSupportedError
+from ..network.cloudflare_detection import looks_like_cloudflare_block
 
 from .env import DOWNLOAD_CHUNK_SIZE
 from .constants import *
@@ -110,31 +111,12 @@ def _response_preview(response: requests.Response, max_bytes: int = 512) -> str:
 
 
 def _looks_like_cloudflare_block(response: requests.Response, snippet: str) -> bool:
-    server = (response.headers.get('server') or '').lower()
-    content_type = (response.headers.get('content-type') or '').lower()
-    text = (snippet or '').lower()
-
-    cf_headers = {'cf-ray', 'cf-cache-status', 'cf-request-id'}
-    if cf_headers.intersection(set(k.lower() for k in response.headers.keys())):
-        if response.status_code >= 400:
-            return True
-
-    if response.status_code in {403, 429, 503}:
-        if 'cloudflare' in server or 'text/html' in content_type:
-            if not text:
-                return True
-            return any(marker in text for marker in (
-                'just a moment',
-                'attention required',
-                'cloudflare',
-                'cf-ray',
-                'challenge-platform',
-                'ddos-guard',
-                'under attack mode',
-                'checking your browser',
-                'enable javascript',
-            ))
-    return False
+    return looks_like_cloudflare_block(
+        status_code=response.status_code,
+        headers=dict(response.headers),
+        body_snippet=snippet,
+        url=getattr(response, "url", ""),
+    )
 
 
 def download_file(url: str, dest_path: str, session: requests.Session, progress_callback=None,
