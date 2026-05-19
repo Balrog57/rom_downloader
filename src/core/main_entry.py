@@ -77,6 +77,11 @@ Exemples:
     parser.add_argument('--probe-limit', type=int, default=50, help='Nombre de jeux sondes avec --probe-providers')
     parser.add_argument('--reset-local-db', action='store_true', help='Supprimer la base SQLite locale puis quitter')
     parser.add_argument('--web', nargs='?', const='127.0.0.1:8888', metavar='HOST:PORT', help='Lancer l''interface web locale (defaut: 127.0.0.1:8888)')
+    parser.add_argument('--map-all-providers', action='store_true', help='Scanner en masse tous les systemes vers tous les providers et alimenter SQLite')
+    parser.add_argument('--map-samples', type=int, default=5, help='Jeux sondes par systeme avec --map-all-providers (defaut: 5)')
+    parser.add_argument('--map-providers', help='Providers filtres pour --map-all-providers (separes par ,)')
+    parser.add_argument('--map-dry-run', action='store_true', help='Ne rien ecrire en base avec --map-all-providers')
+    parser.add_argument('--map-report-every', type=int, default=10, help='Rapport d''etape tous les N systemes (defaut: 10)')
 
     args = parser.parse_args()
 
@@ -219,6 +224,20 @@ Exemples:
         port = int(parts[1]) if len(parts) == 2 else 8888
         from .web_ui import run_web_ui
         run_web_ui(host, port)
+        return
+
+    if args.map_all_providers:
+        from .provider_mapper import map_all_providers, format_map_all_report
+        provider_filter = None
+        if args.map_providers:
+            provider_filter = [p.strip() for p in str(args.map_providers).split(",") if p.strip()]
+        report = map_all_providers(
+            samples_per_system=max(1, int(args.map_samples or 5)),
+            providers_filter=provider_filter,
+            report_every=max(1, int(args.map_report_every or 10)),
+            dry_run=bool(args.map_dry_run),
+        )
+        print(format_map_all_report(report))
         return
 
     if not args.dat_file and not args.rom_folder:
