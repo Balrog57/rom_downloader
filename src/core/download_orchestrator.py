@@ -51,6 +51,7 @@ from .local_database import (
     update_download_job,
     update_download_queue_item,
     record_download_attempt,
+    record_provider_candidates,
     record_provider_success,
 )
 
@@ -784,6 +785,8 @@ def download_missing_games_sequentially(
             first_resolution = found[0]
             first_resolution.setdefault('game_id', original_game.get('game_id', ''))
             first_resolution.setdefault('system_id', original_game.get('system_id') or system_id or '')
+            if original_game.get('game_id'):
+                record_provider_candidates(original_game.get('game_id'), found)
             resolved_items.append(first_resolution.copy())
             log_func(f"  Soumis: {game_name} [{first_resolution.get('source', 'unknown')}]")
             future = pool.submit(first_resolution)
@@ -881,6 +884,8 @@ def download_missing_games_sequentially(
         first_resolution = found[0]
         first_resolution.setdefault('game_id', original_game.get('game_id', ''))
         first_resolution.setdefault('system_id', original_game.get('system_id') or system_id or '')
+        if original_game.get('game_id'):
+            record_provider_candidates(original_game.get('game_id'), found)
         log_func(f"  Provider initial: {first_resolution.get('source', 'unknown')}")
         if status_callback:
             status_callback(f"Telechargement {index}/{total}: {game_name[:60]}")

@@ -123,6 +123,31 @@ def init_local_database(path: str | Path | None = None, conn: sqlite3.Connection
         );
         CREATE INDEX IF NOT EXISTS idx_provider_successes_game ON provider_successes(game_id);
         CREATE INDEX IF NOT EXISTS idx_provider_successes_md5 ON provider_successes(md5);
+        CREATE TABLE IF NOT EXISTS provider_candidates (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            game_id TEXT NOT NULL,
+            system_id TEXT,
+            game_name TEXT NOT NULL,
+            provider TEXT NOT NULL,
+            source_type TEXT,
+            confidence REAL NOT NULL DEFAULT 0,
+            download_url TEXT,
+            torrent_url TEXT,
+            page_url TEXT,
+            archive_org_identifier TEXT,
+            archive_org_filename TEXT,
+            download_filename TEXT,
+            status TEXT NOT NULL DEFAULT 'resolved',
+            error_code TEXT NOT NULL DEFAULT '',
+            metadata_json TEXT NOT NULL DEFAULT '{}',
+            last_checked_at REAL NOT NULL,
+            expires_at REAL NOT NULL DEFAULT 0,
+            UNIQUE(game_id, provider, download_url, torrent_url, page_url, archive_org_identifier, archive_org_filename),
+            FOREIGN KEY(game_id) REFERENCES games(game_id) ON DELETE CASCADE,
+            FOREIGN KEY(system_id) REFERENCES systems(system_id) ON DELETE CASCADE
+        );
+        CREATE INDEX IF NOT EXISTS idx_provider_candidates_game ON provider_candidates(game_id, status, last_checked_at);
+        CREATE INDEX IF NOT EXISTS idx_provider_candidates_provider ON provider_candidates(provider, status);
         CREATE TABLE IF NOT EXISTS download_jobs (
             job_id TEXT PRIMARY KEY,
             system_id TEXT,
@@ -521,6 +546,103 @@ def record_provider_success(game_id: str, candidate: dict, file_info: dict,
         )
 
 
+def record_provider_candidates(game_id: str, candidates: list[dict], status: str = "resolved",
+                               error_code: str = "", ttl_seconds: int | None = None,
+                               path: str | Path | None = None) -> int:
+    """Persiste les providers candidats avant validation du fichier."""
+    if not game_id or not candidates:
+        return 0
+    now = time.time()
+    expires_at = now + ttl_seconds if ttl_seconds else 0
+    stored = 0
+    with open_local_database(path) as conn:
+        row = conn.execute(
+            "SELECT game_id, system_id, game_name FROM games WHERE game_id = ?",
+            (game_id,),
+        ).fetchone()
+        if not row:
+            return 0
+        for candidate in candidates:
+            provider = candidate.get("source") or candidate.get("provider") or ""
+            if not provider:
+                continue
+            metadata = {
+                key: value
+                for key, value in candidate.items()
+                if key not in {
+                    "provider_candidates",
+                    "roms",
+                    "download_url",
+                    "torrent_url",
+                    "page_url",
+                    "archive_org_identifier",
+                    "archive_org_filename",
+                }
+            }
+            conn.execute(
+                """
+                INSERT INTO provider_candidates
+                (game_id, system_id, game_name, provider, source_type, confidence,
+                 download_url, torrent_url, page_url, archive_org_identifier, archive_org_filename,
+                 download_filename, status, error_code, metadata_json, last_checked_at, expires_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(game_id, provider, download_url, torrent_url, page_url, archive_org_identifier, archive_org_filename)
+                DO UPDATE SET
+                    source_type = excluded.source_type,
+                    confidence = excluded.confidence,
+                    download_filename = excluded.download_filename,
+                    status = excluded.status,
+                    error_code = excluded.error_code,
+                    metadata_json = excluded.metadata_json,
+                    last_checked_at = excluded.last_checked_at,
+                    expires_at = excluded.expires_at
+                """,
+                (
+                    game_id,
+                    row["system_id"],
+                    row["game_name"],
+                    provider,
+                    candidate.get("type") or "",
+                    float(candidate.get("confidence") or 0),
+                    candidate.get("download_url") or "",
+                    candidate.get("torrent_url") or "",
+                    candidate.get("page_url") or "",
+                    candidate.get("archive_org_identifier") or "",
+                    candidate.get("archive_org_filename") or "",
+                    candidate.get("download_filename") or "",
+                    status,
+                    error_code,
+                    json.dumps(metadata, ensure_ascii=False, sort_keys=True),
+                    now,
+                    expires_at,
+                ),
+            )
+            stored += 1
+    return stored
+
+
+def list_provider_candidates(game_id: str, status: str = "all",
+                             path: str | Path | None = None) -> list[dict]:
+    """Liste les providers candidats connus pour un jeu."""
+    if not game_id:
+        return []
+    clauses = ["game_id = ?"]
+    params: list = [game_id]
+    if status not in {"", "all"}:
+        clauses.append("status = ?")
+        params.append(status)
+    with open_local_database(path) as conn:
+        rows = conn.execute(
+            f"""
+            SELECT * FROM provider_candidates
+            WHERE {' AND '.join(clauses)}
+            ORDER BY last_checked_at DESC
+            """,
+            params,
+        ).fetchall()
+    return [_provider_candidate_row_to_dict(row) for row in rows]
+
+
 def list_validated_providers(game_id: str, path: str | Path | None = None) -> list[dict]:
     """Liste les providers valides pour un jeu."""
     with open_local_database(path) as conn:
@@ -529,6 +651,34 @@ def list_validated_providers(game_id: str, path: str | Path | None = None) -> li
             (game_id,),
         ).fetchall()
     return [_provider_row_to_dict(row) for row in rows]
+
+
+def _provider_candidate_row_to_dict(row: sqlite3.Row) -> dict:
+    metadata = {}
+    try:
+        metadata = json.loads(row["metadata_json"] or "{}")
+    except Exception:
+        metadata = {}
+    item = dict(metadata)
+    item.update({
+        "game_id": row["game_id"],
+        "system_id": row["system_id"],
+        "game_name": row["game_name"],
+        "source": row["provider"],
+        "source_type": row["source_type"],
+        "confidence": row["confidence"],
+        "download_url": row["download_url"],
+        "torrent_url": row["torrent_url"],
+        "page_url": row["page_url"],
+        "archive_org_identifier": row["archive_org_identifier"],
+        "archive_org_filename": row["archive_org_filename"],
+        "download_filename": row["download_filename"],
+        "status": row["status"],
+        "error_code": row["error_code"],
+        "last_checked_at": row["last_checked_at"],
+        "expires_at": row["expires_at"],
+    })
+    return item
 
 
 def _provider_row_to_dict(row: sqlite3.Row) -> dict:
@@ -617,6 +767,7 @@ def database_status(path: str | Path | None = None) -> dict:
             "games": conn.execute("SELECT COUNT(*) FROM games").fetchone()[0],
             "roms": conn.execute("SELECT COUNT(*) FROM roms").fetchone()[0],
             "provider_successes": conn.execute("SELECT COUNT(*) FROM provider_successes").fetchone()[0],
+            "provider_candidates": conn.execute("SELECT COUNT(*) FROM provider_candidates").fetchone()[0],
             "download_jobs": conn.execute("SELECT COUNT(*) FROM download_jobs").fetchone()[0],
             "download_queue_items": conn.execute("SELECT COUNT(*) FROM download_queue_items").fetchone()[0],
             "download_attempts": conn.execute("SELECT COUNT(*) FROM download_attempts").fetchone()[0],
@@ -636,6 +787,8 @@ __all__ = [
     "list_download_queue_items",
     "record_download_attempt",
     "record_provider_success",
+    "record_provider_candidates",
+    "list_provider_candidates",
     "list_validated_providers",
     "list_download_history",
     "database_status",

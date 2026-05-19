@@ -43,6 +43,8 @@ from src.core import (  # noqa: E402
     run_download_job,
     update_download_queue_item,
     list_download_queue_items,
+    record_provider_candidates,
+    list_provider_candidates,
     record_download_history,
     list_download_history,
 )
@@ -437,6 +439,26 @@ def main() -> None:
         )
         job_state = run_download_job(job_id, path=catalog_root)
         assert_true(job_state["queue"].get("completed") == 1 and job_state["queue"].get("pending") == 1, "download queue state summary failed")
+
+        stored_candidates = record_provider_candidates(
+            enriched["game_id"],
+            [
+                {"source": "ProviderA", "download_url": "https://example.invalid/a.zip", "download_filename": "a.zip", "confidence": 0.8},
+                {"source": "ProviderC", "page_url": "https://example.invalid/c", "download_filename": "c.zip"},
+            ],
+            path=catalog_root,
+        )
+        assert_true(stored_candidates == 2, "provider candidate insert failed")
+        record_provider_candidates(
+            enriched["game_id"],
+            [{"source": "ProviderA", "download_url": "https://example.invalid/a.zip", "download_filename": "a2.zip"}],
+            status="resolved",
+            path=catalog_root,
+        )
+        candidates = list_provider_candidates(enriched["game_id"], path=catalog_root)
+        assert_true(len(candidates) == 2, "provider candidate dedup failed")
+        provider_a = next(item for item in candidates if item["source"] == "ProviderA")
+        assert_true(provider_a["download_filename"] == "a2.zip", "provider candidate update failed")
 
         history_file = tmp_path / "history.sqlite"
         record_download_history(
