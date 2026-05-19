@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import csv
+import json
 from pathlib import Path
 
 from .dat_profile import detect_dat_profile, finalize_dat_profile
@@ -95,7 +97,36 @@ def format_mapping_status_report(status: dict, missing_limit: int = 20) -> str:
     return "\n".join(lines)
 
 
+def export_mapping_status(status: dict, output_path: str | Path) -> str:
+    """Exporte le diagnostic mapping en JSON ou CSV selon l'extension."""
+    target = Path(output_path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    if target.suffix.lower() == ".csv":
+        with target.open("w", newline="", encoding="utf-8") as handle:
+            writer = csv.DictWriter(handle, fieldnames=["provider", "system_name", "status", "mapping"])
+            writer.writeheader()
+            for provider, row in (status.get("providers") or {}).items():
+                for item in row.get("covered_systems") or []:
+                    writer.writerow({
+                        "provider": provider,
+                        "system_name": item.get("system_name", ""),
+                        "status": "covered",
+                        "mapping": item.get("mapping", ""),
+                    })
+                for system_name in row.get("missing_systems") or []:
+                    writer.writerow({
+                        "provider": provider,
+                        "system_name": system_name,
+                        "status": "missing",
+                        "mapping": "",
+                    })
+    else:
+        target.write_text(json.dumps(status, indent=2, ensure_ascii=False), encoding="utf-8")
+    return str(target)
+
+
 __all__ = [
     "build_mapping_status",
     "format_mapping_status_report",
+    "export_mapping_status",
 ]

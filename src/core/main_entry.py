@@ -67,6 +67,7 @@ Exemples:
     parser.add_argument('--queue-limit', type=int, default=20, help='Nombre de jobs affiches avec --queue-status')
     parser.add_argument('--mapping-status', action='store_true', help='Afficher la couverture des mappings DAT/providers')
     parser.add_argument('--mapping-missing-limit', type=int, default=20, help='Nombre de mappings manquants affiches par provider')
+    parser.add_argument('--mapping-output', help='Exporter --mapping-status en JSON ou CSV')
     parser.add_argument('--probe-providers', action='store_true', help='Resoudre des providers candidats sans telecharger')
     parser.add_argument('--probe-system', '--system', dest='probe_system', help='Systeme catalogue a sonder avec --probe-providers')
     parser.add_argument('--probe-limit', type=int, default=50, help='Nombre de jeux sondes avec --probe-providers')
@@ -151,11 +152,11 @@ Exemples:
         return
 
     if args.mapping_status:
-        from .mapping_status import build_mapping_status, format_mapping_status_report
-        print(format_mapping_status_report(
-            build_mapping_status(),
-            missing_limit=max(0, int(args.mapping_missing_limit or 0)),
-        ))
+        from .mapping_status import build_mapping_status, export_mapping_status, format_mapping_status_report
+        status = build_mapping_status()
+        print(format_mapping_status_report(status, missing_limit=max(0, int(args.mapping_missing_limit or 0))))
+        if args.mapping_output:
+            print(f"Export mapping: {export_mapping_status(status, args.mapping_output)}")
         return
 
     if args.probe_providers:

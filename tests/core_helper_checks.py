@@ -52,6 +52,7 @@ from src.core import (  # noqa: E402
     classify_error,
     error_is_retryable,
     build_mapping_status,
+    export_mapping_status,
     resolve_game_sources_with_cache,
     probe_catalog_providers,
 )
@@ -526,6 +527,12 @@ def main() -> None:
         mapping_status = build_mapping_status(mapping_root, provider_types=["lolroms", "vimm"])
         assert_true(mapping_status["dat_files"] == 1 and mapping_status["unique_systems"] == 1, "mapping status counts failed")
         assert_true(mapping_status["providers"]["lolroms"]["covered"] == 1, "mapping status lolroms coverage failed")
+        mapping_json = tmp_path / "mapping.json"
+        mapping_csv = tmp_path / "mapping.csv"
+        export_mapping_status(mapping_status, mapping_json)
+        export_mapping_status(mapping_status, mapping_csv)
+        assert_true(mapping_json.exists() and '"dat_files": 1' in mapping_json.read_text(encoding="utf-8"), "mapping JSON export failed")
+        assert_true(mapping_csv.exists() and "provider,system_name,status,mapping" in mapping_csv.read_text(encoding="utf-8"), "mapping CSV export failed")
 
         def fake_probe_resolver(game, _sources, _session, _system_name, _dat_profile, cache=None):
             return [
