@@ -45,6 +45,7 @@ from src.core import (  # noqa: E402
     list_download_queue_items,
     record_provider_candidates,
     list_provider_candidates,
+    list_provider_metrics,
     record_download_history,
     list_download_history,
     classify_error,
@@ -502,6 +503,13 @@ def main() -> None:
         )
         history = list_download_history({"query": "alpha"}, path=history_file)
         assert_true(len(history) == 1 and history[0]["status"] == "completed", "download history failed")
+        metrics = list_provider_metrics(path=history_file)
+        assert_true(
+            metrics["ProviderA"]["attempts"] == 1
+            and metrics["ProviderA"]["downloaded"] == 1
+            and metrics["ProviderA"]["bytes"] == 4,
+            "provider metrics success failed",
+        )
         assert_true(classify_error("failed", "Blocage Cloudflare 403") == "cloudflare_challenge", "cloudflare error classification failed")
         assert_true(error_is_retryable("http_5xx"), "retryable error classification failed")
         record_download_history(
@@ -519,6 +527,11 @@ def main() -> None:
         assert_true(
             len(failed_history) == 1 and failed_history[0]["error_code"] == "cloudflare_challenge" and failed_history[0]["retryable"],
             "download history error code failed",
+        )
+        metrics = list_provider_metrics(path=history_file)
+        assert_true(
+            metrics["LoLROMs"]["attempts"] == 1 and metrics["LoLROMs"]["failed"] == 1,
+            "provider metrics failure failed",
         )
 
         from src.core import download_orchestrator as orchestrator

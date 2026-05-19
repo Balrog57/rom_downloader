@@ -434,6 +434,81 @@ def update_download_queue_item(job_id: str, game_id: str | None = None, game_nam
         return cursor.rowcount > 0
 
 
+def _provider_metric_status(status: str, error_code: str) -> str:
+    normalized = (status or "").strip().lower()
+    if normalized in {"completed", "downloaded"}:
+        return "downloaded"
+    if normalized == "dry_run":
+        return "dry_run"
+    if normalized == "skipped":
+        return "skipped"
+    if error_code == "quota_exceeded" or normalized == "quota_skipped":
+        return "quota_skipped"
+    return "failed"
+
+
+def record_provider_metric(provider: str, status: str, duration_seconds: float = 0.0,
+                           size: int = 0, error_code: str = "",
+                           created_at: float | None = None,
+                           path: str | Path | None = None) -> None:
+    """Met a jour les metriques SQLite d'un provider apres une tentative."""
+    provider = (provider or "").strip()
+    if not provider:
+        return
+    now = float(created_at or time.time())
+    metric_status = _provider_metric_status(status, error_code)
+    seconds = max(0.0, float(duration_seconds or 0))
+    transferred = max(0, int(size or 0))
+    average_speed = transferred / seconds if transferred and seconds else 0
+    success_at = now if metric_status == "downloaded" else 0
+    failure_at = now if metric_status in {"failed", "quota_skipped"} else 0
+    with open_local_database(path) as conn:
+        conn.execute(
+            """
+            INSERT INTO provider_metrics
+            (provider, attempts, downloaded, failed, skipped, dry_run, quota_skipped,
+             seconds, bytes, average_speed, last_success_at, last_failure_at)
+            VALUES (?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(provider) DO UPDATE SET
+                attempts = provider_metrics.attempts + 1,
+                downloaded = provider_metrics.downloaded + excluded.downloaded,
+                failed = provider_metrics.failed + excluded.failed,
+                skipped = provider_metrics.skipped + excluded.skipped,
+                dry_run = provider_metrics.dry_run + excluded.dry_run,
+                quota_skipped = provider_metrics.quota_skipped + excluded.quota_skipped,
+                seconds = provider_metrics.seconds + excluded.seconds,
+                bytes = provider_metrics.bytes + excluded.bytes,
+                average_speed = CASE
+                    WHEN provider_metrics.seconds + excluded.seconds > 0
+                    THEN (provider_metrics.bytes + excluded.bytes) / (provider_metrics.seconds + excluded.seconds)
+                    ELSE 0
+                END,
+                last_success_at = MAX(provider_metrics.last_success_at, excluded.last_success_at),
+                last_failure_at = MAX(provider_metrics.last_failure_at, excluded.last_failure_at)
+            """,
+            (
+                provider,
+                1 if metric_status == "downloaded" else 0,
+                1 if metric_status == "failed" else 0,
+                1 if metric_status == "skipped" else 0,
+                1 if metric_status == "dry_run" else 0,
+                1 if metric_status == "quota_skipped" else 0,
+                seconds,
+                transferred,
+                average_speed,
+                success_at,
+                failure_at,
+            ),
+        )
+
+
+def list_provider_metrics(path: str | Path | None = None) -> dict[str, dict]:
+    """Retourne les metriques providers stockees en SQLite."""
+    with open_local_database(path) as conn:
+        rows = conn.execute("SELECT * FROM provider_metrics ORDER BY provider COLLATE NOCASE").fetchall()
+    return {row["provider"]: dict(row) for row in rows}
+
+
 def list_download_queue_items(filters: dict | None = None, limit: int = 1000,
                               path: str | Path | None = None) -> list[dict]:
     """Liste les jeux en file persistante."""
@@ -504,6 +579,15 @@ def record_download_attempt(item: dict, path: str | Path | None = None) -> None:
                 float(item.get("created_at") or now),
             ),
         )
+    record_provider_metric(
+        item.get("provider") or item.get("source") or "",
+        status,
+        duration_seconds=float(item.get("duration_seconds") or 0),
+        size=int(item.get("size") or 0),
+        error_code=error_code,
+        created_at=float(item.get("created_at") or now),
+        path=path,
+    )
 
 
 def record_provider_success(game_id: str, candidate: dict, file_info: dict,
@@ -807,6 +891,8 @@ __all__ = [
     "update_download_job",
     "update_download_queue_item",
     "list_download_queue_items",
+    "record_provider_metric",
+    "list_provider_metrics",
     "record_download_attempt",
     "record_provider_success",
     "record_provider_candidates",
