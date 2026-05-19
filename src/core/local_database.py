@@ -126,6 +126,7 @@ def init_local_database(path: str | Path | None = None, conn: sqlite3.Connection
         );
         CREATE INDEX IF NOT EXISTS idx_provider_successes_game ON provider_successes(game_id);
         CREATE INDEX IF NOT EXISTS idx_provider_successes_md5 ON provider_successes(md5);
+        CREATE INDEX IF NOT EXISTS idx_provider_successes_provider ON provider_successes(provider);
         CREATE TABLE IF NOT EXISTS provider_candidates (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             game_id TEXT NOT NULL,
@@ -241,6 +242,19 @@ def init_local_database(path: str | Path | None = None, conn: sqlite3.Connection
     _ensure_column(conn, "download_attempts", "retryable", "retryable INTEGER NOT NULL DEFAULT 0")
     _ensure_column(conn, "download_attempts", "next_retry_at", "next_retry_at REAL NOT NULL DEFAULT 0")
     conn.execute("CREATE INDEX IF NOT EXISTS idx_download_attempts_error_code ON download_attempts(error_code)")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_provider_successes_provider ON provider_successes(provider)")
+    conn.execute(
+        "CREATE VIRTUAL TABLE IF NOT EXISTS game_search_fts USING fts5("
+        "game_id UNINDEXED, system_id UNINDEXED, game_name, primary_rom, "
+        "content='games', content_rowid='rowid'"
+        ")"
+    )
+    conn.execute(
+        "CREATE VIRTUAL TABLE IF NOT EXISTS system_search_fts USING fts5("
+        "system_id UNINDEXED, system_name, "
+        "content='systems', content_rowid='rowid'"
+        ")"
+    )
     conn.commit()
     if own_conn is not None:
         own_conn.close()
@@ -1068,6 +1082,56 @@ def system_coverage_data(path: str | Path | None = None) -> list[dict]:
     return result
 
 
+def search_games_fts(query: str, limit: int = 100, path: str | Path | None = None) -> list[dict]:
+    """Recherche plein texte dans les noms de jeux via FTS5."""
+    if not query or not query.strip():
+        return []
+    sanitized = query.strip().replace('"', '').replace('*', '')
+    if len(sanitized.split()) <= 1:
+        term = f"{sanitized}*" if '*' in query else sanitized
+    else:
+        term = sanitized
+    with open_local_database(path) as conn:
+        try:
+            rows = conn.execute(
+                "SELECT g.* FROM game_search_fts f JOIN games g ON g.rowid = f.rowid "
+                "WHERE game_search_fts MATCH ? ORDER BY rank LIMIT ?",
+                (term, max(1, int(limit))),
+            ).fetchall()
+        except sqlite3.OperationalError:
+            return []
+    return [dict(row) for row in rows]
+
+
+def search_systems_fts(query: str, limit: int = 100, path: str | Path | None = None) -> list[dict]:
+    """Recherche plein texte dans les noms de systemes via FTS5."""
+    if not query or not query.strip():
+        return []
+    sanitized = query.strip().replace('"', '').replace('*', '')
+    if len(sanitized.split()) <= 1:
+        term = f"{sanitized}*" if '*' in query else sanitized
+    else:
+        term = sanitized
+    with open_local_database(path) as conn:
+        try:
+            rows = conn.execute(
+                "SELECT s.* FROM system_search_fts f JOIN systems s ON s.rowid = f.rowid "
+                "WHERE system_search_fts MATCH ? ORDER BY rank LIMIT ?",
+                (term, max(1, int(limit))),
+            ).fetchall()
+        except sqlite3.OperationalError:
+            return []
+    return [dict(row) for row in rows]
+
+
+def rebuild_fts_indexes(path: str | Path | None = None) -> dict:
+    """Reconstruit les index FTS5 a partir des tables source."""
+    with open_local_database(path) as conn:
+        conn.execute("INSERT INTO game_search_fts(game_search_fts) VALUES('rebuild')")
+        conn.execute("INSERT INTO system_search_fts(system_search_fts) VALUES('rebuild')")
+    return {"games": True, "systems": True}
+
+
 def database_status(path: str | Path | None = None) -> dict:
     """Retourne un resume de la base locale."""
     target = local_database_path(path)
@@ -1110,4 +1174,7 @@ __all__ = [
     "database_status",
     "dashboard_stats",
     "system_coverage_data",
+    "search_games_fts",
+    "search_systems_fts",
+    "rebuild_fts_indexes",
 ]
