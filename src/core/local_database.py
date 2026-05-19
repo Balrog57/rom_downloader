@@ -804,6 +804,7 @@ def _provider_candidate_row_to_dict(row: sqlite3.Row) -> dict:
         "system_id": row["system_id"],
         "game_name": row["game_name"],
         "source": row["provider"],
+        "type": row["source_type"],
         "source_type": row["source_type"],
         "confidence": row["confidence"],
         "download_url": row["download_url"],

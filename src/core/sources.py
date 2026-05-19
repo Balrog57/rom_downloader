@@ -479,6 +479,7 @@ def resolve_game_sources_with_cache(game_info: dict, sources: list, session,
                                      cache: dict | None = None) -> tuple[list, list, bool]:
     """Resout les sources d'un jeu en utilisant un cache persistant court."""
     from ._facade import search_all_sources, clean_download_resolution
+    from .local_database import list_provider_candidates
     cache = cache or {'entries': {}}
     entries = cache.setdefault('entries', {})
     key = resolution_cache_key(game_info, sources, system_name, dat_profile, excluded_sources)
@@ -487,14 +488,36 @@ def resolve_game_sources_with_cache(game_info: dict, sources: list, session,
     if cached and now - float(cached.get('created_at', 0)) <= RESOLUTION_CACHE_TTL_SECONDS:
         return [item.copy() for item in cached.get('found', [])], [item.copy() for item in cached.get('unavailable', [])], True
 
-    found = []
-    unavailable = []
-    seen_sources = set()
     excluded = {
         normalize_source_label(source_name)
         for source_name in (excluded_sources or set())
         if source_name
     }
+    active_labels = set(active_source_labels(sources))
+    game_id = game_info.get('game_id') or ''
+    if game_id:
+        db_candidates = []
+        for candidate in list_provider_candidates(game_id, status='resolved'):
+            if candidate.get('expires_at') and float(candidate.get('expires_at') or 0) <= now:
+                continue
+            source_label = normalize_source_label(candidate.get('source', ''))
+            type_label = normalize_source_label(candidate.get('type', ''))
+            if active_labels and source_label not in active_labels and type_label not in active_labels:
+                continue
+            if source_label in excluded or type_label in excluded:
+                continue
+            merged = clean_download_resolution(game_info)
+            merged.update({key: value for key, value in candidate.items() if value not in (None, '')})
+            db_candidates.append(merged)
+        if db_candidates:
+            provider_candidates = [item.copy() for item in db_candidates]
+            for item in db_candidates:
+                item['provider_candidates'] = [candidate.copy() for candidate in provider_candidates]
+            return db_candidates, [], True
+
+    found = []
+    unavailable = []
+    seen_sources = set()
     max_passes = max(1, len([s for s in sources or [] if s.get('enabled', True)]) + 3)
 
     for _attempt in range(max_passes):

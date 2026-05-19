@@ -52,6 +52,7 @@ from src.core import (  # noqa: E402
     classify_error,
     error_is_retryable,
     build_mapping_status,
+    resolve_game_sources_with_cache,
 )
 from src.network.metrics import compute_provider_score  # noqa: E402
 from src.network.exceptions import ChecksumMismatchError  # noqa: E402
@@ -481,6 +482,34 @@ def main() -> None:
         assert_true(len(candidates) == 2, "provider candidate dedup failed")
         provider_a = next(item for item in candidates if item["source"] == "ProviderA")
         assert_true(provider_a["download_filename"] == "a2.zip", "provider candidate update failed")
+
+        from src.core import local_database as _local_db
+        original_list_provider_candidates = _local_db.list_provider_candidates
+        try:
+            _local_db.list_provider_candidates = lambda _game_id, status="all": [
+                {
+                    "game_id": enriched["game_id"],
+                    "system_id": systems[0]["system_id"],
+                    "game_name": enriched["game_name"],
+                    "source": "ProviderA",
+                    "type": "providera",
+                    "download_url": "https://example.invalid/a2.zip",
+                    "download_filename": "a2.zip",
+                    "status": "resolved",
+                    "expires_at": 0,
+                }
+            ]
+            found, unavailable, cache_hit = resolve_game_sources_with_cache(
+                enriched,
+                [{"name": "ProviderA", "type": "providera", "enabled": True}],
+                session=None,
+                system_name=systems[0]["system_name"],
+                dat_profile=None,
+                cache={"entries": {}},
+            )
+            assert_true(cache_hit and not unavailable and found[0]["download_filename"] == "a2.zip", "provider candidate reuse failed")
+        finally:
+            _local_db.list_provider_candidates = original_list_provider_candidates
 
         mapping_root = tmp_path / "mapping-dat"
         mapping_root.mkdir()
