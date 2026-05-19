@@ -39,6 +39,10 @@ from src.core import (  # noqa: E402
     list_catalog_games,
     record_provider_success,
     list_validated_providers,
+    create_download_job,
+    run_download_job,
+    update_download_queue_item,
+    list_download_queue_items,
     record_download_history,
     list_download_history,
 )
@@ -409,6 +413,30 @@ def main() -> None:
         )
         enriched = list_catalog_games(systems[0]["system_id"], query="alpha", catalog_dir=catalog_root)[0]
         assert_true(len(enriched["providers"]) == 2, "catalog provider dedup failed")
+
+        beta = list_catalog_games(systems[0]["system_id"], query="beta", catalog_dir=catalog_root)[0]
+        job_id = create_download_job(
+            systems[0]["system_id"],
+            [enriched, beta],
+            str(tmp_path / "downloads"),
+            path=catalog_root,
+            settings={"parallel_downloads": 2},
+        )
+        queued = list_download_queue_items({"job_id": job_id}, path=catalog_root)
+        assert_true(len(queued) == 2 and {item["status"] for item in queued} == {"pending"}, "download queue creation failed")
+        assert_true(
+            update_download_queue_item(job_id, game_id=enriched["game_id"], status="running", locked_by="test", increment_attempts=True, path=catalog_root),
+            "download queue running update failed",
+        )
+        update_download_queue_item(job_id, game_id=enriched["game_id"], status="completed", path=catalog_root)
+        queued = list_download_queue_items({"job_id": job_id}, path=catalog_root)
+        alpha_queue = next(item for item in queued if item["game_id"] == enriched["game_id"])
+        assert_true(
+            alpha_queue["status"] == "completed" and alpha_queue["attempt_count"] == 1 and not alpha_queue["locked_by"],
+            "download queue terminal update failed",
+        )
+        job_state = run_download_job(job_id, path=catalog_root)
+        assert_true(job_state["queue"].get("completed") == 1 and job_state["queue"].get("pending") == 1, "download queue state summary failed")
 
         history_file = tmp_path / "history.sqlite"
         record_download_history(

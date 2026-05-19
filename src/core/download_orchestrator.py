@@ -49,6 +49,7 @@ from .interactive import create_download_session
 from .local_database import (
     create_download_job,
     update_download_job,
+    update_download_queue_item,
     record_download_attempt,
     record_provider_success,
 )
@@ -629,7 +630,7 @@ def download_missing_games_sequentially(
     if not job_id:
         job_id = create_download_job(
             system_id,
-            [game.get('game_id', '') for game in missing_games if game.get('game_id')],
+            missing_games,
             output_folder,
         )
 
@@ -671,6 +672,12 @@ def download_missing_games_sequentially(
             'file_path': path,
             'size': size,
         })
+        update_download_queue_item(
+            job_id,
+            game_id=item.get('game_id') or '',
+            game_name=item.get('game_name') or default_game_name,
+            status=status,
+        )
         if status == 'completed' and item.get('game_id'):
             record_provider_success(
                 item.get('game_id'),
@@ -742,6 +749,14 @@ def download_missing_games_sequentially(
                 break
 
             game_name = original_game.get('game_name', 'Jeu inconnu')
+            update_download_queue_item(
+                job_id,
+                game_id=original_game.get('game_id') or '',
+                game_name=game_name,
+                status='running',
+                locked_by='orchestrator',
+                increment_attempts=True,
+            )
             log_func(f"\n[{index}/{total}] Recherche: {game_name}")
             if status_callback:
                 status_callback(f"Recherche {index}/{total}: {game_name[:60]}")
@@ -831,6 +846,14 @@ def download_missing_games_sequentially(
             break
 
         game_name = original_game.get('game_name', 'Jeu inconnu')
+        update_download_queue_item(
+            job_id,
+            game_id=original_game.get('game_id') or '',
+            game_name=game_name,
+            status='running',
+            locked_by='orchestrator',
+            increment_attempts=True,
+        )
         log_func(f"\n[{index}/{total}] {game_name}")
         if status_callback:
             status_callback(f"Recherche {index}/{total}: {game_name[:60]}")

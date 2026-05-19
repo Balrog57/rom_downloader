@@ -13,6 +13,7 @@ from .env import APP_ROOT
 
 
 LOCAL_DATABASE_FILE = APP_ROOT / ".rom_downloader.sqlite"
+QUEUE_TERMINAL_STATUSES = {"completed", "failed", "skipped", "not_found", "cancelled", "dry_run"}
 
 
 def local_database_path(path: str | Path | None = None) -> Path:
@@ -129,9 +130,38 @@ def init_local_database(path: str | Path | None = None, conn: sqlite3.Connection
             status TEXT NOT NULL,
             total INTEGER NOT NULL DEFAULT 0,
             completed INTEGER NOT NULL DEFAULT 0,
+            priority INTEGER NOT NULL DEFAULT 0,
+            paused_at REAL NOT NULL DEFAULT 0,
+            started_at REAL NOT NULL DEFAULT 0,
+            finished_at REAL NOT NULL DEFAULT 0,
+            error_count INTEGER NOT NULL DEFAULT 0,
+            bytes_total INTEGER NOT NULL DEFAULT 0,
+            bytes_done INTEGER NOT NULL DEFAULT 0,
+            settings_json TEXT NOT NULL DEFAULT '{}',
             created_at REAL NOT NULL,
             updated_at REAL NOT NULL
         );
+        CREATE TABLE IF NOT EXISTS download_queue_items (
+            item_id TEXT PRIMARY KEY,
+            job_id TEXT NOT NULL,
+            game_id TEXT,
+            system_id TEXT,
+            game_name TEXT NOT NULL,
+            status TEXT NOT NULL DEFAULT 'pending',
+            priority INTEGER NOT NULL DEFAULT 0,
+            attempt_count INTEGER NOT NULL DEFAULT 0,
+            next_retry_at REAL NOT NULL DEFAULT 0,
+            locked_by TEXT NOT NULL DEFAULT '',
+            locked_at REAL NOT NULL DEFAULT 0,
+            created_at REAL NOT NULL,
+            updated_at REAL NOT NULL,
+            UNIQUE(job_id, game_id),
+            FOREIGN KEY(job_id) REFERENCES download_jobs(job_id) ON DELETE CASCADE,
+            FOREIGN KEY(game_id) REFERENCES games(game_id) ON DELETE SET NULL,
+            FOREIGN KEY(system_id) REFERENCES systems(system_id) ON DELETE SET NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_download_queue_job_status ON download_queue_items(job_id, status, priority, created_at);
+        CREATE INDEX IF NOT EXISTS idx_download_queue_game ON download_queue_items(game_id);
         CREATE TABLE IF NOT EXISTS download_attempts (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             job_id TEXT,
@@ -147,6 +177,9 @@ def init_local_database(path: str | Path | None = None, conn: sqlite3.Connection
             created_at REAL NOT NULL
         );
         CREATE INDEX IF NOT EXISTS idx_download_attempts_created ON download_attempts(created_at);
+        CREATE INDEX IF NOT EXISTS idx_download_attempts_status ON download_attempts(status);
+        CREATE INDEX IF NOT EXISTS idx_download_attempts_job ON download_attempts(job_id);
+        CREATE INDEX IF NOT EXISTS idx_download_jobs_status ON download_jobs(status, updated_at);
         CREATE TABLE IF NOT EXISTS provider_metrics (
             provider TEXT PRIMARY KEY,
             attempts INTEGER NOT NULL DEFAULT 0,
@@ -163,9 +196,24 @@ def init_local_database(path: str | Path | None = None, conn: sqlite3.Connection
         );
         """
     )
+    _ensure_column(conn, "download_jobs", "priority", "priority INTEGER NOT NULL DEFAULT 0")
+    _ensure_column(conn, "download_jobs", "paused_at", "paused_at REAL NOT NULL DEFAULT 0")
+    _ensure_column(conn, "download_jobs", "started_at", "started_at REAL NOT NULL DEFAULT 0")
+    _ensure_column(conn, "download_jobs", "finished_at", "finished_at REAL NOT NULL DEFAULT 0")
+    _ensure_column(conn, "download_jobs", "error_count", "error_count INTEGER NOT NULL DEFAULT 0")
+    _ensure_column(conn, "download_jobs", "bytes_total", "bytes_total INTEGER NOT NULL DEFAULT 0")
+    _ensure_column(conn, "download_jobs", "bytes_done", "bytes_done INTEGER NOT NULL DEFAULT 0")
+    _ensure_column(conn, "download_jobs", "settings_json", "settings_json TEXT NOT NULL DEFAULT '{}'")
     conn.commit()
     if own_conn is not None:
         own_conn.close()
+
+
+def _ensure_column(conn: sqlite3.Connection, table: str, column: str, ddl: str) -> None:
+    """Ajoute une colonne manquante pour migrer les bases locales existantes."""
+    rows = conn.execute(f"PRAGMA table_info({table})").fetchall()
+    if column not in {row[1] for row in rows}:
+        conn.execute(f"ALTER TABLE {table} ADD COLUMN {ddl}")
 
 
 def reset_local_database(path: str | Path | None = None) -> None:
@@ -178,20 +226,78 @@ def reset_local_database(path: str | Path | None = None) -> None:
             pass
 
 
-def create_download_job(system_id: str | None, game_ids: list[str] | None, output_folder: str,
-                        path: str | Path | None = None) -> str:
+def _normalize_queue_item(item) -> dict:
+    if isinstance(item, dict):
+        return {
+            "game_id": item.get("game_id") or "",
+            "system_id": item.get("system_id") or "",
+            "game_name": item.get("game_name") or item.get("name") or item.get("primary_rom") or "",
+            "priority": int(item.get("priority") or 0),
+        }
+    return {"game_id": str(item or ""), "system_id": "", "game_name": "", "priority": 0}
+
+
+def create_download_job(system_id: str | None, game_ids: list | None, output_folder: str,
+                        path: str | Path | None = None, settings: dict | None = None,
+                        priority: int = 0) -> str:
     """Cree un job de telechargement dans l'historique SQLite."""
     now = time.time()
     job_id = uuid.uuid4().hex
+    queue_items = [_normalize_queue_item(item) for item in (game_ids or [])]
     with open_local_database(path) as conn:
         conn.execute(
             """
-            INSERT INTO download_jobs (job_id, system_id, output_folder, status, total, completed, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO download_jobs
+            (job_id, system_id, output_folder, status, total, completed, priority,
+             started_at, settings_json, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
-            (job_id, system_id or "", output_folder, "running", len(game_ids or []), 0, now, now),
+            (
+                job_id,
+                system_id or "",
+                output_folder,
+                "running",
+                len(queue_items),
+                0,
+                int(priority or 0),
+                now,
+                json.dumps(settings or {}, ensure_ascii=False, sort_keys=True),
+                now,
+                now,
+            ),
         )
+        for item in queue_items:
+            _insert_download_queue_item(conn, job_id, system_id or item.get("system_id") or "", item, now)
     return job_id
+
+
+def _insert_download_queue_item(conn: sqlite3.Connection, job_id: str, system_id: str,
+                                item: dict, now: float) -> None:
+    game_id = item.get("game_id") or None
+    game_name = item.get("game_name") or game_id or "Jeu inconnu"
+    conn.execute(
+        """
+        INSERT OR IGNORE INTO download_queue_items
+        (item_id, job_id, game_id, system_id, game_name, status, priority,
+         attempt_count, next_retry_at, locked_by, locked_at, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        (
+            uuid.uuid4().hex,
+            job_id,
+            game_id,
+            system_id or item.get("system_id") or "",
+            game_name,
+            "pending",
+            int(item.get("priority") or 0),
+            0,
+            0,
+            "",
+            0,
+            now,
+            now,
+        ),
+    )
 
 
 def run_download_job(job_id: str, workers: int = 3, stop_event=None,
@@ -206,6 +312,10 @@ def run_download_job(job_id: str, workers: int = 3, stop_event=None,
             "SELECT status, COUNT(*) AS count FROM download_attempts WHERE job_id = ? GROUP BY status",
             (job_id,),
         ).fetchall()
+        queue = conn.execute(
+            "SELECT status, COUNT(*) AS count FROM download_queue_items WHERE job_id = ? GROUP BY status",
+            (job_id,),
+        ).fetchall()
     if not row:
         return {"job_id": job_id, "status": "missing", "workers": workers, "attempts": {}}
     return {
@@ -217,6 +327,7 @@ def run_download_job(job_id: str, workers: int = 3, stop_event=None,
         "completed": row["completed"],
         "workers": workers,
         "attempts": {item["status"]: item["count"] for item in attempts},
+        "queue": {item["status"]: item["count"] for item in queue},
     }
 
 
@@ -230,12 +341,99 @@ def update_download_job(job_id: str, status: str | None = None, completed: int |
     if status is not None:
         updates.append("status = ?")
         params.append(status)
+        if status in {"completed", "failed", "stopped", "cancelled"}:
+            updates.append("finished_at = ?")
+            params.append(time.time())
+        elif status == "paused":
+            updates.append("paused_at = ?")
+            params.append(time.time())
     if completed is not None:
         updates.append("completed = ?")
         params.append(completed)
     params.append(job_id)
     with open_local_database(path) as conn:
         conn.execute(f"UPDATE download_jobs SET {', '.join(updates)} WHERE job_id = ?", params)
+
+
+def update_download_queue_item(job_id: str, game_id: str | None = None, game_name: str | None = None,
+                               status: str | None = None, priority: int | None = None,
+                               next_retry_at: float | None = None, locked_by: str | None = None,
+                               increment_attempts: bool = False,
+                               path: str | Path | None = None) -> bool:
+    """Met a jour l'etat persistant d'un jeu dans la file."""
+    if not job_id or (not game_id and not game_name):
+        return False
+    updates = ["updated_at = ?"]
+    params: list = [time.time()]
+    if status is not None:
+        updates.append("status = ?")
+        params.append(status)
+        if status in QUEUE_TERMINAL_STATUSES:
+            updates.extend(["locked_by = ?", "locked_at = ?"])
+            params.extend(["", 0])
+    if priority is not None:
+        updates.append("priority = ?")
+        params.append(int(priority))
+    if next_retry_at is not None:
+        updates.append("next_retry_at = ?")
+        params.append(float(next_retry_at))
+    if locked_by is not None:
+        updates.append("locked_by = ?")
+        params.append(locked_by)
+        updates.append("locked_at = ?")
+        params.append(time.time() if locked_by else 0)
+    if increment_attempts:
+        updates.append("attempt_count = attempt_count + 1")
+
+    where = ["job_id = ?"]
+    params.append(job_id)
+    if game_id:
+        where.append("game_id = ?")
+        params.append(game_id)
+    else:
+        where.append("game_name = ?")
+        params.append(game_name or "")
+    with open_local_database(path) as conn:
+        cursor = conn.execute(
+            f"UPDATE download_queue_items SET {', '.join(updates)} WHERE {' AND '.join(where)}",
+            params,
+        )
+        return cursor.rowcount > 0
+
+
+def list_download_queue_items(filters: dict | None = None, limit: int = 1000,
+                              path: str | Path | None = None) -> list[dict]:
+    """Liste les jeux en file persistante."""
+    filters = filters or {}
+    job_id = (filters.get("job_id") or "").strip()
+    status = (filters.get("status") or "all").strip().lower()
+    query = (filters.get("query") or "").strip().lower()
+    clauses = []
+    params: list = []
+    if job_id:
+        clauses.append("job_id = ?")
+        params.append(job_id)
+    if status not in {"", "all"}:
+        clauses.append("LOWER(status) = ?")
+        params.append(status)
+    where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
+    rows = []
+    with open_local_database(path) as conn:
+        db_rows = conn.execute(
+            f"""
+            SELECT * FROM download_queue_items
+            {where}
+            ORDER BY priority DESC, created_at ASC
+            LIMIT ?
+            """,
+            [*params, max(limit or 1000, 1)],
+        ).fetchall()
+    for row in db_rows:
+        item = dict(row)
+        if query and query not in f"{item.get('game_name', '')} {item.get('game_id', '')}".lower():
+            continue
+        rows.append(item)
+    return rows
 
 
 def record_download_attempt(item: dict, path: str | Path | None = None) -> None:
@@ -419,6 +617,8 @@ def database_status(path: str | Path | None = None) -> dict:
             "games": conn.execute("SELECT COUNT(*) FROM games").fetchone()[0],
             "roms": conn.execute("SELECT COUNT(*) FROM roms").fetchone()[0],
             "provider_successes": conn.execute("SELECT COUNT(*) FROM provider_successes").fetchone()[0],
+            "download_jobs": conn.execute("SELECT COUNT(*) FROM download_jobs").fetchone()[0],
+            "download_queue_items": conn.execute("SELECT COUNT(*) FROM download_queue_items").fetchone()[0],
             "download_attempts": conn.execute("SELECT COUNT(*) FROM download_attempts").fetchone()[0],
         }
 
@@ -432,6 +632,8 @@ __all__ = [
     "create_download_job",
     "run_download_job",
     "update_download_job",
+    "update_download_queue_item",
+    "list_download_queue_items",
     "record_download_attempt",
     "record_provider_success",
     "list_validated_providers",
