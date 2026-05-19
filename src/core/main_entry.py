@@ -63,6 +63,8 @@ Exemples:
     parser.add_argument('--index-catalog', action='store_true', help='Construire ou rafraichir le catalogue local DAT/jeux')
     parser.add_argument('--catalog-status', action='store_true', help='Afficher un resume du catalogue local')
     parser.add_argument('--db-status', action='store_true', help='Afficher un resume de la base SQLite locale')
+    parser.add_argument('--mapping-status', action='store_true', help='Afficher la couverture des mappings DAT/providers')
+    parser.add_argument('--mapping-missing-limit', type=int, default=20, help='Nombre de mappings manquants affiches par provider')
     parser.add_argument('--reset-local-db', action='store_true', help='Supprimer la base SQLite locale puis quitter')
 
     args = parser.parse_args()
@@ -124,6 +126,14 @@ Exemples:
         print(f"ROMs: {status['roms']}")
         print(f"Providers valides: {status['provider_successes']}")
         print(f"Historique: {status['download_attempts']}")
+        return
+
+    if args.mapping_status:
+        from .mapping_status import build_mapping_status, format_mapping_status_report
+        print(format_mapping_status_report(
+            build_mapping_status(),
+            missing_limit=max(0, int(args.mapping_missing_limit or 0)),
+        ))
         return
 
     if args.catalog_status:

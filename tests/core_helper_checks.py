@@ -49,6 +49,7 @@ from src.core import (  # noqa: E402
     list_download_history,
     classify_error,
     error_is_retryable,
+    build_mapping_status,
 )
 from src.network.metrics import compute_provider_score  # noqa: E402
 from src.network.exceptions import ChecksumMismatchError  # noqa: E402
@@ -461,6 +462,21 @@ def main() -> None:
         assert_true(len(candidates) == 2, "provider candidate dedup failed")
         provider_a = next(item for item in candidates if item["source"] == "ProviderA")
         assert_true(provider_a["download_filename"] == "a2.zip", "provider candidate update failed")
+
+        mapping_root = tmp_path / "mapping-dat"
+        mapping_root.mkdir()
+        (mapping_root / "Nintendo - Game Boy.dat").write_text(
+            """<?xml version="1.0"?>
+<datafile>
+  <header><name>Nintendo - Game Boy</name></header>
+  <game name="Mapping Check"><rom name="Mapping Check.gb" size="4" /></game>
+</datafile>
+""",
+            encoding="utf-8",
+        )
+        mapping_status = build_mapping_status(mapping_root, provider_types=["lolroms", "vimm"])
+        assert_true(mapping_status["dat_files"] == 1 and mapping_status["unique_systems"] == 1, "mapping status counts failed")
+        assert_true(mapping_status["providers"]["lolroms"]["covered"] == 1, "mapping status lolroms coverage failed")
 
         history_file = tmp_path / "history.sqlite"
         record_download_history(
