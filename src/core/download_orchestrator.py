@@ -57,6 +57,38 @@ from .local_database import (
 )
 
 
+CLOUDFLARE_SOURCE_TYPES = {'lolroms', 'vimm', 'coolrom', 'romhustler', 'romsxisos'}
+
+
+def adapt_sources_for_circuit_state(sources: list, circuit_breaker, parallel_downloads: int) -> tuple[list, int]:
+    """Adapte la configuration des sources en fonction de l'etat des circuit breakers.
+
+    - Cloudflare challenge ouvert  -> force parallel_downloads a 1, double delay_seconds
+    - http_429 ouvert              -> double delay_seconds
+    - quota_exceeded ouvert        -> source desactivee temporairement
+    """
+    if not circuit_breaker:
+        return sources, parallel_downloads
+    adapted = []
+    for src in sources:
+        src = src.copy()
+        name = src.get('name', src.get('type', ''))
+        src_type = src.get('type', '')
+        if src_type in CLOUDFLARE_SOURCE_TYPES:
+            if circuit_breaker.is_open(name, error_type='cloudflare_challenge'):
+                parallel_downloads = 1
+                current_delay = float(src.get('delay_seconds', 0) or 0)
+                src['delay_seconds'] = max(current_delay * 2, 6.0)
+            elif circuit_breaker.is_open(name, error_type='http_429'):
+                current_delay = float(src.get('delay_seconds', 0) or 0)
+                src['delay_seconds'] = max(current_delay * 2, 3.0)
+        if circuit_breaker.is_open(name, error_type='quota_exceeded'):
+            src['enabled'] = False
+        adapted.append(src)
+    parallel_downloads = max(1, min(12, int(parallel_downloads)))
+    return adapted, parallel_downloads
+
+
 def resolve_next_provider(game_info: dict, sources: list, session, system_name: str,
                           dat_profile: dict | None, attempted_sources: list[str]) -> dict | None:
     """Retrouve un provider alternatif pour le meme jeu en excluant ceux deja testes."""

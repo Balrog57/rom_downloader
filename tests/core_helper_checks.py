@@ -720,6 +720,61 @@ def main() -> None:
     time.sleep(0.15)
     assert_true(not cb.is_open("TestSource", error_type="quota_exceeded"), "quota circuit must recover after 0.1s")
 
+    from src.core.download_orchestrator import adapt_sources_for_circuit_state
+    cb2 = SourceCircuitBreaker(
+        failure_threshold=10,
+        recovery_timeout=300,
+        typed_thresholds={"cloudflare_challenge": 2, "quota_exceeded": 2},
+        typed_recoveries={"cloudflare_challenge": 0.1, "quota_exceeded": 0.1},
+    )
+    sources = [
+        {'name': 'LoLROMs', 'type': 'lolroms', 'delay_seconds': 3, 'enabled': True},
+        {'name': 'Vimm\'s Lair', 'type': 'vimm', 'enabled': True},
+        {'name': 'PremiumDB', 'type': 'premium', 'enabled': True},
+    ]
+    adapted_none, par_none = adapt_sources_for_circuit_state(sources, None, 4)
+    assert_true(par_none == 4, "no circuit breaker keeps original parallel")
+    cb2.record_failure("LoLROMs", error_type="cloudflare_challenge")
+    cb2.record_failure("LoLROMs", error_type="cloudflare_challenge")
+    assert_true(cb2.is_open("LoLROMs", error_type="cloudflare_challenge"), "cloudflare circuit must open")
+    adapted, par = adapt_sources_for_circuit_state(sources, cb2, 4)
+    assert_true(par == 1, f"parallel must be forced to 1 when cloudflare circuit open (got {par})")
+    lolroms = next(s for s in adapted if s['name'] == 'LoLROMs')
+    assert_true(lolroms['delay_seconds'] >= 6, f"delay must double: got {lolroms['delay_seconds']}")
+    assert_true(all(s['enabled'] for s in adapted), "only quota_exceeded should disable sources")
+    del cb2
+    cb3 = SourceCircuitBreaker(
+        failure_threshold=10,
+        recovery_timeout=300,
+        typed_thresholds={"http_429": 2},
+        typed_recoveries={"http_429": 0.1},
+    )
+    sources_http = [{'name': 'LoLROMs', 'type': 'lolroms', 'delay_seconds': 3, 'enabled': True}]
+    cb3.record_failure("LoLROMs", error_type="http_429")
+    cb3.record_failure("LoLROMs", error_type="http_429")
+    assert_true(cb3.is_open("LoLROMs", error_type="http_429"), "http_429 circuit must open")
+    adapted_429, par_429 = adapt_sources_for_circuit_state(sources_http, cb3, 4)
+    lolroms_429 = next(s for s in adapted_429 if s['name'] == 'LoLROMs')
+    assert_true(lolroms_429['delay_seconds'] >= 6, f"http_429 must double delay: got {lolroms_429['delay_seconds']}")
+    assert_true(par_429 == 4, "http_429 does not force parallel=1")
+    del cb3
+    cb4 = SourceCircuitBreaker(
+        failure_threshold=10,
+        recovery_timeout=300,
+        typed_thresholds={"quota_exceeded": 2},
+        typed_recoveries={"quota_exceeded": 0.1},
+    )
+    cb4.record_failure("LoLROMs", error_type="quota_exceeded")
+    cb4.record_failure("LoLROMs", error_type="quota_exceeded")
+    assert_true(cb4.is_open("LoLROMs", error_type="quota_exceeded"), "quota circuit must open")
+    adapted_quota, _ = adapt_sources_for_circuit_state(sources, cb4, 2)
+    lolroms_q = next((s for s in adapted_quota if s['name'] == 'LoLROMs'), None)
+    assert_true(lolroms_q is not None and not lolroms_q['enabled'], "quota_exceeded circuit must disable source")
+    vimm_q = next((s for s in adapted_quota if s['name'] == 'Vimm\'s Lair'), None)
+    assert_true(vimm_q is None or vimm_q.get('enabled', True), "quota should not affect premium")
+    del cb4
+    del adapt_sources_for_circuit_state
+
     print("core helper checks ok")
 
 
