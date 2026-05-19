@@ -368,6 +368,38 @@ def run_download_job(job_id: str, workers: int = 3, stop_event=None,
     }
 
 
+def list_download_jobs(status: str = "all", limit: int = 100,
+                       path: str | Path | None = None) -> list[dict]:
+    """Liste les jobs de telechargement persistants avec resume de queue."""
+    clauses = []
+    params: list = []
+    normalized_status = (status or "all").strip().lower()
+    if normalized_status not in {"", "all"}:
+        clauses.append("LOWER(status) = ?")
+        params.append(normalized_status)
+    where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
+    jobs = []
+    with open_local_database(path) as conn:
+        rows = conn.execute(
+            f"""
+            SELECT * FROM download_jobs
+            {where}
+            ORDER BY updated_at DESC
+            LIMIT ?
+            """,
+            [*params, max(1, int(limit or 100))],
+        ).fetchall()
+        for row in rows:
+            queue_rows = conn.execute(
+                "SELECT status, COUNT(*) AS count FROM download_queue_items WHERE job_id = ? GROUP BY status",
+                (row["job_id"],),
+            ).fetchall()
+            item = dict(row)
+            item["queue"] = {queue_row["status"]: queue_row["count"] for queue_row in queue_rows}
+            jobs.append(item)
+    return jobs
+
+
 def update_download_job(job_id: str, status: str | None = None, completed: int | None = None,
                         path: str | Path | None = None) -> None:
     """Met a jour un job de telechargement."""
@@ -892,6 +924,7 @@ __all__ = [
     "reset_local_database",
     "create_download_job",
     "run_download_job",
+    "list_download_jobs",
     "update_download_job",
     "update_download_queue_item",
     "list_download_queue_items",

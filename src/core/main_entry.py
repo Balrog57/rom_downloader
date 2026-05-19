@@ -63,6 +63,8 @@ Exemples:
     parser.add_argument('--index-catalog', action='store_true', help='Construire ou rafraichir le catalogue local DAT/jeux')
     parser.add_argument('--catalog-status', action='store_true', help='Afficher un resume du catalogue local')
     parser.add_argument('--db-status', action='store_true', help='Afficher un resume de la base SQLite locale')
+    parser.add_argument('--queue-status', action='store_true', help='Afficher les derniers jobs de telechargement persistants')
+    parser.add_argument('--queue-limit', type=int, default=20, help='Nombre de jobs affiches avec --queue-status')
     parser.add_argument('--mapping-status', action='store_true', help='Afficher la couverture des mappings DAT/providers')
     parser.add_argument('--mapping-missing-limit', type=int, default=20, help='Nombre de mappings manquants affiches par provider')
     parser.add_argument('--reset-local-db', action='store_true', help='Supprimer la base SQLite locale puis quitter')
@@ -126,6 +128,19 @@ Exemples:
         print(f"ROMs: {status['roms']}")
         print(f"Providers valides: {status['provider_successes']}")
         print(f"Historique: {status['download_attempts']}")
+        return
+
+    if args.queue_status:
+        from .local_database import list_download_jobs
+        jobs = list_download_jobs(limit=max(1, int(args.queue_limit or 20)))
+        print(f"Jobs de telechargement: {len(jobs)}")
+        for job in jobs:
+            queue = job.get('queue') or {}
+            queue_text = ", ".join(f"{key}={value}" for key, value in sorted(queue.items())) or "vide"
+            print(
+                f"  - {job['job_id']} [{job['status']}] "
+                f"{job['completed']}/{job['total']} - {job['output_folder']} - {queue_text}"
+            )
         return
 
     if args.mapping_status:

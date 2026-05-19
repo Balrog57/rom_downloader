@@ -41,6 +41,7 @@ from src.core import (  # noqa: E402
     list_validated_providers,
     create_download_job,
     run_download_job,
+    list_download_jobs,
     update_download_queue_item,
     list_download_queue_items,
     record_provider_candidates,
@@ -458,6 +459,8 @@ def main() -> None:
         )
         job_state = run_download_job(job_id, path=catalog_root)
         assert_true(job_state["queue"].get("completed") == 1 and job_state["queue"].get("pending") == 1, "download queue state summary failed")
+        jobs = list_download_jobs(path=catalog_root)
+        assert_true(len(jobs) == 1 and jobs[0]["queue"].get("completed") == 1, "download jobs listing failed")
 
         stored_candidates = record_provider_candidates(
             enriched["game_id"],
