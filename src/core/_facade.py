@@ -57,6 +57,7 @@ from .rom_database import *  # noqa: F401,F403
 from .sources import *  # noqa: F401,F403
 from .diagnostics import *  # noqa: F401,F403
 from .mapping_status import *  # noqa: F401,F403
+from .provider_probe import *  # noqa: F401,F403
 from .dat_parser import *  # noqa: F401,F403
 from .signatures import *  # noqa: F401,F403
 from .scan_cache import *  # noqa: F401,F403

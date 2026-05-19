@@ -67,6 +67,9 @@ Exemples:
     parser.add_argument('--queue-limit', type=int, default=20, help='Nombre de jobs affiches avec --queue-status')
     parser.add_argument('--mapping-status', action='store_true', help='Afficher la couverture des mappings DAT/providers')
     parser.add_argument('--mapping-missing-limit', type=int, default=20, help='Nombre de mappings manquants affiches par provider')
+    parser.add_argument('--probe-providers', action='store_true', help='Resoudre des providers candidats sans telecharger')
+    parser.add_argument('--probe-system', '--system', dest='probe_system', help='Systeme catalogue a sonder avec --probe-providers')
+    parser.add_argument('--probe-limit', type=int, default=50, help='Nombre de jeux sondes avec --probe-providers')
     parser.add_argument('--reset-local-db', action='store_true', help='Supprimer la base SQLite locale puis quitter')
 
     args = parser.parse_args()
@@ -153,6 +156,16 @@ Exemples:
             build_mapping_status(),
             missing_limit=max(0, int(args.mapping_missing_limit or 0)),
         ))
+        return
+
+    if args.probe_providers:
+        if not args.probe_system:
+            parser.error("--probe-providers requiert --probe-system")
+        from .provider_probe import probe_catalog_providers, format_probe_report
+        print(format_probe_report(probe_catalog_providers(
+            args.probe_system,
+            limit=max(0, int(args.probe_limit or 0)),
+        )))
         return
 
     if args.catalog_status:

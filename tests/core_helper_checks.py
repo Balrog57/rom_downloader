@@ -53,6 +53,7 @@ from src.core import (  # noqa: E402
     error_is_retryable,
     build_mapping_status,
     resolve_game_sources_with_cache,
+    probe_catalog_providers,
 )
 from src.network.metrics import compute_provider_score  # noqa: E402
 from src.network.exceptions import ChecksumMismatchError  # noqa: E402
@@ -525,6 +526,30 @@ def main() -> None:
         mapping_status = build_mapping_status(mapping_root, provider_types=["lolroms", "vimm"])
         assert_true(mapping_status["dat_files"] == 1 and mapping_status["unique_systems"] == 1, "mapping status counts failed")
         assert_true(mapping_status["providers"]["lolroms"]["covered"] == 1, "mapping status lolroms coverage failed")
+
+        def fake_probe_resolver(game, _sources, _session, _system_name, _dat_profile, cache=None):
+            return [
+                {
+                    **game,
+                    "source": "ProviderProbe",
+                    "type": "probe",
+                    "download_url": "https://example.invalid/probe.zip",
+                    "download_filename": "probe.zip",
+                }
+            ], [], False
+
+        probe_result = probe_catalog_providers(
+            "Nintendo - Test System",
+            limit=1,
+            sources=[{"name": "ProviderProbe", "type": "probe", "enabled": True}],
+            session=None,
+            catalog_dir=catalog_root,
+            resolver=fake_probe_resolver,
+        )
+        assert_true(
+            probe_result["resolved"] == 1 and probe_result["stored"] == 1,
+            "provider probe failed",
+        )
 
         history_file = tmp_path / "history.sqlite"
         record_download_history(
