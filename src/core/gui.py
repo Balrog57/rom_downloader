@@ -28,6 +28,7 @@ from .dat_profile import (
     prepare_sources_for_profile,
     resolve_dat_output_folder,
 )
+from .local_database import dashboard_stats
 from .download_history import list_download_history, record_download_history
 from .download_orchestrator import download_missing_games_sequentially
 from .env import *
@@ -215,29 +216,55 @@ def gui_mode():
 
             def build_home_page(self):
                 frame = self.page_frame()
-                systems = list_catalog_systems()
-                history = list_download_history(limit=8)
+                stats = dashboard_stats()
                 tk.Label(frame, text="Accueil", bg=UI_COLOR_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 24, "bold")).grid(row=0, column=0, sticky="w")
-                stats = tk.Frame(frame, bg=UI_COLOR_BG)
-                stats.grid(row=1, column=0, sticky="ew", pady=(24, 16))
-                for index, (label, value) in enumerate([
-                    ("Systemes indexes", len(systems)),
-                    ("Jeux indexes", sum(int(item.get("game_count", 0) or 0) for item in systems)),
-                    ("Historique", len(list_download_history(limit=5000))),
+                cards = tk.Frame(frame, bg=UI_COLOR_BG)
+                cards.grid(row=1, column=0, sticky="ew", pady=(20, 10))
+                card_data = [
+                    ("Systemes indexes", stats["systems"]),
+                    ("Jeux indexes", stats["games"]),
+                    ("Jeux verifies localement", stats["verified"]),
+                    ("Providers valides", stats["valid_providers"]),
+                    ("Tentatives 24h", stats["attempts_24h"]),
+                    ("Vitesse moyenne globale", f"{format_bytes(stats['average_speed'])}/s" if stats["average_speed"] else "—"),
+                ]
+                for index, (label, value) in enumerate(card_data):
+                    col = index % 3
+                    row = index // 3
+                    card = tk.Frame(cards, bg=UI_COLOR_CARD_BG, highlightbackground=UI_COLOR_CARD_BORDER, highlightthickness=1)
+                    card.grid(row=row, column=col, sticky="ew", padx=(0 if col == 0 else 10, 0), pady=(0, 10), ipadx=14, ipady=12)
+                    cards.columnconfigure(col, weight=1)
+                    tk.Label(card, text=str(value), bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 20, "bold")).pack(anchor="w")
+                    tk.Label(card, text=label, bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, font=(self.font, 9)).pack(anchor="w", pady=(3, 0))
+
+                jobs = stats.get("jobs", {})
+                statuses = tk.Frame(frame, bg=UI_COLOR_BG)
+                statuses.grid(row=2, column=0, sticky="ew", pady=(10, 14))
+                for idx, (suffix, label, color) in enumerate([
+                    ("active", "Actifs", UI_COLOR_ACCENT),
+                    ("paused", "En pause", UI_COLOR_TEXT_SUB),
+                    ("failed", "Echoues", UI_COLOR_ERROR),
+                    ("completed", "Termines", UI_COLOR_SUCCESS),
                 ]):
-                    card = tk.Frame(stats, bg=UI_COLOR_CARD_BG, highlightbackground=UI_COLOR_CARD_BORDER, highlightthickness=1)
-                    card.grid(row=0, column=index, sticky="ew", padx=(0 if index == 0 else 14, 0), ipadx=18, ipady=16)
-                    stats.columnconfigure(index, weight=1)
-                    tk.Label(card, text=str(value), bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 24, "bold")).pack(anchor="w")
-                    tk.Label(card, text=label, bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, font=(self.font, 10)).pack(anchor="w", pady=(4, 0))
+                    badge = tk.Frame(statuses, bg=UI_COLOR_CARD_BG, highlightbackground=color, highlightthickness=2)
+                    badge.pack(side="left", padx=(0, 10), ipadx=10, ipady=6)
+                    tk.Label(badge, text=str(jobs.get(suffix, 0)), bg=UI_COLOR_CARD_BG, fg=color, font=(self.font, 16, "bold")).pack(side="left")
+                    tk.Label(badge, text=f" {label}", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, font=(self.font, 9)).pack(side="left", padx=(4, 0))
+
+                blocked = stats.get("blocked_sources", [])
+                if blocked:
+                    alert = tk.Frame(frame, bg=UI_COLOR_CARD_BG, highlightbackground=UI_COLOR_ERROR, highlightthickness=1)
+                    alert.grid(row=3, column=0, sticky="ew", pady=(0, 14), ipadx=12, ipady=10)
+                    tk.Label(alert, text=f"Sources bloquees (circuit breaker): {', '.join(blocked)}", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_ERROR, font=(self.font, 10, "bold")).pack(anchor="w")
 
                 actions = tk.Frame(frame, bg=UI_COLOR_BG)
-                actions.grid(row=2, column=0, sticky="nw")
+                actions.grid(row=4, column=0, sticky="nw")
                 self.button(actions, "Indexer / rafraichir", self.start_catalog_index, kind="accent", width=20).pack(side="left", padx=(0, 10))
                 self.button(actions, "Parcourir les systemes", lambda: self.show_page("systems"), width=20).pack(side="left")
 
+                history = list_download_history(limit=8)
                 recent = tk.Frame(frame, bg=UI_COLOR_BG)
-                recent.grid(row=3, column=0, sticky="ew", pady=(28, 0))
+                recent.grid(row=5, column=0, sticky="ew", pady=(20, 0))
                 tk.Label(recent, text="Derniers telechargements", bg=UI_COLOR_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 15, "bold")).pack(anchor="w")
                 for item in history:
                     line = f"{item.get('date', '')} - {item.get('system_name', '')} - {item.get('game_name', '')} [{item.get('status', '')}]"

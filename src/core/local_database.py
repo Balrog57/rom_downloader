@@ -968,6 +968,55 @@ def list_download_history(filters: dict | None = None, limit: int = 500,
     return rows
 
 
+def dashboard_stats(path: str | Path | None = None) -> dict:
+    """Retourne les statistiques agregees pour le tableau de bord Accueil."""
+    with open_local_database(path) as conn:
+        verified = conn.execute(
+            "SELECT COUNT(*) FROM provider_successes"
+        ).fetchone()[0]
+        attempts_24h = conn.execute(
+            "SELECT COUNT(*) FROM download_attempts WHERE created_at > ?",
+            (time.time() - 86400,),
+        ).fetchone()[0]
+        avg_speed = conn.execute(
+            "SELECT COALESCE(AVG(average_speed), 0) FROM provider_metrics WHERE average_speed > 0"
+        ).fetchone()[0]
+        jobs_active = conn.execute(
+            "SELECT COUNT(*) FROM download_jobs WHERE status IN ('running', 'pending')"
+        ).fetchone()[0]
+        jobs_paused = conn.execute(
+            "SELECT COUNT(*) FROM download_jobs WHERE status='paused'"
+        ).fetchone()[0]
+        jobs_failed = conn.execute(
+            "SELECT COUNT(*) FROM download_jobs WHERE status='failed'"
+        ).fetchone()[0]
+        jobs_completed = conn.execute(
+            "SELECT COUNT(*) FROM download_jobs WHERE status='completed'"
+        ).fetchone()[0]
+        blocked_rows = conn.execute(
+            "SELECT provider FROM download_attempts "
+            "WHERE error_code='cloudflare_challenge' AND created_at > ? "
+            "GROUP BY provider",
+            (time.time() - 300,),
+        ).fetchall()
+        blocked = [row["provider"] for row in blocked_rows] if blocked_rows else []
+        return {
+            "systems": conn.execute("SELECT COUNT(*) FROM systems").fetchone()[0],
+            "games": conn.execute("SELECT COUNT(*) FROM games").fetchone()[0],
+            "verified": verified,
+            "valid_providers": conn.execute("SELECT COUNT(*) FROM provider_successes").fetchone()[0],
+            "attempts_24h": attempts_24h,
+            "average_speed": avg_speed,
+            "blocked_sources": blocked,
+            "jobs": {
+                "active": jobs_active,
+                "paused": jobs_paused,
+                "failed": jobs_failed,
+                "completed": jobs_completed,
+            },
+        }
+
+
 def database_status(path: str | Path | None = None) -> dict:
     """Retourne un resume de la base locale."""
     target = local_database_path(path)
@@ -1008,4 +1057,5 @@ __all__ = [
     "list_validated_providers",
     "list_download_history",
     "database_status",
+    "dashboard_stats",
 ]
