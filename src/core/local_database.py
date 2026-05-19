@@ -470,6 +470,75 @@ def update_download_queue_item(job_id: str, game_id: str | None = None, game_nam
         return cursor.rowcount > 0
 
 
+def pause_download_job(job_id: str, path: str | Path | None = None) -> bool:
+    """Met en pause un job en cours (statut 'running' -> 'paused')."""
+    with open_local_database(path) as conn:
+        row = conn.execute("SELECT status FROM download_jobs WHERE job_id = ?", (job_id,)).fetchone()
+        if not row or row["status"] != "running":
+            return False
+        now = time.time()
+        conn.execute(
+            "UPDATE download_jobs SET status='paused', paused_at=?, updated_at=? WHERE job_id = ?",
+            (now, now, job_id),
+        )
+        return True
+
+
+def resume_download_job(job_id: str, path: str | Path | None = None) -> bool:
+    """Reprend un job en pause (statut 'paused' -> 'running')."""
+    with open_local_database(path) as conn:
+        row = conn.execute("SELECT status FROM download_jobs WHERE job_id = ?", (job_id,)).fetchone()
+        if not row or row["status"] != "paused":
+            return False
+        now = time.time()
+        conn.execute(
+            "UPDATE download_jobs SET status='running', paused_at=0, updated_at=? WHERE job_id = ?",
+            (now, job_id),
+        )
+        return True
+
+
+def cancel_download_job(job_id: str, path: str | Path | None = None) -> bool:
+    """Annule un job (statut 'running' ou 'paused' -> 'cancelled').
+    Les items non termines passent aussi en 'cancelled'."""
+    with open_local_database(path) as conn:
+        row = conn.execute("SELECT status FROM download_jobs WHERE job_id = ?", (job_id,)).fetchone()
+        if not row or row["status"] not in {"running", "paused", "pending"}:
+            return False
+        now = time.time()
+        conn.execute(
+            "UPDATE download_jobs SET status='cancelled', finished_at=?, updated_at=? WHERE job_id = ?",
+            (now, now, job_id),
+        )
+        conn.execute(
+            "UPDATE download_queue_items SET status='cancelled', updated_at=? "
+            "WHERE job_id = ? AND status NOT IN ('completed', 'failed', 'skipped', 'not_found', 'cancelled')",
+            (now, job_id),
+        )
+        return True
+
+
+def retry_failed_queue_items(job_id: str, path: str | Path | None = None) -> int:
+    """Remet en file les items echoues ou annules d'un job."""
+    with open_local_database(path) as conn:
+        row = conn.execute("SELECT status FROM download_jobs WHERE job_id = ?", (job_id,)).fetchone()
+        if not row:
+            return 0
+        now = time.time()
+        cursor = conn.execute(
+            "UPDATE download_queue_items SET status='pending', updated_at=?, attempt_count=0, next_retry_at=0, locked_by='', locked_at=0 "
+            "WHERE job_id = ? AND status IN ('failed', 'cancelled', 'not_found')",
+            (now, job_id),
+        )
+        retried = cursor.rowcount
+        if retried:
+            conn.execute(
+                "UPDATE download_jobs SET status=?, completed=0, updated_at=? WHERE job_id = ?",
+                ("running", now, job_id),
+            )
+        return retried
+
+
 def _provider_metric_status(status: str, error_code: str) -> str:
     normalized = (status or "").strip().lower()
     if normalized in {"completed", "downloaded"}:

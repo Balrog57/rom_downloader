@@ -466,6 +466,29 @@ def main() -> None:
         jobs = list_download_jobs(path=catalog_root)
         assert_true(len(jobs) == 1 and jobs[0]["queue"].get("completed") == 1, "download jobs listing failed")
 
+        from src.core.local_database import pause_download_job as _pause  # noqa: E402
+        from src.core.local_database import resume_download_job as _resume  # noqa: E402
+        from src.core.local_database import cancel_download_job as _cancel  # noqa: E402
+        from src.core.local_database import retry_failed_queue_items as _retry  # noqa: E402
+        assert_true(not _pause(job_id + "9999", path=catalog_root), "pause non existent job should fail")
+        assert_true(not _resume(job_id + "9999", path=catalog_root), "resume non existent job should fail")
+        running_job_id = create_download_job(
+            systems[0]["system_id"],
+            [enriched],
+            str(tmp_path / "downloads2"),
+            path=catalog_root,
+        )
+        assert_true(_pause(running_job_id, path=catalog_root), "pause running job should succeed")
+        assert_true(_resume(running_job_id, path=catalog_root), "resume paused job should succeed")
+        assert_true(_cancel(running_job_id, path=catalog_root), "cancel running job should succeed")
+        queued = list_download_queue_items({"job_id": running_job_id}, path=catalog_root)
+        assert_true(all(item["status"] == "cancelled" for item in queued), "cancel must cascade to queue items")
+        retried_count = _retry(running_job_id, path=catalog_root)
+        assert_true(retried_count == 1, f"retry must reset 1 item, got {retried_count}")
+        jobs_after = list_download_jobs(path=catalog_root)
+        retry_job = next(j for j in jobs_after if j["job_id"] == running_job_id)
+        assert_true(retry_job["status"] == "running" and retry_job["completed"] == 0, "retry must reset job to running")
+
         stored_candidates = record_provider_candidates(
             enriched["game_id"],
             [

@@ -65,6 +65,10 @@ Exemples:
     parser.add_argument('--db-status', action='store_true', help='Afficher un resume de la base SQLite locale')
     parser.add_argument('--queue-status', action='store_true', help='Afficher les derniers jobs de telechargement persistants')
     parser.add_argument('--queue-limit', type=int, default=20, help='Nombre de jobs affiches avec --queue-status')
+    parser.add_argument('--pause-job', metavar='JOB_ID', help='Mettre en pause un job en cours')
+    parser.add_argument('--resume-job', metavar='JOB_ID', help='Reprendre un job en pause')
+    parser.add_argument('--cancel-job', metavar='JOB_ID', help='Annuler un job')
+    parser.add_argument('--retry-job', metavar='JOB_ID', help='Remettre en file les items echoues d''un job')
     parser.add_argument('--mapping-status', action='store_true', help='Afficher la couverture des mappings DAT/providers')
     parser.add_argument('--mapping-missing-limit', type=int, default=20, help='Nombre de mappings manquants affiches par provider')
     parser.add_argument('--mapping-output', help='Exporter --mapping-status en JSON ou CSV')
@@ -149,6 +153,30 @@ Exemples:
                 f"  - {job['job_id']} [{job['status']}] "
                 f"{job['completed']}/{job['total']} - {job['output_folder']} - {queue_text}"
             )
+        return
+
+    if args.pause_job:
+        from .local_database import pause_download_job
+        ok = pause_download_job(args.pause_job)
+        print(f"Pause {'OK' if ok else 'ECHEC'} (job non trouve ou status incompatible)")
+        return
+
+    if args.resume_job:
+        from .local_database import resume_download_job
+        ok = resume_download_job(args.resume_job)
+        print(f"Reprise {'OK' if ok else 'ECHEC'} (job non trouve ou status incompatible)")
+        return
+
+    if args.cancel_job:
+        from .local_database import cancel_download_job
+        ok = cancel_download_job(args.cancel_job)
+        print(f"Annulation {'OK' if ok else 'ECHEC'} (job non trouve ou status incompatible)")
+        return
+
+    if args.retry_job:
+        from .local_database import retry_failed_queue_items
+        count = retry_failed_queue_items(args.retry_job)
+        print(f"{count} item(s) remis en file pour retry")
         return
 
     if args.mapping_status:
