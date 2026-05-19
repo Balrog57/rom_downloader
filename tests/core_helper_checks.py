@@ -47,6 +47,8 @@ from src.core import (  # noqa: E402
     list_provider_candidates,
     record_download_history,
     list_download_history,
+    classify_error,
+    error_is_retryable,
 )
 from src.network.metrics import compute_provider_score  # noqa: E402
 from src.network.exceptions import ChecksumMismatchError  # noqa: E402
@@ -474,6 +476,24 @@ def main() -> None:
         )
         history = list_download_history({"query": "alpha"}, path=history_file)
         assert_true(len(history) == 1 and history[0]["status"] == "completed", "download history failed")
+        assert_true(classify_error("failed", "Blocage Cloudflare 403") == "cloudflare_challenge", "cloudflare error classification failed")
+        assert_true(error_is_retryable("http_5xx"), "retryable error classification failed")
+        record_download_history(
+            {
+                "game_name": "Beta Game (Europe)",
+                "system_name": systems[0]["system_name"],
+                "system_id": systems[0]["system_id"],
+                "provider": "LoLROMs",
+                "status": "failed",
+                "error": "Blocage Cloudflare 403",
+            },
+            path=history_file,
+        )
+        failed_history = list_download_history({"query": "beta", "status": "failed"}, path=history_file)
+        assert_true(
+            len(failed_history) == 1 and failed_history[0]["error_code"] == "cloudflare_challenge" and failed_history[0]["retryable"],
+            "download history error code failed",
+        )
 
         from src.core import download_orchestrator as orchestrator
 

@@ -10,6 +10,7 @@ from contextlib import contextmanager
 from pathlib import Path
 
 from .env import APP_ROOT
+from .error_codes import classify_error, error_is_retryable, retry_delay_seconds
 
 
 LOCAL_DATABASE_FILE = APP_ROOT / ".rom_downloader.sqlite"
@@ -195,6 +196,9 @@ def init_local_database(path: str | Path | None = None, conn: sqlite3.Connection
             game_name TEXT NOT NULL,
             provider TEXT,
             status TEXT NOT NULL,
+            error_code TEXT NOT NULL DEFAULT '',
+            retryable INTEGER NOT NULL DEFAULT 0,
+            next_retry_at REAL NOT NULL DEFAULT 0,
             detail TEXT,
             duration_seconds REAL NOT NULL DEFAULT 0,
             file_path TEXT,
@@ -229,6 +233,10 @@ def init_local_database(path: str | Path | None = None, conn: sqlite3.Connection
     _ensure_column(conn, "download_jobs", "bytes_total", "bytes_total INTEGER NOT NULL DEFAULT 0")
     _ensure_column(conn, "download_jobs", "bytes_done", "bytes_done INTEGER NOT NULL DEFAULT 0")
     _ensure_column(conn, "download_jobs", "settings_json", "settings_json TEXT NOT NULL DEFAULT '{}'")
+    _ensure_column(conn, "download_attempts", "error_code", "error_code TEXT NOT NULL DEFAULT ''")
+    _ensure_column(conn, "download_attempts", "retryable", "retryable INTEGER NOT NULL DEFAULT 0")
+    _ensure_column(conn, "download_attempts", "next_retry_at", "next_retry_at REAL NOT NULL DEFAULT 0")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_download_attempts_error_code ON download_attempts(error_code)")
     conn.commit()
     if own_conn is not None:
         own_conn.close()
@@ -464,12 +472,20 @@ def list_download_queue_items(filters: dict | None = None, limit: int = 1000,
 def record_download_attempt(item: dict, path: str | Path | None = None) -> None:
     """Ajoute une tentative ou un resultat de telechargement dans SQLite."""
     now = time.time()
+    status = item.get("status") or ""
+    detail = item.get("detail") or item.get("error") or ""
+    error_code = item.get("error_code") or classify_error(status, detail)
+    retryable = bool(item.get("retryable")) if "retryable" in item else error_is_retryable(error_code)
+    next_retry_at = float(item.get("next_retry_at") or 0)
+    if retryable and not next_retry_at:
+        next_retry_at = now + retry_delay_seconds(error_code)
     with open_local_database(path) as conn:
         conn.execute(
             """
             INSERT INTO download_attempts
-            (job_id, game_id, system_id, game_name, provider, status, detail, duration_seconds, file_path, size, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (job_id, game_id, system_id, game_name, provider, status, error_code, retryable,
+             next_retry_at, detail, duration_seconds, file_path, size, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 item.get("job_id") or "",
@@ -477,8 +493,11 @@ def record_download_attempt(item: dict, path: str | Path | None = None) -> None:
                 item.get("system_id") or "",
                 item.get("game_name") or "",
                 item.get("provider") or item.get("source") or "",
-                item.get("status") or "",
-                item.get("detail") or item.get("error") or "",
+                status,
+                error_code,
+                1 if retryable else 0,
+                next_retry_at,
+                detail,
                 float(item.get("duration_seconds") or 0),
                 item.get("file_path") or item.get("downloaded_path") or "",
                 int(item.get("size") or 0),
@@ -737,6 +756,9 @@ def list_download_history(filters: dict | None = None, limit: int = 500,
             "dat_path": row["dat_path"] or "",
             "provider": row["provider"] or "",
             "status": row["status"],
+            "error_code": row["error_code"] or "",
+            "retryable": bool(row["retryable"]),
+            "next_retry_at": row["next_retry_at"],
             "size": row["size"],
             "duration_seconds": row["duration_seconds"],
             "average_speed": (row["size"] / row["duration_seconds"]) if row["size"] and row["duration_seconds"] else 0,
