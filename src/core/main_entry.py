@@ -63,7 +63,20 @@ Exemples:
     parser.add_argument('--index-catalog', action='store_true', help='Construire ou rafraichir le catalogue local DAT/jeux')
     parser.add_argument('--catalog-status', action='store_true', help='Afficher un resume du catalogue local')
     parser.add_argument('--db-status', action='store_true', help='Afficher un resume de la base SQLite locale')
+    parser.add_argument('--queue-status', action='store_true', help='Afficher les derniers jobs de telechargement persistants')
+    parser.add_argument('--queue-limit', type=int, default=20, help='Nombre de jobs affiches avec --queue-status')
+    parser.add_argument('--pause-job', metavar='JOB_ID', help='Mettre en pause un job en cours')
+    parser.add_argument('--resume-job', metavar='JOB_ID', help='Reprendre un job en pause')
+    parser.add_argument('--cancel-job', metavar='JOB_ID', help='Annuler un job')
+    parser.add_argument('--retry-job', metavar='JOB_ID', help='Remettre en file les items echoues d''un job')
+    parser.add_argument('--mapping-status', action='store_true', help='Afficher la couverture des mappings DAT/providers')
+    parser.add_argument('--mapping-missing-limit', type=int, default=20, help='Nombre de mappings manquants affiches par provider')
+    parser.add_argument('--mapping-output', help='Exporter --mapping-status en JSON ou CSV')
+    parser.add_argument('--probe-providers', action='store_true', help='Resoudre des providers candidats sans telecharger')
+    parser.add_argument('--probe-system', '--system', dest='probe_system', help='Systeme catalogue a sonder avec --probe-providers')
+    parser.add_argument('--probe-limit', type=int, default=50, help='Nombre de jeux sondes avec --probe-providers')
     parser.add_argument('--reset-local-db', action='store_true', help='Supprimer la base SQLite locale puis quitter')
+    parser.add_argument('--web', nargs='?', const='127.0.0.1:8888', metavar='HOST:PORT', help='Lancer l''interface web locale (defaut: 127.0.0.1:8888)')
 
     args = parser.parse_args()
 
@@ -123,7 +136,66 @@ Exemples:
         print(f"Jeux: {status['games']}")
         print(f"ROMs: {status['roms']}")
         print(f"Providers valides: {status['provider_successes']}")
+        print(f"Providers candidats: {status['provider_candidates']}")
+        print(f"Metriques providers: {status['provider_metrics']}")
+        print(f"Jobs: {status['download_jobs']}")
+        print(f"File: {status['download_queue_items']}")
         print(f"Historique: {status['download_attempts']}")
+        return
+
+    if args.queue_status:
+        from .local_database import list_download_jobs
+        jobs = list_download_jobs(limit=max(1, int(args.queue_limit or 20)))
+        print(f"Jobs de telechargement: {len(jobs)}")
+        for job in jobs:
+            queue = job.get('queue') or {}
+            queue_text = ", ".join(f"{key}={value}" for key, value in sorted(queue.items())) or "vide"
+            print(
+                f"  - {job['job_id']} [{job['status']}] "
+                f"{job['completed']}/{job['total']} - {job['output_folder']} - {queue_text}"
+            )
+        return
+
+    if args.pause_job:
+        from .local_database import pause_download_job
+        ok = pause_download_job(args.pause_job)
+        print(f"Pause {'OK' if ok else 'ECHEC'} (job non trouve ou status incompatible)")
+        return
+
+    if args.resume_job:
+        from .local_database import resume_download_job
+        ok = resume_download_job(args.resume_job)
+        print(f"Reprise {'OK' if ok else 'ECHEC'} (job non trouve ou status incompatible)")
+        return
+
+    if args.cancel_job:
+        from .local_database import cancel_download_job
+        ok = cancel_download_job(args.cancel_job)
+        print(f"Annulation {'OK' if ok else 'ECHEC'} (job non trouve ou status incompatible)")
+        return
+
+    if args.retry_job:
+        from .local_database import retry_failed_queue_items
+        count = retry_failed_queue_items(args.retry_job)
+        print(f"{count} item(s) remis en file pour retry")
+        return
+
+    if args.mapping_status:
+        from .mapping_status import build_mapping_status, export_mapping_status, format_mapping_status_report
+        status = build_mapping_status()
+        print(format_mapping_status_report(status, missing_limit=max(0, int(args.mapping_missing_limit or 0))))
+        if args.mapping_output:
+            print(f"Export mapping: {export_mapping_status(status, args.mapping_output)}")
+        return
+
+    if args.probe_providers:
+        if not args.probe_system:
+            parser.error("--probe-providers requiert --probe-system")
+        from .provider_probe import probe_catalog_providers, format_probe_report
+        print(format_probe_report(probe_catalog_providers(
+            args.probe_system,
+            limit=max(0, int(args.probe_limit or 0)),
+        )))
         return
 
     if args.catalog_status:
@@ -139,6 +211,14 @@ Exemples:
 
     if args.gui:
         gui_mode()
+        return
+
+    if args.web:
+        parts = str(args.web).split(":", 1)
+        host = parts[0] or "127.0.0.1"
+        port = int(parts[1]) if len(parts) == 2 else 8888
+        from .web_ui import run_web_ui
+        run_web_ui(host, port)
         return
 
     if not args.dat_file and not args.rom_folder:

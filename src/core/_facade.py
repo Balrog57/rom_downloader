@@ -56,6 +56,8 @@ from .dependencies import *  # noqa: F401,F403
 from .rom_database import *  # noqa: F401,F403
 from .sources import *  # noqa: F401,F403
 from .diagnostics import *  # noqa: F401,F403
+from .mapping_status import *  # noqa: F401,F403
+from .provider_probe import *  # noqa: F401,F403
 from .dat_parser import *  # noqa: F401,F403
 from .signatures import *  # noqa: F401,F403
 from .scan_cache import *  # noqa: F401,F403
@@ -63,6 +65,7 @@ from .scanner import *  # noqa: F401,F403
 from .torrentzip import *  # noqa: F401,F403
 from .reports import *  # noqa: F401,F403
 from .local_database import *  # noqa: F401,F403
+from .error_codes import *  # noqa: F401,F403
 from .catalog import *  # noqa: F401,F403
 from .download_history import *  # noqa: F401,F403
 from .minerva import *  # noqa: F401,F403

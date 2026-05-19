@@ -33,6 +33,7 @@ from .download_orchestrator import (
     verify_downloaded_md5,
     cleanup_invalid_download,
     attempt_download_from_resolved_provider,
+    adapt_sources_for_circuit_state,
 )
 from .scrapers import (
     download_lolroms_file,
@@ -271,6 +272,7 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
 
         sources = apply_source_policies(sources, _policies)
         sources = prepare_sources_for_profile(sources, dat_profile, prefer_1fichier=prefer_1fichier)
+        sources, parallel_downloads = adapt_sources_for_circuit_state(sources, circuit_breaker, parallel_downloads)
         sources = prioritize_sources(sources, session_metrics)
         report_active_sources = [source['name'] for source in sources if source.get('enabled', True)]
 

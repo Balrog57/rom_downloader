@@ -3,6 +3,7 @@
 from pathlib import Path
 import sys
 import tempfile
+import time
 import zipfile
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -39,11 +40,26 @@ from src.core import (  # noqa: E402
     list_catalog_games,
     record_provider_success,
     list_validated_providers,
+    create_download_job,
+    run_download_job,
+    list_download_jobs,
+    update_download_queue_item,
+    list_download_queue_items,
+    record_provider_candidates,
+    list_provider_candidates,
+    list_provider_metrics,
     record_download_history,
     list_download_history,
+    classify_error,
+    error_is_retryable,
+    build_mapping_status,
+    export_mapping_status,
+    resolve_game_sources_with_cache,
+    probe_catalog_providers,
 )
 from src.network.metrics import compute_provider_score  # noqa: E402
 from src.network.exceptions import ChecksumMismatchError  # noqa: E402
+from src.network.cloudflare_detection import looks_like_cloudflare_block  # noqa: E402
 from src.pipeline import build_pipeline_summary, merge_provider_metrics  # noqa: E402
 from src.progress import DownloadProgressMeter, format_duration  # noqa: E402
 
@@ -55,6 +71,15 @@ def assert_true(condition, message: str) -> None:
 
 def main() -> None:
     assert_true(format_duration(65) == "1m05s", "duration formatting failed")
+    assert_true(
+        looks_like_cloudflare_block(
+            403,
+            {"server": "cloudflare", "content-type": "text/html", "cf-ray": "abc"},
+            "Just a moment...",
+            "https://example.invalid/__cf_chl",
+        ),
+        "cloudflare detection failed",
+    )
     assert_true(APP_ROOT.exists(), "app root should exist")
     assert_true(RESOURCE_ROOT.exists(), "resource root should exist")
     assert_true(PREFERENCES_FILE.parent == APP_ROOT, "preferences should live under app root")
@@ -378,6 +403,11 @@ def main() -> None:
         )
         catalog_result = build_catalog_index(dat_root, force=True, catalog_dir=catalog_root)
         assert_true(catalog_result["systems"] == 1 and catalog_result["games"] == 2, "catalog index counts failed")
+        incremental_result = build_catalog_index(dat_root, force=False, catalog_dir=catalog_root)
+        assert_true(
+            incremental_result["systems"] == 0 and incremental_result["games"] == 0 and incremental_result["skipped"] == 1,
+            "catalog incremental skip failed",
+        )
         systems = list_catalog_systems(catalog_dir=catalog_root)
         assert_true(len(systems) == 1 and systems[0]["game_count"] == 2, "catalog system listing failed")
         assert_true(systems[0]["dat_section"] == "No-Intro", "catalog section should come from DAT folder")
@@ -410,6 +440,148 @@ def main() -> None:
         enriched = list_catalog_games(systems[0]["system_id"], query="alpha", catalog_dir=catalog_root)[0]
         assert_true(len(enriched["providers"]) == 2, "catalog provider dedup failed")
 
+        beta = list_catalog_games(systems[0]["system_id"], query="beta", catalog_dir=catalog_root)[0]
+        job_id = create_download_job(
+            systems[0]["system_id"],
+            [enriched, beta],
+            str(tmp_path / "downloads"),
+            path=catalog_root,
+            settings={"parallel_downloads": 2},
+        )
+        queued = list_download_queue_items({"job_id": job_id}, path=catalog_root)
+        assert_true(len(queued) == 2 and {item["status"] for item in queued} == {"pending"}, "download queue creation failed")
+        assert_true(
+            update_download_queue_item(job_id, game_id=enriched["game_id"], status="running", locked_by="test", increment_attempts=True, path=catalog_root),
+            "download queue running update failed",
+        )
+        update_download_queue_item(job_id, game_id=enriched["game_id"], status="completed", path=catalog_root)
+        queued = list_download_queue_items({"job_id": job_id}, path=catalog_root)
+        alpha_queue = next(item for item in queued if item["game_id"] == enriched["game_id"])
+        assert_true(
+            alpha_queue["status"] == "completed" and alpha_queue["attempt_count"] == 1 and not alpha_queue["locked_by"],
+            "download queue terminal update failed",
+        )
+        job_state = run_download_job(job_id, path=catalog_root)
+        assert_true(job_state["queue"].get("completed") == 1 and job_state["queue"].get("pending") == 1, "download queue state summary failed")
+        jobs = list_download_jobs(path=catalog_root)
+        assert_true(len(jobs) == 1 and jobs[0]["queue"].get("completed") == 1, "download jobs listing failed")
+
+        from src.core.local_database import pause_download_job as _pause  # noqa: E402
+        from src.core.local_database import resume_download_job as _resume  # noqa: E402
+        from src.core.local_database import cancel_download_job as _cancel  # noqa: E402
+        from src.core.local_database import retry_failed_queue_items as _retry  # noqa: E402
+        assert_true(not _pause(job_id + "9999", path=catalog_root), "pause non existent job should fail")
+        assert_true(not _resume(job_id + "9999", path=catalog_root), "resume non existent job should fail")
+        running_job_id = create_download_job(
+            systems[0]["system_id"],
+            [enriched],
+            str(tmp_path / "downloads2"),
+            path=catalog_root,
+        )
+        assert_true(_pause(running_job_id, path=catalog_root), "pause running job should succeed")
+        assert_true(_resume(running_job_id, path=catalog_root), "resume paused job should succeed")
+        assert_true(_cancel(running_job_id, path=catalog_root), "cancel running job should succeed")
+        queued = list_download_queue_items({"job_id": running_job_id}, path=catalog_root)
+        assert_true(all(item["status"] == "cancelled" for item in queued), "cancel must cascade to queue items")
+        retried_count = _retry(running_job_id, path=catalog_root)
+        assert_true(retried_count == 1, f"retry must reset 1 item, got {retried_count}")
+        jobs_after = list_download_jobs(path=catalog_root)
+        retry_job = next(j for j in jobs_after if j["job_id"] == running_job_id)
+        assert_true(retry_job["status"] == "running" and retry_job["completed"] == 0, "retry must reset job to running")
+
+        stored_candidates = record_provider_candidates(
+            enriched["game_id"],
+            [
+                {"source": "ProviderA", "download_url": "https://example.invalid/a.zip", "download_filename": "a.zip", "confidence": 0.8},
+                {"source": "ProviderC", "page_url": "https://example.invalid/c", "download_filename": "c.zip"},
+            ],
+            path=catalog_root,
+        )
+        assert_true(stored_candidates == 2, "provider candidate insert failed")
+        record_provider_candidates(
+            enriched["game_id"],
+            [{"source": "ProviderA", "download_url": "https://example.invalid/a.zip", "download_filename": "a2.zip"}],
+            status="resolved",
+            path=catalog_root,
+        )
+        candidates = list_provider_candidates(enriched["game_id"], path=catalog_root)
+        assert_true(len(candidates) == 2, "provider candidate dedup failed")
+        provider_a = next(item for item in candidates if item["source"] == "ProviderA")
+        assert_true(provider_a["download_filename"] == "a2.zip", "provider candidate update failed")
+
+        from src.core import local_database as _local_db
+        original_list_provider_candidates = _local_db.list_provider_candidates
+        try:
+            _local_db.list_provider_candidates = lambda _game_id, status="all": [
+                {
+                    "game_id": enriched["game_id"],
+                    "system_id": systems[0]["system_id"],
+                    "game_name": enriched["game_name"],
+                    "source": "ProviderA",
+                    "type": "providera",
+                    "download_url": "https://example.invalid/a2.zip",
+                    "download_filename": "a2.zip",
+                    "status": "resolved",
+                    "expires_at": 0,
+                }
+            ]
+            found, unavailable, cache_hit = resolve_game_sources_with_cache(
+                enriched,
+                [{"name": "ProviderA", "type": "providera", "enabled": True}],
+                session=None,
+                system_name=systems[0]["system_name"],
+                dat_profile=None,
+                cache={"entries": {}},
+            )
+            assert_true(cache_hit and not unavailable and found[0]["download_filename"] == "a2.zip", "provider candidate reuse failed")
+        finally:
+            _local_db.list_provider_candidates = original_list_provider_candidates
+
+        mapping_root = tmp_path / "mapping-dat"
+        mapping_root.mkdir()
+        (mapping_root / "Nintendo - Game Boy.dat").write_text(
+            """<?xml version="1.0"?>
+<datafile>
+  <header><name>Nintendo - Game Boy</name></header>
+  <game name="Mapping Check"><rom name="Mapping Check.gb" size="4" /></game>
+</datafile>
+""",
+            encoding="utf-8",
+        )
+        mapping_status = build_mapping_status(mapping_root, provider_types=["lolroms", "vimm"])
+        assert_true(mapping_status["dat_files"] == 1 and mapping_status["unique_systems"] == 1, "mapping status counts failed")
+        assert_true(mapping_status["providers"]["lolroms"]["covered"] == 1, "mapping status lolroms coverage failed")
+        mapping_json = tmp_path / "mapping.json"
+        mapping_csv = tmp_path / "mapping.csv"
+        export_mapping_status(mapping_status, mapping_json)
+        export_mapping_status(mapping_status, mapping_csv)
+        assert_true(mapping_json.exists() and '"dat_files": 1' in mapping_json.read_text(encoding="utf-8"), "mapping JSON export failed")
+        assert_true(mapping_csv.exists() and "provider,system_name,status,mapping" in mapping_csv.read_text(encoding="utf-8"), "mapping CSV export failed")
+
+        def fake_probe_resolver(game, _sources, _session, _system_name, _dat_profile, cache=None):
+            return [
+                {
+                    **game,
+                    "source": "ProviderProbe",
+                    "type": "probe",
+                    "download_url": "https://example.invalid/probe.zip",
+                    "download_filename": "probe.zip",
+                }
+            ], [], False
+
+        probe_result = probe_catalog_providers(
+            "Nintendo - Test System",
+            limit=1,
+            sources=[{"name": "ProviderProbe", "type": "probe", "enabled": True}],
+            session=None,
+            catalog_dir=catalog_root,
+            resolver=fake_probe_resolver,
+        )
+        assert_true(
+            probe_result["resolved"] == 1 and probe_result["stored"] == 1,
+            "provider probe failed",
+        )
+
         history_file = tmp_path / "history.sqlite"
         record_download_history(
             {
@@ -424,6 +596,36 @@ def main() -> None:
         )
         history = list_download_history({"query": "alpha"}, path=history_file)
         assert_true(len(history) == 1 and history[0]["status"] == "completed", "download history failed")
+        metrics = list_provider_metrics(path=history_file)
+        assert_true(
+            metrics["ProviderA"]["attempts"] == 1
+            and metrics["ProviderA"]["downloaded"] == 1
+            and metrics["ProviderA"]["bytes"] == 4,
+            "provider metrics success failed",
+        )
+        assert_true(classify_error("failed", "Blocage Cloudflare 403") == "cloudflare_challenge", "cloudflare error classification failed")
+        assert_true(error_is_retryable("http_5xx"), "retryable error classification failed")
+        record_download_history(
+            {
+                "game_name": "Beta Game (Europe)",
+                "system_name": systems[0]["system_name"],
+                "system_id": systems[0]["system_id"],
+                "provider": "LoLROMs",
+                "status": "failed",
+                "error": "Blocage Cloudflare 403",
+            },
+            path=history_file,
+        )
+        failed_history = list_download_history({"query": "beta", "status": "failed"}, path=history_file)
+        assert_true(
+            len(failed_history) == 1 and failed_history[0]["error_code"] == "cloudflare_challenge" and failed_history[0]["retryable"],
+            "download history error code failed",
+        )
+        metrics = list_provider_metrics(path=history_file)
+        assert_true(
+            metrics["LoLROMs"]["attempts"] == 1 and metrics["LoLROMs"]["failed"] == 1,
+            "provider metrics failure failed",
+        )
 
         from src.core import download_orchestrator as orchestrator
 
@@ -506,6 +708,95 @@ def main() -> None:
         not isinstance(_rd_mod.ROM_DATABASE, dict) or 'config_urls' in _rd_mod.ROM_DATABASE,
         "ROM_DATABASE should be None or a dict with config_urls after module load",
     )
+
+    from src.network.circuits import SourceCircuitBreaker
+    cb = SourceCircuitBreaker(
+        failure_threshold=3,
+        recovery_timeout=0.1,
+        typed_thresholds={"cloudflare_challenge": 2, "http_429": 3, "quota_exceeded": 2},
+        typed_recoveries={"cloudflare_challenge": 0.1, "http_429": 0.1, "quota_exceeded": 0.1},
+    )
+    cb.is_open("TestSource")
+    assert_true(not cb.is_open("TestSource"), "fresh circuit must be closed (global)")
+    assert_true(not cb.is_open("TestSource", error_type="cloudflare_challenge"), "fresh circuit must be closed (typed)")
+    cb.record_failure("TestSource", error_type="cloudflare_challenge")
+    cb.record_failure("TestSource", error_type="cloudflare_challenge")
+    assert_true(cb.is_open("TestSource", error_type="cloudflare_challenge"), "2 cloudflare failures must open typed circuit")
+    assert_true(not cb.is_open("TestSource"), "global should not trip at 2 typed")
+    time.sleep(0.15)
+    assert_true(not cb.is_open("TestSource", error_type="cloudflare_challenge"), "typed circuit must recover after 0.1s")
+    assert_true(not cb.is_open("TestSource"), "global must also recover")
+    cb.record_failure("TestSource", error_type="http_429")
+    cb.record_failure("TestSource", error_type="http_429")
+    cb.record_failure("TestSource", error_type="http_429")
+    assert_true(cb.is_open("TestSource", error_type="http_429"), "3 HTTP 429 failures must open typed circuit")
+    assert_true(not cb.is_open("TestSource", error_type="cloudflare_challenge"), "cloudflare circuit must remain unaffected")
+    cb.record_success("TestSource")
+    assert_true(not cb.is_open("TestSource", error_type="http_429"), "success must reset typed circuit")
+    assert_true(not cb.is_open("TestSource", error_type="cloudflare_challenge"), "success must reset all typed circuits")
+    assert_true(not cb.is_open("TestSource"), "success must reset global circuit")
+    status = cb.status()
+    assert_true("TestSource" not in status or status["TestSource"]["failures"] == 0, "status must reflect reset")
+    cb.record_failure("TestSource", error_type="quota_exceeded")
+    cb.record_failure("TestSource", error_type="quota_exceeded")
+    assert_true(cb.is_open("TestSource", error_type="quota_exceeded"), "2 quota failures must open quota circuit")
+    time.sleep(0.15)
+    assert_true(not cb.is_open("TestSource", error_type="quota_exceeded"), "quota circuit must recover after 0.1s")
+
+    from src.core.download_orchestrator import adapt_sources_for_circuit_state
+    cb2 = SourceCircuitBreaker(
+        failure_threshold=10,
+        recovery_timeout=300,
+        typed_thresholds={"cloudflare_challenge": 2, "quota_exceeded": 2},
+        typed_recoveries={"cloudflare_challenge": 0.1, "quota_exceeded": 0.1},
+    )
+    sources = [
+        {'name': 'LoLROMs', 'type': 'lolroms', 'delay_seconds': 3, 'enabled': True},
+        {'name': 'Vimm\'s Lair', 'type': 'vimm', 'enabled': True},
+        {'name': 'PremiumDB', 'type': 'premium', 'enabled': True},
+    ]
+    adapted_none, par_none = adapt_sources_for_circuit_state(sources, None, 4)
+    assert_true(par_none == 4, "no circuit breaker keeps original parallel")
+    cb2.record_failure("LoLROMs", error_type="cloudflare_challenge")
+    cb2.record_failure("LoLROMs", error_type="cloudflare_challenge")
+    assert_true(cb2.is_open("LoLROMs", error_type="cloudflare_challenge"), "cloudflare circuit must open")
+    adapted, par = adapt_sources_for_circuit_state(sources, cb2, 4)
+    assert_true(par == 1, f"parallel must be forced to 1 when cloudflare circuit open (got {par})")
+    lolroms = next(s for s in adapted if s['name'] == 'LoLROMs')
+    assert_true(lolroms['delay_seconds'] >= 6, f"delay must double: got {lolroms['delay_seconds']}")
+    assert_true(all(s['enabled'] for s in adapted), "only quota_exceeded should disable sources")
+    del cb2
+    cb3 = SourceCircuitBreaker(
+        failure_threshold=10,
+        recovery_timeout=300,
+        typed_thresholds={"http_429": 2},
+        typed_recoveries={"http_429": 0.1},
+    )
+    sources_http = [{'name': 'LoLROMs', 'type': 'lolroms', 'delay_seconds': 3, 'enabled': True}]
+    cb3.record_failure("LoLROMs", error_type="http_429")
+    cb3.record_failure("LoLROMs", error_type="http_429")
+    assert_true(cb3.is_open("LoLROMs", error_type="http_429"), "http_429 circuit must open")
+    adapted_429, par_429 = adapt_sources_for_circuit_state(sources_http, cb3, 4)
+    lolroms_429 = next(s for s in adapted_429 if s['name'] == 'LoLROMs')
+    assert_true(lolroms_429['delay_seconds'] >= 6, f"http_429 must double delay: got {lolroms_429['delay_seconds']}")
+    assert_true(par_429 == 4, "http_429 does not force parallel=1")
+    del cb3
+    cb4 = SourceCircuitBreaker(
+        failure_threshold=10,
+        recovery_timeout=300,
+        typed_thresholds={"quota_exceeded": 2},
+        typed_recoveries={"quota_exceeded": 0.1},
+    )
+    cb4.record_failure("LoLROMs", error_type="quota_exceeded")
+    cb4.record_failure("LoLROMs", error_type="quota_exceeded")
+    assert_true(cb4.is_open("LoLROMs", error_type="quota_exceeded"), "quota circuit must open")
+    adapted_quota, _ = adapt_sources_for_circuit_state(sources, cb4, 2)
+    lolroms_q = next((s for s in adapted_quota if s['name'] == 'LoLROMs'), None)
+    assert_true(lolroms_q is not None and not lolroms_q['enabled'], "quota_exceeded circuit must disable source")
+    vimm_q = next((s for s in adapted_quota if s['name'] == 'Vimm\'s Lair'), None)
+    assert_true(vimm_q is None or vimm_q.get('enabled', True), "quota should not affect premium")
+    del cb4
+    del adapt_sources_for_circuit_state
 
     print("core helper checks ok")
 

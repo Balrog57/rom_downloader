@@ -91,6 +91,8 @@ def _row_to_system(row) -> dict:
         "game_count": row["game_count"],
         "games_count": row["game_count"],
         "total_size": row["total_size"],
+        "dat_mtime": row["dat_mtime"],
+        "dat_file_size": row["dat_file_size"],
         "updated_at": row["updated_at"],
     }
 
@@ -117,7 +119,7 @@ def build_catalog_index(dat_root: str | Path | None = None, force: bool = False,
     root = Path(dat_root or (RESOURCE_ROOT / "dat"))
     init_local_database(catalog_dir)
     if not root.exists():
-        return {"systems": 0, "games": 0, "dat_root": str(root)}
+        return {"systems": 0, "games": 0, "skipped": 0, "dat_root": str(root)}
 
     if force:
         with open_local_database(catalog_dir) as conn:
@@ -128,25 +130,44 @@ def build_catalog_index(dat_root: str | Path | None = None, force: bool = False,
     dat_files = sorted(root.rglob("*.dat"), key=lambda path: str(path).lower())
     systems_count = 0
     games_count = 0
+    skipped_count = 0
     now = time.time()
 
     with open_local_database(catalog_dir) as conn:
         for dat_path in dat_files:
+            system_id = _system_id(str(dat_path), root)
+            try:
+                dat_stat = dat_path.stat()
+                dat_mtime = float(dat_stat.st_mtime)
+                dat_file_size = int(dat_stat.st_size)
+            except OSError:
+                continue
+            if not force:
+                existing = conn.execute(
+                    "SELECT dat_mtime, dat_file_size FROM systems WHERE system_id = ?",
+                    (system_id,),
+                ).fetchone()
+                if (
+                    existing
+                    and float(existing["dat_mtime"] or 0) == dat_mtime
+                    and int(existing["dat_file_size"] or 0) == dat_file_size
+                ):
+                    skipped_count += 1
+                    continue
             try:
                 dat_games = parse_dat_file(str(dat_path))
                 profile = finalize_dat_profile(detect_dat_profile(str(dat_path)))
             except Exception:
                 continue
 
-            system_id = _system_id(str(dat_path), root)
             total_size = sum(_rom_size(game.get("roms", [])) for game in dat_games.values())
             dat_label = str(dat_path.relative_to(root)) if dat_path.is_relative_to(root) else dat_path.name
             conn.execute(
                 """
                 INSERT OR REPLACE INTO systems
                 (system_id, dat_path, dat_label, dat_section, system_name, family, family_label,
-                 is_retool, game_count, total_size, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                 is_retool, game_count, total_size, dat_mtime, dat_file_size, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     system_id,
@@ -159,6 +180,8 @@ def build_catalog_index(dat_root: str | Path | None = None, force: bool = False,
                     1 if profile.get("is_retool") else 0,
                     len(dat_games),
                     total_size,
+                    dat_mtime,
+                    dat_file_size,
                     now,
                 ),
             )
@@ -206,7 +229,7 @@ def build_catalog_index(dat_root: str | Path | None = None, force: bool = False,
             systems_count += 1
             games_count += len(dat_games)
 
-    return {"systems": systems_count, "games": games_count, "dat_root": str(root)}
+    return {"systems": systems_count, "games": games_count, "skipped": skipped_count, "dat_root": str(root)}
 
 
 def list_catalog_systems(filters: dict | None = None, catalog_dir: str | Path | None = None) -> list[dict]:
