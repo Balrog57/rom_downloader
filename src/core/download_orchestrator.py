@@ -10,6 +10,7 @@ from ..network.cache_runtime import get_session_cache, clear_session_cache, Runt
 from ..network.downloads import ParallelDownloadPool
 from ..network.metrics import load_provider_metrics, save_provider_metrics, prioritize_sources, record_provider_attempt
 from ..network.exceptions import ChecksumMismatchError, SourceTimeoutError, DownloadNetworkError
+from .error_codes import classify_error
 from ..progress import DownloadProgressMeter, format_duration
 
 from .env import *
@@ -413,13 +414,14 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
             break
         attempted_source_labels.add(source_label)
 
-        if circuit_breaker and circuit_breaker.is_open(source):
-            log_func(f"  Circuit ouvert pour {source}: ignore pendant la session")
+        if circuit_breaker and (circuit_breaker.is_open(source) or circuit_breaker.is_open(source, error_type='cloudflare_challenge')):
+            reason = 'circuit_cloudflare' if circuit_breaker.is_open(source, error_type='cloudflare_challenge') else 'circuit_open'
+            log_func(f"  Circuit ouvert pour {source}: ignore pendant la session" + (' (Cloudflare)' if reason == 'circuit_cloudflare' else ''))
             provider_attempts.append({
                 'source': source,
                 'status': 'skipped',
                 'duration_seconds': round(time.time() - attempt_started, 3),
-                'detail': 'circuit_open',
+                'detail': reason,
             })
             current_game = next_provider_candidate()
             if current_game:
@@ -508,6 +510,8 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
                 log_func(f"  Retry avec: {current_game.get('source', 'unknown')}")
             continue
         except SourceTimeoutError as exc:
+            detail = str(exc)
+            error_code = classify_error(detail=detail) or 'network_timeout'
             provider_attempts.append({
                 'source': source,
                 'status': 'failed',
@@ -515,22 +519,23 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
                 'detail': 'timeout',
             })
             if circuit_breaker:
-                circuit_breaker.record_failure(source)
+                circuit_breaker.record_failure(source, error_type=error_code)
             log_func(f"  Provider {source} timeout, recherche d'un autre provider...")
             current_game = next_provider_candidate()
             if current_game:
                 log_func(f"  Retry avec: {current_game.get('source', 'unknown')}")
             continue
         except DownloadNetworkError as exc:
-            detail = str(exc)
+            detail_str = str(exc)
+            error_code = classify_error(detail=detail_str) or 'network_error'
             provider_attempts.append({
                 'source': source,
                 'status': 'failed',
                 'duration_seconds': round(time.time() - attempt_started, 3),
-                'detail': detail or 'network_error',
+                'detail': detail_str or 'network_error',
             })
             if circuit_breaker:
-                circuit_breaker.record_failure(source)
+                circuit_breaker.record_failure(source, error_type=error_code)
             suffix = f": {detail[:180]}" if detail else ""
             log_func(f"  Provider {source} erreur reseau{suffix}")
             log_func("  Recherche d'un autre provider...")
@@ -539,14 +544,16 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
                 log_func(f"  Retry avec: {current_game.get('source', 'unknown')}")
             continue
         except Exception as exc:
+            detail_str = str(exc)
+            error_code = classify_error(detail=detail_str) or 'network_error'
             provider_attempts.append({
                 'source': source,
                 'status': 'failed',
                 'duration_seconds': round(time.time() - attempt_started, 3),
-                'detail': str(exc),
+                'detail': detail_str,
             })
             if circuit_breaker:
-                circuit_breaker.record_failure(source)
+                circuit_breaker.record_failure(source, error_type=error_code)
             log_func(f"  Provider {source} invalide ou en echec, recherche d'un autre provider...")
             current_game = next_provider_candidate()
             if current_game:
@@ -576,7 +583,7 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
             'detail': 'download_failed',
         })
         if circuit_breaker:
-            circuit_breaker.record_failure(source)
+            circuit_breaker.record_failure(source, error_type='network_error')
         log_func(f"  Provider {source} sans fichier valide, recherche d'un autre provider...")
         current_game = next_provider_candidate()
         if current_game:

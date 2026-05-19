@@ -3,6 +3,7 @@
 from pathlib import Path
 import sys
 import tempfile
+import time
 import zipfile
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -684,6 +685,40 @@ def main() -> None:
         not isinstance(_rd_mod.ROM_DATABASE, dict) or 'config_urls' in _rd_mod.ROM_DATABASE,
         "ROM_DATABASE should be None or a dict with config_urls after module load",
     )
+
+    from src.network.circuits import SourceCircuitBreaker
+    cb = SourceCircuitBreaker(
+        failure_threshold=3,
+        recovery_timeout=0.1,
+        typed_thresholds={"cloudflare_challenge": 2, "http_429": 3, "quota_exceeded": 2},
+        typed_recoveries={"cloudflare_challenge": 0.1, "http_429": 0.1, "quota_exceeded": 0.1},
+    )
+    cb.is_open("TestSource")
+    assert_true(not cb.is_open("TestSource"), "fresh circuit must be closed (global)")
+    assert_true(not cb.is_open("TestSource", error_type="cloudflare_challenge"), "fresh circuit must be closed (typed)")
+    cb.record_failure("TestSource", error_type="cloudflare_challenge")
+    cb.record_failure("TestSource", error_type="cloudflare_challenge")
+    assert_true(cb.is_open("TestSource", error_type="cloudflare_challenge"), "2 cloudflare failures must open typed circuit")
+    assert_true(not cb.is_open("TestSource"), "global should not trip at 2 typed")
+    time.sleep(0.15)
+    assert_true(not cb.is_open("TestSource", error_type="cloudflare_challenge"), "typed circuit must recover after 0.1s")
+    assert_true(not cb.is_open("TestSource"), "global must also recover")
+    cb.record_failure("TestSource", error_type="http_429")
+    cb.record_failure("TestSource", error_type="http_429")
+    cb.record_failure("TestSource", error_type="http_429")
+    assert_true(cb.is_open("TestSource", error_type="http_429"), "3 HTTP 429 failures must open typed circuit")
+    assert_true(not cb.is_open("TestSource", error_type="cloudflare_challenge"), "cloudflare circuit must remain unaffected")
+    cb.record_success("TestSource")
+    assert_true(not cb.is_open("TestSource", error_type="http_429"), "success must reset typed circuit")
+    assert_true(not cb.is_open("TestSource", error_type="cloudflare_challenge"), "success must reset all typed circuits")
+    assert_true(not cb.is_open("TestSource"), "success must reset global circuit")
+    status = cb.status()
+    assert_true("TestSource" not in status or status["TestSource"]["failures"] == 0, "status must reflect reset")
+    cb.record_failure("TestSource", error_type="quota_exceeded")
+    cb.record_failure("TestSource", error_type="quota_exceeded")
+    assert_true(cb.is_open("TestSource", error_type="quota_exceeded"), "2 quota failures must open quota circuit")
+    time.sleep(0.15)
+    assert_true(not cb.is_open("TestSource", error_type="quota_exceeded"), "quota circuit must recover after 0.1s")
 
     print("core helper checks ok")
 
