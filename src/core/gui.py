@@ -40,13 +40,38 @@ from .scanner import (
     move_files_to_tosort,
     scan_local_roms,
 )
+from .local_database import dashboard_stats, system_coverage_data
 from .sources import (
     apply_source_policies,
     get_default_sources,
     optional_positive_int,
     source_order_key,
     source_policy_summary,
+    resolve_system_mapping,
 )
+
+_FAMILY_FILTERS = [
+    ("Tous", "all"),
+    ("No-Intro", "no-intro"),
+    ("Redump", "redump"),
+    ("Retool", "retool"),
+    ("Arcade", "arcade"),
+    ("Console", "console"),
+    ("Portable", "portable"),
+    ("Computer", "computer"),
+    ("Port", "port"),
+    ("Pinball", "pinball"),
+    ("Custom", "custom"),
+    ("Non-Redump", "non-redump"),
+    ("Source Code", "source-code"),
+]
+
+_COVERAGE_BADGES = [
+    ("OK", UI_COLOR_SUCCESS),
+    ("PARTIEL", UI_COLOR_TEXT_SUB),
+    ("A MAPPER", UI_COLOR_ERROR),
+    ("LOCAL", UI_COLOR_ACCENT),
+]
 from .torrentzip import repack_verified_archives_to_torrentzip
 
 
@@ -282,40 +307,94 @@ def gui_mode():
 
                 filters = tk.Frame(frame, bg=UI_COLOR_BG)
                 filters.grid(row=1, column=0, sticky="ew", pady=(18, 12))
-                self.button(filters, "Tous", lambda: self.set_family_filter("all"), width=12).pack(side="left", padx=(0, 8))
-                for section in list_catalog_sections():
-                    width = max(12, min(22, len(section) + 2))
-                    self.button(filters, section, lambda value=section: self.set_family_filter(value), width=width).pack(side="left", padx=(0, 8))
+                for label, value in _FAMILY_FILTERS:
+                    w = max(12, min(22, len(label) + 2))
+                    self.button(filters, label, lambda v=value: self.set_family_filter(v), width=w).pack(side="left", padx=(0, 5))
 
-                self.systems_tree = ttk.Treeview(frame, style="Catalog.Treeview", columns=("games", "size", "dat"), show="tree headings")
+                self.systems_tree = ttk.Treeview(frame, style="Catalog.Treeview", columns=("coverage", "section", "games", "size", "date"), show="tree headings")
                 self.systems_tree.heading("#0", text="Systeme")
+                self.systems_tree.heading("coverage", text="Couverture")
+                self.systems_tree.heading("section", text="Section DAT")
                 self.systems_tree.heading("games", text="Jeux")
-                self.systems_tree.heading("size", text="Taille estimee")
-                self.systems_tree.heading("dat", text="DAT")
-                self.systems_tree.column("#0", width=310, anchor="w")
-                self.systems_tree.column("games", width=80, anchor="e")
-                self.systems_tree.column("size", width=130, anchor="e")
-                self.systems_tree.column("dat", width=600, anchor="w")
+                self.systems_tree.heading("size", text="Taille")
+                self.systems_tree.heading("date", text="Date DAT")
+                self.systems_tree.column("#0", width=280, anchor="w")
+                self.systems_tree.column("coverage", width=120, anchor="center")
+                self.systems_tree.column("section", width=140, anchor="w")
+                self.systems_tree.column("games", width=70, anchor="e")
+                self.systems_tree.column("size", width=110, anchor="e")
+                self.systems_tree.column("date", width=100, anchor="w")
                 self.systems_tree.grid(row=2, column=0, sticky="nsew")
                 self.systems_tree.bind("<Double-1>", lambda _event: self.open_selected_system())
+                self.systems_tree.bind("<ButtonRelease-1>", lambda e: self._on_systems_sort(e) if e.x < 0 or self.systems_tree.identify_region(e.x, e.y) == "heading" else None)
                 actions = tk.Frame(frame, bg=UI_COLOR_BG)
                 actions.grid(row=3, column=0, sticky="ew", pady=(14, 0))
                 self.button(actions, "Ouvrir", self.open_selected_system, kind="accent", width=14).pack(side="left", padx=(0, 10))
                 self.button(actions, "Rafraichir l'index", self.start_catalog_index, width=18).pack(side="left")
                 self.refresh_systems()
 
-            def set_family_filter(self, value):
-                self.family_filter = value
-                self.refresh_systems()
+            def _on_systems_sort(self, event):
+                region = self.systems_tree.identify_region(event.x, event.y)
+                if region != "heading":
+                    return
+                col = self.systems_tree.identify_column(event.x)
+                items = [(self.systems_tree.set(item, col), item) for item in self.systems_tree.get_children("")]
+                col_key = {1: "system_name", 2: "games", 3: "size", 4: "date"}.get(int(col.replace("#", "")), "system_name")
+                self._systems_sort_reverse = not getattr(self, "_systems_sort_reverse", True)
+                if col_key == "size":
+                    items.sort(key=lambda x: self._parse_size(x[0]), reverse=self._systems_sort_reverse)
+                elif col_key == "games":
+                    items.sort(key=lambda x: int(x[0] or 0), reverse=self._systems_sort_reverse)
+                else:
+                    items.sort(reverse=self._systems_sort_reverse)
+                for idx, (_, item) in enumerate(items):
+                    self.systems_tree.move(item, "", idx)
+
+            def _parse_size(self, val: str) -> int:
+                val = (val or "").strip().lower()
+                if val.endswith("tb"):
+                    return int(float(val[:-2]) * 1024 * 1024 * 1024 * 1024)
+                if val.endswith("gb"):
+                    return int(float(val[:-2]) * 1024 * 1024 * 1024)
+                if val.endswith("mb"):
+                    return int(float(val[:-2]) * 1024 * 1024)
+                if val.endswith("kb"):
+                    return int(float(val[:-2]) * 1024)
+                try:
+                    return int(float(val))
+                except ValueError:
+                    return 0
+
+            def _coverage_badge(self, item):
+                if item.get("verified_local", 0) >= item.get("game_count", 1):
+                    return "LOCAL"
+                if item.get("successes", 0) >= 1:
+                    return "OK"
+                if item.get("candidates", 0) >= 1:
+                    return "PARTIEL"
+                return "A MAPPER"
 
             def refresh_systems(self):
                 if not self.systems_tree:
                     return
                 self.systems_tree.delete(*self.systems_tree.get_children())
-                systems = list_catalog_systems({"query": self.system_query_var.get(), "section": self.family_filter})
+                systems = system_coverage_data()
+                query = self.system_query_var.get().strip().lower()
+                family = (self.family_filter or "all").lower()
                 for item in systems:
-                    self.systems_tree.insert("", "end", iid=item["system_id"], text=item["system_name"], values=(item["game_count"], format_bytes(item["total_size"]), item["dat_label"]))
-                self.status_var.set(f"{len(systems)} systeme(s) affiche(s)")
+                    if query and query not in f"{item['system_name']} {item['dat_section']}".lower():
+                        continue
+                    if family != "all" and family not in item["dat_section"].lower():
+                        continue
+                    badge = self._coverage_badge(item)
+                    badge_color = dict(_COVERAGE_BADGES).get(badge, UI_COLOR_TEXT_SUB)
+                    self.systems_tree.insert("", "end", iid=item["system_id"], text=item["system_name"], values=(badge, item["dat_section"], item["game_count"], format_bytes(item["total_size"]), item["dat_date"]), tags=(f"badge_{badge}",))
+                for badge, _color in _COVERAGE_BADGES:
+                    try:
+                        self.systems_tree.tag_configure(f"badge_{badge}", foreground=_color)
+                    except Exception:
+                        pass
+                self.status_var.set(f"{len(self.systems_tree.get_children())} systeme(s) affiche(s)")
 
             def open_selected_system(self):
                 if not self.systems_tree:

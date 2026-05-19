@@ -1017,6 +1017,57 @@ def dashboard_stats(path: str | Path | None = None) -> dict:
         }
 
 
+def system_coverage_data(path: str | Path | None = None) -> list[dict]:
+    """Retourne une liste de stats de couverture par systeme (ID + comptage providers candidats/valides)."""
+    with open_local_database(path) as conn:
+        provider_counts = {
+            "candidates": {},
+            "successes": {},
+        }
+        for kind, table in provider_counts.items():
+            if table == "candidates":
+                rows = conn.execute(
+                    "SELECT s.system_id, COUNT(DISTINCT pc.provider) AS count "
+                    "FROM systems s LEFT JOIN provider_candidates pc ON pc.system_id = s.system_id "
+                    "WHERE pc.status != 'expired' "
+                    "GROUP BY s.system_id"
+                ).fetchall()
+            else:
+                rows = conn.execute(
+                    "SELECT s.system_id, COUNT(DISTINCT ps.provider) AS count "
+                    "FROM systems s LEFT JOIN provider_successes ps ON ps.system_id = s.system_id "
+                    "GROUP BY s.system_id"
+                ).fetchall()
+            for row in rows:
+                provider_counts[kind][row["system_id"]] = row["count"]
+        verified = {}
+        verified_rows = conn.execute(
+            "SELECT s.system_id, COUNT(DISTINCT ps.game_id) AS count "
+            "FROM systems s LEFT JOIN provider_successes ps ON ps.system_id = s.system_id "
+            "GROUP BY s.system_id"
+        ).fetchall()
+        for row in verified_rows:
+            verified[row["system_id"]] = row["count"]
+        system_rows = conn.execute(
+            "SELECT system_id, system_name, dat_section, game_count, total_size, dat_mtime FROM systems ORDER BY dat_section, system_name"
+        ).fetchall()
+        result = []
+        for row in system_rows:
+            sid = row["system_id"]
+            result.append({
+                "system_id": sid,
+                "system_name": row["system_name"],
+                "dat_section": row["dat_section"],
+                "game_count": row["game_count"],
+                "total_size": row["total_size"],
+                "dat_date": time.strftime("%Y-%m-%d", time.localtime(row["dat_mtime"])) if row["dat_mtime"] > 0 else "",
+                "candidates": provider_counts["candidates"].get(sid, 0),
+                "successes": provider_counts["successes"].get(sid, 0),
+                "verified_local": verified.get(sid, 0),
+            })
+    return result
+
+
 def database_status(path: str | Path | None = None) -> dict:
     """Retourne un resume de la base locale."""
     target = local_database_path(path)
@@ -1058,4 +1109,5 @@ __all__ = [
     "list_download_history",
     "database_status",
     "dashboard_stats",
+    "system_coverage_data",
 ]
