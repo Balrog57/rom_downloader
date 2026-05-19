@@ -911,6 +911,7 @@ def database_status(path: str | Path | None = None) -> dict:
             "roms": conn.execute("SELECT COUNT(*) FROM roms").fetchone()[0],
             "provider_successes": conn.execute("SELECT COUNT(*) FROM provider_successes").fetchone()[0],
             "provider_candidates": conn.execute("SELECT COUNT(*) FROM provider_candidates").fetchone()[0],
+            "provider_metrics": conn.execute("SELECT COUNT(*) FROM provider_metrics").fetchone()[0],
             "download_jobs": conn.execute("SELECT COUNT(*) FROM download_jobs").fetchone()[0],
             "download_queue_items": conn.execute("SELECT COUNT(*) FROM download_queue_items").fetchone()[0],
             "download_attempts": conn.execute("SELECT COUNT(*) FROM download_attempts").fetchone()[0],

@@ -127,6 +127,10 @@ Exemples:
         print(f"Jeux: {status['games']}")
         print(f"ROMs: {status['roms']}")
         print(f"Providers valides: {status['provider_successes']}")
+        print(f"Providers candidats: {status['provider_candidates']}")
+        print(f"Metriques providers: {status['provider_metrics']}")
+        print(f"Jobs: {status['download_jobs']}")
+        print(f"File: {status['download_queue_items']}")
         print(f"Historique: {status['download_attempts']}")
         return
 
