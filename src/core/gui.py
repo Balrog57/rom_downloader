@@ -97,9 +97,6 @@ def gui_mode():
         from tkinter import filedialog, messagebox, ttk
 
         from . import _facade
-        self.download_job_id = ""
-        self.circuit_breaker = SourceCircuitBreaker()
-        self.downloads_tab = tk.StringVar(value="queue")
 
         class App:
             def __init__(self, root):
@@ -113,6 +110,9 @@ def gui_mode():
                 self.source_order = list(self.preferences.get("source_order", []))
                 self.source_policies = dict(self.preferences.get("source_policies", {}))
                 self.provider_stats = dict(self.preferences.get("provider_stats", {}))
+                self.download_job_id = ""
+                self.circuit_breaker = SourceCircuitBreaker()
+                self.downloads_tab = tk.StringVar(value="queue")
                 self.rom_folder = tk.StringVar(value=self.preferences.get("rom_folder", ""))
                 self.output_root_by_dat_var = tk.BooleanVar(value=bool(self.preferences.get("output_root_by_dat", False)))
                 self.clean_torrentzip_var = tk.BooleanVar(value=bool(self.preferences.get("clean_torrentzip", False)))
@@ -311,7 +311,9 @@ def gui_mode():
 
                 filters = tk.Frame(frame, bg=UI_COLOR_BG)
                 filters.grid(row=1, column=0, sticky="ew", pady=(18, 12))
-                for label, value in _FAMILY_FILTERS:
+                sections = list_catalog_sections()
+                filter_items = [("Tous", "all")] + [(s.replace("-", " ").title(), s) for s in sections]
+                for label, value in filter_items:
                     w = max(12, min(22, len(label) + 2))
                     self.button(filters, label, lambda v=value: self.set_family_filter(v), width=w).pack(side="left", padx=(0, 5))
 
@@ -456,6 +458,10 @@ def gui_mode():
                 self.games_filter_var.set(value)
                 self.refresh_games()
 
+            def set_family_filter(self, value):
+                self.family_filter = value
+                self.refresh_systems()
+
             def refresh_games(self):
                 if not self.games_tree:
                     return
@@ -491,15 +497,30 @@ def gui_mode():
 
             def _game_error_summary(self, game_ids: list[str]) -> dict:
                 from .local_database import open_local_database as _opendb
+                if not game_ids:
+                    return {}
                 result = {}
                 with _opendb() as conn:
-                    for gid in game_ids:
-                        row = conn.execute(
-                            "SELECT status, error_code, detail FROM download_attempts WHERE game_id=? ORDER BY created_at DESC LIMIT 1",
-                            (gid,),
-                        ).fetchone()
-                        if row:
-                            result[gid] = {"status": row["status"], "detail": row.get("detail", "") or row.get("error_code", ""), "valid": row["status"] in ("downloaded", "completed")}
+                    placeholders = ",".join("?" * len(game_ids))
+                    rows = conn.execute(
+                        f"""
+                        SELECT game_id, status, error_code, detail
+                        FROM (
+                            SELECT game_id, status, error_code, detail,
+                                   ROW_NUMBER() OVER (PARTITION BY game_id ORDER BY created_at DESC) AS rn
+                            FROM download_attempts
+                            WHERE game_id IN ({placeholders})
+                        )
+                        WHERE rn = 1
+                        """,
+                        game_ids,
+                    ).fetchall()
+                    for row in rows:
+                        result[row["game_id"]] = {
+                            "status": row["status"],
+                            "detail": row.get("detail", "") or row.get("error_code", ""),
+                            "valid": row["status"] in ("downloaded", "completed"),
+                        }
                 return result
 
             def enqueue_selected_game(self):
@@ -647,6 +668,48 @@ def gui_mode():
                     verb = {"pause": "Pause", "resume": "Reprise", "cancel": "Annulation"}
                     messagebox.showinfo("Info", f"{verb.get(action, action)} {'OK' if ok else 'ECHEC'}")
                 self._refresh_downloads_tree()
+
+            def build_history_page(self):
+                frame = self.page_frame()
+                top = tk.Frame(frame, bg=UI_COLOR_BG)
+                top.grid(row=0, column=0, sticky="ew")
+                top.columnconfigure(1, weight=1)
+                tk.Label(top, text="Historique", bg=UI_COLOR_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 24, "bold")).grid(row=0, column=0, sticky="w")
+                self.entry(top, self.history_query_var).grid(row=0, column=1, sticky="ew", padx=16, ipady=7)
+                self.button(top, "Filtrer", self.refresh_history, kind="accent", width=12).grid(row=0, column=2)
+
+                self.history_tree = ttk.Treeview(frame, style="Catalog.Treeview", columns=("date", "system", "provider", "status"), show="tree headings")
+                self.history_tree.heading("#0", text="Jeu")
+                for col, label, width, anchor in [
+                    ("date", "Date", 160, "w"),
+                    ("system", "Systeme", 220, "w"),
+                    ("provider", "Provider", 120, "w"),
+                    ("status", "Statut", 100, "w"),
+                ]:
+                    self.history_tree.heading(col, text=label)
+                    self.history_tree.column(col, width=width, anchor=anchor)
+                self.history_tree.column("#0", width=320, anchor="w")
+                self.history_tree.grid(row=2, column=0, sticky="nsew", pady=(18, 0))
+                self.refresh_history()
+
+            def refresh_history(self):
+                if not self.history_tree:
+                    return
+                self.history_tree.delete(*self.history_tree.get_children())
+                query = self.history_query_var.get().strip().lower()
+                shown = 0
+                for item in list_download_history(limit=500):
+                    haystack = " ".join(str(item.get(key, "")) for key in ("game_name", "system_name", "provider", "status", "date")).lower()
+                    if query and query not in haystack:
+                        continue
+                    self.history_tree.insert(
+                        "",
+                        "end",
+                        text=item.get("game_name", ""),
+                        values=(item.get("date", ""), item.get("system_name", ""), item.get("provider", ""), item.get("status", "")),
+                    )
+                    shown += 1
+                self.status_var.set(f"{shown} entree(s) d'historique affichee(s)")
 
             def build_sources_page(self):
                 frame = self.page_frame()

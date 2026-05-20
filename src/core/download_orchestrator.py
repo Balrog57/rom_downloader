@@ -260,7 +260,7 @@ def attempt_download_from_resolved_provider(game_info: dict, output_folder: str,
                             confirm_url = action if action.startswith('http') else urljoin(download_url, action)
                         if confirm_url:
                             import re as _re
-                            virus_scan_match = _re.search(r'href="([^"]*scan[^"]*)"', resp.text, re.IGNORECASE) if 'resp' in dir() else None
+                            virus_scan_match = _re.search(r'href="([^"]*scan[^"]*)"', gresp.text, re.IGNORECASE)
                             with session.get(confirm_url, stream=True, allow_redirects=True, timeout=download_timeout) as dresp:
                                 dresp.raise_for_status()
                                 total = int(dresp.headers.get('content-length', 0))
@@ -568,7 +568,7 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
             })
             if circuit_breaker:
                 circuit_breaker.record_failure(source, error_type=error_code)
-            suffix = f": {detail[:180]}" if detail else ""
+            suffix = f": {detail_str[:180]}" if detail_str else ""
             log_func(f"  Provider {source} erreur reseau{suffix}")
             log_func("  Recherche d'un autre provider...")
             current_game = next_provider_candidate()

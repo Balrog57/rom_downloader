@@ -211,6 +211,8 @@ def init_local_database(path: str | Path | None = None, conn: sqlite3.Connection
         CREATE INDEX IF NOT EXISTS idx_download_attempts_created ON download_attempts(created_at);
         CREATE INDEX IF NOT EXISTS idx_download_attempts_status ON download_attempts(status);
         CREATE INDEX IF NOT EXISTS idx_download_attempts_job ON download_attempts(job_id);
+        CREATE INDEX IF NOT EXISTS idx_download_attempts_game ON download_attempts(game_id);
+        CREATE INDEX IF NOT EXISTS idx_download_attempts_system ON download_attempts(system_id);
         CREATE INDEX IF NOT EXISTS idx_download_jobs_status ON download_jobs(status, updated_at);
         CREATE TABLE IF NOT EXISTS provider_metrics (
             provider TEXT PRIMARY KEY,

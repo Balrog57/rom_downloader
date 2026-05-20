@@ -274,36 +274,50 @@ def list_catalog_games(system_id: str, query: str = "", letter: str = "all",
             "SELECT * FROM games WHERE system_id = ? ORDER BY game_name COLLATE NOCASE",
             (system_id,),
         ).fetchall()
-        for row in rows:
-            rom_rows = conn.execute(
-                "SELECT name, size, crc, md5, sha1 FROM roms WHERE game_id = ? ORDER BY position",
-                (row["game_id"],),
-            ).fetchall()
-            provider_rows = conn.execute(
-                "SELECT * FROM provider_successes WHERE game_id = ? ORDER BY created_at DESC",
-                (row["game_id"],),
-            ).fetchall()
-            providers = []
-            for provider in provider_rows:
+        if not rows:
+            return []
+        game_ids = [row["game_id"] for row in rows]
+        placeholders = ",".join("?" * len(game_ids))
+        rom_rows = conn.execute(
+            f"SELECT name, size, crc, md5, sha1, game_id, position FROM roms WHERE game_id IN ({placeholders}) ORDER BY game_id, position",
+            game_ids,
+        ).fetchall()
+        roms_by_game: dict[str, list[dict]] = {}
+        for rom in rom_rows:
+            gid = rom["game_id"]
+            if gid not in roms_by_game:
+                roms_by_game[gid] = []
+            roms_by_game[gid].append(dict(rom))
+        provider_rows = conn.execute(
+            f"SELECT * FROM provider_successes WHERE game_id IN ({placeholders}) ORDER BY game_id, created_at DESC",
+            game_ids,
+        ).fetchall()
+        providers_by_game: dict[str, list[dict]] = {}
+        for provider in provider_rows:
+            gid = provider["game_id"]
+            if gid not in providers_by_game:
+                providers_by_game[gid] = []
+            metadata = {}
+            try:
+                metadata = json.loads(provider["metadata_json"] or "{}")
+            except Exception:
                 metadata = {}
-                try:
-                    metadata = json.loads(provider["metadata_json"] or "{}")
-                except Exception:
-                    metadata = {}
-                item = dict(metadata)
-                item.update({
-                    "source": provider["provider"],
-                    "download_url": provider["download_url"],
-                    "torrent_url": provider["torrent_url"],
-                    "page_url": provider["page_url"],
-                    "archive_org_identifier": provider["archive_org_identifier"],
-                    "archive_org_filename": provider["archive_org_filename"],
-                    "download_filename": provider["download_filename"],
-                    "downloaded_path": provider["file_path"],
-                    "created_at": provider["created_at"],
-                })
-                providers.append(item)
-            roms = [dict(rom) for rom in rom_rows]
+            item = dict(metadata)
+            item.update({
+                "source": provider["provider"],
+                "download_url": provider["download_url"],
+                "torrent_url": provider["torrent_url"],
+                "page_url": provider["page_url"],
+                "archive_org_identifier": provider["archive_org_identifier"],
+                "archive_org_filename": provider["archive_org_filename"],
+                "download_filename": provider["download_filename"],
+                "downloaded_path": provider["file_path"],
+                "created_at": provider["created_at"],
+            })
+            providers_by_game[gid].append(item)
+        for row in rows:
+            roms = roms_by_game.get(row["game_id"], [])
+            providers = providers_by_game.get(row["game_id"], [])
             item = _row_to_game(row, providers, roms)
             name = item["game_name"].lower()
             if query and query not in name:

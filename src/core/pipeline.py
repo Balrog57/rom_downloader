@@ -364,7 +364,6 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
             if dry_run:
                 print("\n(Simulation - aucun fichier telecharge)")
 
-    if missing_games:
         print("\n" + "=" * 60)
         print("Resume:")
         print(f"  Telecharges: {result['downloaded']}")

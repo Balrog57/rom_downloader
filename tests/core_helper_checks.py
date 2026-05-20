@@ -798,6 +798,52 @@ def main() -> None:
     del cb4
     del adapt_sources_for_circuit_state
 
+    with tempfile.TemporaryDirectory() as _tmp_dir:
+        _tmp_path = Path(_tmp_dir)
+        _dat_root = _tmp_path / "dat"
+        _catalog_root = _tmp_path / "db"
+        _section = _dat_root / "No-Intro"
+        _section.mkdir(parents=True)
+        (_section / "Nintendo - Test System.dat").write_text(
+            """<?xml version="1.0"?>
+<datafile>
+  <header><name>Nintendo - Test System</name><url>https://no-intro.org</url></header>
+  <game name="Alpha Game (USA)">
+    <rom name="Alpha Game (USA).bin" size="4" crc="1a2b3c4d" md5="0123456789abcdef0123456789abcdef" sha1="0123456789abcdef0123456789abcdef01234567" />
+  </game>
+</datafile>
+""",
+            encoding="utf-8",
+        )
+        build_catalog_index(_dat_root, force=True, catalog_dir=_catalog_root)
+
+        from src.core.provider_mapper import map_all_providers, format_map_all_report
+        import src.core.provider_mapper as _pm
+        def _fake_resolver(game, sources, session, system_name, dat_profile, cache=None):
+            result = [
+                {**game, "source": "LoLROMs", "type": "lolroms", "download_url": "https://fake.invalid/a.zip", "download_filename": game.get("primary_rom", "a.zip")}
+            ]
+            return result, [], False
+
+        _orig_mapping = _pm.resolve_system_mapping
+        _pm.resolve_system_mapping = lambda sn, p="lolroms": "mapped-slug"
+        try:
+            report = map_all_providers(
+                samples_per_system=1,
+                providers_filter=["lolroms"],
+                log_func=lambda _: None,
+                resolver=_fake_resolver,
+                max_systems=3,
+                catalog_dir=_catalog_root,
+            )
+            assert_true(report["systems_processed"] >= 1, "mapper must process at least 1 system")
+            assert_true(report["systems_with_candidates"] >= 1, f"mapper must find providers: {report}")
+            assert_true(report["total_candidates"] >= 1, "mapper must generate candidates")
+            formatted = format_map_all_report(report)
+            assert_true("Avec au moins 1 provider" in formatted, "mapper report must show provider count")
+        finally:
+            _pm.resolve_system_mapping = _orig_mapping
+
     print("core helper checks ok")
 
 

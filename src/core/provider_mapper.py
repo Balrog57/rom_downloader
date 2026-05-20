@@ -28,13 +28,16 @@ def map_all_providers(
     report_every: int = 10,
     dry_run: bool = False,
     log_func=print,
+    resolver=None,
+    max_systems: int | None = None,
+    catalog_dir=None,
 ) -> dict:
     """Parcourt tous les systemes, sonde les providers mappables, alimente SQLite.
 
     Retourne un resume: combien de systemes couverts, combien de candidats generes,
     et la liste des systemes sans aucun provider fonctionnel.
     """
-    all_systems = list_catalog_systems()
+    all_systems = list_catalog_systems(catalog_dir=catalog_dir)
     all_sources = get_default_sources()
     all_providers = sorted({
         source.get("type", "") for source in all_sources
@@ -43,12 +46,13 @@ def map_all_providers(
     if providers_filter:
         all_providers = [p for p in all_providers if p in providers_filter]
 
-    mapping_status = build_mapping_status(provider_types=all_providers)
+    mapping_status = {} if resolver else build_mapping_status(provider_types=all_providers)
 
     session = requests.Session()
     session.headers.update({
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
     })
+    resolve = resolver or resolve_game_sources_with_cache
 
     total_systems = len(all_systems)
     summary = {
@@ -66,6 +70,8 @@ def map_all_providers(
     systems_with_providers: dict[str, set] = {}
 
     for index, system in enumerate(all_systems):
+        if max_systems is not None and index >= max_systems:
+            break
         sys_name = system["system_name"]
         sys_id = system["system_id"]
 
@@ -78,7 +84,7 @@ def map_all_providers(
             continue
 
         sources = prepare_sources_for_profile(all_sources, dat_profile)
-        games = list_catalog_games(sys_id)
+        games = list_catalog_games(sys_id, catalog_dir=catalog_dir)
         if samples_per_system and len(games) > samples_per_system:
             games = games[:samples_per_system]
 
@@ -98,7 +104,7 @@ def map_all_providers(
                     "system_id": sys_id,
                 })
                 try:
-                    found, _unavailable, _cache_hit = resolve_game_sources_with_cache(
+                    found, _unavailable, _cache_hit = resolve(
                         enriched,
                         [s for s in sources if s.get("type") == provider_type and s.get("enabled", True)],
                         session,
@@ -109,7 +115,7 @@ def map_all_providers(
                 except Exception:
                     continue
                 if found:
-                    stored = record_provider_candidates(game.get("game_id", ""), found)
+                    stored = record_provider_candidates(game.get("game_id", ""), found, path=catalog_dir)
                     candidates_for_system += stored
                     if stored:
                         provider_found_for_system.add(provider_type)
@@ -119,6 +125,7 @@ def map_all_providers(
                                 "resolved",
                                 0.0,
                                 0,
+                                path=catalog_dir,
                             )
 
         systems_with_providers[sys_id] = provider_found_for_system
