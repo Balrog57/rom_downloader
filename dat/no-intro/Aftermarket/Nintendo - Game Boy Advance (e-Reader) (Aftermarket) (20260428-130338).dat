@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<id>41</id>
+		<name>Nintendo - Game Boy Advance (e-Reader) (Aftermarket)</name>
+		<description>Nintendo - Game Boy Advance (e-Reader) (Aftermarket)</description>
+		<version>20260428-130338</version>
+		<author>Arctic Circle System, Aringon, C. V. Reynolds, Gefflon, Hiccup, MeguCocoa, Psychofox11, rarenight, relax, root, sCZther, xprism, xuom2</author>
+		<homepage>No-Intro</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"/>
+	</header>
+	<game name="Bomb Hunter (USA) (Aftermarket) (Unl)" id="3262">
+		<category>Games</category>
+		<description>Bomb Hunter (USA) (Aftermarket) (Unl)</description>
+		<rom name="Bomb Hunter (USA) (Aftermarket) (Unl) (Strip 1).raw" size="2912" crc="56b21657" md5="ed5db59b14fefac57b5c0dea16a6df1d" sha1="ae28b7cc1f9449f47cf4416e3915c8b64a53a7e4" sha256="9cff851ed6c60083e1a828221ae158854322e948a183eed3d2934fa6538b09fe" status="verified"/>
+		<rom name="Bomb Hunter (USA) (Aftermarket) (Unl) (Strip 2).raw" size="2912" crc="9ca91f1f" md5="b19e8a60c02edc87fbf0137d4e25480d" sha1="a1ab1b2699b2bc7fd80756ce3101fe5b61d4b16b" sha256="982c8f1797cb2e5d036efd06ec462609e3117f9e5bfca7225b5114c4cea8ac5e" status="verified"/>
+	</game>
+	<game name="Bomb Hunter (Japan) (Aftermarket) (Unl)" id="3263" cloneofid="3262">
+		<category>Games</category>
+		<description>Bomb Hunter (Japan) (Aftermarket) (Unl)</description>
+		<rom name="Bomb Hunter (Japan) (Aftermarket) (Unl) (Strip 1).raw" size="2912" crc="3e67030b" md5="e28123da4ef08d972114c595ff3ed31a" sha1="ebb714ea20def1cde0d1d42d1e8b42a70524dae8" sha256="515d327cf4b600ffa9a0a2455e0223550170e6c59a4c83d2f090f70df4d2be36" status="verified"/>
+		<rom name="Bomb Hunter (Japan) (Aftermarket) (Unl) (Strip 2).raw" size="2912" crc="47e743ca" md5="80a9e70fc860eaa56b47b51b13fac238" sha1="9553a8e577189976c58a0ed5aa6780d7e569c0c3" sha256="f994298c0391c6fcdf6e95871c7d79be8cdca4929b76bb62278cbe8583454dba" status="verified"/>
+	</game>
+	<game name="Solitaire (USA) (Beta) (Aftermarket) (Unl)" id="3255" cloneofid="3260">
+		<category>Games</category>
+		<description>Solitaire (USA) (Beta) (Aftermarket) (Unl)</description>
+		<rom name="Solitaire (USA) (Beta) (Aftermarket) (Unl) (Strip 1).raw" size="2912" crc="872855d1" md5="d7908179f168b77a7b1d33cbd7df1bd0" sha1="cce3722868b05e3a80e1f67f3b4dc437d0a7ccd4" sha256="d635805386683c9871097e3091a721f9b7e8873f9cb49e35a6c759402e2792d0"/>
+		<rom name="Solitaire (USA) (Beta) (Aftermarket) (Unl) (Strip 2).raw" size="2912" crc="73f96308" md5="647a4dc969dda1e009ddd3943ebb0df9" sha1="754af0098cd5aca89d6033a4e362dbd2c2d53eaa" sha256="655ebbfe613a243e35db5b674af8c102229b0c283bdae37b33a132b99574560e"/>
+	</game>
+	<game name="Solitaire (USA) (96ad620) (GitHub) (Aftermarket) (Unl)" id="3256" cloneofid="3260">
+		<category>Games</category>
+		<description>Solitaire (USA) (96ad620) (GitHub) (Aftermarket) (Unl)</description>
+		<rom name="Solitaire (USA) (96ad620) (GitHub) (Aftermarket) (Unl) (Strip 1).raw" size="2912" crc="e2a9e0b8" md5="1d4daad33f94372494aa19e84ee4e260" sha1="611e31be8acbea71c5c45523c0980ba3e23101db" sha256="a094146628e35e0173759f1b8ab3ab82b7650eee066b289f4b925452b1e9e230" status="verified"/>
+		<rom name="Solitaire (USA) (96ad620) (GitHub) (Aftermarket) (Unl) (Strip 2).raw" size="2912" crc="6efd1e72" md5="42f76589fcf7a9acd1d67a09bf64730f" sha1="f6aa2737349655e1c2eb78c3310f9c570798ee32" sha256="5242bae3d9d7434bbe6252c81fd2987abec15bb90d46459043949dd0be117b51" status="verified"/>
+	</game>
+	<game name="Solitaire (Japan) (Beta) (Aftermarket) (Unl)" id="3257" cloneofid="3260">
+		<category>Games</category>
+		<description>Solitaire (Japan) (Beta) (Aftermarket) (Unl)</description>
+		<rom name="Solitaire (Japan) (Beta) (Aftermarket) (Unl) (Strip 1).raw" size="2912" crc="e5421de6" md5="fb707195af1d17d88fcdb04924192fad" sha1="74622d0a91fd70a481c4b85361c547c93408be5d" sha256="7e08d0e5deb444a3c60f27edc0bdb12231025d582575dbdd582b5405055afd06"/>
+		<rom name="Solitaire (Japan) (Beta) (Aftermarket) (Unl) (Strip 2).raw" size="2912" crc="ff009a4b" md5="0ac40436d70075043794e23352d0eed2" sha1="8aebbf8455e084a6ef48b5af58c0bd9f3331e6b2" sha256="9d2692349a389455e4c6677fcb250cc5960f2e08e7440c1d9f1c5b063b059f2f"/>
+	</game>
+	<game name="Solitaire (Japan) (96ad620) (GitHub) (Aftermarket) (Unl)" id="3258" cloneofid="3260">
+		<category>Games</category>
+		<description>Solitaire (Japan) (96ad620) (GitHub) (Aftermarket) (Unl)</description>
+		<rom name="Solitaire (Japan) (96ad620) (GitHub) (Aftermarket) (Unl) (Strip 1).raw" size="2912" crc="ddcc9bf9" md5="fbc9da065763ff82db63859aae6cd428" sha1="e78e044689b351809e18ca1af8b650c48227b1f9" sha256="f8ba373af2a0093e546a4c06c6429073a407ae67f0629dd4689f2cb0d7e34cd4"/>
+		<rom name="Solitaire (Japan) (96ad620) (GitHub) (Aftermarket) (Unl) (Strip 2).raw" size="2912" crc="94bfd647" md5="7f91b264fad31662a62c3c9a9784a752" sha1="78457658c4ff35044f18ca6e99b5881f01567ca4" sha256="2a903d1ba47bb572b95320e9c74b22f69b6e05014d8e1ead49c7475cf4874434"/>
+	</game>
+	<game name="Solitaire (USA) (47b5771) (Beta) (GitHub) (Aftermarket) (Unl)" id="3283" cloneofid="3260">
+		<description>Solitaire (USA) (47b5771) (Beta) (GitHub) (Aftermarket) (Unl)</description>
+		<rom name="Solitaire (USA) (47b5771) (Beta) (GitHub) (Aftermarket) (Unl) (Strip 1).raw" size="2912" crc="5b853ffb" md5="9aa7ab2f2b3f146073daeb04e764477f" sha1="617f89674f5389d57bfd18a54ea665acbb295c54" sha256="9adad1e18f44f0010996fc82e91f46d4bbcc8a0b00dd6b52c5ea24ab1dbd3e76"/>
+		<rom name="Solitaire (USA) (47b5771) (Beta) (GitHub) (Aftermarket) (Unl) (Strip 2).raw" size="2912" crc="6ed3ffc2" md5="70e62fec4f3cf80fdb7bcc38efab6aa9" sha1="5512ccccdbdc78dfe443e07f53f295c1ca2976f0" sha256="3fa0819acbf6b143ffb40689e4448dd01676c4c39eba0a456ce31a9cf2ed9089"/>
+	</game>
+	<game name="Solitaire (Japan) (47b5771) (Beta) (GitHub) (Aftermarket) (Unl)" id="3284" cloneofid="3260">
+		<category>Games</category>
+		<description>Solitaire (Japan) (47b5771) (Beta) (GitHub) (Aftermarket) (Unl)</description>
+		<rom name="Solitaire (Japan) (47b5771) (Beta) (GitHub) (Aftermarket) (Unl) (Strip 1).raw" size="2912" crc="3c2ac15a" md5="47342b9a3c4a9de024ec45977ea4439d" sha1="73d8ebe5f49c0a6579cca724fe3a5a94babc06fc" sha256="74d79832273476e43a9c57e27934d66d034cdef26dfa2977485179c3844002ad"/>
+		<rom name="Solitaire (Japan) (47b5771) (Beta) (GitHub) (Aftermarket) (Unl) (Strip 2).raw" size="2912" crc="c964fc48" md5="0c6e2daca9456e9da58f30d085d3c416" sha1="874f594dba2cf15ea6f2b6949e2b9d27731d9d04" sha256="aaf04e62cbc3bc2cbb93809bbcc36ebdb14451b08b98301ef92230376f2ca3b9"/>
+	</game>
+	<game name="Solitaire (USA) (1c7efea) (Beta) (GitHub) (Aftermarket) (Unl)" id="3285" cloneofid="3260">
+		<category>Games</category>
+		<description>Solitaire (USA) (1c7efea) (Beta) (GitHub) (Aftermarket) (Unl)</description>
+		<rom name="Solitaire (USA) (1c7efea) (Beta) (GitHub) (Aftermarket) (Unl) (Strip 1).raw" size="2912" crc="a06b36a9" md5="176e348c583823ef59e04b2712526e2c" sha1="e45c363da50c9c466892e814657c7c529946e7d0" sha256="ce8d315516334a24c7187f9bd2df579d5ec86ef41c459d1b869080edface5f68"/>
+		<rom name="Solitaire (USA) (1c7efea) (Beta) (GitHub) (Aftermarket) (Unl) (Strip 2).raw" size="2912" crc="d77d2d17" md5="412aa4eb2ba24ea23bddcffffa5896f9" sha1="bfb46cd8194e65812fa9de6cb0c407872a4957f3" sha256="6d12d7f06b97c73ba72d87cd21b85c08bbae169c0b6ef599e81950b70b3bd908"/>
+	</game>
+	<game name="Solitaire (Japan) (1c7efea) (Beta) (GitHub) (Aftermarket) (Unl)" id="3286" cloneofid="3260">
+		<category>Games</category>
+		<description>Solitaire (Japan) (1c7efea) (Beta) (GitHub) (Aftermarket) (Unl)</description>
+		<rom name="Solitaire (Japan) (1c7efea) (Beta) (GitHub) (Aftermarket) (Unl) (Strip 1).raw" size="2912" crc="c9814ca4" md5="a9cea6e0c045c0fd51077dce1c64267b" sha1="2b4a6206e880ad6d9bde03834e3b487ec50f9a89" sha256="9a1a7d96dce84f326bcd18ba1bcc47608d72e94499b317a9d7dce3f4d9b35952"/>
+		<rom name="Solitaire (Japan) (1c7efea) (Beta) (GitHub) (Aftermarket) (Unl) (Strip 2).raw" size="2912" crc="33ebd8cc" md5="ba8d19c05cdd90f163144c52afb535ec" sha1="f2d316b9715c6f33c357f1cdec14f4e07f0ba790" sha256="a3d7214736f2d38f1d0e87e3bea6b3c27820b1028dbc57a92078e1144d6ccd15"/>
+	</game>
+</datafile>

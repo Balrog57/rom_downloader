@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<id>475</id>
+		<name>Non-Redump - Bandai - Playdia Quick Interactive System</name>
+		<description>Non-Redump - Bandai - Playdia Quick Interactive System</description>
+		<subset>Non-Redump</subset>
+		<version>20260425-151508</version>
+		<author>NovaAurora</author>
+		<homepage>No-Intro</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"/>
+	</header>
+	<game name="Jump Gentei Special - 4 Dai Hero Battle Taizen (Japan)" id="0001">
+		<description>Jump Gentei Special - 4 Dai Hero Battle Taizen (Japan)</description>
+		<rom name="Jump Gentei Special - 4 Dai Hero Battle Taizen (Japan).cue" size="260" crc="4c4c7a61" sha1="3480caef1d81d927e942e286a392ea3c62bc0402"/>
+		<rom name="Jump Gentei Special - 4 Dai Hero Battle Taizen (Japan) (Track 1).bin" size="9878400" crc="12640c55" md5="ccdf3ee88c10163285dd1004dc90086c" sha1="35660f1a073a39b8ab84f15e52ff8a3eb16acb01" sha256="ec3e30306740e2b6682cb56d05745ee6ba57f053bb2075e9562008bd80baa798"/>
+		<rom name="Jump Gentei Special - 4 Dai Hero Battle Taizen (Japan) (Track 2).bin" size="439812240" crc="ee646ccd" md5="cea4cd949861cae67f115a19618287ef" sha1="ba3092b5f81c9479adb9f2b5825e17ad7c8662e9" sha256="f4d6b769dea114f67b1fb5743c22bba568bfa8dbcf0502ec39a66a857dae11cc"/>
+	</game>
+</datafile>

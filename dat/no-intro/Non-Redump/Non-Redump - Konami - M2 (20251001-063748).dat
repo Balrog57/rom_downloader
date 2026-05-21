@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<id>468</id>
+		<name>Non-Redump - Konami - M2</name>
+		<description>Non-Redump - Konami - M2</description>
+		<subset>Non-Redump</subset>
+		<version>20251001-063748</version>
+		<author>Schrodinger</author>
+		<homepage>No-Intro</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"/>
+	</header>
+	<game name="Total Vice (Asia) (AAC)" id="0002">
+		<category>Games</category>
+		<description>Total Vice (Asia) (AAC)</description>
+		<rom name="Total Vice (Asia) (AAC).cue" size="1367" crc="a03bccf8" sha1="aa0477626cc79466e5b27af597b7e587cd4ef3e7"/>
+		<rom name="Total Vice (Asia) (AAC).bin" size="522489744" crc="b6273e5d" md5="d7a98c2043c1def4cf8b5064d329945b" sha1="097ff3203aae2b95e314ff7f66568739ddfeb947" sha256="68c6f5406e6f3e8fbf33ff74a231ada064f16e5c6c10800c643e0993fc99d0b4"/>
+	</game>
+	<game name="Total Vice (Europe) (EAC)" id="0003">
+		<category>Games</category>
+		<description>Total Vice (Europe) (EAC)</description>
+		<rom name="Total Vice (Europe) (EAC).cue" size="1358" crc="cc99e6fe" sha1="01102d8d583e57f07aa8e707bb3b84fc45b5b062"/>
+		<rom name="Total Vice (Europe) (EAC).bin" size="522489744" crc="f984b12c" md5="f049894c9ca687a864d64f28ff1b536b" sha1="eba06de705fa66a2de96f6975d49a814d2f58552" sha256="1553f56a7aae898571025c9c1fd0e4121f5617ae40afb55b411ae12ad36db36f"/>
+	</game>
+	<game name="Total Vice (Europe) (EBA)" id="0004">
+		<category>Games</category>
+		<description>Total Vice (Europe) (EBA)</description>
+		<rom name="Total Vice (Europe) (EBA).cue" size="1369" crc="55a6110d" sha1="83d0b39009332e807de35b021620932587f48dd6"/>
+		<rom name="Total Vice (Europe) (EBA).bin" size="522489744" crc="2b20e2f9" md5="b6fe38db8c964610f0fbfc2d49350310" sha1="6b7e21fc1eafe8a0a67e777d8ecd678dfbd54874" sha256="9c1e9f5b5ef4bed963edd1643e25f9047548f6abbb3f9464312333ab9323bd8c"/>
+	</game>
+	<game name="Total Vice (USA) (UAC)" id="0005">
+		<category>Games</category>
+		<description>Total Vice (USA) (UAC)</description>
+		<rom name="Total Vice (USA) (UAC).cue" size="1366" crc="a7ee813c" sha1="6d0780f6994cbfa09e37515b1e0a3689344db220"/>
+		<rom name="Total Vice (USA) (UAC).bin" size="522489744" crc="f52278d4" md5="dd0f9407dbab68a1917bb3084e9ab038" sha1="ab71612bd0bd35441962190bd7959640a1a5660e" sha256="d333fbcac6f4cffea57113d83b82923e75bfc86de5bd180af8372fb7b7e7845e"/>
+	</game>
+	<game name="World Soccer Championship (Japan) (JAA)" id="0006">
+		<category>Games</category>
+		<description>World Soccer Championship (Japan) (JAA)</description>
+		<rom name="World Soccer Championship (Japan) (JAA).cue" size="1767" crc="4cc221b2" sha1="c220e95913f9e55f81942696cf83ff10d19679d8"/>
+		<rom name="World Soccer Championship (Japan) (JAA).bin" size="314906928" crc="4ccbbbf9" md5="14378375cb06300e54798da6f2beee38" sha1="24027219df4805427993c31fa3d3329f4dd1ffb3" sha256="a39c73f78f367b45765f03b66c0bc26eb80fb173761d60ba99edc70e2640da6a"/>
+	</game>
+</datafile>

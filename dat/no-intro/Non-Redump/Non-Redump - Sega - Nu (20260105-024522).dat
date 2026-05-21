@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<id>428</id>
+		<name>Non-Redump - Sega - Nu</name>
+		<description>Non-Redump - Sega - Nu</description>
+		<subset>Non-Redump</subset>
+		<version>20260105-024522</version>
+		<author>bikerspade, Gefflon, NovaAurora</author>
+		<homepage>No-Intro</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"/>
+	</header>
+	<game name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v7.01.00) (Disc 4) (0008A)" id="0011">
+		<description>Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v7.01.00) (Disc 4) (0008A)</description>
+		<rom name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v7.01.00) (Disc 4) (0008A).iso" size="5559681024" crc="e8026903" md5="e006bb2dd01b0ed324755e8a647a9f65" sha1="cc4803198cea329364a65bb7a356ca6829dc2750"/>
+	</game>
+	<game name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v6.10.00) (Disc 4) (0001S)" id="0021">
+		<category>Games</category>
+		<description>Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v6.10.00) (Disc 4) (0001S)</description>
+		<rom name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v6.10.00) (Disc 4) (0001S).iso" size="3199598592" crc="2a71abeb" md5="7ae64d1e9a75f5ce9e638440e836eb63" sha1="ba3714efcc4c4b570c3dd74b1a8ebbbd4b74f168" mia="yes"/>
+	</game>
+	<game name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v6.10.00) (Disc 3) (0001S)" id="0020">
+		<category>Games</category>
+		<description>Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v6.10.00) (Disc 3) (0001S)</description>
+		<rom name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v6.10.00) (Disc 3) (0001S).iso" size="8387166208" crc="0d8a1f4f" md5="51c22704c860cfa03ec6a1dda268e8fd" sha1="6cd6d9ba82a1e0550fa4945c6c69d4a36202302d" mia="yes"/>
+	</game>
+	<game name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v6.10.00) (Disc 2) (0001S)" id="0019">
+		<category>Games</category>
+		<description>Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v6.10.00) (Disc 2) (0001S)</description>
+		<rom name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v6.10.00) (Disc 2) (0001S).iso" size="8387166208" crc="21ac5c16" md5="cd96ad17e9e6d4365ac60f69f2b8fc7f" sha1="9638635ce5e3746d769aaf192c9f19598fa6b163" mia="yes"/>
+	</game>
+	<game name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v6.10.00) (Disc 1) (0001S)" id="0018">
+		<category>Games</category>
+		<description>Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v6.10.00) (Disc 1) (0001S)</description>
+		<rom name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v6.10.00) (Disc 1) (0001S).iso" size="8386904064" crc="98052771" md5="891f363fbc4592e01166113bff71db2a" sha1="6f0f0774430aaa39287bf782841a00d7c725c3fa" mia="yes"/>
+	</game>
+	<game name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v6.00.00) (Disc 4) (0001Q)" id="0017">
+		<category>Games</category>
+		<description>Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v6.00.00) (Disc 4) (0001Q)</description>
+		<rom name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v6.00.00) (Disc 4) (0001Q).iso" size="1536557056" crc="5ad7ca76" md5="b3d08cada75469e592862ea43d80619b" sha1="2dbda7cdb81bc657aa0317ee62d3884c8b883ce6" mia="yes"/>
+	</game>
+	<game name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v6.00.00) (Disc 2) (0001Q)" id="0016">
+		<category>Games</category>
+		<description>Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v6.00.00) (Disc 2) (0001Q)</description>
+		<rom name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v6.00.00) (Disc 2) (0001Q).iso" size="8387166208" crc="c487da83" md5="e3de1803784585474f8f8aab5be3c76e" sha1="fafe84d0b90d7c593bcb380abf478880f84a281c" mia="yes"/>
+	</game>
+	<game name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v6.00.00) (Disc 1) (0001Q)" id="0015">
+		<category>Games</category>
+		<description>Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v6.00.00) (Disc 1) (0001Q)</description>
+		<rom name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v6.00.00) (Disc 1) (0001Q).iso" size="8386904064" crc="2d662767" md5="756b7e71d02ce397eb297281b33ae7ce" sha1="8ada186aa58fef7fb1d6fb79f7774b19448da888" mia="yes"/>
+	</game>
+	<game name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v4.00.00) (Disc 3) (0001J)" id="0014">
+		<description>Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v4.00.00) (Disc 3) (0001J)</description>
+		<rom name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v4.00.00) (Disc 3) (0001J).iso" size="2113781760" crc="cbb89231" md5="93892c20a1b325dfd6b3a8b9e76826d5" sha1="57dcf9d128fdf36903a985392ab366277c677af7" mia="yes"/>
+	</game>
+	<game name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v4.00.00) (Disc 2) (0001J)" id="0013">
+		<description>Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v4.00.00) (Disc 2) (0001J)</description>
+		<rom name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v4.00.00) (Disc 2) (0001J).iso" size="8387166208" crc="8621b472" md5="4ee815666589bcf10715ef2cfedba589" sha1="12c207fdabc19101d3a61d19ec611781d11b70bd" mia="yes"/>
+	</game>
+	<game name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v4.00.00) (Disc 1) (0001J)" id="0012">
+		<description>Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v4.00.00) (Disc 1) (0001J)</description>
+		<rom name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v4.00.00) (Disc 1) (0001J).iso" size="8386904064" crc="ae827cb4" md5="57dd3c0ac2d3e723350ca22be21729bb" sha1="c68a5d64a7c4556e89bd71ac1991acae262ad0dd" mia="yes"/>
+	</game>
+	<game name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v7.01.00) (Disc 3) (0008A)" id="0010">
+		<description>Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v7.01.00) (Disc 3) (0008A)</description>
+		<rom name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v7.01.00) (Disc 3) (0008A).iso" size="8387166208" crc="7ca14ce4" md5="e8092415652058f3f7196efec7303e30" sha1="f7a2bd55bb25ed008fe143c19f82a1bc03a9c580"/>
+	</game>
+	<game name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v7.01.00) (Disc 2) (0008A)" id="0009">
+		<description>Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v7.01.00) (Disc 2) (0008A)</description>
+		<rom name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v7.01.00) (Disc 2) (0008A).iso" size="8387166208" crc="27eac8a0" md5="64357e7e9dc2f7f7a6905bc10c7003ec" sha1="80f03206c839bab9558b6c2b693e32e991a9f6bd"/>
+	</game>
+	<game name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v7.01.00) (Disc 1) (0008A)" id="0008">
+		<description>Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v7.01.00) (Disc 1) (0008A)</description>
+		<rom name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v7.01.00) (Disc 1) (0008A).iso" size="8386904064" crc="383f0bdc" md5="12c6feae1823db992cc23393e0fe7d1c" sha1="294f0eb7983d6e8e7b7ce4a280ce6c25263e4713"/>
+	</game>
+	<game name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v1.01.00) (Disc 1) (0001A)" id="0006">
+		<description>Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v1.01.00) (Disc 1) (0001A)</description>
+		<rom name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v1.01.00) (Disc 1) (0001A).iso" size="8386904064" crc="a01b72eb" md5="88640f6c96ec6adac82cd6636e0e91e5" sha1="2727c93dcf25abe2f982054a519f42c1c833777c" mia="yes"/>
+	</game>
+	<game name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v1.01.00) (Disc 2) (0001A)" id="0007">
+		<description>Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v1.01.00) (Disc 2) (0001A)</description>
+		<rom name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v1.01.00) (Disc 2) (0001A).iso" size="5554962432" crc="6374bd62" md5="4b609dc5f10ad599f67b5084540457dc" sha1="27c5ca68091e484c9a06705fb7b4fe1df62ad6c6" mia="yes"/>
+	</game>
+	<game name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v6.00.00) (Disc 3) (0001Q)" id="0005">
+		<category>Games</category>
+		<description>Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v6.00.00) (Disc 3) (0001Q)</description>
+		<rom name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v6.00.00) (Disc 3) (0001Q).iso" size="8387166208" crc="2f7085b5" md5="d458f57851228c52855eb2c4f7977b24" sha1="39b7c0fdbe72e1c0f1d096bda481cf12e5190476" status="verified" serial="CDN-0001Q-3D"/>
+	</game>
+	<game name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v3.00.00) (Disc 2) (0001G)" id="0004" cloneofid="0003">
+		<category>Games</category>
+		<description>Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v3.00.00) (Disc 2) (0001G)</description>
+		<rom name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v3.00.00) (Disc 2) (0001G).iso" size="7311851520" crc="0d231394" md5="67b8f43719500006e52329a99193b5c7" sha1="8429fd3c201c5acc625633f141285202c98a06de" serial="CDN-0001G-2D"/>
+	</game>
+	<game name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v3.00.00) (Disc 1) (0001G)" id="0003">
+		<category>Games</category>
+		<description>Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v3.00.00) (Disc 1) (0001G)</description>
+		<rom name="Hatsune Miku - Project Diva Arcade Future Tone (Japan) (v3.00.00) (Disc 1) (0001G).iso" size="8386904064" crc="7e417652" md5="409dd302c4cb26018439629d251ba043" sha1="946be16d7dd199c15dc4dd1d1950381061928027" status="verified" serial="CDN-0001G-1D"/>
+	</game>
+	<game name="Wonderland Wars (Japan) (v3.00.00) (Disc 2) (0010)" id="0027">
+		<description>Wonderland Wars (Japan) (v3.00.00) (Disc 2) (0010)</description>
+		<rom name="Wonderland Wars (Japan) (v3.00.00) (Disc 2) (0010).iso" size="8387166208" crc="d9c47596" md5="a207a7835660db2eda136bb247ea53a2" sha1="ee5b8715389f1a0a17d04dcc84009066ff7393d8" mia="yes"/>
+	</game>
+	<game name="Wonderland Wars (Japan) (v3.00.00) (Disc 1) (0010)" id="0026">
+		<description>Wonderland Wars (Japan) (v3.00.00) (Disc 1) (0010)</description>
+		<rom name="Wonderland Wars (Japan) (v3.00.00) (Disc 1) (0010).iso" size="8386904064" crc="d3cf930f" md5="d23c29843067b7b9d1928a0850e865fa" sha1="2f6f1effc8410f510afb4560e9217fc227c1ab1a" mia="yes"/>
+	</game>
+	<game name="Wonderland Wars (Japan) (v5.00.00) (Disc 2) (0010R)" id="0030">
+		<description>Wonderland Wars (Japan) (v5.00.00) (Disc 2) (0010R)</description>
+		<rom name="Wonderland Wars (Japan) (v5.00.00) (Disc 2) (0010R).iso" size="8217821184" crc="361ee31f" md5="06b5c62be19fdef4db1a21b25e68e7b5" sha1="15fddef4d1b47451e43a6f2417f60387a9e703d5" mia="yes"/>
+	</game>
+	<game name="Wonderland Wars (Japan) (v3.00.00) (Disc 3) (0010)" id="0028">
+		<description>Wonderland Wars (Japan) (v3.00.00) (Disc 3) (0010)</description>
+		<rom name="Wonderland Wars (Japan) (v3.00.00) (Disc 3) (0010).iso" size="600686592" crc="81280bd0" md5="c83d4c8b2acca01fa6b85ea0ec5d1a4e" sha1="e0d5a860523a8f437baac215eb9c10d45cc62ad7" mia="yes"/>
+	</game>
+	<game name="Wonderland Wars (Japan) (v5.00.00) (Disc 1) (0010R)" id="0029">
+		<description>Wonderland Wars (Japan) (v5.00.00) (Disc 1) (0010R)</description>
+		<rom name="Wonderland Wars (Japan) (v5.00.00) (Disc 1) (0010R).iso" size="8386904064" crc="d1c1368b" md5="bddd0c5b90ca2f2e64e5bb63d92fd44e" sha1="abfd76bdb1af593ef670cb93e22fa30c8125f925" mia="yes"/>
+	</game>
+	<game name="Wonderland Wars (Japan) (v2.00.01) (Disc 1) (0002N)" id="0001">
+		<category>Games</category>
+		<description>Wonderland Wars (Japan) (v2.00.01) (Disc 1) (0002N)</description>
+		<rom name="Wonderland Wars (Japan) (v2.00.01) (Disc 1) (0002N).iso" size="8386904064" crc="ac79acb8" md5="7e00e7a5e41e561d617b067e9d679b30" sha1="60b60938e5724bf085352210769182518e42f67c" serial="CDN-0002N-1D"/>
+	</game>
+	<game name="Wonderland Wars (Japan) (v1.50.01) (Disc 2) (0002E)" id="0025">
+		<description>Wonderland Wars (Japan) (v1.50.01) (Disc 2) (0002E)</description>
+		<rom name="Wonderland Wars (Japan) (v1.50.01) (Disc 2) (0002E).iso" size="744603648" crc="835a0c95" md5="7ebd71a2896bde847593653308c9fa17" sha1="d377b84a8e01cb8ff771a25e54d56cd0bea9684e" mia="yes"/>
+	</game>
+	<game name="Wonderland Wars (Japan) (v1.50.01) (Disc 1) (0002E)" id="0024">
+		<description>Wonderland Wars (Japan) (v1.50.01) (Disc 1) (0002E)</description>
+		<rom name="Wonderland Wars (Japan) (v1.50.01) (Disc 1) (0002E).iso" size="8386904064" crc="aa4fd96f" md5="dabf1252d465547a8fb78b3ad33ce8e6" sha1="bd404d585867e20b123939e0df7ff116ea130112" mia="yes"/>
+	</game>
+	<game name="Wonderland Wars (Japan) (v1.02.00) (0002B)" id="0023">
+		<description>Wonderland Wars (Japan) (v1.02.00) (0002B)</description>
+		<rom name="Wonderland Wars (Japan) (v1.02.00) (0002B).iso" size="7272267776" crc="ae1fbb82" md5="de88d68d6357f0e9c23ad87245ffc2b7" sha1="a08f80a5d3b2135ee8201f0b587591b2877e3a98" mia="yes"/>
+	</game>
+	<game name="Wonderland Wars (Japan) (v1.00.01) (0002)" id="0022">
+		<description>Wonderland Wars (Japan) (v1.00.01) (0002)</description>
+		<rom name="Wonderland Wars (Japan) (v1.00.01) (0002).iso" size="6932529152" crc="0db04716" md5="39b496cfa0a77c30f80a5e8fa3517da3" sha1="1fa69b81509019608b2b7f12aedf5487a53f023b" mia="yes"/>
+	</game>
+	<game name="Wonderland Wars (Japan) (v2.00.01) (Disc 2) (0002N)" id="0002" cloneofid="0001">
+		<category>Games</category>
+		<description>Wonderland Wars (Japan) (v2.00.01) (Disc 2) (0002N)</description>
+		<rom name="Wonderland Wars (Japan) (v2.00.01) (Disc 2) (0002N).iso" size="4275683328" crc="e5be20d3" md5="145f857cc0bc312092cd9e46c05f6bd0" sha1="315153276f588de80813ea81f8567374853f4126" serial="CDN-0002N-2"/>
+	</game>
+</datafile>

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<id>478</id>
+		<name>Non-Redump - Sharp - X68000</name>
+		<description>Non-Redump - Sharp - X68000</description>
+		<subset>Non-Redump</subset>
+		<version>20260426-004349</version>
+		<author>Gefflon, NovaAurora</author>
+		<homepage>No-Intro</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"/>
+	</header>
+	<game name="Reiwa-ban Oh!X (Japan) (Disc 1)" id="0001">
+		<category>Covermount</category>
+		<description>Reiwa-ban Oh!X (Japan) (Disc 1)</description>
+		<rom name="Reiwa-ban Oh!X (Japan) (Disc 1).iso" size="1755596800" crc="de4a5c4c" md5="123b90a1ed3fce7aebbd83068a09fba9" sha1="c4fcf7a66dc42c3a9d3df76bb3517200424997f6" mia="yes"/>
+	</game>
+	<game name="Reiwa-ban Oh!X (Japan) (Disc 2)" id="0002">
+		<category>Covermount</category>
+		<description>Reiwa-ban Oh!X (Japan) (Disc 2)</description>
+		<rom name="Reiwa-ban Oh!X (Japan) (Disc 2).iso" size="4500879360" crc="50c6129d" md5="a31850f93bce3441fd00b3306fa66e26" sha1="4d54c9a6a446b8d2a404dcb270652f1c41c5390e" mia="yes"/>
+	</game>
+</datafile>

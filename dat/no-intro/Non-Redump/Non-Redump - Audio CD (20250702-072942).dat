@@ -1,0 +1,805 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<id>234</id>
+		<name>Non-Redump - Audio CD</name>
+		<description>Non-Redump - Audio CD</description>
+		<subset>Non-Redump</subset>
+		<version>20250702-072942</version>
+		<author>bikerspade, Gefflon, Hiccup, MeguCocoa, NovaAurora</author>
+		<homepage>No-Intro</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"/>
+	</header>
+	<game name="beatmania 2nd Mix Complete (Japan)" id="0037">
+		<category>Audio</category>
+		<description>beatmania 2nd Mix Complete (Japan)</description>
+		<rom name="beatmania 2nd Mix Complete (Japan).cue" size="4630" crc="47909c62" sha1="ac5209c1ebcb3bb20cbb55cd988600e1ed532bf2"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 01).bin" size="3791424" crc="f88c0e6b" md5="7a9a07f00ea08979c1e4cb4d0693854b" sha1="53c196d91f9f837e8cac271f106a8a4f5e33fcd1"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 02).bin" size="9074016" crc="2f71c980" md5="8d02e9b28eb3be20547ae1fa25ab6159" sha1="d357c044b856b3f580431459c1d49a874b3582e1"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 03).bin" size="12705504" crc="f14d9d25" md5="a0555ff67c9e1c672e15d7dd002e5e41" sha1="bf7b2ce7086b21b8b1807d6839a57956d6963f2b"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 04).bin" size="15311520" crc="7f62578a" md5="9f16e7734edbf459742ff507f345928d" sha1="74c496183b1c197a7513e8897e02ce2e23fe5674"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 05).bin" size="12896016" crc="7cb0cc7c" md5="60c00692d96ef48d1f2b27abc67d606a" sha1="457c0635f48eaae202d7f7a3053cbdbc4e551ba0"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 06).bin" size="16692144" crc="68a6cd6b" md5="68b5757975f6e4254ddc556de3533588" sha1="30ff915ce535d0e835fb872a483c6f04c44c8176"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 07).bin" size="15382080" crc="6e88365b" md5="e3dada2403aacfa95afca6d20289d4d4" sha1="27501c5fb32be590f9669208e02421604134b73e"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 08).bin" size="13895616" crc="39b5d109" md5="ce1119526ad01533d97ad98ba686f8b9" sha1="46b2b1b0346feadc7fb382a1d5650e102595fc23"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 09).bin" size="12853680" crc="21dd55c6" md5="5d3a8891c7045d50877dfe9161ea47f7" sha1="17e45b20b5b87cb7b7f7843cb7a756635e680f15"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 10).bin" size="14269584" crc="3934d6e4" md5="53614a9dd2565d3fbf2f4f59664ab171" sha1="8cfb16f44237ed184845247ecfcde1143e3d3ccc"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 11).bin" size="14389536" crc="83f88a9e" md5="cdfc5fa927b391c5775285a9033cf66e" sha1="09670ce4604c1904f08b31f088298cedfcd6eb0d"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 12).bin" size="12253920" crc="9d1da319" md5="8bd03a215f14668aa2c7e564d88454d3" sha1="883985433fd201cbdec7b639bacf5126679a6e9f"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 13).bin" size="14810544" crc="36eaa07c" md5="2a69d8a6d8dd5a9a284e49195a9b327c" sha1="e6473bbd7794ac11ca2fc035b36201bce7767570"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 14).bin" size="13672176" crc="7456c27d" md5="d147e6e9505a4a45285a560f40f8aad3" sha1="b1c128cac1f1c8f129875978c7ac84859f0d8c7a"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 15).bin" size="12964224" crc="4a83b144" md5="ad4cb98369b16130c5829456eb71c20b" sha1="d134cf47928695fb009ce6b85f201535564bcc46"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 16).bin" size="16075920" crc="33287557" md5="6d2744296e1b5ef6b88b7202b149b954" sha1="35cd2b762d80899c9432cfd7a4a6143232ac4da9"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 17).bin" size="14135520" crc="670b0547" md5="d65610719751ea458654f862e931423a" sha1="b8d0890a37a273b7a1d34e0ec08f7be2d89b9da4"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 18).bin" size="15993600" crc="28d2dbaf" md5="bcb11fa34042af3d6ae710268f1655ce" sha1="0fc218540760ad172a7765af05bea13a44f18dea"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 19).bin" size="14072016" crc="d8aca8a3" md5="618b6e6afa1dde70e73c1fcac0fa3591" sha1="6bc7e837ada5c4c5524407223672772a4982ad47"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 20).bin" size="17792880" crc="8d05fecb" md5="6cecf68a46fe20e69bcd79c8dce0c9ab" sha1="07a27abea7486adb5135fcaf562466af87c9a31f"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 21).bin" size="16268784" crc="008e1989" md5="6933d71c55e738dc24c53919de5e2f6f" sha1="b11a2c29998efc66b2f96a99308a6a4d93720d17"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 22).bin" size="14641200" crc="4d3cbfe2" md5="f0857527e1a04303d3fbadabb959d436" sha1="fb9d832b2f972592a3364d836ecaeb20df3678b2"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 23).bin" size="14253120" crc="cfa9e991" md5="400f60b0f893d5c905362cb296f88d31" sha1="7bf1b997ba8a41106a9a9e272e52b10c8f49b903"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 24).bin" size="14342496" crc="3ac7bb1f" md5="771969fbe76a994ee66bd8381e647491" sha1="4f745362eeed1dcad63636860c0881fcd3226ce0"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 25).bin" size="16386384" crc="a3d1e85d" md5="a351038ab0e2fd1b50959d97b7bb5b09" sha1="8b6adf7c616e7bce46833ce207920c8cbe1256d2"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 26).bin" size="14288400" crc="fcbb2ac0" md5="39e9fa9fdbffb9658084d18cfdbc6a2f" sha1="e885f6d3f5d49648d99080d8d3eadfe2e01eafbd"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 27).bin" size="14954016" crc="917343a2" md5="af8be8e3ce3bdbce67772f630c89ca70" sha1="a8899043cbc2922fb95ac1c7b85c7d8db2aa2baf"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 28).bin" size="14493024" crc="abfa6ceb" md5="3d2f3c879b76842dfcb78c3562be84d9" sha1="ab080bd5c14c00d0f7523a33c51f37e0928136d2"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 29).bin" size="14424816" crc="38f0f28f" md5="67859aa9837376f97405eed584f56664" sha1="59d698ab0b9d2350632b2538de61f47c294c50d1"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 30).bin" size="16499280" crc="47208d28" md5="7e202ba6e9be93bdc3e794335950740e" sha1="6c2db0406cec4d38da5e9a60e9304f0ac6fc23ef"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 31).bin" size="14022624" crc="9acae5cd" md5="da792f92029a4e4c506a9c46a0e0b1ee" sha1="4c4a9db68e20e2ee40cdf31bd2efdea5bd423df6"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 32).bin" size="14224896" crc="f427da85" md5="505bbff76261d45dd7f01e358e8b21ce" sha1="1512a896d5a5c1b9fafa2af0598d0710c4060225"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 33).bin" size="13987344" crc="8284be79" md5="ee97fa372970f38e7ab8cfc69f8af639" sha1="8b74e0925785851635708c246a0cdc365ea4960c"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 34).bin" size="37937760" crc="bca84ada" md5="7a045ece48d272abf05d57ddd131cf1c" sha1="aad9af850ec83d408d01b7907e24609b38b75523"/>
+		<rom name="beatmania 2nd Mix Complete (Japan) (Track 35).bin" size="64632960" crc="82a35fc8" md5="3a73d6d440cf20830b03d130bf5d1d66" sha1="8e563155c1b2163bfe5d05ad1be25c2aa595b921"/>
+	</game>
+	<game name="Fragrant Story (World)" id="0007">
+		<description>Fragrant Story (World)</description>
+		<rom name="Fragrant Story (World).bin" size="270696384" crc="b9ae6ed5" md5="adf079f2e8e7c29c971c6696835400ac" sha1="1b64132dee4ca778f22eb9d10c82c65e31a8387e" sha256="2c24e12d4d7cffe3787733ea062569da76abb93887a331957ea07583f773be80"/>
+		<rom name="Fragrant Story (World).cue" size="782" crc="97637739" md5="481c0af19e26c33049513db200d7bd9c" sha1="ecdee9b85f9f414a172a8f09ddf102c68d3ecbc1" sha256="24d8a6dc5b08cdba4721d4af727b99cd35f1bfb1995728243d84d59133ff553a"/>
+	</game>
+	<game name="jubeat - Original Soundtrack (Japan)" id="0008">
+		<category>Audio</category>
+		<description>jubeat - Original Soundtrack (Japan)</description>
+		<rom name="jubeat - Original Soundtrack (Japan).cue" size="3691" crc="48544512" sha1="a80b7e56f8912233e132e7b56cc947bb3a88059a"/>
+		<rom name="jubeat - Original Soundtrack (Japan) (Track 01).bin" size="17797584" crc="188fb0ee" md5="c6bf6c0fa49abc6dd04ddb17b11e6846" sha1="0494ab4e9cac472123d3fd4b105ca1edd07a0745"/>
+		<rom name="jubeat - Original Soundtrack (Japan) (Track 02).bin" size="17863440" crc="7dab14fd" md5="69b63a41ed2a96c0c7e9a8b001a59062" sha1="63eba476f7b074ab502d0515519110f8f6332365"/>
+		<rom name="jubeat - Original Soundtrack (Japan) (Track 03).bin" size="18968880" crc="654bf5e9" md5="d543b56668530d0c795b1e4db2700be5" sha1="263c96f4066cb4063f3cd25b34a8de854fa72dc4"/>
+		<rom name="jubeat - Original Soundtrack (Japan) (Track 04).bin" size="19803840" crc="98d7131b" md5="aba7307415ae35621c9d87522214861d" sha1="a139202a48ce8a7c624b805b7e1629d65bb56548"/>
+		<rom name="jubeat - Original Soundtrack (Japan) (Track 05).bin" size="20779920" crc="7c6e8add" md5="ca7774fde6392192462eb071349b34d9" sha1="201e1ebb258159b97a5dddfc4a7257f16cf82a51"/>
+		<rom name="jubeat - Original Soundtrack (Japan) (Track 06).bin" size="18740736" crc="e2b3f084" md5="e977d4ff0739ae078847d4c8a3c31ad2" sha1="3e40e2abfce3344af9c8f70214ee527ea3442e02"/>
+		<rom name="jubeat - Original Soundtrack (Japan) (Track 07).bin" size="17407152" crc="e1352aef" md5="c14e15d0f6fa156dc2a8efec3b5708f9" sha1="2d1285cfcb0cbcbd05016d0c46c0435c9dd9159c"/>
+		<rom name="jubeat - Original Soundtrack (Japan) (Track 08).bin" size="20702304" crc="81d73818" md5="1834ed6ecea2eda66e45d88f5f9500e1" sha1="0b5b88611d261dfa950517ed6fe6b5f0ccfd6d77"/>
+		<rom name="jubeat - Original Soundtrack (Japan) (Track 09).bin" size="18089232" crc="ee822535" md5="8037be95bf0267fe329de0700d67dc40" sha1="ce395e516aa3aad0733a48e45db19304e7b60a90"/>
+		<rom name="jubeat - Original Soundtrack (Japan) (Track 10).bin" size="18270336" crc="c45442df" md5="a0cf8b6a353d3a879050a5a8146f7182" sha1="e44e614cc1a214c9540dba8d437af68af9611623"/>
+		<rom name="jubeat - Original Soundtrack (Japan) (Track 11).bin" size="19641552" crc="fa63b89d" md5="b9517dfe9ae5dde6b76a693044b176d0" sha1="dc7dc17962862ffe8265a42f1464a1cb2d357a0c"/>
+		<rom name="jubeat - Original Soundtrack (Japan) (Track 12).bin" size="19284048" crc="aa573dbb" md5="92b5b2edcd8d16483741b2b2e3ea0d16" sha1="1138c6325279487ce8313425407adf0a3d6e5fb7"/>
+		<rom name="jubeat - Original Soundtrack (Japan) (Track 13).bin" size="18863040" crc="9d68cea8" md5="8cc6e782232dc7c02ffc9aceac40aca3" sha1="951e38e2ddcadd32da88c734cc8990cbe96ac164"/>
+		<rom name="jubeat - Original Soundtrack (Japan) (Track 14).bin" size="20055504" crc="7845972d" md5="6b85ab0e14ff0c0a1c1661a91e80c14b" sha1="e25f4585595df60d8e051cafbe6095f686b810e2"/>
+		<rom name="jubeat - Original Soundtrack (Japan) (Track 15).bin" size="19648608" crc="6c13f532" md5="e2d774f38c29f463d98b0053f540e7fc" sha1="95f4a119f31ed9a35a7cda500041e3f54882582e"/>
+		<rom name="jubeat - Original Soundtrack (Japan) (Track 16).bin" size="17719968" crc="3fda35c1" md5="f7be5a403db08b1ce2a07aa403642413" sha1="fbb89d54e6000e77d306457379f0b12c2412985d"/>
+		<rom name="jubeat - Original Soundtrack (Japan) (Track 17).bin" size="52209696" crc="fba9cf5b" md5="d62fa17ea138c2ae4cb2668144219eaf" sha1="782dcc4d18a03be214b2b3e0ef91ec3f68151463"/>
+		<rom name="jubeat - Original Soundtrack (Japan) (Track 18).bin" size="4892160" crc="ce55a0fd" md5="5c5ba53547ad0af1f89dce64660cb9d4" sha1="c7cf62ac552cff202ffd490c3176f6dee365da6d"/>
+		<rom name="jubeat - Original Soundtrack (Japan) (Track 19).bin" size="12371520" crc="533da3ea" md5="91b43c74d2acd9ea096aad2717175e83" sha1="76960e948b4c2e5fc401aeeb661c530bca450c77"/>
+		<rom name="jubeat - Original Soundtrack (Japan) (Track 20).bin" size="13618080" crc="a787196e" md5="318696bf7809e1e7c1364ce8b0aaab55" sha1="1219c93893fd0f796b3f6477a35683858f1886b3"/>
+		<rom name="jubeat - Original Soundtrack (Japan) (Track 21).bin" size="19752096" crc="fdb37988" md5="17cb72ec557d9a805e06514370137903" sha1="a66bcba8db4fa45afa8b4595482ee3b0a515d599"/>
+		<rom name="jubeat - Original Soundtrack (Japan) (Track 22).bin" size="9038736" crc="e9ba69b3" md5="08747c7aa28c991881a13fc72649b144" sha1="68f9a22c1dfd1c4c4a67fa019184505e927ecf63"/>
+		<rom name="jubeat - Original Soundtrack (Japan) (Track 23).bin" size="9386832" crc="9a2722ea" md5="a456fc696f786eadffdb0d7a1d251bd2" sha1="2e38d3463e7fad2243b506068e9045d61f80416a"/>
+		<rom name="jubeat - Original Soundtrack (Japan) (Track 24).bin" size="13462848" crc="11a83c69" md5="e1aebe2cd026d6838e04c04189fb95b4" sha1="94388de77ef2a53e6d89018d40b4dc5f0f597ed2"/>
+		<rom name="jubeat - Original Soundtrack (Japan) (Track 25).bin" size="13255872" crc="ec526d8d" md5="a84f62c057bfadb6968a69c63330a277" sha1="3b9b06c2d26d25d474c5c9f432746d01c121360f"/>
+		<rom name="jubeat - Original Soundtrack (Japan) (Track 26).bin" size="9821952" crc="552c66f7" md5="d78656c94421ce7507d1785c0ea3c523" sha1="fedb2eb6f481f0eccb4f4495561dcf497a1a8c66"/>
+		<rom name="jubeat - Original Soundtrack (Japan) (Track 27).bin" size="6625584" crc="8dd2312f" md5="05ea602d33b3eaf8af405e22e3c3e12c" sha1="1f6b9643a08612b6a11678daaa012db432882eb8"/>
+		<rom name="jubeat - Original Soundtrack (Japan) (Track 28).bin" size="1702848" crc="2ea4dba8" md5="5f423654bfc6858d175cafd980bbcad6" sha1="245ea494fbe50d62dd4b7f428452bb6ae00d5784"/>
+	</game>
+	<game name="jubeat copious - Original Soundtrack (Japan)" id="0013">
+		<category>Audio</category>
+		<description>jubeat copious - Original Soundtrack (Japan)</description>
+		<rom name="jubeat copious - Original Soundtrack (Japan).cue" size="4675" crc="e2a8a437" sha1="b048e0952014c5c5faee7b26dba9745664d0fab7"/>
+		<rom name="jubeat copious - Original Soundtrack (Japan) (Track 01).bin" size="17910480" crc="7ea3799a" md5="753b1c0fe355ba4a52f320709305fd21" sha1="65e0c44d7efbb0ee2430d349d4b32979a19b5037"/>
+		<rom name="jubeat copious - Original Soundtrack (Japan) (Track 02).bin" size="18914784" crc="e51d6908" md5="a500a5e77de56b48267492da443f87f0" sha1="f45d717b15597c7e5dbd0d7c9f432e8cb0878f7c"/>
+		<rom name="jubeat copious - Original Soundtrack (Japan) (Track 03).bin" size="20911632" crc="dfc7dae3" md5="6477aebb665b0ad0f77b8ba60c97fba9" sha1="4f4c6558efcb9e7ec3d2084e333413623adfa990"/>
+		<rom name="jubeat copious - Original Soundtrack (Japan) (Track 04).bin" size="22125264" crc="122d3e4b" md5="e803f1299c69529456e6def5e58c222b" sha1="efba9192a0f0b3ead733de1a75d2a5a75575947e"/>
+		<rom name="jubeat copious - Original Soundtrack (Japan) (Track 05).bin" size="20707008" crc="55d9832e" md5="bead27e9732df31038f449cf5965fdf0" sha1="d70f51e2d2288b60944f575d473536548c9a824c"/>
+		<rom name="jubeat copious - Original Soundtrack (Japan) (Track 06).bin" size="21593712" crc="eeb1b475" md5="2f009f91ea3be9a805796b55bf190864" sha1="1916786d93d17af4131ab3230aa9d590318266cc"/>
+		<rom name="jubeat copious - Original Soundtrack (Japan) (Track 07).bin" size="20046096" crc="dcd97a97" md5="1805d47ba144311c9fc259a315f1cab9" sha1="a096a6fc2dee3650bc7719c24cd23adb4ab6a78f"/>
+		<rom name="jubeat copious - Original Soundtrack (Japan) (Track 08).bin" size="18510240" crc="a8b8fb20" md5="d16e136ed8fa92dbace445bbb14a53e0" sha1="63c143e2e6474fe41e94016a61e82ab9d6021a82"/>
+		<rom name="jubeat copious - Original Soundtrack (Japan) (Track 09).bin" size="20866944" crc="9aa9478c" md5="a087287e808208ec08a3f242fd6484ff" sha1="8707fae81ff8e079ae04848f6d8d8f6967f4144f"/>
+		<rom name="jubeat copious - Original Soundtrack (Japan) (Track 10).bin" size="21330288" crc="89d8c224" md5="b88a2fe52f5b0c539bde182f438717ea" sha1="4fcd9680fb29282c8e6aa8f0087506005cc7e2dd"/>
+		<rom name="jubeat copious - Original Soundtrack (Japan) (Track 11).bin" size="22137024" crc="de7a9249" md5="d113b87b48de8e49c05e0ad4f50cb566" sha1="cd6c2b267bb0543646c2f62e3e092d263b9e8e70"/>
+		<rom name="jubeat copious - Original Soundtrack (Japan) (Track 12).bin" size="21226800" crc="1f21bfc1" md5="2bb26852bba68da846b6d23522efe9f7" sha1="7b667f15a6de58ff385ba1536870511c586000fd"/>
+		<rom name="jubeat copious - Original Soundtrack (Japan) (Track 13).bin" size="19952016" crc="ab30eb91" md5="7d91d0677b593391e0de116fdf046d8e" sha1="168c2cfc41820593a98a83ac3d9283ca8833ee86"/>
+		<rom name="jubeat copious - Original Soundtrack (Japan) (Track 14).bin" size="22054704" crc="282d4582" md5="7ed43f654cbeac6ab4fd2f9d85759a19" sha1="329b19b1c6045bed9c00f2360c9d50748e273c1c"/>
+		<rom name="jubeat copious - Original Soundtrack (Japan) (Track 15).bin" size="18536112" crc="da2801a1" md5="ce30ba3e360ad0409682324bd4f520e7" sha1="44913980632c1d16dbdf1b16ed7161df78827e0d"/>
+		<rom name="jubeat copious - Original Soundtrack (Japan) (Track 16).bin" size="37841328" crc="dc9ffbe4" md5="2e135268bd9739b5ac2d897e0f4cb0d2" sha1="d4fa31497dd3dcf5b879ec41e4c26ca78dd2305b"/>
+		<rom name="jubeat copious - Original Soundtrack (Japan) (Track 17).bin" size="39391296" crc="2b2dc21e" md5="998a6ce2b921869edee35410153f5c4d" sha1="d54f485eff887148d0b551a9843e5da2124a37dc"/>
+		<rom name="jubeat copious - Original Soundtrack (Japan) (Track 18).bin" size="2857680" crc="0855b8eb" md5="4939e8ad001a382a38bc880abfb9df9d" sha1="f3315df36ab1abcf7387125db37c371a04980c1b"/>
+		<rom name="jubeat copious - Original Soundtrack (Japan) (Track 19).bin" size="12042240" crc="33279b52" md5="700dce0a681e215f2bdf2d68d1c8b89e" sha1="26a9d9d0074187c5b830bf9f7c138368b5a68e8d"/>
+		<rom name="jubeat copious - Original Soundtrack (Japan) (Track 20).bin" size="7789824" crc="5424d6f6" md5="051f7aa2aa0c491a52e735f5ff281a8b" sha1="8c1960a9a3f0cc0ea8c35b3ed67319f793c95f1d"/>
+		<rom name="jubeat copious - Original Soundtrack (Japan) (Track 21).bin" size="11870544" crc="e9b2e2f0" md5="239fb2f76b86a36438232ce643d38be3" sha1="8ba5198f60d63d28cffb78179d1d893f729ac9b0"/>
+		<rom name="jubeat copious - Original Soundtrack (Japan) (Track 22).bin" size="6693792" crc="ed265f61" md5="715126fc5f68ca39be2b3662616c6d3e" sha1="2bc2e5c20803c36960434940e9bc0c84dadcda7f"/>
+		<rom name="jubeat copious - Original Soundtrack (Japan) (Track 23).bin" size="13204128" crc="347e0498" md5="0f4ba23461b488c893fee6e018251cc6" sha1="ac8665abe486423c7bdbffe47a32557791625deb"/>
+		<rom name="jubeat copious - Original Soundtrack (Japan) (Track 24).bin" size="7912128" crc="407bbffe" md5="301fae0610fdc416ae2848ecb0b5996e" sha1="d2d424845b4afb6424e0d5d93f3a5b2e334174a6"/>
+		<rom name="jubeat copious - Original Soundtrack (Japan) (Track 25).bin" size="4339440" crc="78edea6a" md5="5995e2439efd39c0cf849e95cd347f9a" sha1="40e38428cf268c063f16f1025696dfbf267061aa"/>
+		<rom name="jubeat copious - Original Soundtrack (Japan) (Track 26).bin" size="4835712" crc="9fc496f8" md5="1aa0447728345d047037e7ce04e61c37" sha1="2448115ba3aa7281b0b771eb043da94a42c83df1"/>
+		<rom name="jubeat copious - Original Soundtrack (Japan) (Track 27).bin" size="4282992" crc="ea9d918f" md5="7f23f34d8724c1ace7e419d0596f7223" sha1="e38435ef85443fd06a06195be8b1c92372bf5a90"/>
+		<rom name="jubeat copious - Original Soundtrack (Japan) (Track 28).bin" size="13079472" crc="ee9c71e4" md5="f2a5449af0b8133ed2a82c6989713b50" sha1="b7813d6826a929b0f897779f5809c038289f2602"/>
+		<rom name="jubeat copious - Original Soundtrack (Japan) (Track 29).bin" size="1514688" crc="267199f7" md5="f36ec82943b1a84a4a7fa03308a6313b" sha1="9b4b31903d19ba22244e51cf00a5204c043a344b"/>
+	</game>
+	<game name="jubeat knit - Append Soundtrack (Japan)" id="0012">
+		<category>Audio</category>
+		<description>jubeat knit - Append Soundtrack (Japan)</description>
+		<rom name="jubeat knit - Append Soundtrack (Japan).cue" size="2332" crc="14dc35c0" sha1="e4d6bde065197a39de5dd52fd8b0fc935a6a4de9"/>
+		<rom name="jubeat knit - Append Soundtrack (Japan) (Track 01).bin" size="21807744" crc="1b7b3059" md5="75dbc14a8f13474ec03a21e72fba7992" sha1="15f6cb9782324db65a7c15c6c72830f0063c73a8"/>
+		<rom name="jubeat knit - Append Soundtrack (Japan) (Track 02).bin" size="20796384" crc="6377f295" md5="a2fd5e6923a0ca081e59ae71ca5e3318" sha1="aabf3d04b56bdda3879cd0549200899b4a47e639"/>
+		<rom name="jubeat knit - Append Soundtrack (Japan) (Track 03).bin" size="19737984" crc="41dbe6bb" md5="3fe28abd5b39b49d038386fd9433fbbe" sha1="d04e42e325470eec65a24dede2527625a3f482f8"/>
+		<rom name="jubeat knit - Append Soundtrack (Japan) (Track 04).bin" size="21135072" crc="02897759" md5="9cc700dac99c42753e29f3c9c89fa529" sha1="127d5a1b94fb76892253788f0ad779287631ad74"/>
+		<rom name="jubeat knit - Append Soundtrack (Japan) (Track 05).bin" size="21631344" crc="82cc66ad" md5="1f45c6145a8e3394e4547d5f4616c0a9" sha1="5547ba294d143c41a1113df71672c2f6c000f23f"/>
+		<rom name="jubeat knit - Append Soundtrack (Japan) (Track 06).bin" size="20671728" crc="1cc3822c" md5="efc5a3e6eaa0ba326d3b146999014114" sha1="2a44cff511bc3a1fc20c1ec208dc8ec4d5029b3c"/>
+		<rom name="jubeat knit - Append Soundtrack (Japan) (Track 07).bin" size="18693696" crc="df2bfb85" md5="4da900d8611ba65b0d0fec13f7e9f37d" sha1="e1f6927ae8551eefb36d387d60bad19817595816"/>
+		<rom name="jubeat knit - Append Soundtrack (Japan) (Track 08).bin" size="19486320" crc="a45d71fa" md5="59966c29d6ed65190694708d8794ee07" sha1="c9472d2c5807af87771bc72d94ae97bb46dec8ea"/>
+		<rom name="jubeat knit - Append Soundtrack (Japan) (Track 09).bin" size="45960432" crc="ca2e4375" md5="8d729caf857286bfa6b36f975b072f6b" sha1="2b565bf5be3b10f66912098f8d4d0e629c233687"/>
+		<rom name="jubeat knit - Append Soundtrack (Japan) (Track 10).bin" size="58451904" crc="99e8af6a" md5="d8ff1c3bcdd24a01a57d12632bdd97db" sha1="21bdc07e5e4e6c016cf977a58a586773dae43766"/>
+		<rom name="jubeat knit - Append Soundtrack (Japan) (Track 11).bin" size="39908736" crc="d1fcc3e3" md5="d2a123b968df71a799b6846f60302a13" sha1="5c76f28b37e005bf8e08a05185292f2338706fc8"/>
+		<rom name="jubeat knit - Append Soundtrack (Japan) (Track 12).bin" size="49217952" crc="5742868b" md5="77563a04bea643c30ba8fb22fc761d70" sha1="461f3443a7370a67d219c275a9af119cfaf6ccab"/>
+		<rom name="jubeat knit - Append Soundtrack (Japan) (Track 13).bin" size="34409760" crc="326c4ce5" md5="a7f111907018ba57947a9e2c1fc5df74" sha1="6afccc61e672a0d84e15d61d4668ca48fae37858"/>
+		<rom name="jubeat knit - Append Soundtrack (Japan) (Track 14).bin" size="60926208" crc="51824932" md5="c5d61b29ca9c8d92fd0786b96ea478f2" sha1="ea7164a228c40eee6e1ae630ea98e6f5fa281094"/>
+		<rom name="jubeat knit - Append Soundtrack (Japan) (Track 15).bin" size="44078832" crc="1ba18c42" md5="83fae5e37e156a774ef3ce55c0bb8120" sha1="d9027bc1dbb47eff8eacdbeba45d38f34e7310d1"/>
+	</game>
+	<game name="jubeat knit - Original Soundtrack (Japan)" id="0011">
+		<category>Audio</category>
+		<description>jubeat knit - Original Soundtrack (Japan)</description>
+		<rom name="jubeat knit - Original Soundtrack (Japan).cue" size="4655" crc="fe4b2f8b" sha1="44ea76d2a4f54356a3c14ebdfa66ec4043503b51"/>
+		<rom name="jubeat knit - Original Soundtrack (Japan) (Track 01).bin" size="21718368" crc="e61f0423" md5="9db7ad02b723c0014565b8b38e0b05a7" sha1="74a9e669a95184fe6c418c83bd72d58334cf6b89"/>
+		<rom name="jubeat knit - Original Soundtrack (Japan) (Track 02).bin" size="21922992" crc="46ce531c" md5="cfb1534f7c9af1f63812609ae8b12d73" sha1="126160cebcd91458845603e394bcd7432b29e265"/>
+		<rom name="jubeat knit - Original Soundtrack (Japan) (Track 03).bin" size="20452992" crc="0e265daa" md5="f4c675a46318d81f994d5c327c3c8037" sha1="36e7a8ed1b98a068c8af8c3a0752f3b017dbdca1"/>
+		<rom name="jubeat knit - Original Soundtrack (Japan) (Track 04).bin" size="18023376" crc="87221cd2" md5="0401964d53933c00b200002f7feea934" sha1="aa4cbbb923ad78751d16090efbc7cf73f392cfb8"/>
+		<rom name="jubeat knit - Original Soundtrack (Japan) (Track 05).bin" size="20170752" crc="f5c22100" md5="757aaa518a288ab09bff6a102a9006cd" sha1="a3fbbaab9ec9634b196e0605c9d4dff69f38d4ae"/>
+		<rom name="jubeat knit - Original Soundtrack (Japan) (Track 06).bin" size="18554928" crc="c149e9f7" md5="861f9df7d8d9487e8352eda3f0c26545" sha1="f7b4db63374d052bedb8b84403ea52febf57fcd0"/>
+		<rom name="jubeat knit - Original Soundtrack (Japan) (Track 07).bin" size="23134272" crc="0e5b8a37" md5="086471d6bdf50c38622d9b9a550607ac" sha1="02f3529485f87aa45844bb44ad189a8d24881cc1"/>
+		<rom name="jubeat knit - Original Soundtrack (Japan) (Track 08).bin" size="18460848" crc="a573865d" md5="ae995d43f3af82e9f9fe5dbf2bc3822b" sha1="1de6afa12d5dec179ca2adde5e3f64670e03e99d"/>
+		<rom name="jubeat knit - Original Soundtrack (Japan) (Track 09).bin" size="18980640" crc="578798c0" md5="0c76160aacbcb2bc880015d3d3fdae18" sha1="ef6157c31d26977128b006b48be30c507e75f026"/>
+		<rom name="jubeat knit - Original Soundtrack (Japan) (Track 10).bin" size="21501984" crc="a504c033" md5="c8c4262ac1ddf78277c3a93f7963b697" sha1="e46310df0e8f429ae89a99e5536d00c23cf2547a"/>
+		<rom name="jubeat knit - Original Soundtrack (Japan) (Track 11).bin" size="19603920" crc="9d8aadfd" md5="61fb8c8ee161db06abfcca92215439fa" sha1="ad7c9cfdb37ab19023d3799491246e0ff76e9a90"/>
+		<rom name="jubeat knit - Original Soundtrack (Japan) (Track 12).bin" size="18935952" crc="2f40733b" md5="693784bd165996df4e7e42ed1a13cdd7" sha1="915262ec8b0af1ab121e22fbf5debc09e2e39ba1"/>
+		<rom name="jubeat knit - Original Soundtrack (Japan) (Track 13).bin" size="21586656" crc="2b35b771" md5="9594dec95cf2c0076c3f15ac9674095e" sha1="a757181e74cad39be566961af171df694fa72971"/>
+		<rom name="jubeat knit - Original Soundtrack (Japan) (Track 14).bin" size="21436128" crc="b1c1cbef" md5="1d78e42982ae7c273e1ac608c116955b" sha1="cb924a7f4580293a6534300166fcfe3c3ca88186"/>
+		<rom name="jubeat knit - Original Soundtrack (Japan) (Track 15).bin" size="17799936" crc="3d5cd224" md5="682bc7a762f005a49fc8cf62976cecd9" sha1="95a5715b0d5d550b9e12511c9c79c6d13f37a709"/>
+		<rom name="jubeat knit - Original Soundtrack (Japan) (Track 16).bin" size="38163552" crc="4fd5f609" md5="4b75e248f1f03b54d9e09636bd7350fc" sha1="716a0f7d0de3efa93066e1d55cfe930f0fd320d9"/>
+		<rom name="jubeat knit - Original Soundtrack (Japan) (Track 17).bin" size="42806400" crc="6d68146a" md5="d34de620c64e36c8a265ea67baf49706" sha1="31e332434a06ba576194397acc9e300c0378637e"/>
+		<rom name="jubeat knit - Original Soundtrack (Japan) (Track 18).bin" size="2617776" crc="e3e67392" md5="46b97c032aa11639e19566f4c6992670" sha1="35fb798b95370e2b416f9c3d332ce5d4975d46db"/>
+		<rom name="jubeat knit - Original Soundtrack (Japan) (Track 19).bin" size="6190464" crc="6edb70cd" md5="24f38aa032b856f5a83085b67a392a20" sha1="f76049d09d916c93e84420d13568eb490a32ab27"/>
+		<rom name="jubeat knit - Original Soundtrack (Japan) (Track 20).bin" size="10899168" crc="b78acf7b" md5="d2e5190e8bd553e660d3f3dd3c602636" sha1="e3cf7f14f0b359c18280c329797a9dab4475c9c2"/>
+		<rom name="jubeat knit - Original Soundtrack (Japan) (Track 21).bin" size="4588752" crc="246fd7b0" md5="7f9608f3d23eccc4d343c20bb64de349" sha1="cf5543350db3841ca85d5b4d330a46036f6f48b5"/>
+		<rom name="jubeat knit - Original Soundtrack (Japan) (Track 22).bin" size="7079520" crc="40d26504" md5="7a34ccd70ad9d50881f030b7a419b48d" sha1="19d4059ca1789be631647d3f2f04b9f6d34e8b51"/>
+		<rom name="jubeat knit - Original Soundtrack (Japan) (Track 23).bin" size="8787072" crc="d0e6a0e1" md5="dc911eedbb96cf6593c62363af462421" sha1="25aa801c7135ed28d86c39e61eae86a1953a000c"/>
+		<rom name="jubeat knit - Original Soundtrack (Japan) (Track 24).bin" size="8627136" crc="25a30398" md5="754a833ba4f65dcca722723994035879" sha1="b34fa9fa79c424f244e06a1a4bf13815e1f66c33"/>
+		<rom name="jubeat knit - Original Soundtrack (Japan) (Track 25).bin" size="8389584" crc="2e7fe255" md5="a64a39fe17ed1d51cf77a96a93e6ffe6" sha1="1c556bf19a39f55b5ee8d5434fcf99a9d2c89ec3"/>
+		<rom name="jubeat knit - Original Soundtrack (Japan) (Track 26).bin" size="6806688" crc="438dfd57" md5="ca63b82dfe252310d6f90909b9b28dd5" sha1="9a2f63411a06a977e645493122fc6a44726299e8"/>
+		<rom name="jubeat knit - Original Soundtrack (Japan) (Track 27).bin" size="18202128" crc="8812beac" md5="df2cf7516d06bd015a7e0819c1c5e2cb" sha1="d39d6b81af6372a2603404ed319bf2a90e709c92"/>
+		<rom name="jubeat knit - Original Soundtrack (Japan) (Track 28).bin" size="9445632" crc="8cfd4ba0" md5="4b52836265e428e2a5ef591bdf763015" sha1="63b43af7b09f5ae4f71aba12b2eeb72b8db508f8"/>
+		<rom name="jubeat knit - Original Soundtrack (Japan) (Track 29).bin" size="16165296" crc="52208808" md5="c4b988c86c4504370d255f87df61a4db" sha1="6fb0f0315c9557f3bf0b18e5309b3961da817141"/>
+		<rom name="jubeat knit - Original Soundtrack (Japan) (Track 30).bin" size="1778112" crc="8d440c8f" md5="05ac0071316043ff2ef81c9dd5755b76" sha1="0252044440244f64c14a6a03cc98e6e90ce31203"/>
+	</game>
+	<game name="jubeat ripples - Original Soundtrack (Japan)" id="0009">
+		<category>Audio</category>
+		<description>jubeat ripples - Original Soundtrack (Japan)</description>
+		<rom name="jubeat ripples - Original Soundtrack (Japan).cue" size="4652" crc="98317492" sha1="939d67df8351c70a0323ccb97bb3cafa999a4e7a"/>
+		<rom name="jubeat ripples - Original Soundtrack (Japan) (Track 01).bin" size="21972384" crc="18b270b6" md5="d2aa4f3a6867ed405f32e787d94aa6f6" sha1="4450f1b932f4b2bf745eae88aa8ac0cf9a2e90ce"/>
+		<rom name="jubeat ripples - Original Soundtrack (Japan) (Track 02).bin" size="20695248" crc="50a9b4f0" md5="09895794ce8b94c96f0034a7ea327378" sha1="bd64d0d4c90aa3b5c88110d9501f91a35cc4a948"/>
+		<rom name="jubeat ripples - Original Soundtrack (Japan) (Track 03).bin" size="17896368" crc="4b15b0d1" md5="20ecc93a3869b7bdad336dabf35f21ac" sha1="c4d4b308775c0b088ab134a300a3dc3abc030e2e"/>
+		<rom name="jubeat ripples - Original Soundtrack (Japan) (Track 04).bin" size="20168400" crc="8143b88d" md5="f482613e7c4c2313e77a3fd6910a534a" sha1="438683c6e57c6beabc1bdb2861f45b935585f3ac"/>
+		<rom name="jubeat ripples - Original Soundtrack (Japan) (Track 05).bin" size="21393792" crc="e3b61f62" md5="c236ebd104deb2d6cf0395314ba29471" sha1="376fa5a5db80e52d4cdcd151ed73d203a597c43d"/>
+		<rom name="jubeat ripples - Original Soundtrack (Japan) (Track 06).bin" size="19189968" crc="60374585" md5="3272469b8d1dc3ec49d880b540e72989" sha1="23f0af72c0fccea6e66829198ce26ac17fdad03e"/>
+		<rom name="jubeat ripples - Original Soundtrack (Japan) (Track 07).bin" size="20269536" crc="59e7af13" md5="31a943c4d11120ab95f4b7b54944a733" sha1="ce8414142b4574713c1ff661ea5754f47798202b"/>
+		<rom name="jubeat ripples - Original Soundtrack (Japan) (Track 08).bin" size="18860688" crc="8d7e31b2" md5="dae901b0c0c96eb9ba6632b2cb0d6a85" sha1="5b6774a9e25307edac2bf63ef92cb4cc0b919abc"/>
+		<rom name="jubeat ripples - Original Soundtrack (Japan) (Track 09).bin" size="18489072" crc="ad6c7695" md5="15683f3b908df2e4d085a23bd6d97ed0" sha1="04085d5d71582d4396ca25058d33b41c0eea4c17"/>
+		<rom name="jubeat ripples - Original Soundtrack (Japan) (Track 10).bin" size="20215440" crc="0452fbf5" md5="fd10786f9138c24e81b489bda9154d2e" sha1="c133f1c0e66b984803f96d081716f2c2ec1e2ee0"/>
+		<rom name="jubeat ripples - Original Soundtrack (Japan) (Track 11).bin" size="21511392" crc="4e66a2c3" md5="10aea0895fbd0ce8642fe85ae84a9a3c" sha1="d398aae70dc2312a9cdae1ece94cc1be6241fa3c"/>
+		<rom name="jubeat ripples - Original Soundtrack (Japan) (Track 12).bin" size="22111152" crc="fe7d88d8" md5="da54d5d6159eeb1d65b3da73e747100f" sha1="b735822125346190cd39494a12edcabd549e7e52"/>
+		<rom name="jubeat ripples - Original Soundtrack (Japan) (Track 13).bin" size="19298160" crc="abc12005" md5="9c376a7de34bcfcffcd4ab502239286b" sha1="eff545170f2131a32c6a98646fa42ada1cd0843c"/>
+		<rom name="jubeat ripples - Original Soundtrack (Japan) (Track 14).bin" size="19032384" crc="7f31d9f3" md5="937d6b52730d00ff08a6e7b05079630f" sha1="698f865ba02fb34c0a97a249f55777e9acde213b"/>
+		<rom name="jubeat ripples - Original Soundtrack (Japan) (Track 15).bin" size="19182912" crc="a64935a5" md5="251d63bbf5571e28c2e043f1827661fa" sha1="ae28347948f2b39a73de0fe3ef544c507c963f3a"/>
+		<rom name="jubeat ripples - Original Soundtrack (Japan) (Track 16).bin" size="47310480" crc="b32f9774" md5="6b212e08642897681e4cbf741a4ebe4f" sha1="8f966d4e8283f46f4bbe7ee564d802a2545686f7"/>
+		<rom name="jubeat ripples - Original Soundtrack (Japan) (Track 17).bin" size="39318384" crc="760e2e73" md5="30bf4b81a8587dd1eb8ba6fb20a46dab" sha1="edcd0e336e6592ae40a122eeb4a10ecd3b5adea3"/>
+		<rom name="jubeat ripples - Original Soundtrack (Japan) (Track 18).bin" size="3946656" crc="f5693d66" md5="947651345a9e18bbffd652aa24ff7dde" sha1="45bc5508903d8568b6b1357f1e5b0fcdac23313f"/>
+		<rom name="jubeat ripples - Original Soundtrack (Japan) (Track 19).bin" size="6627936" crc="0ac498a9" md5="d1c5c2cd4ea27f96ebb2b752b6e7edce" sha1="465f26ecd177beba363b7c3feff42003cd83fcbb"/>
+		<rom name="jubeat ripples - Original Soundtrack (Japan) (Track 20).bin" size="7881552" crc="e065aaa0" md5="d1d4bcec5ce2542d55d8abeab53d341b" sha1="f26253101e8a2bb7b746708d3f7aa267719847b6"/>
+		<rom name="jubeat ripples - Original Soundtrack (Japan) (Track 21).bin" size="7785120" crc="918d6b82" md5="8fc3a555ccc689a1168da92ba34a2232" sha1="0b775fa1855ef3784a99e6204f11bf3daf126c55"/>
+		<rom name="jubeat ripples - Original Soundtrack (Japan) (Track 22).bin" size="7853328" crc="fd4132d5" md5="d2f16f34643b813b1af2d456034bfb12" sha1="a350c13369a639e15370dadac4c389bbd3a5f666"/>
+		<rom name="jubeat ripples - Original Soundtrack (Japan) (Track 23).bin" size="7858032" crc="1b88a85b" md5="236bcc8e885334849a4a83564fba8c46" sha1="8eacd4edd013e9121ccc7bbc325033c5dcf83e95"/>
+		<rom name="jubeat ripples - Original Soundtrack (Japan) (Track 24).bin" size="7916832" crc="a55f9087" md5="f9ade21eeced5039ed90547a27458bba" sha1="d1e6c8d39bd55d6db9fe3b33c553d667faf7303d"/>
+		<rom name="jubeat ripples - Original Soundtrack (Japan) (Track 25).bin" size="8034432" crc="6961db9f" md5="b13cf1aa620880de980a206eb1599ffc" sha1="a7dcb6315dfb7f1dbb0073a87e54aad29afa9ec8"/>
+		<rom name="jubeat ripples - Original Soundtrack (Japan) (Track 26).bin" size="10017168" crc="e365d89e" md5="8e54dbbc1c2be27ddb8da1fd129a19be" sha1="9915475951b4f4f1d725c2bd11733770f13d5b09"/>
+		<rom name="jubeat ripples - Original Soundtrack (Japan) (Track 27).bin" size="7801584" crc="d5d71669" md5="996814b9af2596a5a86f8673291af854" sha1="5a48c609f02a245b5a5621d62625cd4518a9b1d8"/>
+		<rom name="jubeat ripples - Original Soundtrack (Japan) (Track 28).bin" size="7813344" crc="8b66d3fc" md5="848da0b596f0cebcd33e8a75e630a558" sha1="04ebdeb6930dc9960e6ea6087a5cb3af887d8134"/>
+		<rom name="jubeat ripples - Original Soundtrack (Japan) (Track 29).bin" size="1959216" crc="6f6a7dfd" md5="9c9a76a763057258038fedfdd02972e6" sha1="def226a2123d3edae593a574aa4d3da3cef4a514"/>
+	</game>
+	<game name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan)" id="0034">
+		<category>Audio</category>
+		<description>jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan)</description>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan).cue" size="5340" crc="cdc7b653" sha1="0b3f8739a363bf0886a43100ea682288a54fd666"/>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan) (Track 01).bin" size="20692896" crc="b36f9a42" md5="beaa75e0d66c81f8efe7caaba7961b31" sha1="e810d0f43dc4a80a92a315a242cab83739a0fb78"/>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan) (Track 02).bin" size="17524752" crc="1acd5557" md5="e9b7155a7b7d54456e6e63e8706739af" sha1="e987a0813ed7b65f9ef71cc16d313da7fbc72541"/>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan) (Track 03).bin" size="18322080" crc="253f7459" md5="da0ed7c59cbe5316c6da39d3bbd621e3" sha1="2b2d22043a44845ed7c1fb5de90a87a3fb21392e"/>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan) (Track 04).bin" size="20175456" crc="30596d3b" md5="747644e3eea05265d80a78a17aede597" sha1="10b78e1f296e3b35709b1b70ef9b2c9e68ad5bf3"/>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan) (Track 05).bin" size="21351456" crc="24a12351" md5="d0abdbe9ffe71a84814e12e219023f1c" sha1="acebee5fee48bbe192fb89b34e1871b614440fba"/>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan) (Track 06).bin" size="20801088" crc="899c9fa0" md5="10da9c9c742edd2bfd4612f69c2d1cfc" sha1="3e525252f5a9483858ab75ba13dd5aecf9dcb86d"/>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan) (Track 07).bin" size="23164848" crc="cf44f585" md5="3651b8841462b815f6187db92d235ac6" sha1="db9721c4fbbc9cc363fa435bf60b5e08a5595e95"/>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan) (Track 08).bin" size="19568640" crc="200279fa" md5="7ad9d5a205451c2bc891096704184cf7" sha1="55174c18d413b45c8175ac585c59dd3a10d4651a"/>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan) (Track 09).bin" size="16118256" crc="9e4c73ff" md5="275bf209b60c120babf87353782b3387" sha1="56f4aff483c5b61f04feabb58ed19f8d29285389"/>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan) (Track 10).bin" size="19117056" crc="b6d2b9a6" md5="f8a23af619f365aa14ab3be06ea74853" sha1="f9a67bb3f02910b40088f9c3f15a95bf6ca4d940"/>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan) (Track 11).bin" size="15784272" crc="41c9d528" md5="72398dcbac7d0ffb4eb2656269d44140" sha1="9bcfad0bb7f86ca9b4b650d06668d79dee78d596"/>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan) (Track 12).bin" size="19126464" crc="1b1124f7" md5="95ef98c76b2d050559635627c53dd963" sha1="5b8cc6e1f5fce796b0ba49c40f9cf16164d98324"/>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan) (Track 13).bin" size="15826608" crc="28b8275f" md5="0518034bb9f94d799d53be5abb6fa131" sha1="ac0f41d1a7ede15e2f6b202287ffc764af3da9e6"/>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan) (Track 14).bin" size="20643504" crc="cfbffb37" md5="aa44b685fc67b506c7ee439ad631b909" sha1="98d8e4f7dac7b7ceda6f82b9c50c90bd6179f0b5"/>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan) (Track 15).bin" size="18952416" crc="097f2dda" md5="4aa4d1f02f92ec0318b8c65c93f44b94" sha1="aad26c499d36136e2a09206485a6388fa309fb3f"/>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan) (Track 16).bin" size="18239760" crc="0cec4ef1" md5="65d0d7485cdcbca778e6965587d467ea" sha1="f9c73d515028f9e3f4181c2ceefbf3c1cd5cfa13"/>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan) (Track 17).bin" size="17113152" crc="ef196b78" md5="2176fe76151facb667276f49c38f506f" sha1="cf17c719c50a96fbdb2b84856f0d25ef2fd186e4"/>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan) (Track 18).bin" size="19493376" crc="8ac69599" md5="96e8568a0db351c71d48ea74281011b8" sha1="4a191a245c18670bff75b4c0acfb008fcdb4b446"/>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan) (Track 19).bin" size="20946912" crc="b3c78509" md5="766e6551ad1d0bf58a6407df5e3537f5" sha1="a20c74dd1b1474da7a16d012d834acb88d3039ff"/>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan) (Track 20).bin" size="17647056" crc="9ca89bb0" md5="919f08954ed5946337e3cbc286e81d2f" sha1="ff0dce5c0a329c420fdc49f2b384b5f15bf2558c"/>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan) (Track 21).bin" size="18632544" crc="f93d7393" md5="c8cc09ea528e95e85a5e4d739d1ec2d6" sha1="dbacb50fbd0003a3535f92958c4d0db59a912f68"/>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan) (Track 22).bin" size="16953216" crc="8555274e" md5="074618ac4b46dfcd918145bedddfe856" sha1="ea383369afac1953ab716d020233aec65a90c3f2"/>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan) (Track 23).bin" size="18891264" crc="ceb87d94" md5="2f4f52297a6940cc7125e4df97df87b1" sha1="b8030946a93a2bfde8e10eca7c84cdfcd7f9ae42"/>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan) (Track 24).bin" size="19799136" crc="3510ca4d" md5="7e301f1ec32b00dfc32d48deea3e0481" sha1="f2ac7f020210249e37f009ccee29802aaa077da1"/>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan) (Track 25).bin" size="19973184" crc="468d311a" md5="311a04265ccece41a63c17f983f7b140" sha1="28d3e8f293fbef2b7cedec9cbd6884d17e42fc5d"/>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan) (Track 26).bin" size="19157040" crc="e89f45e7" md5="53fee99b7d71120f558879aaa263cda4" sha1="5ee7791f0abb3d4d1768b67b57ba2082bb017758"/>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan) (Track 27).bin" size="19516896" crc="fb68ae7b" md5="2a239a8b2d66998bf427a527b6896ddb" sha1="bf34defe200d0670c3f36f5b4b267c6946d3a6bc"/>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan) (Track 28).bin" size="21426720" crc="eba045ea" md5="f370860a14e2c2553e45cce86549603c" sha1="34abbc5a954239579676390fddfffa153d784e04"/>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan) (Track 29).bin" size="20758752" crc="195470ab" md5="068747094e110a24ec9765fbe38b673d" sha1="3e445b494a868203ee5a649b0a25c207f672d319"/>
+		<rom name="jubeat saucer - Original Soundtrack - Cathy &amp; Marron (Japan) (Track 30).bin" size="22821456" crc="6ed1bff4" md5="2806a1fe9e3f9bbae1b0dd254f968a32" sha1="e8a46008422145f42387236c01b369a8216c6a09"/>
+	</game>
+	<game name="jubeat saucer - Original Soundtrack - Kaori &amp; Kotaro (Japan)" id="0032">
+		<category>Audio</category>
+		<description>jubeat saucer - Original Soundtrack - Kaori &amp; Kotaro (Japan)</description>
+		<rom name="jubeat saucer - Original Soundtrack - Kaori &amp; Kotaro (Japan).cue" size="4783" crc="aa1630ed" sha1="4b7895a3fe766a7baad8ebb88cf6d5348e5552a5"/>
+		<rom name="jubeat saucer - Original Soundtrack - Kaori &amp; Kotaro (Japan) (Track 01).bin" size="18122160" crc="eab1e8b5" md5="92449d2ee100e07742c28dd7ede6888e" sha1="b9a30f79c222b07d831d3fb61c88707fd835e3ce"/>
+		<rom name="jubeat saucer - Original Soundtrack - Kaori &amp; Kotaro (Japan) (Track 02).bin" size="21490224" crc="023b6a6a" md5="53623c712a84147008dd1bade7a53e78" sha1="588692b205fd05d1b5f22757eb330361004c0072"/>
+		<rom name="jubeat saucer - Original Soundtrack - Kaori &amp; Kotaro (Japan) (Track 03).bin" size="19761504" crc="f2daba94" md5="a21ed89f0b831d1d781a34dbdae912c3" sha1="dea422e28acf8aa3dac2f56172cc3febcdce07e4"/>
+		<rom name="jubeat saucer - Original Soundtrack - Kaori &amp; Kotaro (Japan) (Track 04).bin" size="20831664" crc="0a178ca4" md5="c2e6e33319bc97d6661fae2ace5e1919" sha1="289fb7f19c444318fbeaa52b0d67018bf4ba9d29"/>
+		<rom name="jubeat saucer - Original Soundtrack - Kaori &amp; Kotaro (Japan) (Track 05).bin" size="20794032" crc="4d9bde35" md5="f0764581e429affa14227ff2e02e21d1" sha1="a0e31cfb9be252d0de37c7973a8a0fd5f1f7f677"/>
+		<rom name="jubeat saucer - Original Soundtrack - Kaori &amp; Kotaro (Japan) (Track 06).bin" size="21828912" crc="aa6e532d" md5="7604c1a3aa929bce9f5bcefaa2f89eea" sha1="d7b0b118171acb79302180fff9fb12575c14519a"/>
+		<rom name="jubeat saucer - Original Soundtrack - Kaori &amp; Kotaro (Japan) (Track 07).bin" size="20575296" crc="bcdc690f" md5="ff31f36c81fdf44553ed243e7531756e" sha1="2ee70bc527a6d05116cf4e2e391f7cd69f282a6c"/>
+		<rom name="jubeat saucer - Original Soundtrack - Kaori &amp; Kotaro (Japan) (Track 08).bin" size="20001408" crc="27f49c0e" md5="2b97e0b3d6bf18e8b4edb5329d9878f9" sha1="deb417872f81e73ca19ded565c9accd9c7bd3c8a"/>
+		<rom name="jubeat saucer - Original Soundtrack - Kaori &amp; Kotaro (Japan) (Track 09).bin" size="23242464" crc="6c4395cf" md5="2503c80a6982437222f32176cc127ec2" sha1="a0d598c630b8e1f0412478378a276287575e3727"/>
+		<rom name="jubeat saucer - Original Soundtrack - Kaori &amp; Kotaro (Japan) (Track 10).bin" size="21410256" crc="ecd04f8d" md5="35aa6017a09afc2eac6e86091a046f1f" sha1="442953caa39b047be95b3b528c723f0952cdca4f"/>
+		<rom name="jubeat saucer - Original Soundtrack - Kaori &amp; Kotaro (Japan) (Track 11).bin" size="18954768" crc="1380d796" md5="b8d1a6f475cd5166f4e8341e31e2add4" sha1="6b0f981f6c68852e8fa67eb543a16a86398b418c"/>
+		<rom name="jubeat saucer - Original Soundtrack - Kaori &amp; Kotaro (Japan) (Track 12).bin" size="19627440" crc="d4b9c072" md5="fdc14b22acb882b892916ebbb9582f04" sha1="0518aac3bab46d0128d9a4477d9b946c5c7837da"/>
+		<rom name="jubeat saucer - Original Soundtrack - Kaori &amp; Kotaro (Japan) (Track 13).bin" size="20241312" crc="21eda4ac" md5="6863fff62c509e791e8da87a55e483f2" sha1="02f8670daab91604094e843a05e0b0e9752921c9"/>
+		<rom name="jubeat saucer - Original Soundtrack - Kaori &amp; Kotaro (Japan) (Track 14).bin" size="18684288" crc="fdde2fac" md5="036f58ce975e7704a7dab29bf7309a35" sha1="53c4b8b1a5c88ec31f5e5447ab894e135e30f89f"/>
+		<rom name="jubeat saucer - Original Soundtrack - Kaori &amp; Kotaro (Japan) (Track 15).bin" size="14874048" crc="4bb5715d" md5="c4852dc9e3e60b4448c1bce8afa9e69a" sha1="aebdd508d862109e9fa71cb0501b433bd23704d9"/>
+		<rom name="jubeat saucer - Original Soundtrack - Kaori &amp; Kotaro (Japan) (Track 16).bin" size="18714864" crc="40d8fff9" md5="5b40776de459c28cada1e06d9406a502" sha1="f39a0fe87ac7f934847c28c77d499ad4f351d2b0"/>
+		<rom name="jubeat saucer - Original Soundtrack - Kaori &amp; Kotaro (Japan) (Track 17).bin" size="19999056" crc="822d0e18" md5="774efc6da3db0ef8a9ed4c26f23e7a2e" sha1="fd82404cf43de1aa15f48827829317199aae2b8c"/>
+		<rom name="jubeat saucer - Original Soundtrack - Kaori &amp; Kotaro (Japan) (Track 18).bin" size="20074320" crc="2848781e" md5="229453424eeab29cdfce660bb4e1c4f9" sha1="85df8bdcc4b0459774072a9723f1e82a01a9cb8d"/>
+		<rom name="jubeat saucer - Original Soundtrack - Kaori &amp; Kotaro (Japan) (Track 19).bin" size="21974736" crc="c2b30c45" md5="7e29648d67eea564d31312a45253d5c6" sha1="f57a63e036f3080feb845116d8289e0152f18878"/>
+		<rom name="jubeat saucer - Original Soundtrack - Kaori &amp; Kotaro (Japan) (Track 20).bin" size="21266784" crc="4980a4ac" md5="66a9446435031105fc189c8aa9278e21" sha1="7a3121f1f67933e6fd49289b69f0ff65ff848356"/>
+		<rom name="jubeat saucer - Original Soundtrack - Kaori &amp; Kotaro (Japan) (Track 21).bin" size="20034336" crc="0c475b9d" md5="fd856479622b921587c705b870fd7a38" sha1="7c1f01320196ce23c8f015bc0e5a8756d9f225a3"/>
+		<rom name="jubeat saucer - Original Soundtrack - Kaori &amp; Kotaro (Japan) (Track 22).bin" size="18359712" crc="274c3c32" md5="4c3ff8b6a713526da1e0ae63b3a588aa" sha1="ad4a4bf3eb222e71447d1919848ff86a95e5e3dd"/>
+		<rom name="jubeat saucer - Original Soundtrack - Kaori &amp; Kotaro (Japan) (Track 23).bin" size="18696048" crc="6150801c" md5="da399dfe2c9ae5485610f36b02e426eb" sha1="51831063873571ea8d0baeb62b17deb22e45cd98"/>
+		<rom name="jubeat saucer - Original Soundtrack - Kaori &amp; Kotaro (Japan) (Track 24).bin" size="16776816" crc="175d4e46" md5="59233e02c14d3417518f3dbac3f9748c" sha1="2b2b709f15246c7cfd1069ccc1d0b63945541151"/>
+		<rom name="jubeat saucer - Original Soundtrack - Kaori &amp; Kotaro (Japan) (Track 25).bin" size="20930448" crc="b30067c8" md5="40489eb9c55e48d642e7a53c85512146" sha1="aafcb522275969ea0f8e0213d5730c8c3ecdc26b"/>
+		<rom name="jubeat saucer - Original Soundtrack - Kaori &amp; Kotaro (Japan) (Track 26).bin" size="18340896" crc="33a03d38" md5="a7d6bb28d6f068922ccf09c71fbe91dc" sha1="4f78c90815496bf7655b29fee2531027c4590729"/>
+		<rom name="jubeat saucer - Original Soundtrack - Kaori &amp; Kotaro (Japan) (Track 27).bin" size="17665872" crc="21981d17" md5="b56ddf24b2e81258606115bb9c0ba017" sha1="d67bc51f10b86d5f866088bbac7c0645b2cb8f87"/>
+	</game>
+	<game name="jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan)" id="0033">
+		<category>Audio</category>
+		<description>jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan)</description>
+		<rom name="jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan).cue" size="4956" crc="abb16637" sha1="59df5360154dbc23572268402ef1092d5dfd1849"/>
+		<rom name="jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan) (Track 01).bin" size="19347552" crc="6cd3822d" md5="06410a683e7a17947006f3211e9801c2" sha1="8ea4ed445ed3c4ab457621e3f03edd6d01557858"/>
+		<rom name="jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan) (Track 02).bin" size="23677584" crc="77bf6999" md5="4afea918fdb125443a57b8e822a624a1" sha1="6cd7b0a69f3a33e94f3aff3ba0e687576f3edd5f"/>
+		<rom name="jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan) (Track 03).bin" size="23021376" crc="3226d427" md5="9c1f9bb2bf7585bd61283e26fc76073e" sha1="3bcbca87baa63118c5b00c42aaeb62278761f279"/>
+		<rom name="jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan) (Track 04).bin" size="18813648" crc="f7e015c1" md5="9380433cca3be6cb4c0258fc0a09ddb3" sha1="933b887d3cb893fa1b95c9b91b2209bb3f494d08"/>
+		<rom name="jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan) (Track 05).bin" size="22111152" crc="fe391ca3" md5="6d67a4e7fcbe36972ee255af563cfdfb" sha1="2021b800b06fae05e3be7111d05721c2195d02bb"/>
+		<rom name="jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan) (Track 06).bin" size="21812448" crc="54b1e965" md5="059f16c7d6f5621b3dd3a6fefab2358f" sha1="7f8d36af4833d7764c4ceab54bd629ea0bd8d510"/>
+		<rom name="jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan) (Track 07).bin" size="19413408" crc="1296eb63" md5="2685c2478a1abe5f03e62e3658373700" sha1="5f50b0f54d518fea0403e4ea7f3c69e968835902"/>
+		<rom name="jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan) (Track 08).bin" size="21172704" crc="b015bde8" md5="965f80745b407797e5777a7af2ad2dcf" sha1="928b03868912355f151ac5655e05ae2faea24060"/>
+		<rom name="jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan) (Track 09).bin" size="18900672" crc="d097b0a4" md5="32fea7139db0f860e373e8ce599eddcb" sha1="1f76b26c0c4ff1d42347bef13eafc02bdcebbb06"/>
+		<rom name="jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan) (Track 10).bin" size="21012768" crc="0d641442" md5="03c9d6e0f49b7cf93021111dbe75d0ca" sha1="f6866183d73a09cf0acff6db323b7bcd5e6cfe8c"/>
+		<rom name="jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan) (Track 11).bin" size="16885008" crc="4151c327" md5="c387150500db45ce3351c51a63ad47f6" sha1="c267a23e82dffa8a3209a0907a86d5d40372bacc"/>
+		<rom name="jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan) (Track 12).bin" size="18985344" crc="83cf5283" md5="7d24e2c80114966c308577e85c1becea" sha1="53caac37916d68e5e51ff84f0cc399ad887ae3ff"/>
+		<rom name="jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan) (Track 13).bin" size="19347552" crc="c920155b" md5="5564e175fbfbc0a70f8272a12dcfcb72" sha1="f7b729556e9b517073278fe6403e3b1bf397ab08"/>
+		<rom name="jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan) (Track 14).bin" size="21029232" crc="6f298637" md5="d5bcd54a25553c479d9061884bfd9c3c" sha1="b504d48afe85d2aab185f0928031fb5460f93f39"/>
+		<rom name="jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan) (Track 15).bin" size="20443584" crc="ed38fe1b" md5="4fa218118c0f42af99ab9e634542d664" sha1="d999dc07bc31cfd7b2931ad22f5a0df2b5cc922e"/>
+		<rom name="jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan) (Track 16).bin" size="17931648" crc="12cd7f77" md5="4316eb6661b6ac4c21af730ccd6e1c5e" sha1="7b83b71c390d1220a23a4375168e8be4ef55372a"/>
+		<rom name="jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan) (Track 17).bin" size="18418512" crc="3f5667a7" md5="bad982da2a7f1b8b583e60f01084f608" sha1="6df54ffb9a8d05ac39547a71e6291668a68bbecd"/>
+		<rom name="jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan) (Track 18).bin" size="18263280" crc="b366c89b" md5="32d14477637440f8773ae60e3196331c" sha1="35e25df58d0b628228c02a3647a95e0379996ca7"/>
+		<rom name="jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan) (Track 19).bin" size="19321680" crc="401905d3" md5="85606667db5bb430257cf2febd6959f2" sha1="beb92d86321bb7727d3d44030e153abf3dc9fbdd"/>
+		<rom name="jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan) (Track 20).bin" size="19921440" crc="2de5220e" md5="5ede62058aa36d230c6f2e21ef21426e" sha1="895ec97b1a4a9962b71ad0f9abb80ec07751d9c9"/>
+		<rom name="jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan) (Track 21).bin" size="21076272" crc="3fa851bd" md5="52a74a685bbd71e7b95e73d9b85e02cf" sha1="61ad843f3f8e1e311653871f05ba1225bea11d41"/>
+		<rom name="jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan) (Track 22).bin" size="18315024" crc="04e2887d" md5="8a72ffbfbb3637ce65482f6006e0a02e" sha1="839300f0dff857ad4af26a4ec911076e53f3cb67"/>
+		<rom name="jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan) (Track 23).bin" size="18799536" crc="e78a3e61" md5="b934780bb261a1b7619720fb33581ddc" sha1="999d9e9e50fb7b75117233c0775727e3924799d9"/>
+		<rom name="jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan) (Track 24).bin" size="19091184" crc="9f0c955c" md5="721196c2a418c0aa72f2dbdefb80836f" sha1="a4183056783b693a99094d0404e4dae0eec7deef"/>
+		<rom name="jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan) (Track 25).bin" size="20201328" crc="da172a15" md5="38a2104927c7dc245ba2ac0a2ae7c404" sha1="56c6b59049d43352b52b3fa4ce1976d98c935399"/>
+		<rom name="jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan) (Track 26).bin" size="19846176" crc="1643fcc6" md5="fb38b865c2f59b3331e8c56f2d61f45f" sha1="ac59f1d58991324b19321ff8d2679d74ada260ad"/>
+		<rom name="jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan) (Track 27).bin" size="39073776" crc="2b6bb821" md5="9444b0b51fc283f8d595e571b3c9e64e" sha1="e237025e9587b61da0e61c40d5ae57ca8ab741db"/>
+		<rom name="jubeat saucer - Original Soundtrack - Sho &amp; Hoshiko (Japan) (Track 28).bin" size="49982352" crc="1ab4d604" md5="7e7360b746051b5fdb6eefebb4ab1077" sha1="753ffe34beb03c5c6b38b6fa365d2d40a88248f7"/>
+	</game>
+	<game name="jubeat saucer - Original Soundtrack - Smith (Japan)" id="0031">
+		<category>Audio</category>
+		<description>jubeat saucer - Original Soundtrack - Smith (Japan)</description>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan).cue" size="5070" crc="5b9d607f" sha1="025b4844a01dda04c33f3195455ed4f5e8183996"/>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan) (Track 01).bin" size="20968080" crc="71aaefa6" md5="5a85b0d25d1ae4148bb752fd24905483" sha1="e66ec0ffb011f89a1fd258506f9758fe856db6cc"/>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan) (Track 02).bin" size="19660368" crc="352eb51d" md5="a56a0ea06364e4abf38b0f4ae9b6f049" sha1="23087ffa7aa43fa2177ec1e89f8ce816a1b1c991"/>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan) (Track 03).bin" size="18298560" crc="a23fa562" md5="e446531c33f8626b03e7d8f1d07ea547" sha1="19dd3cee1a22e6f772da6de13811fa2e685ce3b3"/>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan) (Track 04).bin" size="18322080" crc="d352228a" md5="00ae61ea2558af7b0d827ac29774ff5e" sha1="9358f5d44b814900f8f9af84aa4ea5c59c7d0cca"/>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan) (Track 05).bin" size="20805792" crc="923f5d0d" md5="e4440a3626372510acca9c23f0b1c8c5" sha1="0da905ca7ff66e275f2a6448b8a9a469d14cdddc"/>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan) (Track 06).bin" size="22405152" crc="e2ae7c80" md5="91e55b2e94f58287646ba10237f7b223" sha1="1652dd062268e384d1f50fb9623c5629dcedbe07"/>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan) (Track 07).bin" size="19545120" crc="4e50b695" md5="1e58fce62ad49a191df5b0d9d1fd3d1d" sha1="a8cfd4adcea74ca591fbcd9223b0e5c2cf8f5d25"/>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan) (Track 08).bin" size="20410656" crc="aa70c497" md5="93714fd8cbb56c681ed5866fb1f02822" sha1="008890f49c010abef3e34aab707fb6adef0a6606"/>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan) (Track 09).bin" size="16783872" crc="1aa9a747" md5="4dcf0c2607c327e3a0b0eb9956007c1e" sha1="366936261661a88fd390812041117c76be7a54db"/>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan) (Track 10).bin" size="19204080" crc="427f7ed9" md5="8b1429afcea928a53943b36e071817ef" sha1="30e35ed36d2652246bab146db1588cc82d7a5772"/>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan) (Track 11).bin" size="19996704" crc="93e86b64" md5="e82454f5aae2738593d2043779c51852" sha1="7923ec0e6b35d910febfde393f11638395fd7c48"/>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan) (Track 12).bin" size="19274640" crc="e6b9f9de" md5="76cc448a852190a31101d412455a2342" sha1="2a120e05ab1e24ee16b39ebd7cfd3e58275b00f7"/>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan) (Track 13).bin" size="18724272" crc="bf821bb9" md5="8068cf5247a9847763264097d52e195f" sha1="736091decd61cff2f3f0051728d77cd62f0fdd6a"/>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan) (Track 14).bin" size="20895168" crc="63c2fa72" md5="56f36960922779cecf0fadd0d20f1a48" sha1="2e59b786b21c35717f3cdfa4bc054fa35ddd8625"/>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan) (Track 15).bin" size="18627840" crc="a7e37e67" md5="c518ab86d7a588ea51343cc6b1cde036" sha1="ec0602ed3f53ba9d32805097ff0793f368611e73"/>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan) (Track 16).bin" size="21012768" crc="bb7ccc87" md5="1622514271997405b2adc10be48debfc" sha1="fdd0fca1fa27ba6f92c05bdeee7b24a634da36b9"/>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan) (Track 17).bin" size="20130768" crc="f87a1d68" md5="9a803abb35de728cd91936027834f18a" sha1="0523ec688a3eeb70c3336b14fe02a03a70a4b720"/>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan) (Track 18).bin" size="18021024" crc="a7432819" md5="17c0e29b7457df8be35f3a06f231844f" sha1="3f4990fd51c54fb1eb0d2b97c81a0afc76270efc"/>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan) (Track 19).bin" size="18738384" crc="4ddae322" md5="c2aa0836e85349fa1381a50bcc458c07" sha1="9f6e5dcf2218d7d4bff14b1e3c52d59a1c87209f"/>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan) (Track 20).bin" size="1945104" crc="0590a8f0" md5="02b1daed7dd539538e8ea7aed9cc41f7" sha1="794bd0e50a9e71698bff65320ba9227b9af02b48"/>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan) (Track 21).bin" size="5529552" crc="2a576855" md5="200c7bce4723134ed0dafc1a2d9a60b0" sha1="54970eb237a411f955789519a66f44ef3901adc7"/>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan) (Track 22).bin" size="6858432" crc="38a7fb06" md5="2c20b4e41c51bb11a8a0a4ec319f606d" sha1="435ef9437ff39351487e1f4b66ff814079cb2191"/>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan) (Track 23).bin" size="4760448" crc="aa477e90" md5="0e624b14b6072e58b388ca1a78575059" sha1="e734ad91292b417f8f31083fd89cda950c3626f4"/>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan) (Track 24).bin" size="6844320" crc="d8e47fe9" md5="4e2c3711a1707ed4f255b68e2b1946a4" sha1="dee13044026d2d550786ccc1cb5cc7766ca363f9"/>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan) (Track 25).bin" size="6801984" crc="31301c02" md5="bc6a4313dcbdc51677758d2f30a2ada3" sha1="bab3e61a543cd425c930c5eba2efd8b40fe6c5af"/>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan) (Track 26).bin" size="6987792" crc="6d1c00b8" md5="657508addbcab43ff538b198f8f78879" sha1="ff63c9b524b73e38f55bd2bc75b60009ed2d8d21"/>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan) (Track 27).bin" size="6326880" crc="45ff526c" md5="c7e40150a19cb1cc87cdca7be87c6e0f" sha1="8eb58167b4cdd12814d68480e8e661cb673ea961"/>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan) (Track 28).bin" size="17679984" crc="a2196359" md5="a452a4c6b0e4e314e3a72155aa1b113e" sha1="dd64a8a9828af2383e93a9547c69062875d4880c"/>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan) (Track 29).bin" size="11731776" crc="9d03aa11" md5="9a56ab8ab9dba534863c305119a65215" sha1="676e22bba785db467bd22047d470ad00e545aab0"/>
+		<rom name="jubeat saucer - Original Soundtrack - Smith (Japan) (Track 30).bin" size="1587600" crc="0ad8ad58" md5="06870c00f6ecd042b73ecbb9985b09e9" sha1="4d64e4e7e78794310d6105aced3802777c47179a"/>
+	</game>
+	<game name="Kirby &amp; the Amazing Mirror Sound Plus (Japan)" id="0027">
+		<category>Audio</category>
+		<description>Kirby &amp; the Amazing Mirror Sound Plus (Japan)</description>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan).cue" size="5616" crc="2583fda3" sha1="10a68f9c9b3bb5dae63221355c0312e3f5d667f2"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 01).bin" size="2751840" crc="49a444c5" md5="de75561e9cabf1045638ec734a00b033" sha1="275e6959c1ccacb02187bd423f55cce85d71949f"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 02).bin" size="11235504" crc="fdb41f2e" md5="3224a4efe4d4a9b68d5047bfd0e38072" sha1="9cc2848d8b8d939320c9d6d0d83b8921ea15064e"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 03).bin" size="3292800" crc="0d801db4" md5="44c5b8457060004f851606ef41710a36" sha1="4b6aa7677a733a87128bc66c03807b87c50b888a"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 04).bin" size="8133216" crc="527917f7" md5="b148c0a04c785dc0aff4fc6e2b5b2066" sha1="1b8a622b79161985dfec631676e2144b13d0cdf9"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 05).bin" size="13300560" crc="302cdf4b" md5="e2661bea64b9a08a5ff6494dc999ae70" sha1="aca20a8dfaa469e503ed71be61c02e05ac1f7063"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 06).bin" size="6190464" crc="dad230d2" md5="ce937154810474a8e216d71c59e552df" sha1="c0bf5394f2b0114029c91638f0ab3d73d2806b7a"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 07).bin" size="1394736" crc="7f5bf0d3" md5="4651d59db7f2ffe816d6894684449194" sha1="c4b34c0b36318d6c294794271e067881cd4cfd0e"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 08).bin" size="19756800" crc="f59fd86c" md5="b315a30900f262b9b3b4e2745605b59a" sha1="fcc0d7e98a09117eb15b175bc0d6da8efd9a7461"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 09).bin" size="3045840" crc="90ae71a2" md5="e88851d5ef20198e6f0477bdc5a57a23" sha1="d6882578b78b1f11f999bb533d304e9fdf27c662"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 10).bin" size="24590160" crc="feaf1b2c" md5="7ce7d802a1daeee9503ee1d9a26e98c8" sha1="774d40693176aa1c27eb2e0be8f1b0e1675b5b2e"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 11).bin" size="745584" crc="11149e20" md5="6d075bfa38f1afa953ab7bd387a667d6" sha1="d8f7a4a7084594fbc35630bf14bf4ef61a3d40e1"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 12).bin" size="13178256" crc="8f6e7824" md5="a6841d5ef47f0bfd203ddc689852e50d" sha1="66095f5c74867e105d0d08ee3dbc90e2be40400f"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 13).bin" size="1011360" crc="7b233034" md5="139021373ad50cf569eae013463ca0f8" sha1="fefd61352f75ef56e06d593c3cf356184579dc31"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 14).bin" size="19451040" crc="f7c6f802" md5="9d9700cc5c7668654c8647fc43302372" sha1="6551ce7cf6fe7047086fcc35a2500e0b85f99a36"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 15).bin" size="15798384" crc="b714d6ab" md5="1282a612e16c7e111e20955355b37bec" sha1="d6eda2ff97cddfaa75b036e79e37cb9ac72b9db3"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 16).bin" size="842016" crc="5c3b1a41" md5="4c21bb6ea5165dd5da9312631e868fb8" sha1="b5a22a34af59a41646881672f7b791e78c5c6faa"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 17).bin" size="8772960" crc="e0f380cb" md5="12832633bcdfd4c554f916d49bbfa04e" sha1="ab8866cfa0b4a2b4db4da81da67e192609df10e8"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 18).bin" size="6879600" crc="0c78d1a0" md5="af32ec3aaced2aa879ba87f2a41a6130" sha1="e42a1f08c0c18ef8c327ae02b10c827a1db203ab"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 19).bin" size="952560" crc="3ffed62e" md5="bd1f30b409be12138ade570063d00691" sha1="346ab1dbed21ab026bd9817b3cbaa288fadb831f"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 20).bin" size="24183264" crc="291926db" md5="522b0a69f8c63e758348c4751c1b8145" sha1="ea87f09f3f7ffaec466d0808447b859fd0f7e690"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 21).bin" size="971376" crc="1cf82f7c" md5="81ac7993d8ef674836299cc2416e4864" sha1="e9aea9b8a1b503379b48f216a070c379997b5630"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 22).bin" size="24524304" crc="2a1fe0fa" md5="caaf5db32886cb6cd2747e3594076dc1" sha1="0d341a779baa453d8d77bc67d18ed17838f73b6d"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 23).bin" size="15342096" crc="e9d3aae3" md5="9501647ac538bb83888159fce75cc6d2" sha1="0c3bef4ca8166eb300bbc1ce095f30bfb9b921f0"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 24).bin" size="3433920" crc="a7fa6873" md5="42bf3c23fd6cacd64c71560430a0b689" sha1="dcfb76ac64443f870a74352b4c9e80c0826b1ef8"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 25).bin" size="13794480" crc="488fd726" md5="97b67529beb1a36cb4237567924e7fe6" sha1="87f5a01602569c899d1793e56311624f4cd3b0c9"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 26).bin" size="16198224" crc="a5538815" md5="191e88a2a43ca3ddf31635d99e92d9c4" sha1="0954140de1b7f289092345ae7f748f05bd339d35"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 27).bin" size="6322176" crc="0f9e6c8f" md5="530a8c19810305b79dee898607944a02" sha1="23067948fef2b2a1ea7eb04f4faa92843c2f7b6c"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 28).bin" size="18808944" crc="8178d138" md5="835ce548e7481b6ac6eefe87a9831c49" sha1="80dd8e88f2ba25462ae99b92c2fd1f8c5778f551"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 29).bin" size="865536" crc="d58a119b" md5="59234672be72d63fd0a72724d1ef2b97" sha1="be84f06056c7c5ece89241aa89af9b6946b83913"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 30).bin" size="9796080" crc="1cfe39f9" md5="e0606da73bceabcbc1f5145594820901" sha1="ddf7a6b4b2a0580bf46d87d3223177450f1ec6e3"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 31).bin" size="22355760" crc="d26b37e6" md5="e927d3bd4f58c0e1602247c2b7ce2122" sha1="b56ab4e805d7ceb9dfc78735f546c35b2297c37c"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 32).bin" size="23360064" crc="7d0291a2" md5="aa0ac9b488bbd48d33967b510e5e7dfd" sha1="4b1571510ef20b1a3bf36be5526e2e120919444b"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 33).bin" size="4805136" crc="99ad5f73" md5="c4595d42e343ad4a9f88473fa66c4e89" sha1="b9d017d97ebe670c3642d7e2dd718035a2163615"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 34).bin" size="16852080" crc="8eb511d0" md5="a80e678a90b978f6ed650ee1389c9b09" sha1="6cec271b5e4eac5fe698e73607a7a1c8fb304167"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 35).bin" size="28275744" crc="3313a29c" md5="cd7ee4a0aa7790f576c66819d1c86329" sha1="ed87386f090ca45167d5b6384d0c0c058c842faf"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 36).bin" size="3205776" crc="5c64700b" md5="e635f050cafc1dcb05c3e77930f431a1" sha1="b7892a8bb6a3828b19c4119834f97b5a022fb68c"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 37).bin" size="23677584" crc="e7649d4f" md5="e06aeb597fb26acb25f21ab1e358ec45" sha1="12b27e7ff4bd5cf625fd3e8c95c5d0b267e6fae2"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 38).bin" size="11108496" crc="d43e21c7" md5="d2dde157e8c6769440e8e5fe592ee08f" sha1="2dd7f3b29e55621166e4244f2e66261a7bffddcf"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 39).bin" size="23830464" crc="54f1cd04" md5="595692652bc55278962810822ce575d9" sha1="00565315a152ad17782f1769aa5bd22297ff1c4c"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 40).bin" size="30865296" crc="064c5bdb" md5="fec3219ed1299054b5fa5f3f63849a3d" sha1="af41ff6d9c46e385125537dafacca874a83e6082"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 41).bin" size="22214640" crc="c6b5748a" md5="6d17e95aaee47d7368fb0ab0852bb6d5" sha1="7367b41c720de0f9c179cc689e978784df545f9d"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 42).bin" size="14500080" crc="0bb7c02a" md5="bd3260c4287cbfcca8c888a7fb52c15a" sha1="7be7ff0b555e4ac457a725134ba1bb39a5c35397"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 43).bin" size="6519744" crc="2aa41800" md5="21b71060e22b076250b869ad3cd0dc55" sha1="332d2cb799cd4e1e70e8b52f9bf66f53ebabb928"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 44).bin" size="33398400" crc="e413ac37" md5="d350b8e8b60cf1eb7a3bae268521412a" sha1="94d0c21e6a32ca58018319450921b5a25bcee7b7"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 45).bin" size="23609376" crc="3ce1cd60" md5="309635ce68158b854e7bfcc5638e4946" sha1="03cfc61ec819e36e0319eac9bbcd33b8f8461be1"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 46).bin" size="10113600" crc="35b5c0d0" md5="33b6444e2a3f54f7b018fe3d392eb878" sha1="a88f78567abdb39241013a489f2eb9f4fd60f086"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 47).bin" size="31575600" crc="817b66e0" md5="21e14d5354c5d71f8561714de29786ba" sha1="b587cf81304fa9af9e3ab4a390a384bc7b06eee7"/>
+		<rom name="Kirby &amp; the Amazing Mirror Sound Plus (Japan) (Track 48).bin" size="32257680" crc="7f099bef" md5="99d5d2c49410bd8ac938ae944167f2be" sha1="30169afecd3eccd3420d146491dab30aabc1db75"/>
+	</game>
+	<game name="New Dimension, A (USA) (TurboGrafx CD Hardware Bundle)" id="0048">
+		<description>New Dimension, A (USA) (TurboGrafx CD Hardware Bundle)</description>
+		<rom name="New Dimension, A (USA) (TurboGrafx CD Hardware Bundle).cue" size="630" crc="74dbc36c" sha1="eb0b13da3c02add3c2dad1279a2ddd244f97fa05"/>
+		<rom name="New Dimension, A (USA) (TurboGrafx CD Hardware Bundle).ccd" size="3072" crc="0e46dd41" md5="2d7fbd27fcf2efa06444473c2ad7d7a7" sha1="bcda2652c74988002d4148894579c30d14ecf5e0" sha256="8151f7dd6679780afdbd122e00435884a9f917cf46f286cecfe6bafec1a21653"/>
+		<rom name="New Dimension, A (USA) (TurboGrafx CD Hardware Bundle).cdg" size="26844768" crc="791e1e54" md5="015097c0ee53f038a8f97b34d3d5dcab" sha1="c58984b499099f9c7e8009d25d24df0cff71bf67" sha256="d3ab413324dcbbf6438a5262a8a88beca6616fa9fef12358be564120aacff67b"/>
+		<rom name="New Dimension, A (USA) (TurboGrafx CD Hardware Bundle).img" size="657696816" crc="1c7fc0e0" md5="e08b962689c465f18b1ff571f3b5c706" sha1="0cd95ba9d147c900bd079fc8ce754771f5a5699a" sha256="01c930f7a2084ce0d5e034301967ebedcaedd9d93be6b1faf73980d0ee861d45"/>
+		<rom name="New Dimension, A (USA) (TurboGrafx CD Hardware Bundle).sub" size="26844768" crc="fcb8d13e" md5="4f6c79752b3bb0c599b6b4090622669b" sha1="c4a4ddae36581f6014e98da23ec16e9820740c87" sha256="6e0b2f6fc39ef713e750806e114dd0b639a3f09305ffa44864912db30cb75793"/>
+	</game>
+	<game name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1)" id="0038">
+		<category>Audio</category>
+		<description>Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1)</description>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1).cue" size="5985" crc="1dfdd23b" sha1="35cfe1e230b9772cecd8fd862562182e5e26167b"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 01).bin" size="5496624" crc="34ab507d" md5="01f1719ebb8afe2455fc004941f07d80" sha1="0449f1c5c0d6d95ba94edc4e4a2a5f6c726cc22f"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 02).bin" size="19587456" crc="550b04d5" md5="a612ef7a11d11cb8fe1bd72732d08fbf" sha1="9046bc0ac156acad4a2faaf7a67f53e34a21b561"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 03).bin" size="19015920" crc="eadcaeb2" md5="596f3bfcd9482aef1d656d7b2945159a" sha1="8f8c08ed48ea56de164e99e642b0756893823808"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 04).bin" size="20490624" crc="02e245aa" md5="5248967db42a908306f1925cdddb73d9" sha1="2255cad23c5e0cdedbb0b107c06c521d6ae9afb5"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 05).bin" size="22574496" crc="3e2a989e" md5="38bb400d84c307b9d3361dc38c15cf9b" sha1="5f707c32cce53870cf7c69f38baf316b9abe1456"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 06).bin" size="21603120" crc="34913d65" md5="632e028d182dba6a123a643dc56b2082" sha1="b4263b9a409278efac5e14b67a38601b79dad528"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 07).bin" size="17734080" crc="a5753d00" md5="5e5281086c58886d70a60b87fc96baf2" sha1="846bd42d4e298711cc9bf9cdccbc9e01644ad31c"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 08).bin" size="20208384" crc="4c67f26b" md5="131c02faeb4a4959185b5ebd5e31d584" sha1="cf96cb75b9559dda665c02f3b8cc78f976636383"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 09).bin" size="21422016" crc="ede7a905" md5="fcd42e941aa44688053c41c3adc1e142" sha1="5cfffee960e4e6fa355a350ace067fc7a010dfda"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 10).bin" size="19526304" crc="cb6e9e66" md5="4be63d090b727519fee93d4112fd14fc" sha1="61d2b233bdea4335ca0d7847b4b775708a1f53c5"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 11).bin" size="19528656" crc="8e4bf060" md5="2068a63f3d7e737a6961493c4d4f5660" sha1="d7a25dc44c008764e083709d420c058561aca501"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 12).bin" size="21767760" crc="67bffb55" md5="442787ab70d14188bc9ac43b9767f8a1" sha1="c51628caf6cdd09d9a79262bf80dab730d42bc3d"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 13).bin" size="20361264" crc="b2754a82" md5="c6782a2b985f747b0ebf52489b6a9fd4" sha1="4dc9fba279ac59e08ca0f7162cbc06cc1233bed2"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 14).bin" size="18486720" crc="e1ee5b66" md5="14d7cf9c2a0c858bdcd31a2cc7e7aa01" sha1="d46e667c2aefddad05a0fc801dce0e50964dac53"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 15).bin" size="19093536" crc="2f739e03" md5="95d4956c086b7b688f81d23d99ffb391" sha1="82cd6d6fecd6d4c8e8afb4bc28bd52449c7c4db1"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 16).bin" size="20231904" crc="0cac2245" md5="411a463d71b117811d3770f534054147" sha1="ad7b57d95ee46d98b4235aacbaa5651282be5ec5"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 17).bin" size="16812096" crc="7fb5b53b" md5="794467866ef560e1e2cfa2c580f76d83" sha1="5866eb67f1b358a23656612c3b336b5582741487"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 18).bin" size="20097840" crc="fad06012" md5="df6cfca7c836217bcacfb626dbd00487" sha1="d16aaf0e01033b3677d88ff8587b942e5cb6c960"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 19).bin" size="21803040" crc="10439e52" md5="c3543b92634d17227076dc094cf467b5" sha1="70de138bbeffe245e996c4a7b1eb9c22250c2c39"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 20).bin" size="21767760" crc="5a3d38a4" md5="ffde2e0b02044adebef088ac2e4b0b31" sha1="cba06fd8cebfeeb2acd47420612ca34fd24bed48"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 21).bin" size="17122560" crc="b58e1d51" md5="2c5305360c305ed3e29bb934829356cd" sha1="1a828aadb006e0e4db3e428d20d5227fe94d8932"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 22).bin" size="17557680" crc="19f63089" md5="8fa52726de02cf0b6d3b79455fb192f9" sha1="9b2cc0a03097017c754c1b6b2f1f697b51328c7d"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 23).bin" size="22496880" crc="9753a410" md5="7fd26ffb40ade4eae202d5a2df36fdc9" sha1="23804cd83ecd76e4a0e9a12c99bf202a507ed76a"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 24).bin" size="18533760" crc="671d485e" md5="36ce4e07ad91f3467feeb7a1c6ac6fb9" sha1="46abbfdeaffd1facac832688ed09407c59d41d10"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 25).bin" size="16499280" crc="2d9c229f" md5="fdada6ed2e8dba0e2a981e6bef93fdf8" sha1="d5aea992d2a20ffdf4df9acf3f0b5aeb48ce7a96"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 26).bin" size="16675680" crc="624775bb" md5="108d8d238b2559c25d3e7b1ab34f7e1b" sha1="410cc77d19f0efb18ca395ccce4fae9356425ea6"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 27).bin" size="20255424" crc="973199cc" md5="5852bfa0332fcbf13bc71b4cbfea6501" sha1="59d6bbb06c423f5a2b59bee34e9bd6bc39db0419"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 28).bin" size="23068416" crc="41a48384" md5="5166b5fcb203f2288317e258aaca84a6" sha1="e39a32f0524a97a95926f324af4ba24ab97ee2e9"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 29).bin" size="17938704" crc="b2dce379" md5="8f12dfe14e37c6311f69a3466dbe4861" sha1="19aadacf85fed56f3814779c5ff404047c38c632"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 30).bin" size="27541920" crc="7cd7348c" md5="e3e575a91df329a5296bacf4ef88e19e" sha1="2b752d5b60840de2ca022c1f421be6823d6fc89b"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 31).bin" size="22656816" crc="f31f7701" md5="6c0efad821b5379622e3a630d7495a6b" sha1="f44f878093818371abf440bda316bd4a193b97a3"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 32).bin" size="16064160" crc="2e6bba69" md5="8480f56694c4d57a6bba5024ebd8f2cc" sha1="b958d8bb176ca35b426bc094e84a5a8cd043cd13"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 33).bin" size="21372624" crc="f9a855bf" md5="ce9300ebe825986edb88f3c53ed4140e" sha1="5a57b405e3c45bff20c9390b9e65bb642c17fde0"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 34).bin" size="21645456" crc="0a95c387" md5="79f682f63705917891432513f84cfb3c" sha1="54629a2329002f78bbbd476ad5bdc8778e5cd0fb"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 1) (Track 35).bin" size="22254624" crc="9efd2d64" md5="21db9cb707871afe70f4d5b2535710f0" sha1="83d9b5349020f6a145676f073599a43b7ee18d5e"/>
+	</game>
+	<game name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 2)" id="0039">
+		<category>Audio</category>
+		<description>Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 2)</description>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 2).cue" size="2223" crc="654ca789" sha1="0463a40073c872d311534c56b0d93d5cd26b5733"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 2) (Track 01).bin" size="16598064" crc="e89cfb5b" md5="efdac8cb481f47d13af57636d1ca121e" sha1="f45d45ff5e152d46c40d3175d48351827cc85ad0"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 2) (Track 02).bin" size="21073920" crc="5d104646" md5="9a4afe75209e996e19d75066550cf082" sha1="19cf98b87cf9a6246a56d5b4eecf2d4426260f55"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 2) (Track 03).bin" size="17882256" crc="057a21a6" md5="533192495f6fbbdd35a92c3d223b6fbd" sha1="8e95b4eaaf0cc6f3bc7266387fbbdc4f67c630bc"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 2) (Track 04).bin" size="20502384" crc="952ae8c4" md5="acceb8262f0c7951ee62fd6b631dcdbf" sha1="1da323a32d1c26c30864e259ee9dc36474dfeef8"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 2) (Track 05).bin" size="16452240" crc="097feaaa" md5="87c09741e697f53d28e8c11c4640b5ed" sha1="cafb1634e1314e4e326a6fddc302e6bb972101e1"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 2) (Track 06).bin" size="18329136" crc="c520975b" md5="19e5768cfd525df929bf8e67f434ceb4" sha1="56549af9a710b779f7719217959eccf46375b477"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 2) (Track 07).bin" size="21384384" crc="130aa838" md5="1d7bec70e6e512f498515848d7e2834e" sha1="486ecf1cd979bba9b585d3f9bf2ed5e7f470feab"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 2) (Track 08).bin" size="15271536" crc="01812309" md5="4b059a8d45bf86fa49d710392c95b67c" sha1="2ede664e27211394d55906762d6e1f4af0c9e03a"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 2) (Track 09).bin" size="20862240" crc="45c24751" md5="a3ea061450ac50157ca48cab26ed4a8a" sha1="26b34ab83a0d89f82775a873bc5e512f02569c38"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 2) (Track 10).bin" size="36961680" crc="f9bfc3cd" md5="f2eecd1e47879f66646e4a3a865d36f5" sha1="f0098ececf3b8c0189e8b3a9250dd8b0f16ff42a"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 2) (Track 11).bin" size="48451200" crc="9f51957b" md5="093a90e212e1b972b0f2fb6925797869" sha1="bed59526c8c75411902c43ff7f704cb089170021"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 2) (Track 12).bin" size="38777424" crc="9e022630" md5="2d30c45a0109c4634529afd99ed67b3a" sha1="b629e12b6b00fb4a90632b02d8e30515d6a7137f"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 2) (Track 13).bin" size="44600976" crc="32d57613" md5="375ba3b2523ac4e969816494d2890074" sha1="b2cd86e41a052da3526e3e198aca030bd93285c2"/>
+	</game>
+	<game name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 3)" id="0040">
+		<category>Audio</category>
+		<description>Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 3)</description>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 3).cue" size="4104" crc="a194ad49" sha1="57a54986e2009954d59ec3cecbfd128012cb969f"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 3) (Track 01).bin" size="22273440" crc="43f83de8" md5="ad394debea168f0c22999a00d3899942" sha1="af9e0ad8bb4aefa2c73a03b901747031d74a60ac"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 3) (Track 02).bin" size="19086480" crc="6ef66889" md5="3de670da980c84fb688f3b092976f512" sha1="e92dd8e6c02e7cecf32b76982f5168057c98e348"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 3) (Track 03).bin" size="19474560" crc="b7d54fec" md5="52a60894ad061ba40a22933400b4809c" sha1="d7467af469f8a5d2efddab65898e4541d4dccf8d"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 3) (Track 04).bin" size="23037840" crc="e5a72b48" md5="b8a41303ec4208ee9eba5ed5c06bf735" sha1="b1536db0e14bc1b4ae79f07074f947af74adfb15"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 3) (Track 05).bin" size="16527504" crc="52c07e59" md5="3cc614b7a8abf34390543d6018cfcf83" sha1="f0f66833e0eed959880e253f3ea813649408972e"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 3) (Track 06).bin" size="21645456" crc="bbbd5288" md5="2d41545d66731b9fcc8d2600ef2f4dac" sha1="4454f726f60b0993dbe5fc05ae29e492598fead9"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 3) (Track 07).bin" size="16080624" crc="53c212a4" md5="5a6692379654e37b6b9ab4f022658f86" sha1="cb788fbf4681dd9cd58cc73270ce8529c64be251"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 3) (Track 08).bin" size="20622336" crc="8299b32b" md5="d088997333de1fecbe737d82cfa5533b" sha1="bc0f7338079e2cff18403be7072664f4f00670a9"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 3) (Track 09).bin" size="17456544" crc="3993ea0d" md5="1ba26814f7a7f0214a0b5c8575a73687" sha1="071bb03b6f4872994258483bf179dae82fd7bdaf"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 3) (Track 10).bin" size="18039840" crc="de326844" md5="60019bd22f90d1160328bf2ba659b0a7" sha1="349e0a2e4ea0ab02e49effd1f0954b7123f7e111"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 3) (Track 11).bin" size="20144880" crc="1bce3e7a" md5="22fa3e8b70bf3cf31d50601cd49c3b7c" sha1="08ae6e4d8297f1dafd76566853a08aaf4d89bdfc"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 3) (Track 12).bin" size="18587856" crc="27f45f93" md5="e84bf5345598c012d1ebbe39d87d2fbc" sha1="d5b802169bdb7fcacdb8ad2759266bae471acf66"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 3) (Track 13).bin" size="20725824" crc="06ced178" md5="f0df75680debdcf2ca2ef7337aad12d0" sha1="a5e5ce3cef7e6337f60e25872032fc2dba424317"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 3) (Track 14).bin" size="20191920" crc="b909d4c4" md5="178aac67531f8c2a5602ec280350717e" sha1="709867f55beb4bc7444f954dbb35b515fb4d134e"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 3) (Track 15).bin" size="16852080" crc="d5e4a627" md5="33d0e443b01d6e3cf56c38582c9aab4a" sha1="bbf6f03920869d14feb59c7ea7e610a7f2ed40c0"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 3) (Track 16).bin" size="21850080" crc="4d343bb7" md5="4f6ca92aa11b238baf704f0f1414fb43" sha1="7158d4ce1c9894c672d4803b48c006adff0bcc14"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 3) (Track 17).bin" size="21504336" crc="fb8eb5f8" md5="5f7cf35be71093c4d7e86e6a1ba1076d" sha1="5ee9377125a37380c7a9aa58627db4d17889f84c"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 3) (Track 18).bin" size="21878304" crc="2b2eeb84" md5="bb5ec18e3c269e6fe710320a90c7ef3e" sha1="c0cd466fe1181bfaf077b6c3f0199d60aa14dcdb"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 3) (Track 19).bin" size="21798336" crc="bd3ef32d" md5="f0e8f9644ec8bf4ad44b1d8de4020fa1" sha1="efcced851c0e48825a61ce8206f5d28c02a46d07"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 3) (Track 20).bin" size="22979040" crc="171925ec" md5="fec009dd664144a75a849ce8ccb3ee0a" sha1="7a4f2765b94ea38626987e204378cd2d4bada73c"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 3) (Track 21).bin" size="20721120" crc="7c3144ff" md5="6631c5663b5891952215af51a20dfc48" sha1="a391da26b4628ad2cc0a286e0a806e93ffda852c"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 3) (Track 22).bin" size="20650560" crc="31c1bcc5" md5="cd1da1838df5b625d85844f2fe6a3551" sha1="0315e7a1726827b5a98dd6dac67125021d075e4a"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 3) (Track 23).bin" size="40047504" crc="b5859991" md5="a479b1c61223df9c7517ad77e7e4b33f" sha1="b295fa792ae6741c736654652c4826d720e4d889"/>
+		<rom name="Pop'n Music 11 AC + CS Pop'n Music 9 (Japan) (Disc 3) (Track 24).bin" size="56742000" crc="2e60a52f" md5="099ecda6cedb86d83d0f3c283f9356bf" sha1="fe1a8e369f2968c3ea61199ddbe6bc076f9ad0b3"/>
+	</game>
+	<game name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2)" id="0042">
+		<category>Audio</category>
+		<description>Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2)</description>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2).cue" size="5417" crc="d70ba992" sha1="70448760daee6eddc5e42519367439097222cd1d"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 01).bin" size="15805440" crc="d688ba7b" md5="689f784c7f612212e8fd12f72725b9af" sha1="1ede1cb041856a1d79ca6c925d5b9ab946da42a5"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 02).bin" size="14229600" crc="0250e2f7" md5="9dbf01a10b56d084b29e2098110432ad" sha1="51dec5ff5a99fc5be2a3738cdd3d717044cbab1e"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 03).bin" size="21062160" crc="a6cc7e56" md5="579b2ee1c82222bf45cce52017ccbf47" sha1="fcf43f10ba4d714f5352846c9680b8fd26682def"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 04).bin" size="15433824" crc="7de15547" md5="000dc4c12f983c859b08a18f25e757bb" sha1="e1ca1232de833d1b3f8b1769157438ed6769fb54"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 05).bin" size="21332640" crc="e5b97fd1" md5="263f616423e22684c479c2338b3b5236" sha1="b709feb1f5f65377296e56c244c4b690bde86ad4"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 06).bin" size="17447136" crc="69daba01" md5="f1adc11e46f86fc11b501d9f27f0f3e5" sha1="024fa0550426a2998bf516ebb22b4235db8a1461"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 07).bin" size="18009264" crc="a959b1f2" md5="7771927dd4614803774890af1587f8e2" sha1="c3c26daa71851f83e0c8a419462b93397a801cbf"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 08).bin" size="22292256" crc="313ec812" md5="06554587be3217249d030413751b395a" sha1="00eaa5ea0c6baccd59171f5a37d3e115e17ec3a4"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 09).bin" size="21631344" crc="b5b79850" md5="234a015036dcd00e27df81ba1cab3139" sha1="1c97a24d08b87abf1319d0a8f8f6f886b42d34c5"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 10).bin" size="19105296" crc="149fc73a" md5="70cadd85634c30d0960a93a6d5b84bf0" sha1="064e9ab833411422f787ab9e92c4f6155039d7fd"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 11).bin" size="21403200" crc="6e2066b9" md5="3cec690b4d12b95b1a65adbea00a8522" sha1="5f75a79e5cc904d488b9f9a587438e79b5650993"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 12).bin" size="21866544" crc="0268de01" md5="9c4edb0a11679221483c3fe2545107ef" sha1="e2287b80add3f70a4cd289bcc165155747402391"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 13).bin" size="17251920" crc="f41f9696" md5="c62c01f39dd4e4a52f5cde55c4f18fa4" sha1="865e5beffd65505c73f927c97ec4ad40a02ab549"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 14).bin" size="18569040" crc="88e61752" md5="4dd336777aca0a942fd6adaa9e7a0a6e" sha1="1d8a4e18c845728056ea8327dd6bcd66f8546f89"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 15).bin" size="16405200" crc="4768f829" md5="0f19c31a070fa02ae61a8208e8602758" sha1="86dd06d9fe25b3d2581bfc010e66fd8f0e67bd95"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 16).bin" size="16329936" crc="e8e8a05d" md5="48cf3f54d91837d6471709e3d8296026" sha1="4aca21e51e9468dbf8e3a64a8bfdcb6c5626895e"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 17).bin" size="18110400" crc="440dba6a" md5="f45531f864f128c1eed287b1b3cf1960" sha1="5bcd641fa1f5ae821c00be41269fa51e22e7172c"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 18).bin" size="18028080" crc="46a0f3cf" md5="657141818859c9f9031b28c4a35cc729" sha1="70383ca5bf345a68fee8dbdec5b451e67ffd4aa3"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 19).bin" size="18933600" crc="ab7cffc3" md5="d8ba4271a226b58277ce1405c24dd480" sha1="f48b4403f68e9f1377e9ef3ed432ff81d8589a5b"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 20).bin" size="20286000" crc="e5fe79da" md5="725d552b930773f919aa30ade3764ed9" sha1="f089a345b2ccc3767e221670062e58a120d9e89f"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 21).bin" size="18592560" crc="2f8d14db" md5="c5afdb9cc64c86fa834dfe80e659fdb8" sha1="94a1c7d0d3bd7eb72a1f884769d84473a99ee269"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 22).bin" size="16840320" crc="02516e43" md5="8204c68520227501f7dd65be893c625c" sha1="74656b7591752c5b3f1f929320a7ca4f55187cfc"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 23).bin" size="18345600" crc="2862f96f" md5="36dfc3ce1a50f79d93ad029d5eb5852f" sha1="19ecd653c2e37c1817b75831b418a88c74d71edc"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 24).bin" size="17687040" crc="484f7d5c" md5="e41bfb0d373a6b81df97c0559f226999" sha1="f5f6a1f2dafaf6d474eddc4725995f40c8f42dc6"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 25).bin" size="19392240" crc="b48c1eb3" md5="e4881e4ab210af9a1806ce837c1c1226" sha1="5239c287fd1168325bb27d1ea6c9ab33f09b7525"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 26).bin" size="17233104" crc="9ffcc24d" md5="1381c007d94e718238dde79e96e9c397" sha1="3b7a15126cb523ebd259eb56b7f22e7481d8c0d4"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 27).bin" size="17329536" crc="2cc615ae" md5="81b7114945d0aa945ff2202d74abab2a" sha1="cce2c4850367feda6c882fb5d39b2dc23eb13520"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 28).bin" size="20615280" crc="1ab26967" md5="396e260ab3d31878325851b2c8c58fed" sha1="93da0fbe37bf4ea4cdca1752b64995130f9087b0"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 29).bin" size="20902224" crc="ed08c37b" md5="d7834a3b6e08e5d17073e4988fec4a3a" sha1="6527b9a3959cb0977ab32f2131933972df325a34"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 30).bin" size="25220496" crc="ffe11f47" md5="3b5bda07a6a93f82e8c729d420bc27ca" sha1="bd25a5b651c35f3234bbdacc9e75829b04d013fd"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 31).bin" size="46891824" crc="50db0381" md5="322392db1a22a5ec61dec65e53515940" sha1="21a1a9f0523f1c90b4b8ae24cdf344abc8aef6cd"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 2) (Track 32).bin" size="46564896" crc="dc018446" md5="7dc1d4724c0423ad63c83272eec239aa" sha1="df75203cd2c945975579873f7cb1b24e391da79e"/>
+	</game>
+	<game name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1)" id="0041">
+		<category>Audio</category>
+		<description>Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1)</description>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1).cue" size="5077" crc="2511b4c9" sha1="207397a005e88af8f486c575a5e3863f5c06d8d5"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1) (Track 01).bin" size="19890864" crc="51a63b9b" md5="45b6c54ffb13f4002d5d658363a5bf63" sha1="371e453a854f30d5e6fb4566148eb9b317e28612"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1) (Track 02).bin" size="17157840" crc="6f821419" md5="fc69730e47e571ef900473f28883a4b5" sha1="6c080736d6234e009e843f86fa7c644e94632fef"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1) (Track 03).bin" size="21168000" crc="2a42a3ac" md5="d259634a3de5ed04539cce68ddaf54a7" sha1="f7ec4e6c51d253151784c92d8c2006b6a27e5163"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1) (Track 04).bin" size="18827760" crc="15823542" md5="3747866fa95e826fc7e86dfee053f677" sha1="b6ceddabae604ab146776bf2e463e4b762f514af"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1) (Track 05).bin" size="20669376" crc="7736894c" md5="8530439efbd75b0e7579330ed107f1a4" sha1="7bdc47f343de3e2f8ed904e9710ce32b4052aa3b"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1) (Track 06).bin" size="21031584" crc="c473df04" md5="677678f422f6a7a77d716429381b650c" sha1="925dae1206d1509d54c02e2f3033a66a19480565"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1) (Track 07).bin" size="19592160" crc="9f9cca46" md5="cb3939e6a567c69fd0f1728b64454677" sha1="189f4b198ae4cb5467713605a4c73886b12687f3"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1) (Track 08).bin" size="19716816" crc="df3eb6f6" md5="4a25a80a07c3f6d2e4ebb3a0bfa35711" sha1="68293af662692526c930c446dea1595d788f29fa"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1) (Track 09).bin" size="21697200" crc="62e47927" md5="4a91d8ebf67bc73953c6a1d8a970388b" sha1="84a318065641cf87842bda661d413b474cc9ac64"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1) (Track 10).bin" size="20897520" crc="9551bc7b" md5="aebba41bbbfeb888eb77326260278d83" sha1="c1168a0751a6f195553d89ca2c90f6ec77e1a888"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1) (Track 11).bin" size="21791280" crc="9f4fb658" md5="416d87502ab5c502a22d17284aab3205" sha1="59bf4a1b912499d632c69225363358b3bc997624"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1) (Track 12).bin" size="18898320" crc="16b1cfdf" md5="3e4000a61c48cbde4baa8e50833d2b5f" sha1="f1b4cd7addf0dd4f5b03ac5b3d9c33c1ff00e0e8"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1) (Track 13).bin" size="21309120" crc="96a3619e" md5="f749dd5b0b0a60cee0e2e89600a01ab2" sha1="7ead26fb7f945a1c9e84024ef80dce36c2a3062c"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1) (Track 14).bin" size="19462800" crc="f41ef5c0" md5="1d91cec280d03b415709c39f40eb8e1b" sha1="57d82cc052f2589f841896f8987271cca198240e"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1) (Track 15).bin" size="22266384" crc="ad5b642c" md5="96497b251b58704441b5525bfa865eaf" sha1="3a0c0a0a261ba51563a479f879337b3c01b24916"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1) (Track 16).bin" size="22139376" crc="cd636181" md5="d6fe7d9a63b82c4a6eba0b774d0ea419" sha1="3d5a1984bd6fdeba60269706b3ab41ffac5bb6b6"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1) (Track 17).bin" size="20250720" crc="5b3b3646" md5="e6178dc0edfe738159542a6597871276" sha1="9171d5e4b842e393b6a03d9de61ae679e2320541"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1) (Track 18).bin" size="18950064" crc="e1f7adf3" md5="1bcaecd707227f9a0e2da7c0e2e9ecbb" sha1="b7c66dacad39be9c39c04ea476984be416489d17"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1) (Track 19).bin" size="21567840" crc="84b26cfd" md5="c4e322fd8e06c24786f13749a65dd0a7" sha1="80155180498078f460e7a603833b0a308202f567"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1) (Track 20).bin" size="21038640" crc="d7924ff4" md5="530b032171bc16e614368159acdf64c9" sha1="19e659efec8783bbbd13a207b179018b82448cc6"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1) (Track 21).bin" size="19516896" crc="dc05bdb0" md5="8cc3e4c09442fab6b48129f5ebe32687" sha1="8581ce676e0057240b3b02d21acce51bd652cb03"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1) (Track 22).bin" size="21450240" crc="61b12b0f" md5="91b6b060ca3520d8fd52450fa9b3450f" sha1="eabbb881b6b57a247e96f28fd2e0cbea6fae8e15"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1) (Track 23).bin" size="18263280" crc="215aebe8" md5="497f7d399d8f62c96a0e43f465cab48c" sha1="8be99c118fd9494ca21d504af8b35779dbb23604"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1) (Track 24).bin" size="17710560" crc="e44a21a1" md5="faffea6cc08679a59ea12c3f559ea822" sha1="03e36112f80315a716592b9b9fc763d45f46e9c1"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1) (Track 25).bin" size="17985744" crc="db84a37f" md5="57532c5b3a7303709041b2b0e89baa27" sha1="d48a0a880d0fa086f22047d234575eed71231fdf"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1) (Track 26).bin" size="19086480" crc="db5011de" md5="16e3c0273b88c5b7979fe2cb270debfd" sha1="2649b72b08cad0386963848723735f9b19afcb52"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1) (Track 27).bin" size="18004560" crc="e8f35054" md5="12c699dcd271a07432d50fbc3e313f2c" sha1="b65594c6f3ea8c67d762466cf134b7686f84fbaf"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1) (Track 28).bin" size="32017776" crc="d16c3eab" md5="45c95d7a47895dee8b4ef4d00a90e9ce" sha1="9eb60a2e9b55ec7bb1e4b77839135beafcff6ece"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1) (Track 29).bin" size="68200944" crc="a7d3111e" md5="df4e4b83f8445df5b535c4e43961350e" sha1="b29c43cf3e186974a9dee6af8ea2a611650aa604"/>
+		<rom name="Pop'n Music 8 AC + CS Pop'n Music 6 (Japan) (Disc 1) (Track 30).bin" size="43900080" crc="f6f541f3" md5="eab8300ae68afdfd587f1385f8589460" sha1="54e32dcacb0b8730ed1c771494a0ac9296e7c359"/>
+	</game>
+	<game name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 1)" id="0029">
+		<category>Audio</category>
+		<description>REFLEC BEAT - Original Soundtrack (Japan) (Disc 1)</description>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 1).cue" size="3648" crc="25ce87c4" sha1="f3c54a2a5ec99dbd1c82a9f71415d4c8585a1eae"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 1) (Track 01).bin" size="4918032" crc="b2002753" md5="375524eae705590476ad457bbc1808f8" sha1="9dcdba3ae8b0494b511da017fe3924411fa4aeb0"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 1) (Track 02).bin" size="20361264" crc="040b0f86" md5="aa8ce4b52428c34ee67fc09cd666daf9" sha1="ded1dd11d2686c4cc54c90f7c7acee60d2091716"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 1) (Track 03).bin" size="17503584" crc="18ff8470" md5="417a8ab1c2346da5a49cca9b6d1a6c5a" sha1="ff3a2d05c2297ca00e79a7a17221625c6ffdb334"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 1) (Track 04).bin" size="18968880" crc="74624ab8" md5="a9042e6971e688c39e468d51c327025b" sha1="f2b2336a2f2c6f715de97b0bcbe0f05691ba489f"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 1) (Track 05).bin" size="18874800" crc="4ba451a7" md5="6e035a992b86439b738baf8830d251ec" sha1="5f98ee41f3c5eb6f9fe2880bef0c086a5bc33c09"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 1) (Track 06).bin" size="18597264" crc="dbe4f02f" md5="3b0750d5f566c0d4bf3380cb624b36e8" sha1="126c3b756e0486bbb04ae9a9bc135eca202ded45"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 1) (Track 07).bin" size="18131568" crc="f4463799" md5="a845fa06eb6a2bd4ad37f9f9e0f95666" sha1="83b700af8a1115cdea14cf980d7617f502239ff9"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 1) (Track 08).bin" size="18406752" crc="4740546e" md5="ec4172379f3e4d92dc58725032bff787" sha1="0defc932d0ade73c6955397a9b1a89719bb5af34"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 1) (Track 09).bin" size="17108448" crc="f3fbffba" md5="e9090328465dc73bbc816cf2b648643c" sha1="182fe04099a056cf27986b77d1e68fc746fe2c18"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 1) (Track 10).bin" size="17084928" crc="8e016948" md5="7e9f7cfbf4fa550105666818aafe14a2" sha1="dffd881aa437e141471122f2745c1e0f14ba44e1"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 1) (Track 11).bin" size="17957520" crc="63fbc04f" md5="48f683b29f94b91e488d6b89e8e33b2b" sha1="c96e686d7d2439a69cda6dea5630b8543f2b49d7"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 1) (Track 12).bin" size="16560432" crc="0fc5a4f7" md5="ca5203bcfa285b4bc2845fa6896a3b4c" sha1="63c146d50ac598bbd8b2156750b9bf4cddb08676"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 1) (Track 13).bin" size="18115104" crc="9f4a9336" md5="9dd512a294a826717598d6f538c62381" sha1="bff312ff6aeec374625596c8a08fc2a4da4fd27a"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 1) (Track 14).bin" size="18037488" crc="fd20301c" md5="2805c7b4ac0c3006613cf2b537e99a41" sha1="2870b8998bca14c825c9a9d2b05563eda881af6f"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 1) (Track 15).bin" size="18129216" crc="f5c2e408" md5="802780abff90c5bcb9307f9852721017" sha1="9fc2fa8b0163f6cfaa26d46189a5c1295991f9ae"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 1) (Track 16).bin" size="19149984" crc="76552312" md5="c26869d7ebd176f166763c717af95eb5" sha1="01383e890263ea017e1fa20ab6d44622b53c1baf"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 1) (Track 17).bin" size="19027680" crc="a9bb6526" md5="ab4225e821d3f65fe7e2f3f71833002f" sha1="0f4cf512cfc0b5ab7af7369d10a3bf355729983b"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 1) (Track 18).bin" size="20177808" crc="280abb3a" md5="621fa9c4fb35e61dd29000ff011a7c78" sha1="88a6336ea5d22a405d86d9e9548dc240d6f5b26d"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 1) (Track 19).bin" size="18486720" crc="0a01916e" md5="cbd2105133d6de4d36f1e9905fab6386" sha1="6bed6471cf99e2270b65264dda85fe0b3be27e60"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 1) (Track 20).bin" size="19258176" crc="688793ef" md5="fd6e2b53ef72cb89c995496193cccdcb" sha1="571c1989c8fa1065337888bee855c9d8cb8f1b4f"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 1) (Track 21).bin" size="18397344" crc="c425ce9d" md5="0e057c9ac755f62724a70fd7cc2563ff" sha1="46cadae28af6b7dea1071574040a4d83f5b70088"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 1) (Track 22).bin" size="19676832" crc="0bce2176" md5="f5d89f0d9cadf6034908b4a41b648bed" sha1="0880190b20b85c24ffc3211551645cc5e0a9e5bc"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 1) (Track 23).bin" size="19556880" crc="1934fc16" md5="3d1e8d6a03c645c2cba8f1a921919093" sha1="f9e76e56fa9824a864853d495b7c8d960b281aff"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 1) (Track 24).bin" size="18651360" crc="f3286223" md5="c849690c85ca5353f123f4262dcf0574" sha1="0472b0d8e58d27fe85649a1a933deb187e6a3fd4"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 1) (Track 25).bin" size="23999808" crc="aab1c328" md5="98ea5286a2f6bac85802529eb0014c60" sha1="123e858ac45329816e3bdc60d364ff0faf3e7c6e"/>
+	</game>
+	<game name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 2)" id="0030">
+		<category>Audio</category>
+		<description>REFLEC BEAT - Original Soundtrack (Japan) (Disc 2)</description>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 2).cue" size="3648" crc="9ae1fb4c" sha1="db506659d48a6d9a3d9556176b10d9427a7884d3"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 2) (Track 01).bin" size="21970032" crc="63185a7c" md5="0d263d768d36ec6baa1c988624faffda" sha1="824c9dbf38a0711a5b72f146cb5b1120326ce9f1"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 2) (Track 02).bin" size="18686640" crc="d583c804" md5="80cda860cbfc559f250f7a141137d11d" sha1="b2a02c885a47e0a028b6a37db12e767bc0989d90"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 2) (Track 03).bin" size="19366368" crc="a5f8249a" md5="04b2178fc0647fb860becd36454473ba" sha1="d432914a53f2a21a2d556b7eb91f7522308e8a20"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 2) (Track 04).bin" size="18220944" crc="0eb8382b" md5="f3a93aba6f65f1830ad5794419c16a22" sha1="d395fce28002aa0d133bf58533774dbb4ac2ea06"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 2) (Track 05).bin" size="18851280" crc="101704a9" md5="15580591cda6b1088343b2fe7eb93f9d" sha1="0a71187ae972a7d195c2fd5c22b081b15598381e"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 2) (Track 06).bin" size="17910480" crc="20db8e61" md5="aaca2b6884333ac25246a19332bd9c55" sha1="1c83fa706fff430da616a4503c2978a01981546d"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 2) (Track 07).bin" size="18453792" crc="995a490b" md5="7f5d975e75fc4eb4239f5c4ccb8f0058" sha1="580e3169b0aaf3c6a19e4d6400e44ab013ce7f59"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 2) (Track 08).bin" size="18091584" crc="de315704" md5="368bb0facd6b4cc846a055761bed17a3" sha1="412a9a3ed9348b5b082b31754ada233a69b6457a"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 2) (Track 09).bin" size="16788576" crc="42ee7c17" md5="b116e6036a78e87c4c9868c125b4e5bb" sha1="6da8972d1c45ea4fa7f0d8e5e3ae4c0e4f01bbcc"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 2) (Track 10).bin" size="18627840" crc="1832e1a6" md5="a0edf1099f5ed43e7b7e693814f5cc27" sha1="88d3822ff65e1c76711fbf9efa324f666529576a"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 2) (Track 11).bin" size="18919488" crc="4de72be5" md5="8726bc3b29637387b1c459aae10d1104" sha1="57f325e2430a3436ef9a001b70b4d78b6d41da09"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 2) (Track 12).bin" size="18750144" crc="017f2e0d" md5="4ade692d33dae2a7c4597f788b050c64" sha1="cfd277d096730c8c6f650471b472c2d17913fece"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 2) (Track 13).bin" size="19371072" crc="872802b0" md5="e472a16d441d541aa5970974cbbe2949" sha1="70a2fe331581d312737ff0a664e86f1b30e05025"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 2) (Track 14).bin" size="19679184" crc="0ea87dfe" md5="dc1be049180ee8f71f3bf4d3269daf39" sha1="ceb4857a4b913aa733e6517916ab0947b0fdbd54"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 2) (Track 15).bin" size="17863440" crc="4170b229" md5="66a3b3d3cedd5cd57687a5b15dd2ad86" sha1="7de7af0685874f34cef8f3b616c16a458a18724a"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 2) (Track 16).bin" size="19789728" crc="f134b65f" md5="2c215b9bde7a3c9bf427db24a5b4caa7" sha1="3808aeee93c271c98e2ff723789f0f437a8206e2"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 2) (Track 17).bin" size="18792480" crc="e7b58dcf" md5="810a7e5567f65e5c75dd7b5d00c7668b" sha1="d8fdabdf4e522c5c4bf03ce033e3d9a5488c185b"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 2) (Track 18).bin" size="17884608" crc="2f611320" md5="874b54cdb95ff4dc76e6b0cb86182182" sha1="f3a4dd7081e48b4403177b55f78e896f99eeb31c"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 2) (Track 19).bin" size="17894016" crc="9f846b97" md5="4206097ec06455e452435a8946f96c40" sha1="a5322e1aa53d28770b71c461551ca4be50fa66ed"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 2) (Track 20).bin" size="19274640" crc="f63835ff" md5="874ca83df53b7941a04a274f7f611810" sha1="968d4a74537e3ad6e04160f9467cde3e271ba2f4"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 2) (Track 21).bin" size="21887712" crc="ea9f967e" md5="07331cbd10e27f89b2a10c465b91b582" sha1="a10d00d8ab4386ebef6af2c6ccfbd41e307358c9"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 2) (Track 22).bin" size="38998512" crc="5f2f74bb" md5="5263772caaa68117dedd345d781d38be" sha1="eedf73293adba0f54e4257aab9a66712b9d0564e"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 2) (Track 23).bin" size="16981440" crc="9a2b8513" md5="fb3e71eb342e3e5daa050eca1f12dcb5" sha1="73afdec0ae5e1c3020b945bf8a1286aa27973de0"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 2) (Track 24).bin" size="18129216" crc="d95c1f18" md5="40fb718009a18a17fc7ba2fa0a6b3bdf" sha1="793a5d024b0b8dadb96b5b349f2baccc7f42c998"/>
+		<rom name="REFLEC BEAT - Original Soundtrack (Japan) (Disc 2) (Track 25).bin" size="19124112" crc="062cf706" md5="f7c682379c155bded361dd79101ba939" sha1="4837749502a1700d9b7420cc7ebbb8c3b45f5989"/>
+	</game>
+	<game name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1)" id="0035">
+		<category>Audio</category>
+		<description>REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1)</description>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1).cue" size="6382" crc="57b0aa63" sha1="c7a8a78f3cd1e925e51f332728974bb1e42bff16"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 01).bin" size="21367920" crc="9ffac30d" md5="f0c77d131b905732a73757d14d2e9105" sha1="068a50aa017e71d4092967d0d99f477d542b0287"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 02).bin" size="19197024" crc="198be8e2" md5="57c74241926cc6a865d45b9401dfb738" sha1="9858fc157f347a291c86aaf4eabe8c764eb0410e"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 03).bin" size="17564736" crc="b2ce7a58" md5="ea7a5a91109d5356f6be7fc9d76f2fe4" sha1="c4d941582594fc9f0ee80a1d076b3b6d20cbd663"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 04).bin" size="19521600" crc="7f70b268" md5="240f46268ec31d4c4c035ff1249266d2" sha1="a1a90a5016e6357df7af3a74d9c87ca1b66a3194"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 05).bin" size="19340496" crc="f8d28dae" md5="7e24dae60dc9751766e314ff7613483a" sha1="5ece9fb94e13ad6aac6da402eea766d1f27e6540"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 06).bin" size="20497680" crc="e7d18b95" md5="2c39067bdeee529550ae50126b09ff75" sha1="d6f3cf80c44ea88b6822416c7232a7d511370778"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 07).bin" size="18529056" crc="d5f96dd6" md5="c558c8c7ea09abf89c94cb9773c3ec64" sha1="b9f64c2222c05ed0db255be9467713cb03ad1dc9"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 08).bin" size="19420464" crc="8af6deaa" md5="75324da9a1c32e3427726c472bc6edcd" sha1="b110e8acdd3a82fcbcb917093caedbe373504e28"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 09).bin" size="21831264" crc="6cd99c24" md5="799cf14fcebc181b5a19a5f69154fe8c" sha1="691e3838dc1272593f16294a75d9726004329bf7"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 10).bin" size="23282448" crc="c27a98c3" md5="a512c900eb8cd6f91cb875ca8e7c7461" sha1="dbcf283ec3ed4690643dbe7001de8ba85860274c"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 11).bin" size="19197024" crc="216a9b0b" md5="480371aa6e59614800ef8fac7cf857f3" sha1="53a7fc003199194b06b5bd523527e5584517ae87"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 12).bin" size="19940256" crc="e8687902" md5="d2079bd11b060fa76ff2a5f04b4f006f" sha1="0e4d13ceaa731f3a156cec3d2453221d07558548"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 13).bin" size="19822656" crc="123facd6" md5="a51b490cb1bf530460086e1997cfb805" sha1="f4d2f798857f3aef8e735c910b759a0a9651b577"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 14).bin" size="19857936" crc="35a7d59d" md5="bcd7eb3a2fd51acb919b2ecbcb8135cf" sha1="5e68644244a49b74110013cc16f30eb88444d895"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 15).bin" size="20156640" crc="d03e463a" md5="f1a32fd2c9e178f0b02a2ee8c13edb74" sha1="d0d31a2ba8c35b747ec2126b52849a3ad98eee75"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 16).bin" size="22398096" crc="0fe28725" md5="4bddb26d9c0fc66df46a5a48728fd69f" sha1="88c52eaf6666428fa9d8ba12a340298f75c85ee4"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 17).bin" size="18585504" crc="a77d6f93" md5="c649097e9d3ff0b96d1b0021381a88d5" sha1="7329cfde824a54ca19eb7061ff938f7f3d78adec"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 18).bin" size="19248768" crc="f2e99b90" md5="ee2f4a60f1a51c545b97aa8d3a7c2722" sha1="053e46a0481049e9e3cf6aeb2fd066a4590e9c31"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 19).bin" size="20398896" crc="bd3f3272" md5="0cf7d9bcc4e9b861f404b11ded359922" sha1="35bc7e9d077e7b40c4711e95767e8947695a6200"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 20).bin" size="20253072" crc="ba7e8acd" md5="0b9ef09eca66d8069d7c5ad14cd8db9c" sha1="b944f0a6e7bec0770d651ce35833b4927573b7c1"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 21).bin" size="19260528" crc="e1658815" md5="76ab40cc665616a187115080ba76c943" sha1="a8c1fca2fdd9bf46e2d90b7269896d57f9d3ec1a"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 22).bin" size="19246416" crc="0f545fcb" md5="37e6334364b5eebff94a551986a8f585" sha1="8eac417a1acdc299fe53e079354b7613de6861cb"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 23).bin" size="23063712" crc="a1fae334" md5="779fd045d505681dc40512d279a50144" sha1="89a27a754a42ea197978aa686d50df75b9e149a4"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 24).bin" size="20829312" crc="05f6bdc7" md5="15fd925e046bc995557f5edc4b64e329" sha1="2d967ef6e629daaa2093b480ba6c26678867fde5"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 25).bin" size="18237408" crc="a49a556e" md5="2f51418f70c70134015e0b1fb23be637" sha1="261d6a1be9de26ed4926863180384dff1b617519"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 26).bin" size="17745840" crc="ebcee8b9" md5="9481f96f21c668b763e5cae2b39f7db7" sha1="267f59cf1dbccb7fdc3eedbcc0c7345e0827b30a"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 27).bin" size="19251120" crc="639a67f8" md5="9ddf5df935727fb30a07480f920dd4ef" sha1="c75584ee1b767d9062fcb47368d6ea54b5aa7d12"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 28).bin" size="18644304" crc="f96e0326" md5="03153ccd72a492bc12b0e538e67911b0" sha1="f93b62f21cd15f5b40636ea61d8fe609c0fccff6"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 29).bin" size="20210736" crc="40a2e322" md5="8b83a1fdf0c1b97e07cd565942d603df" sha1="64140e2efa09bcc2a0c546c34476d6ca9645d483"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 30).bin" size="18347952" crc="379976c3" md5="8586dc3f0b3addf9ce3f81d14923bc2e" sha1="02f32966a3300ad79b3b67a183c40ea8a8b515c1"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 31).bin" size="17362464" crc="faca807d" md5="7095c9a5e2f7d0685f898e23dfb32aef" sha1="1cf6b0e1432d3aa96a9167d043fda92aea6f3bb8"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 32).bin" size="38605728" crc="d8d322ad" md5="c71209d0dd824d33031583979b9cc1a0" sha1="74e88632c4932e8a08ab9d8a6b661741872a680f"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 33).bin" size="39541824" crc="084f57c8" md5="c91af4343dc911b979b1ba1563e2502f" sha1="02b27baf7d8f775f1270b885eaece15d6ec5d68c"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 34).bin" size="64400112" crc="90265f59" md5="9d6418b72efd7f4c361fc920f57d2d36" sha1="fbe3956681e52787c2482d6ea551e1bbab38234d"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 1) (Track 35).bin" size="19316976" crc="c8cb51aa" md5="1b9be7d41c9952270617b4785e9a6374" sha1="02ade5de1bf6d1ebb73062956e4b9cd9df145197"/>
+	</game>
+	<game name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra)" id="0036">
+		<category>Audio</category>
+		<description>REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra)</description>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra).cue" size="8202" crc="1954ef93" sha1="b6db4766158ab79a7c06e9835dc55c86ac7dc75a"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 01).bin" size="23214240" crc="f8e4a659" md5="e448c11c8f8f748a1775fba9b83b8401" sha1="f680b42f7a26dcd6e0b78a608a8ba5d99b03291c"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 02).bin" size="19255824" crc="2d978481" md5="ed1460101015125a4fab0b55e98557cc" sha1="98e0ea3c345bb34e0413ec98b68834cf56fb6141"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 03).bin" size="21960624" crc="f318de84" md5="97fdb619f0c5337b351df8df899e432c" sha1="a80e96cf9f7cace1c231f80a700995ba118bec75"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 04).bin" size="20528256" crc="38ed8551" md5="d8442f0536888d58a54da56939781509" sha1="09617dd86844435a897052eadec2faf28cc3f269"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 05).bin" size="20410656" crc="f0911a9c" md5="a8460851c33d205ebb5e643a3cabc5ca" sha1="1138244ed2b35caa422c142de4aaa94cb21cab50"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 06).bin" size="20368320" crc="54930585" md5="b8c46f92b85bf87d5575cba17a3b46a5" sha1="247a5c283ff12326fb56195bf9cb4d91c4bef3af"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 07).bin" size="19822656" crc="fbbbec93" md5="e100d15a597225e4efb3955a56520c04" sha1="fcee425cd6175cf051b9e777cb009b93b060fc9c"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 08).bin" size="20521200" crc="febdbe80" md5="43cdc83f7ba5fcbc03928638e75fe699" sha1="6a2854a80fe5165bc6989da3db2b60de1136a0eb"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 09).bin" size="21824208" crc="fde45320" md5="f73f95d6e292139e83ef06b4fe6f7822" sha1="17218d434be5112b911dba32e51cc05b4df19780"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 10).bin" size="22534512" crc="ef892fd6" md5="fe2c2e22d54397be177712d5418dfff8" sha1="95198826ba8e4bd867186625588c989b0e9145d6"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 11).bin" size="23028432" crc="95f3d76f" md5="82c1690e8169b7c6d4c49660af4c6c1f" sha1="47cbb7fcf7aa303bb73e194a3f21efd987b4786f"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 12).bin" size="21819504" crc="6999b466" md5="9dfbf044065e39bc4786f2ddc0cbc43c" sha1="a1a55fcf73650867d0d4bb3551b1428ba216fe6e"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 13).bin" size="20394192" crc="43cdcd32" md5="242e1471ccaca7366fda2cfd53b29862" sha1="4e028444fc6f377becabc66b32cd442e36600970"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 14).bin" size="22066464" crc="01aee63e" md5="0df47dc154fda632a03159e1087938d6" sha1="846ced6a7e419d18cae12364874c19bf3a06d5a9"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 15).bin" size="17703504" crc="43009d06" md5="e72d732c9f4bc5aeb98283e350dfcc78" sha1="1c3c3eaa10df07e5b130cffadd0a6c9c43a263e5"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 16).bin" size="17762304" crc="93c0241c" md5="de2ba2f37aa26c125f99df90ec8380a9" sha1="dc1c6ea62f614427180328bec2e5a0c66f993f13"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 17).bin" size="20057856" crc="4966f3c1" md5="7f4b05aa3f6a0a2929668e55f7cbe6d3" sha1="2af572d1f4a14908fb1f30386786463c8972258a"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 18).bin" size="18773664" crc="751592c1" md5="08bc1f8b3a72fb9f9864caec3bfbcdbb" sha1="4d68e489b37f1c35e99599c80081d1fff28c634b"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 19).bin" size="17837568" crc="cfbc04e4" md5="28e2e8c2a910420615497fb8823c57c0" sha1="759b06b643d0ba2e6b35662c32ccfaa1854da676"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 20).bin" size="21379680" crc="b2173016" md5="3a7ac74ecb22edbccf90d579c928758e" sha1="e719df2f15e35f0ce7ce2bde2ccceff48a45b123"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 21).bin" size="21433776" crc="decae63f" md5="0575ca66d1c485e5faee33c218d2a98c" sha1="bb5178dfbcd2938d829210fff9bfa15af0c1baae"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 22).bin" size="21429072" crc="1870658a" md5="f8108b61cd91a2b319effae9ce8f434d" sha1="323f04f230c023c5bb693bdc591f546b7140ed3e"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 23).bin" size="19909680" crc="b5ebc213" md5="d73b203010c8ca1f172a13ce56847c0e" sha1="f0b52feb5d23af86419b0331a7fcc506fd62ce97"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 24).bin" size="21553728" crc="411a1498" md5="c8f9c4865f0316ff16c3f7763f3e630e" sha1="bd04b9e057b6eea8a1c8c47a190706583266b9e8"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 25).bin" size="20396544" crc="5bc7475a" md5="8b4fc949c5f8eecbcbb199cdaade6495" sha1="d6e41b0c92c251685becd520b9a4653a4e20f87e"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 26).bin" size="23345952" crc="94d8f6de" md5="3871ebb5c7a58976d3effa43fa78249b" sha1="2ccd8c932fd089c74e124f72dc52d11bfc5ea7d6"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 27).bin" size="21751296" crc="af8ae393" md5="4c0a666f37922bdf4da8fa8d99073fad" sha1="f5feae424505939fb692c13e58b233e64b731129"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 28).bin" size="22226400" crc="cddc59dc" md5="de5f22f81ea4d23d998a1608cd38ce8d" sha1="b73771fffd3d3753bef3ff37196b455f504a3b28"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 29).bin" size="18738384" crc="a2da34f5" md5="9081054d53bb98f8582dff97188ee45a" sha1="6410a9291238781b9b99c497ce69ad223eefa459"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 30).bin" size="20984544" crc="22e97f95" md5="38f70b4174b86c82959169969e5975d7" sha1="b20d4b22133dd179108e9edba31fa53ffea2cd1b"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 31).bin" size="21010416" crc="3c469548" md5="4b5215f17a01c11ec6ada3f47b0fc2e2" sha1="58d029646cbc6fc5fbfaa60619bf83e755833208"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 32).bin" size="22339296" crc="2c7893ee" md5="22068b83cb2f35a06df56279f3d68177" sha1="dc705e13eca80824a0df2e5a1f09ccb69a94f6de"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 33).bin" size="21767760" crc="88b50ab1" md5="105c8d765cedef318894c2d58bcf9283" sha1="bc732551b725374b36167417edf5c0a4c46254ef"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 34).bin" size="23218944" crc="967f9fd7" md5="de8fe98d0852150a080e296fbd241df0" sha1="47293540e8138789ef534c71d47ff040fedb74be"/>
+		<rom name="REFLEC BEAT colette - Original Soundtrack Vol. 1 (Japan) (Disc 2 - REFLEC BEAT limelight - Original Soundtrack Extra) (Track 35).bin" size="22621536" crc="a9b92e9b" md5="d8ab746b8d79e271b313ce9e469c246f" sha1="dc599eb97e2bdc71de6510c66c16589eae35421e"/>
+	</game>
+	<game name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 2)" id="0044">
+		<category>Audio</category>
+		<description>REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 2)</description>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 2).cue" size="4030" crc="2eeb0f13" sha1="238f734addee52e6fa2a24a693096d48c0a17652"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 2) (Track 01).bin" size="19999056" crc="0290c882" md5="5510b82ece1f57765dc1805cc8eb23a7" sha1="b3e03c407aa599a2e760d2a7ee3a01655d595189"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 2) (Track 02).bin" size="16346400" crc="ac2bd48a" md5="b9ed8998c66ef19c63736f455c757615" sha1="612f063bfacf62f27e2163bbf2c9b28a57ce653d"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 2) (Track 03).bin" size="19693296" crc="288d9ad3" md5="67a88ca7264672287c085c8539645e8e" sha1="6c40ef7dcb97f80a00a4d52434bbd466d56b93eb"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 2) (Track 04).bin" size="22508640" crc="98f5652e" md5="e8f857d5fafbc8ad6d3545c81e72c5c5" sha1="c43ab65e7f1e26497a9b340d4808077ab030f0ff"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 2) (Track 05).bin" size="21847728" crc="99c1c121" md5="3653a3e7c960203a793b52b7fab49d32" sha1="553387131c046f5525fd6e9a9a6ebbe2a6ce1b06"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 2) (Track 06).bin" size="16962624" crc="f1cf97bc" md5="bc3e1b5df9c523797b6000182bfb4750" sha1="4404af326bc78f99f6288bd608c37dd192826fe9"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 2) (Track 07).bin" size="16209984" crc="daf2c300" md5="2b0afe93c9ea7414cd34d24980b3f82e" sha1="0cb29065cfe9afea4880ecee1a9106955c619a5f"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 2) (Track 08).bin" size="20017872" crc="e1c479ee" md5="d5d9681713206e3e78303ae3f690371d" sha1="9c4469ca7042f7f6ecf7af26f1f2d8b1c7b77bf3"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 2) (Track 09).bin" size="21546672" crc="10b164e2" md5="e06fb663c402e3d729aa6b4c3bd518f0" sha1="5ebfcaf04a98b575de41b525a3fe829fd5c37792"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 2) (Track 10).bin" size="16231152" crc="b28b5796" md5="c41415dc3f25f670183dd906a3d1e41f" sha1="504d50adea3e7ef79ca3e5a11a788d8000310c1e"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 2) (Track 11).bin" size="22536864" crc="435553d8" md5="03030dfe61f3d3db33a1938fdba78c9d" sha1="dee56c77878ddef3b4b72bf3523570d240eb5f1e"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 2) (Track 12).bin" size="20551776" crc="44f7b8df" md5="6d7cec8a88e2a9efc03f1625127bb116" sha1="e339980ccb55272e8610181cf21a36667a92c2f6"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 2) (Track 13).bin" size="17451840" crc="91a2617c" md5="9320d6c3e2fc5dcd9e5d03425d316bea" sha1="d5c0fe9ada51e87d82d9e3d15a2271e4983e7f71"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 2) (Track 14).bin" size="18707808" crc="9ff1c7df" md5="983333da9957e7d4bfe638e9bb04968d" sha1="aee48a7f82ec63ffe7552976756034e2f24a26da"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 2) (Track 15).bin" size="18399696" crc="db51cbb9" md5="9494cc7d970ade34d967e8afd392ff91" sha1="c161d14b2effa282118dfd061f24346000a0f1ac"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 2) (Track 16).bin" size="18893616" crc="427a3888" md5="3bb19d8890f4162a1c355a8f16d3b26b" sha1="6f42ae544b871de6f15adca315c6272237219ebc"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 2) (Track 17).bin" size="21972384" crc="0ccd7fde" md5="024487b43e601ead5e0ef67eb1084bef" sha1="bf570bee1793b37ad2515c5f35ba0b3662657bcf"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 2) (Track 18).bin" size="21520800" crc="f4377014" md5="cd4949efbab85996c4d62752e644d8c7" sha1="1ccaae7a6ed158df784827c9e0c0b43fb7a1e3b7"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 2) (Track 19).bin" size="21196224" crc="89bfdff3" md5="e62f7402bc8d2920a1bfca6652de5cbd" sha1="836e6aeefeebdcf21360232816456ff0d5d56c76"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 2) (Track 20).bin" size="22976688" crc="4cbb0cc7" md5="8c0230db1ba183d1cd532dd4d9ba140f" sha1="b2c5dcfd6998c69d6d647227bc470b1d0fa92557"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 2) (Track 21).bin" size="24383184" crc="b4f1833f" md5="666cdddffe88122ae1f25615b8ec9a35" sha1="f0ac0bc7eacd33e2b98bce0e0a573fd5b65cc5dc"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 2) (Track 22).bin" size="20850480" crc="d961fe5c" md5="3fd86105a5b3b96b4faac2e64ff42c9e" sha1="5ab0d139dd768614817d063a75abce7127a4beb4"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 2) (Track 23).bin" size="20805792" crc="001675dd" md5="e7cbf6c28472c2382da4c817ca465860" sha1="857a1253382464d4294b7f4161f7ecbfba1fa49b"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 2) (Track 24).bin" size="44358720" crc="e6d3c0c5" md5="a35c70f29b2adafff75816277d600cda" sha1="e1515db9a49b8f348355638debaff76408b35805"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 2) (Track 25).bin" size="51642864" crc="f7df3799" md5="fe58d715749ca553cec42479d5125824" sha1="3d32534884b570f7aed4a05319e1bef5913d66a4"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 2) (Track 26).bin" size="17611776" crc="c57fee4c" md5="245168fe0981344abc475f5812b30272" sha1="c55af2501795e53e3d76db1191e61442ccc635f2"/>
+	</game>
+	<game name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 1)" id="0043">
+		<category>Audio</category>
+		<description>REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 1)</description>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 1).cue" size="4185" crc="6d56248f" sha1="7445e3fc6275ed6a68d775cafaed5333b33075b2"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 1) (Track 01).bin" size="17966928" crc="69e84815" md5="0ba018def682a02cc4d606445a814073" sha1="25eee656dfdbd70ccb16f03dab2f00df5bd10b54"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 1) (Track 02).bin" size="20674080" crc="a7b79c3a" md5="ae5d0ddb9effb510c1522b8e4477c0b1" sha1="ad95147b0c88c003080a34661bd1ab874f2007ad"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 1) (Track 03).bin" size="18025728" crc="37bf4c7f" md5="e0578648ebdc186da973643274dc82c0" sha1="04663bc621733c875271ed20497f7fb7a6884edb"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 1) (Track 04).bin" size="17063760" crc="cff77b83" md5="2c7757e977ff2fbc035b9b7e09466cf0" sha1="fec82a8519be3d000a5adfb7990dad8960df91c5"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 1) (Track 05).bin" size="18446736" crc="a603c28c" md5="3462a7d195c7659fbf02021c24c24e1b" sha1="057fa906265799f6b3fa83c295d3b58fef4845bb"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 1) (Track 06).bin" size="18013968" crc="dcb446e1" md5="ed7a57dbb1f61f9d90cb3e832274e337" sha1="2c5b061cb8f5159207c4c8fc9c87f0f8fc033bdc"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 1) (Track 07).bin" size="19368720" crc="33886c54" md5="bbb6e16488a6b163535d4a8e27fab484" sha1="3337aa008a8ecc28dfc1628c3bacefb9233bc34a"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 1) (Track 08).bin" size="19145280" crc="38282072" md5="9dde5b1a84971a3726d597ed40e33406" sha1="21019f2e867a155b5674d055937bbc8e40d95b44"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 1) (Track 09).bin" size="18740736" crc="3bd005b4" md5="e54583b0932c4f0e6def8b98faaa94c8" sha1="5210956f23d13b396018198569c35c4ab33496a6"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 1) (Track 10).bin" size="20441232" crc="e3a6ddf2" md5="e359447ce35a1c910a74f6e30d79641a" sha1="015f90665e7f141014c64d1a93e8761e9010050a"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 1) (Track 11).bin" size="20191920" crc="b35dcebb" md5="d55f782ff054538296ca15583c89ee31" sha1="149299265a698647587978bd27e42c1383d2ef08"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 1) (Track 12).bin" size="18973584" crc="1cd489f9" md5="7f0b4f16c4dd4af58caa4a979342e33b" sha1="9558ddb0101b728c66f4befe0b31886d22ad2f2a"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 1) (Track 13).bin" size="17792880" crc="7d367776" md5="1c4f45ea64c3c8249397609ffd76ab86" sha1="856c0891a944c3b5ac7966f73e0b80f11a909809"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 1) (Track 14).bin" size="19408704" crc="0ecac619" md5="eb14af7b67c26ad8569fe38587cf77fd" sha1="bcb749a366226ae7f1857a2ea0ee4fbce3134033"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 1) (Track 15).bin" size="20029632" crc="fd6a2fe5" md5="70fba64a362e80644df02bf972512f90" sha1="7e1752b0cd7ae9f3bffacb612b3df2f2a7d1e993"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 1) (Track 16).bin" size="20008464" crc="0e73e4e3" md5="90c9d3dcbad1a03491b88dabb36fe73c" sha1="073f89afeaab838200f2cae71bc7d98fa7f4d7fb"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 1) (Track 17).bin" size="17425968" crc="f0b1e84a" md5="4f8eb57467557b6a136ea60aa1c7c94a" sha1="ba378dc2291f82f32d7b1b38e9bc3b54bf80da53"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 1) (Track 18).bin" size="18903024" crc="a8f55113" md5="cdff769887b31bda0605935b27f8ab91" sha1="bc9efdd56e95248a016e27b7f9c146fbc1806ed1"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 1) (Track 19).bin" size="19281696" crc="94d7a731" md5="5c97d12fec2222ad768628bf81fbc996" sha1="5480b6f19d86d4b9fa22e2ac7e1c5387ad6bf2e7"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 1) (Track 20).bin" size="20302464" crc="be827dcf" md5="3a0b8a009297737c5c9fb090f644c440" sha1="da6cfb689dd9c903c976edfb732e6541591aaa22"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 1) (Track 21).bin" size="21015120" crc="d56bf7c9" md5="e0902f6cf8af220b9f16c6b9b0092361" sha1="4909abc7476bb2c84b5104883d00a40b7ccfe127"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 1) (Track 22).bin" size="18863040" crc="fe8ce933" md5="f7682e87ae4108e2c4f8ac600b7a8a6f" sha1="f45fcddb43abc9a8263ca472e927a2e995b07a60"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 1) (Track 23).bin" size="18724272" crc="e6d42a0d" md5="6de5723baada494980ac233c7e123236" sha1="0cb34812f4fbf8225c7a9cf4b7b8468d245a48b7"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 1) (Track 24).bin" size="20391840" crc="f99df8dd" md5="9e2f0fc584a817b3a9b021c9a690cc37" sha1="959e0cfff30604bc27a4b79adafa4b89df732aac"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 1) (Track 25).bin" size="17931648" crc="6535f1cd" md5="92cf8308418a27ea07dca31a22e30403" sha1="c0fbae2a3eb5dac2c4f925f73b21045a6ef93fbf"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 1) (Track 26).bin" size="20046096" crc="07954ac4" md5="0897b4dd97c9f92296da9e8e74f92746" sha1="ebc008d9d2f1c533707aa76e61c3502d06841a0e"/>
+		<rom name="REFLEC BEAT limelight - Original Soundtrack (Japan) (Disc 1) (Track 27).bin" size="19055904" crc="58c7d802" md5="8cae01b85cb1348e8158eb4443d9eafc" sha1="1b5ba57483f18b1d1d947a1d32fa73eaad451a57"/>
+	</game>
+	<game name="Rock Paintings - CD+G Sampler (USA) (SCD System Bundle)" id="0045">
+		<description>Rock Paintings - CD+G Sampler (USA) (SCD System Bundle)</description>
+		<rom name="Rock Paintings - CD+G Sampler (USA) (SCD System Bundle).cue" size="828" crc="351f7ff7" sha1="00ae21a5bffc9b9b0f1e669808b08db7fa6ae80d"/>
+		<rom name="Rock Paintings - CD+G Sampler (USA) (SCD System Bundle).ccd" size="3533" crc="46b18bfd" md5="e35fd4ea7bed73eb3998c478f91c1c4d" sha1="d320e08df2711170765197e17141e788dd385b7a" sha256="0fd886dc71ca1952b1c1a808e75522e5160f7adaf137840c079ef7708aba23f3"/>
+		<rom name="Rock Paintings - CD+G Sampler (USA) (SCD System Bundle).cdg" size="17508768" crc="6f8ae557" md5="9dc972c22f9c3764812a166c7c17a3cf" sha1="7e1809e8cb584cb6084c316e3c9b52a18868793a" sha256="040bd055a3f53f17efc80e53d1055c787ef61b201428217b9895b066d788e834"/>
+		<rom name="Rock Paintings - CD+G Sampler (USA) (SCD System Bundle).sub" size="17508768" crc="777e719d" md5="9ca9afda2ac0d6665192b55745bec893" sha1="93402ecfc81a57358abcc7d4e8f77248a08e28a3" sha256="aabb1cf2a96d17d6efde6c96fbce18652747f34e9b7a92ef5f37f2a8d5923dd0"/>
+		<rom name="Rock Paintings - CD+G Sampler (USA) (SCD System Bundle).img" size="428964816" crc="1eabbab6" md5="168c3e0951644bcbcdd8896375f03478" sha1="4e62c3d865b8924edc567c2d6ba3fbc88e9f3b2d" sha256="8c7a59746a0a5fb43aeda1d9a63189a90b5af2f34e96f70f2cf0db3d5a5b9c14"/>
+	</game>
+	<game name="Sotsugyou II - Neo Generation - Shiritsu Seika Joshi Koutou Gakkou 3-nen B-gumi Sotsugyou Album (Japan)" id="0047">
+		<description>Sotsugyou II - Neo Generation - Shiritsu Seika Joshi Koutou Gakkou 3-nen B-gumi Sotsugyou Album (Japan)</description>
+		<rom name="Sotsugyou II - Neo Generation - Shiritsu Seika Joshi Koutou Gakkou 3-nen B-gumi Sotsugyou Album (Japan).cue" size="645" crc="5486fbea" sha1="61a49a54ff7e0b5870bdb62213b622bef4e6523c"/>
+		<rom name="Sotsugyou II - Neo Generation - Shiritsu Seika Joshi Koutou Gakkou 3-nen B-gumi Sotsugyou Album (Japan).ccd" size="1917" crc="3174e680" md5="05253ab109dcb035781695cd610b6237" sha1="d06610935aac01730dc0b19f20a3e6a6f5529ac9"/>
+		<rom name="Sotsugyou II - Neo Generation - Shiritsu Seika Joshi Koutou Gakkou 3-nen B-gumi Sotsugyou Album (Japan).cdg" size="6148800" crc="9a3717e2" md5="3c069b7614322ebcd422e76134dc38b3" sha1="c6e0564d95dc71cd092a1c6b8a23e7583da4a787"/>
+		<rom name="Sotsugyou II - Neo Generation - Shiritsu Seika Joshi Koutou Gakkou 3-nen B-gumi Sotsugyou Album (Japan).img" size="150645600" crc="9cb11bce" md5="bcc4cb3e45d5933b3b6d0196cee9e05d" sha1="83f628b2fd339555e56ae9c4bd7f539a7694db5a"/>
+		<rom name="Sotsugyou II - Neo Generation - Shiritsu Seika Joshi Koutou Gakkou 3-nen B-gumi Sotsugyou Album (Japan).sub" size="6148800" crc="97dd635b" md5="dea87b683d3b3cbb2594fc606605b3b5" sha1="9e2adbf32a168b234ccef9a53d02536b410057fb"/>
+	</game>
+	<game name="Super Dungeon Master (Japan)" id="0046">
+		<description>Super Dungeon Master (Japan)</description>
+		<rom name="Super Dungeon Master (Japan).cue" size="775" crc="f0664479" sha1="03e87a5c33277aac5e93fce84131734adb62feab"/>
+		<rom name="Super Dungeon Master (Japan).ccd" size="2856" crc="77521808" md5="07b0142294914ef77fb2472c0d3a03b6" sha1="5049a07f30938c5bcaf808ca4e751ad61f9d4ef4" sha256="13c3c0b302bb2a50d5f6a74b6ececd02fe7bc6fae119753022810bd5f485a810"/>
+		<rom name="Super Dungeon Master (Japan).cdg" size="15964800" crc="a55899b6" md5="df26051bd23191003b390b8f91c6b7bd" sha1="d23c3ba9fa2d0e29f1aad8855c6ec395478b5fb8" sha256="80fe3ef224958be58ae87097c75877bdcc8d527113995dbd8673a2d069bbc434"/>
+		<rom name="Super Dungeon Master (Japan).img" size="391137600" crc="59d84e56" md5="ea5d3864065741210cc73831d4ec5616" sha1="78e9d389e7bc40fadfca28ff342d33d808f9a9bc" sha256="81e031ac525fceeea6123fda303504bc0f830359f4ee359c7bbb833a0739379a"/>
+		<rom name="Super Dungeon Master (Japan).sub" size="15964800" crc="8257dc7a" md5="79e5a647c606ed256cd6f9d389029222" sha1="3f194a7b1f9d88b005bcacd34889a37a63281ff2" sha256="42153eaec3519af77de9e20c1cba6b54a6319881f0632587f169db5650462777"/>
+	</game>
+	<game name="Valis III (Japan)" id="0028">
+		<description>Valis III (Japan)</description>
+		<rom name="Valis III (Japan).cue" size="1516" crc="70195255" sha1="eaec652ee37b9e4f00ceaf034744fea1878db766"/>
+		<rom name="Valis III (Japan).img" size="478460304" crc="ef264b27" md5="c4b8679d3a8ed8e380b4c8db4f4cfd76" sha1="9a45db20b119945c59d5d6963fa58ebcc23b1cac" sha256="1b1bd11491edd701d867a9342f2d8916c333b4367b769a94b524d7e04d43c2ae"/>
+		<rom name="Valis III (Japan).ccd" size="4417" crc="ce5f3a48" md5="78e7769b77e1ebe6eb8d26b9687e537e" sha1="58e5069a6d7bdee8c3b223efc788da1dc68713d5" sha256="904fd6da276bfa8259eb44431bde87de6b4e82ee733cf8592ea366646e4eebba"/>
+		<rom name="Valis III (Japan).sub" size="19528992" crc="48f953d5" md5="e95f0052ffb673a299f6ac40e9913781" sha1="ddba1d576a8ec637c7b2695958197a0989a3a1c9" sha256="8a79e446384ca3eeba1f0680eef5029a11d0de5528023ce28479a2c419bf810e"/>
+		<rom name="Valis III (Japan).cdg" size="19528992" crc="640ea967" md5="c07f97282ee261ca72abdfc5cdc84d55" sha1="66e1a4eeb168da3685610e2c3d7accde72760f9e" sha256="9ec44f6b8d6eae7e6dae255f023ae8202c4fa50df601a1fb9621a787871d99f2"/>
+	</game>
+</datafile>

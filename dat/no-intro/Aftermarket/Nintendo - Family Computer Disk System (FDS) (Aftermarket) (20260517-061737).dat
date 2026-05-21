@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<id>31</id>
+		<name>Nintendo - Family Computer Disk System (FDS) (Aftermarket)</name>
+		<description>Nintendo - Family Computer Disk System (FDS) (Aftermarket)</description>
+		<version>20260517-061737</version>
+		<author>Arctic Circle System, BigFred, bikerspade, Blank, C. V. Reynolds, chillerecke, dead_screem, Flashfire42, fuzzball, Gefflon, Hiccup, kazumi213, MeguCocoa, nnssxx, omonim2007, rarenight, relax, RetroUprising, SonGoku, xuom2</author>
+		<homepage>No-Intro</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"/>
+	</header>
+	<game name="NESert Golfing (World) (v1.1) (Aftermarket) (Unl)" id="0437">
+		<category>Games</category>
+		<description>NESert Golfing (World) (v1.1) (Aftermarket) (Unl)</description>
+		<rom name="NESert Golfing (World) (v1.1) (Aftermarket) (Unl).fds" size="65500" crc="e9e99977" md5="c3af62f622aa9c46d30fdf84edf93de6" sha1="d84cc8a87a9f078318385632fe91f8b0d36add19" sha256="a149a94d0befbad314e113c0c603b9fd523a389b3723ce32479b5b69b7d1dd08"/>
+	</game>
+	<game name="NESert Golfing (World) (Aftermarket) (Unl)" id="0434" cloneofid="0437">
+		<category>Games</category>
+		<description>NESert Golfing (World) (Aftermarket) (Unl)</description>
+		<rom name="NESert Golfing (World) (Aftermarket) (Unl).fds" size="65500" crc="912cd8f8" md5="5fe8d15c7279b077ba7847baa7e95a30" sha1="2bcf3d9836e390d28371823f4cbcbca09cdb7677" sha256="7ab35e77b52c3f52bc702f22c28a485a2489b9451e00792382853cf0695f9b2e" status="verified"/>
+	</game>
+</datafile>

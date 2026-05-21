@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<id>74</id>
+		<name>Atari - Atari 7800 (A78)</name>
+		<description>Atari - Atari 7800 (A78)</description>
+		<version>20260504-112425</version>
+		<author>Arctic Circle System, BigFred, bikerspade, C. V. Reynolds, Flashfire42, Gefflon, Hiccup, nnssxx, omonim2007, Psychofox11, psykopat, rarenight, relax, smesgr, SonGoku</author>
+		<homepage>No-Intro</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"/>
+	</header>
+	<game name="Commando (USA) (Beta) (1988-04-29)" id="0266" cloneofid="0018">
+		<category>Games</category>
+		<category>Preproduction</category>
+		<description>Commando (USA) (Beta) (1988-04-29)</description>
+		<rom name="Commando (USA) (Beta) (1988-04-29).a78" size="16512" crc="048b2bd8" md5="e128ffbbc919959c82164b7e67da9a74" sha1="72f340c9f873ad691982d786c6f258e231eaabb6" sha256="c1bfbbddc8104ba759e1a5c5235cdf14fa08e46a18a9bb4ae1e10dc4918e4af6"/>
+	</game>
+	<game name="Desert Falcon (USA) (Beta) (1987-03-09) [b]" id="0263" cloneofid="0026">
+		<category>Games</category>
+		<category>Preproduction</category>
+		<description>Desert Falcon (USA) (Beta) (1987-03-09) [b]</description>
+		<rom name="Desert Falcon (USA) (Beta) (1987-03-09) [b].a78" size="49280" crc="3718ffca" md5="208f1380b6518a8bb725c9454ca8be29" sha1="e3486d9422f9cc6d61fcfade553f2e73b0eadaa4" sha256="155d16619a8d80891c41ec1fceff1b487ad645aa7f844326527ba6e97b5eb8c6" status="baddump"/>
+	</game>
+	<game name="Desert Falcon (USA) (Beta) (1987-03-25)" id="0264" cloneofid="0026">
+		<category>Games</category>
+		<category>Preproduction</category>
+		<description>Desert Falcon (USA) (Beta) (1987-03-25)</description>
+		<rom name="Desert Falcon (USA) (Beta) (1987-03-25).a78" size="49280" crc="c5a9c969" md5="27dbbf61c82f90570b26441b32d1c91d" sha1="7c677b7812880e6871882e3e32966fb1ae23db5f" sha256="b88ee40819ce1ec99a7d38424ba391fde59429ff427bdf606eec6f8463fcafc0"/>
+	</game>
+	<game name="Hat Trick (USA) (Beta) (1987-05-01)" id="0261" cloneofid="0046">
+		<category>Games</category>
+		<category>Preproduction</category>
+		<description>Hat Trick (USA) (Beta) (1987-05-01)</description>
+		<rom name="Hat Trick (USA) (Beta) (1987-05-01).a78" size="49280" crc="2d07ccca" md5="fc06fb1cfa303d0969edcebd78e297b0" sha1="c43d7970573dc3cae9221f0902f94dd9280ee377" sha256="09812961547b6a5b26b766aecada10d5606234ab5c1480fda82ddf927fa4d1a6"/>
+	</game>
+	<game name="Impossible Mission (USA) (Rev 1) (Proto)" id="0262" cloneofid="0050">
+		<category>Games</category>
+		<category>Preproduction</category>
+		<description>Impossible Mission (USA) (Rev 1) (Proto)</description>
+		<rom name="Impossible Mission (USA) (Rev 1) (Proto).a78" size="131200" crc="a7a4adb5" md5="3fbb7c2e1f2f40140db285636dcf6928" sha1="2ae7d2fa3f0b6682491abbd773c43982a68249e1" sha256="8a266a115444f3ab26e77824ec44bb4c3c78b42a2959983b3eb236dfc424703c"/>
+	</game>
+	<game name="Super Stunt Cycle (USA) (Proto) (1989-05-26)" id="0267">
+		<category>Games</category>
+		<category>Preproduction</category>
+		<description>Super Stunt Cycle (USA) (Proto) (1989-05-26)</description>
+		<rom name="Super Stunt Cycle (USA) (Proto) (1989-05-26).a78" size="65664" crc="867c2107" md5="d99eddcddf9bf3e0735196b876bc9455" sha1="2f772b44d26369d2ff626dbd43a48707a0653ca7" sha256="c93f257cbc472a356a853d2d7fe2fcbc4f195a1ac9b04d66c31961a096b07261"/>
+	</game>
+	<game name="Super Stunt Cycle (USA) (Proto) (1989-04-14)" id="0268" cloneofid="0267">
+		<category>Games</category>
+		<category>Preproduction</category>
+		<description>Super Stunt Cycle (USA) (Proto) (1989-04-14)</description>
+		<rom name="Super Stunt Cycle (USA) (Proto) (1989-04-14).a78" size="65664" crc="850af1b9" md5="5d636d3cec0d536734f34c356653b7be" sha1="838fb405d7dd807c46c8e724c6ac58ab41393673" sha256="ccb890b268fa6157bc41a107dbe4044795a23af531b8d5d54fe95898e2143989"/>
+	</game>
+	<game name="Super Stunt Cycle (USA) (Proto) (1988-11-03)" id="0269" cloneofid="0267">
+		<category>Games</category>
+		<category>Preproduction</category>
+		<description>Super Stunt Cycle (USA) (Proto) (1988-11-03)</description>
+		<rom name="Super Stunt Cycle (USA) (Proto) (1988-11-03).a78" size="65664" crc="0ab7b0a4" md5="de35e91830a85714bab7f139752a1bcd" sha1="9995e4c1401e2c8dbb77d51f5e447d7f2052e32f" sha256="586fe9fdd61cd4c95094cff406eabf532abb5360e3879e03b3666dc931d5f5a3"/>
+	</game>
+</datafile>

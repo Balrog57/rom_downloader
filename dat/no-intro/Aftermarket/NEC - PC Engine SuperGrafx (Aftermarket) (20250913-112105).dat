@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<id>13</id>
+		<name>NEC - PC Engine SuperGrafx (Aftermarket)</name>
+		<description>NEC - PC Engine SuperGrafx (Aftermarket)</description>
+		<version>20250913-112105</version>
+		<author>bikerspade, Hiccup, kazumi213, omonim2007, psykopat, rarenight, xuom2</author>
+		<homepage>No-Intro</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"/>
+	</header>
+	<game name="Axelay (World) (Demo) (Aftermarket) (Unl)" id="0008">
+		<category>Demos</category>
+		<category>Games</category>
+		<description>Axelay (World) (Demo) (Aftermarket) (Unl)</description>
+		<rom name="Axelay (World) (Demo) (Aftermarket) (Unl).sgx" size="131072" crc="c7a54073" md5="c5282ce9cf380ba330ca6e04dc15391d" sha1="dac21b37eefc00c110aad5674d413efbe100d930" sha256="361471c6bc0ca0e2be11d6cfd60789083fdff952833e4d62bc56159f24bfc51d"/>
+	</game>
+</datafile>

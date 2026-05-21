@@ -1,0 +1,164 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<id>28</id>
+		<name>Nintendo - Nintendo DS (Decrypted) (Aftermarket)</name>
+		<description>Nintendo - Nintendo DS (Decrypted) (Aftermarket)</description>
+		<version>20260519-192025</version>
+		<author>1988reload, aci68, ajshell1, Arctic Circle System, Aringon, asapy, Baronluigi, Bent, buckwheat, C. V. Reynolds, chillerecke, Connie, coraz, darthcloud, Datman, DeadSkullzJr, Densetsu, DeriLoko3, diego-rbb, DirkDagger, einstein95, Flashfire42, Fonix, fuzzball, Gefflon, Hiccup, hydr0x, iAmGhost, Icyelut, InternalLoss, Jhon591, jimmsu, Just001Kim, kaos, kazumi213, Kirtai, leekindo, Lesserkuma, Liam, MaxG, MeguCocoa, michal99, MisterSheeple, Money_114, Mr.K, NGEfreak, nhlay, niemand, nnssxx, NovaAurora, number, NWPlayer123, omonim2007, Powerpuff, PPLToast, Prominos, Psychofox11, psykopat, rarenight, relax, RetroGamer, Rifu, root, scorp256, Sir VG, SonGoku, Tauwasser, TBemme, Tescu, ToeKnee, togemet2, Tori, u53r123, ufocrossing, UnlockerPT, Vallaine01, Vigi, Whovian9369, Xenirina, xprism, xuom2, zg</author>
+		<homepage>No-Intro</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"/>
+	</header>
+	<game name="Anguna - Warriors of Virtue (World) (v1.02) (Aftermarket) (Unl)" id="z386">
+		<description>Anguna - Warriors of Virtue (World) (v1.02) (Aftermarket) (Unl)</description>
+		<rom name="Anguna - Warriors of Virtue (World) (v1.02) (Aftermarket) (Unl).nds" size="2675776" crc="9fbfa267" md5="eed03ce2c75ac65a720fa7c4150118fe" sha1="5546cb0ba8f1a16dc4b9ceca496d4709ae0e61ef" sha256="90617d4d3d2d363b08f99c369f4fa0691fae98917d5928fc4e3ac849b6d69d52" serial="####"/>
+	</game>
+	<game name="Chess Timeslots (World) (Aftermarket) (Unl)" id="6793">
+		<category>Games</category>
+		<description>Chess Timeslots (World) (Aftermarket) (Unl)</description>
+		<rom name="Chess Timeslots (World) (Aftermarket) (Unl).nds" size="730112" crc="ad728671" md5="061deb4668536ba239cbdd57ab65368f" sha1="b7d5c44c55a18a5c0c2597946be9ca29d378d1ab" sha256="52b56873d8921771f9fce7bf8a06f8a296f586f711602745b478134077a85e09"/>
+	</game>
+	<game name="Club Penguin DS (World) (Proto 2) (Aftermarket) (Unl)" id="6794">
+		<category>Games</category>
+		<category>Preproduction</category>
+		<description>Club Penguin DS (World) (Proto 2) (Aftermarket) (Unl)</description>
+		<rom name="Club Penguin DS (World) (Proto 2) (Aftermarket) (Unl).nds" size="3618880" crc="30319f0e" md5="48eb71ef7bfff9c9df0b24a25eb8fd34" sha1="b744f87b0cd54f68f03ae6119eef605b26ce96ac" sha256="30c7a829c971b585a0fe8a9e381008b27161e512c1df2782720f448876bf0b65"/>
+	</game>
+	<game name="Club Penguin DS (World) (Proto 1) (Aftermarket) (Unl)" id="6795" cloneofid="6794">
+		<category>Games</category>
+		<category>Preproduction</category>
+		<description>Club Penguin DS (World) (Proto 1) (Aftermarket) (Unl)</description>
+		<rom name="Club Penguin DS (World) (Proto 1) (Aftermarket) (Unl).nds" size="2874432" crc="587d6398" md5="a3e0306af8e8af7e877aa1a58d2267ee" sha1="aae7a344113d4cd1a40512c5c3a4426a474237d6" sha256="406b6a9440fdf1842cfc1db920b126d0da4a3f1011624efdaf608a885358004f"/>
+	</game>
+	<game name="Darnell - Crystal Fever (World) (v1.2) (Aftermarket) (Unl)" id="6788">
+		<category>Games</category>
+		<description>Darnell - Crystal Fever (World) (v1.2) (Aftermarket) (Unl)</description>
+		<rom name="Darnell - Crystal Fever (World) (v1.2) (Aftermarket) (Unl).nds" size="4099480" crc="bff7e0a8" md5="06cd433596725fca8f43612d0cbc7581" sha1="9b049ee6e00075967c6c9c842eb4e69c1e0847c5" sha256="46174e2e60f7c0f2021aea60d0b4900811085b48b7e00f5540a3526f924df699"/>
+	</game>
+	<game name="Donsol (World) (Aftermarket) (Unl)" id="6790">
+		<category>Games</category>
+		<description>Donsol (World) (Aftermarket) (Unl)</description>
+		<rom name="Donsol (World) (Aftermarket) (Unl).nds" size="205824" crc="36b3f466" md5="02d8b10517b2f2869f48a121e4e96ac5" sha1="8eacf9b8d6437341ac76c61825ca9a364e4c249a" sha256="588fc07d1ebaa2bb00c8551859d75afbd688c110e349e1f8d1a3f974570fb060"/>
+	</game>
+	<game name="DSCube (World) (Aftermarket) (Unl)" id="6796">
+		<category>Games</category>
+		<description>DSCube (World) (Aftermarket) (Unl)</description>
+		<rom name="DSCube (World) (Aftermarket) (Unl).nds" size="1402880" crc="e14cb906" md5="8f63cbc7a46e46fdf52f351b2a70d13e" sha1="39f973a4fbb8932144f146e40ae15391f65c00ad" sha256="6740b0dcd805056232de7d859fc8f76c80cbbdbe2bb6b1ac9d6c6ee649fa1352"/>
+	</game>
+	<game name="EvoWars - Alien Assault (World) (Aftermarket) (Unl)" id="6797">
+		<category>Games</category>
+		<description>EvoWars - Alien Assault (World) (Aftermarket) (Unl)</description>
+		<rom name="EvoWars - Alien Assault (World) (Aftermarket) (Unl).nds" size="74603520" crc="e5fd9052" md5="885fa258aaa4a9a401a1a31bac8914e2" sha1="b10d010e2329b8dbd615142efe330664d2633930" sha256="47a12de3a61047db14477ec51b73804070d0c46bff9b6f67f7b7b6b81488cf61"/>
+	</game>
+	<game name="EvoWars - Alien Assault (World) (Demo) (Aftermarket) (Unl)" id="6798" cloneofid="6797">
+		<category>Demos</category>
+		<category>Games</category>
+		<description>EvoWars - Alien Assault (World) (Demo) (Aftermarket) (Unl)</description>
+		<rom name="EvoWars - Alien Assault (World) (Demo) (Aftermarket) (Unl).nds" size="74599424" crc="b89ec6a8" md5="b6dfa1ed7c9d5a19f9812c5fae0fdb66" sha1="143c69f9db3f831c21b818009c8088a1ba760bc8" sha256="01577c6038ac521f1d2355352ffe16d379ff2fe1c9ff53f9acd7208565dd45a1"/>
+	</game>
+	<game name="Gurgosus Bowling DS (World) (v1.1) (Aftermarket) (Unl)" id="6783">
+		<category>Games</category>
+		<description>Gurgosus Bowling DS (World) (v1.1) (Aftermarket) (Unl)</description>
+		<rom name="Gurgosus Bowling DS (World) (v1.1) (Aftermarket) (Unl).nds" size="1158144" crc="0c5894c8" md5="af63ff7765eed613c00596bc54375eb4" sha1="494edfa7e28ef01a4d6eff83295b8cc4baaf5659" sha256="930ed3fe6d4558d384abf335832669c0733e2b604baef49a8b1cc3e97d68e611"/>
+	</game>
+	<game name="Gurgosus Bowling DS (World) (v1.1) (No Sound) (Aftermarket) (Unl)" id="6784" cloneofid="6783">
+		<category>Games</category>
+		<description>Gurgosus Bowling DS (World) (v1.1) (No Sound) (Aftermarket) (Unl)</description>
+		<rom name="Gurgosus Bowling DS (World) (v1.1) (No Sound) (Aftermarket) (Unl).nds" size="1056768" crc="c73a7a06" md5="0bfba3f13049f6160498997260cb31e4" sha1="8667d893f33bf6944125d4544106e237da0efe3e" sha256="12ac50179a55fcacc3610eacd2d9c657ebca6217ef33871cb7404fabace7c020"/>
+	</game>
+	<game name="Lizard Noisemaker (World) (Aftermarket) (Unl)" id="6799">
+		<category>Games</category>
+		<description>Lizard Noisemaker (World) (Aftermarket) (Unl)</description>
+		<rom name="Lizard Noisemaker (World) (Aftermarket) (Unl).nds" size="6775808" crc="70e6d254" md5="65d5a0cc217e4633ab2261d0f573b174" sha1="6ecce2c3615c936366986f65f0a7732ad5325446" sha256="c2a2e6e5c78c8e355e9e7c146f047f9d3b28f046e43474c3e36bd416639688e2"/>
+	</game>
+	<game name="Magic Battle NDS (World) (Aftermarket) (Unl)" id="6787">
+		<category>Games</category>
+		<description>Magic Battle NDS (World) (Aftermarket) (Unl)</description>
+		<rom name="Magic Battle NDS (World) (Aftermarket) (Unl).nds" size="551936" crc="ed6217a0" md5="3568fd323f0487101339d904050faf54" sha1="0c67fe01af9344ba60af3edc0923b0683fb06f3a" sha256="c455f0dfad25da8981aff0efa646ff9bb3c874c2aeb4b2188dbd7943e4f2ba8f"/>
+	</game>
+	<game name="Meteora (World) (BlocksDS) (Aftermarket) (Unl)" id="6771">
+		<category>Games</category>
+		<description>Meteora (World) (BlocksDS) (Aftermarket) (Unl)</description>
+		<rom name="Meteora (World) (BlocksDS) (Aftermarket) (Unl).nds" size="3027456" crc="3213944a" md5="fd2fc20108611a1d69aed141fb1b3ffa" sha1="49813492177eb33b0347bd0af2cd5e822b203002" sha256="2dcee7cf55eb18c60576d46a0a09c6009777eca809c0f5330cd72182b14feb5f"/>
+	</game>
+	<game name="Minicraft DS Edition (World) (Proto 3) (Aftermarket) (Unl)" id="6780">
+		<category>Games</category>
+		<category>Preproduction</category>
+		<description>Minicraft DS Edition (World) (Proto 3) (Aftermarket) (Unl)</description>
+		<rom name="Minicraft DS Edition (World) (Proto 3) (Aftermarket) (Unl).nds" size="1214976" crc="a923db06" md5="61988232caaf6ace146f04ad7009f864" sha1="5f855714c023f9c97e1c35d2d7fd7e57c7ca5eed" sha256="d47b57e1dcb1bbac3a6e11d44afd9e444a0aff2fb306e67159a950d485731819"/>
+	</game>
+	<game name="Minicraft DS Edition (World) (Proto 2) (Aftermarket) (Unl)" id="6781" cloneofid="6780">
+		<category>Games</category>
+		<category>Preproduction</category>
+		<description>Minicraft DS Edition (World) (Proto 2) (Aftermarket) (Unl)</description>
+		<rom name="Minicraft DS Edition (World) (Proto 2) (Aftermarket) (Unl).nds" size="648704" crc="9b8137d6" md5="7adf065b8c37ae384c814225d7ba349a" sha1="8418d8c0a207e1598ef95c9ac1ba00d3f570eb6e" sha256="fc8060d31cc07de63f4f9d377a7b89f726a0a3ede24736c2ee532b1df0c75499"/>
+	</game>
+	<game name="Minicraft DS Edition (World) (Proto 1) (Aftermarket) (Unl)" id="6782" cloneofid="6780">
+		<category>Games</category>
+		<category>Preproduction</category>
+		<description>Minicraft DS Edition (World) (Proto 1) (Aftermarket) (Unl)</description>
+		<rom name="Minicraft DS Edition (World) (Proto 1) (Aftermarket) (Unl).nds" size="648192" crc="d6ecefbf" md5="fb516ff74cbabb2a5baef5891fa7c7df" sha1="42e78c8ff0d2104590ae1e38f82f158ef4d93b80" sha256="9abe8010c3627ce5604983d4c0702f768841796a50b54f43ca1fdffd64c74e67"/>
+	</game>
+	<game name="Pingwinek Kelvin DS (World) (Pl) (Aftermarket) (Unl)" id="6785">
+		<category>Games</category>
+		<description>Pingwinek Kelvin DS (World) (Pl) (Aftermarket) (Unl)</description>
+		<rom name="Pingwinek Kelvin DS (World) (Pl) (Aftermarket) (Unl).nds" size="8813456" crc="49716304" md5="300bc08ecf697f2d770f92b817535b88" sha1="ecdf88b8d09e81d913cd08883a3f610bb615bc0c" sha256="a8342028ae49be50093f15b940fbfe6342f36893e676a3b454378f39267e8c83"/>
+	</game>
+	<game name="Pingwinek Kelvin DS (World) (Pl) (No Sound) (Aftermarket) (Unl)" id="6786" cloneofid="6785">
+		<category>Games</category>
+		<description>Pingwinek Kelvin DS (World) (Pl) (No Sound) (Aftermarket) (Unl)</description>
+		<rom name="Pingwinek Kelvin DS (World) (Pl) (No Sound) (Aftermarket) (Unl).nds" size="8712080" crc="e23e1a8d" md5="2a2036388ed095bf4a627c3d071b5bbb" sha1="02d9b63f6ce73a11d9760c1431068aac10eea964" sha256="8f25902ed158514e9c90748e8d579238c08a060c0ba201c26636343756f181ca"/>
+	</game>
+	<game name="Space Impakto (World) (BlocksDS) (Aftermarket) (Unl)" id="6772">
+		<category>Games</category>
+		<description>Space Impakto (World) (BlocksDS) (Aftermarket) (Unl)</description>
+		<rom name="Space Impakto (World) (BlocksDS) (Aftermarket) (Unl).nds" size="3212800" crc="3f935124" md5="c75a5a744f933869d21fcc9b07b4a862" sha1="e4bd477b8c7d5b85643db181b4bf508a61686024" sha256="9ffe3c57988f1eccca5b70136b6ebf6acadd5a4678fa8f45e0073dad5bcc16ce"/>
+	</game>
+	<game name="Teddy Must Die (World) (Aftermarket) (Unl)" id="6789">
+		<category>Games</category>
+		<description>Teddy Must Die (World) (Aftermarket) (Unl)</description>
+		<rom name="Teddy Must Die (World) (Aftermarket) (Unl).nds" size="2904588" crc="fba60a3d" md5="cef4464334d7da691c384ca168fd28b8" sha1="507c6d398614a49262b825d0d74261d2eda888f8" sha256="aeff82641356c33e0b355b4e02090bc791d677cd78321dc45c616463d9f95ce4"/>
+	</game>
+	<game name="Terri-Fried (World) (Aftermarket) (Unl)" id="6791">
+		<category>Games</category>
+		<description>Terri-Fried (World) (Aftermarket) (Unl)</description>
+		<rom name="Terri-Fried (World) (Aftermarket) (Unl).nds" size="633856" crc="adbf4951" md5="f446092832edc6539ed39dc193121c17" sha1="a425a3994e043ba33672c5d5c12b509fe9b1a3ac" sha256="30b66e530c3daa7b361599f5c7c913e2aa7a30573bd7038525e74d01fee85ebf"/>
+	</game>
+	<game name="Touhou DS (World) (v0.9.2) (Demo) (BlocksDS) (Aftermarket) (Unl)" id="6777">
+		<category>Demos</category>
+		<category>Games</category>
+		<description>Touhou DS (World) (v0.9.2) (Demo) (BlocksDS) (Aftermarket) (Unl)</description>
+		<rom name="Touhou DS (World) (v0.9.2) (Demo) (BlocksDS) (Aftermarket) (Unl).nds" size="23805952" crc="1f4ecf15" md5="61c4df678247a8d238c6440ff8bb6cc8" sha1="b46645b1115ad14fde6b835f1742c04e1309610b" sha256="787e0a55965ac39e1a9ebf292e32bb4d0268d3da63497ba59ab8ae25778cdaca"/>
+	</game>
+	<game name="Touhou DS (World) (v0.9.1) (Demo) (BlocksDS) (Aftermarket) (Unl)" id="6778" cloneofid="6777">
+		<category>Demos</category>
+		<category>Games</category>
+		<description>Touhou DS (World) (v0.9.1) (Demo) (BlocksDS) (Aftermarket) (Unl)</description>
+		<rom name="Touhou DS (World) (v0.9.1) (Demo) (BlocksDS) (Aftermarket) (Unl).nds" size="23839744" crc="b6bbb509" md5="84e866481fe3e5b83cc1b81ff4f62858" sha1="9d9fd33ccbe8ddd8dd7065fe754860b112f6d166" sha256="c902669e43a7295625989560690c5d0a64d56f55e8bc17d7859d13ae1be9c09e"/>
+	</game>
+	<game name="Triple Triad DS (World) (BlocksDS) (Aftermarket) (Unl)" id="6779">
+		<category>Games</category>
+		<description>Triple Triad DS (World) (BlocksDS) (Aftermarket) (Unl)</description>
+		<rom name="Triple Triad DS (World) (BlocksDS) (Aftermarket) (Unl).nds" size="8942592" crc="dc1eb5e1" md5="38580c1e0d183d3ca443acf67f767098" sha1="9981c26f09259519c358c4b72be1bac670770731" sha256="6d1d3215e787a9d4337aec2065ba068e2b8a031c1fbec01794697954a35eaa6e"/>
+	</game>
+	<game name="Waimanu - Daring Slides (World) (Aftermarket) (Unl)" id="z529">
+		<description>Waimanu - Daring Slides (World) (Aftermarket) (Unl)</description>
+		<rom name="Waimanu - Daring Slides (World) (Aftermarket) (Unl).nds" size="1754176" crc="67c2e4d7" md5="48703aa6887236c2424f06215616ba3f" sha1="941fe2661b370844460a96396f8bcac7a0559103" sha256="0e2ac89050b45a0e3852e59a9ad8fac1a685cf1f5f1fe6699ee47bcf606dfaf3"/>
+	</game>
+	<game name="WolveSlayer (World) (2024-07-31) (BlocksDS) (Aftermarket) (Unl)" id="6773">
+		<category>Games</category>
+		<description>WolveSlayer (World) (2024-07-31) (BlocksDS) (Aftermarket) (Unl)</description>
+		<rom name="WolveSlayer (World) (2024-07-31) (BlocksDS) (Aftermarket) (Unl).nds" size="5438464" crc="5f682410" md5="0871edb8ef0ee11a5d2ce21e2306f109" sha1="8ab8b0bed86a8fdc1e99f9bfcf099d848d5c5ce0" sha256="0a4469ee79405141bac4b5b4e5d911cb25b5be0501bc0d9ebcccd8d85e44bbc2"/>
+	</game>
+	<game name="WolveSlayer (World) (2024-07-14) (BlocksDS) (Aftermarket) (Unl)" id="6775" cloneofid="6773">
+		<category>Games</category>
+		<description>WolveSlayer (World) (2024-07-14) (BlocksDS) (Aftermarket) (Unl)</description>
+		<rom name="WolveSlayer (World) (2024-07-14) (BlocksDS) (Aftermarket) (Unl).nds" size="5414912" crc="13bf2a0e" md5="476af5f20c93779b37ee235b1022aef5" sha1="3a2c2ce0eaf851a7ab33f61d159d135e81661db2" sha256="503bb15980ea6d0cc218f95c1ce68c5794395800988abb06fff5d79f588e29cb"/>
+	</game>
+	<game name="WolveSlayer (World) (2024-07-12) (BlocksDS) (Aftermarket) (Unl)" id="6776" cloneofid="6773">
+		<category>Games</category>
+		<description>WolveSlayer (World) (2024-07-12) (BlocksDS) (Aftermarket) (Unl)</description>
+		<rom name="WolveSlayer (World) (2024-07-12) (BlocksDS) (Aftermarket) (Unl).nds" size="5430272" crc="236f029d" md5="f901e553957396b4319a099fc1cb0aef" sha1="92812cc04460e3108b1df149aaf141c15136bc84" sha256="a5d9e6e1514e8d33379898f04370057a910631ae5e7b50ebf528f82f19764b09"/>
+	</game>
+</datafile>

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<id>466</id>
+		<name>Non-Redump - Commodore - Amiga CDTV</name>
+		<description>Non-Redump - Commodore - Amiga CDTV</description>
+		<subset>Non-Redump</subset>
+		<version>20260409-113749</version>
+		<author>NovaAurora</author>
+		<homepage>No-Intro</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"/>
+	</header>
+	<game name="Air Warrior (World)" id="0001">
+		<description>Air Warrior (World)</description>
+		<rom name="Air Warrior (World).cue" size="85" crc="4c59d70e" sha1="06b3a8e9e14a3c09fa0407474092a671b214286d"/>
+		<rom name="Air Warrior (World).bin" size="14888160" crc="65cbb45a" md5="5f0ce6655c48b99bd972e471c05443c2" sha1="819b6e16c1fca420fed0933c78c096f0dafc6259" sha256="e1678a492f4a735f0519fc284d57b1c46c045fae2a2c096cc02e87f7ea346eee"/>
+	</game>
+</datafile>

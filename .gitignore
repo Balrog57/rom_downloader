@@ -35,6 +35,8 @@ ENV/
 .python_packages/
 minerva-torrent-*/
 .claude/
+.kilo/
+.Jules/
 
 # API Keys (IMPORTANT: Never commit these!)
 api_keys.json

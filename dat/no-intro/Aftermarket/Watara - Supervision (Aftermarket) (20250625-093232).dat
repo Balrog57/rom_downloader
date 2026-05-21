@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<id>22</id>
+		<name>Watara - Supervision (Aftermarket)</name>
+		<description>Watara - Supervision (Aftermarket)</description>
+		<version>20250625-093232</version>
+		<author>Flashfire42, Hiccup, Psychofox11, psykopat, relax, Schrodinger, SonGoku, TeamEurope, xuom2</author>
+		<homepage>No-Intro</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"/>
+	</header>
+	<game name="Assembloids (World) (Digital) (Aftermarket) (Unl)" id="0076">
+		<category>Games</category>
+		<description>Assembloids (World) (Digital) (Aftermarket) (Unl)</description>
+		<rom name="Assembloids (World) (Digital) (Aftermarket) (Unl).bin" size="65536" crc="c71131e4" md5="6dd574473abfe47583c81a2fe33d3d02" sha1="79831275a6a30064d400b21c7eff709403ebcecc" sha256="7ecbfdae2c842f0f77eba722bd4d5960b2edb476d804ac2fd03255b60abc879d"/>
+	</game>
+</datafile>

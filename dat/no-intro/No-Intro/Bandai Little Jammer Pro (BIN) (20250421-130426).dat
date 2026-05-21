@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<id>438</id>
+		<name>Bandai Little Jammer Pro (BIN)</name>
+		<description>Bandai Little Jammer Pro (BIN)</description>
+		<version>20250421-130426</version>
+		<author>SonGoku</author>
+		<homepage>No-Intro</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"/>
+	</header>
+	<game name="Hibari - Best Selection (World)" id="0022">
+		<description>Hibari - Best Selection (World)</description>
+		<rom name="Hibari - Best Selection (World).bin" size="8912896" crc="600aa126" md5="1544ab6a53778e953faae8b7bb16b9cb" sha1="7ae833af256136a031894c4e165e32d1df67ae8b" sha256="7e9f245d421d9371810c3b5b43bd5d4d3f3e04c39b20575fa7c0ddf7ebddacc9"/>
+	</game>
+	<game name="HIBARI - JAZZ&amp;STANDARDS (World)" id="0021">
+		<description>HIBARI - JAZZ&amp;STANDARDS (World)</description>
+		<rom name="HIBARI - JAZZ&amp;STANDARDS (World).bin" size="8912896" crc="906c3f29" md5="ce029da0f5d30b8dd40cb9fbb46a61b0" sha1="60cfea07808a83b0545bdb3ea825eb0e0bca6a34" sha256="855f5374e2d89fbca75dc948815a5fd21ed4c1f77d1ebddb93ff093d39ea6204"/>
+	</game>
+	<game name="LIVE! American Oldies (World)" id="0004">
+		<description>LIVE! American Oldies (World)</description>
+		<rom name="LIVE! American Oldies (World).bin" size="2097152" crc="9642e3db" md5="9f4684ddea65eca04e3a3b0fd545c298" sha1="02bf2365e3b7d9654ad3a8767420e4240235291d" sha256="c7f97b2aacd39d39b24a07b5410d9cd4db071435cba1e81f4f19e14f0b9a17e7"/>
+	</game>
+	<game name="LIVE! an Invitation (World)" id="0003">
+		<description>LIVE! an Invitation (World)</description>
+		<rom name="LIVE! an Invitation (World).bin" size="2097152" crc="8bd5a285" md5="4fbcf8c27de34abf23e3c1aaa7b41a3f" sha1="7622c95aa27cc471c886ac62c3687048f8edfedc" sha256="37100b6673102399519611889ecfbd297fbfd7974d1d23d611260a4e4312af53"/>
+	</game>
+	<game name="LIVE! ANNIVERSARY-LIMITED (World)" id="0015">
+		<description>LIVE! ANNIVERSARY-LIMITED (World)</description>
+		<rom name="LIVE! ANNIVERSARY-LIMITED (World).bin" size="2097152" crc="b5478ebb" md5="96882e4bc30d956a23b2185c308cdee2" sha1="c835637bff6f45962e14a684e019a0e9b5e2356a" sha256="3e7e1b16e616165911636515ec06efb997dc2d9d554c707654e71ef62976d49e"/>
+	</game>
+	<game name="LIVE! BEST 30 Owner's Club Limited - Tunes From LITTLE JAMMER Anthology (World)" id="0005">
+		<description>LIVE! BEST 30 Owner's Club Limited - Tunes From LITTLE JAMMER Anthology (World)</description>
+		<rom name="LIVE! BEST 30 Owner's Club Limited - Tunes From LITTLE JAMMER Anthology (World).bin" size="2097152" crc="32443182" md5="35ec91b359b90fa25f348838b21a3a66" sha1="0bb91057e1fa4a89c6893f7921d4af62d5deb34c" sha256="60a775acc613509e335c1078650a687d910662715a7ef6afd93ecc11f35c9350"/>
+	</game>
+	<game name="LIVE! Big Band I - For Horn Section (World)" id="0006">
+		<description>LIVE! Big Band I - For Horn Section (World)</description>
+		<rom name="LIVE! Big Band I - For Horn Section (World).bin" size="2097152" crc="1b2124fa" md5="dc31c66e7a68c57ae9c760a273616400" sha1="9a94c94fee4a3cbc13cf88766cc990a742dea686" sha256="e2f9db42232f7fa73dcfc2fbd2b8932bb70da9997531194e5f814242e000cdd8"/>
+	</game>
+	<game name="LIVE! BILL EVANS (World)" id="0016">
+		<description>LIVE! BILL EVANS (World)</description>
+		<rom name="LIVE! BILL EVANS (World).bin" size="2097152" crc="e5c7708b" md5="2e0ba4fcf6caecade1f55a0d7b0d8b31" sha1="ab0f1ed4e92fee81968f8adb7b2946d7087fde9e" sha256="2480193f4c856acf0ef968a5e92f0f9ddf1b825f62a05dc5c1664ea865597fac"/>
+	</game>
+	<game name="LIVE! Bossa Nova I - STAGE.04 (World)" id="0007">
+		<description>LIVE! Bossa Nova I - STAGE.04 (World)</description>
+		<rom name="LIVE! Bossa Nova I - STAGE.04 (World).bin" size="2097152" crc="8f0b81cc" md5="867a33111e440694b2e0efee22c4ed6b" sha1="7afa787b105220bbdce4b898e57911c22b7c71e5" sha256="16d9af65ed3866722b4a6b22deddfb66974a1cc8e86c069b5a57168dbe664c6e"/>
+	</game>
+	<game name="LIVE! Easy Listening - STAGE.05 (World)" id="0008">
+		<description>LIVE! Easy Listening - STAGE.05 (World)</description>
+		<rom name="LIVE! Easy Listening - STAGE.05 (World).bin" size="2097152" crc="78e2e280" md5="8dbf0545c55fa03f090fb3a30f7a7cf1" sha1="a3799b2f76e6b9b10188392847977cf6adbed498" sha256="603dbb5e524a40fc9e11ce5198525c690a4549e02f82d0655fafbd276a684692"/>
+	</game>
+	<game name="LIVE! Golden Theater - STAGE.06 (World)" id="0009">
+		<description>LIVE! Golden Theater - STAGE.06 (World)</description>
+		<rom name="LIVE! Golden Theater - STAGE.06 (World).bin" size="2097152" crc="693e5801" md5="4fd9ebff48cea13f67d5a0050e5dbf94" sha1="f2430cab18a329922f2035b8b772f993e143d233" sha256="3f1d93efef1e907fc044ceda51721eeedd5881dc268111ece792b6a59e6608c1"/>
+	</game>
+	<game name="LIVE! Jazz Ballad I - STAGE.02 (World)" id="0010">
+		<description>LIVE! Jazz Ballad I - STAGE.02 (World)</description>
+		<rom name="LIVE! Jazz Ballad I - STAGE.02 (World).bin" size="2097152" crc="0ded28ec" md5="05ddbe98cb9c1c81bc9b1c96ca522c88" sha1="6fd7ccdbbe86ee09f1b49a4698cc06c0fb96553b" sha256="f14634b738b9dfa8b78a79e888075865d0a700a3c2ae9198e4bb8dc0dd7160e7"/>
+	</game>
+	<game name="LIVE! Jazz Vocal Standard -WOMAN- - VOCAL.01 (World)" id="0011">
+		<description>LIVE! Jazz Vocal Standard -WOMAN- - VOCAL.01 (World)</description>
+		<rom name="LIVE! Jazz Vocal Standard -WOMAN- - VOCAL.01 (World).bin" size="8912896" crc="73fe99ac" md5="4c1ff15f1bac1c2f61d574791b94d872" sha1="72940c198308c887ae1d807f09337bda62fd07da" sha256="556ebf815c3a7a65948562be37bf698616f2394fc1994662b3593d11ac1249ae"/>
+	</game>
+	<game name="LIVE! MILES DAVIS (World)" id="0012">
+		<description>LIVE! MILES DAVIS (World)</description>
+		<rom name="LIVE! MILES DAVIS (World).bin" size="2097152" crc="eda177b7" md5="8a5f77264f37307c96043b8634f6a788" sha1="91a6c6b076e5e7d7455c2d8c7c86a24a5fdf0e11" sha256="74cecb613016fc5d6f4aa01b038f778524af887ad9475a4e25bcc7e25a463940"/>
+	</game>
+	<game name="LIVE! Owner's Club Christmas I - PRIVATE SESSION.01 (World)" id="0013">
+		<description>LIVE! Owner's Club Christmas I - PRIVATE SESSION.01 (World)</description>
+		<rom name="LIVE! Owner's Club Christmas I - PRIVATE SESSION.01 (World).bin" size="2097152" crc="7c42a738" md5="68fe9938eddde70cf0d4ef9c219c5eff" sha1="9e454c27b8d12b9e553f1fb5e7b8ef1aee9c2809" sha256="b99cf666e20769925a1499bf3cce2380b050f81f42d86b8c473bb451762c9ea8"/>
+	</game>
+	<game name="LIVE! Rock &amp; Pops (World)" id="0014">
+		<description>LIVE! Rock &amp; Pops (World)</description>
+		<rom name="LIVE! Rock &amp; Pops (World).bin" size="2097152" crc="22aff288" md5="2887813ed0aa218cd31af8a131327210" sha1="f26bd3e8736ad26564ebf2327e01da01ccd2a2df" sha256="46cc2fe3f4a65e87df7dada777194b7f156b598476e3c8661c5128e872d98428"/>
+	</game>
+	<game name="LIVE! Screen Music I STAGE.03 (World)" id="0002">
+		<description>LIVE! Screen Music I STAGE.03 (World)</description>
+		<rom name="LIVE! Screen Music I STAGE.03 (World).bin" size="2097152" crc="ab816eba" md5="565cdd290bf15946fc94f46680d26e2b" sha1="b2c7e751d3fcf399d672fc3b4e627ba2360b06bd" sha256="937a890ea0cfd89658e41bc95c556fe7eea7e053196f7a6ccbb2dc534399384f"/>
+	</game>
+	<game name="LIVE! SONNY ROLLINS (World)" id="0023">
+		<description>LIVE! SONNY ROLLINS (World)</description>
+		<rom name="LIVE! SONNY ROLLINS (World).bin" size="2097152" crc="8982c013" md5="5dd0a9a5dbbc3560c270e05f8a4c618c" sha1="3b1b0746e4aae486ad4cc675aa9b921680c69e16" sha256="7ee64e2da42c812e6074e77619b183933f2ebbe79df7fac06e89f4b71a842933"/>
+	</game>
+	<game name="LIVE! Standard Jazz I STAGE.01 (World)" id="0001">
+		<description>LIVE! Standard Jazz I STAGE.01 (World)</description>
+		<rom name="LIVE! Standard Jazz I STAGE.01 (World).bin" size="2097152" crc="c0668ffd" md5="1cf2422efec5e2220251be2dc3aaaa57" sha1="7bce921f21a861c2be512d86af68fd46f5b4c39b" sha256="cf7a4dff056375f7bdc0930921702b35b685f6c048b0e343c5ca6dde42afae20"/>
+	</game>
+	<game name="LIVE! The Debut - Cinema Side (World)" id="0019">
+		<description>LIVE! The Debut - Cinema Side (World)</description>
+		<rom name="LIVE! The Debut - Cinema Side (World).bin" size="8912896" crc="32fcc0be" md5="6fbecbabbea5c8e30d59e83703a3c05a" sha1="951902d1cc09216b5fa8dcf7d15850d5ca30cf07" sha256="262b50bfed191a1e6846f7199fa9f96d6c442f958c03863dba9d7245861fdaaa"/>
+	</game>
+	<game name="LIVE! The Debut - Jazz Side (World)" id="0020">
+		<description>LIVE! The Debut - Jazz Side (World)</description>
+		<rom name="LIVE! The Debut - Jazz Side (World).bin" size="8912896" crc="ab794c8c" md5="3918f68e709b3279192e47f5c06a2d8c" sha1="7e9d5aefdde373902893b9cb91a00f559ddc14af" sha256="1bf1ad2803b6b0c1167d3a87a235c4465953feff3bf9f5d2f954d5e754418cb7"/>
+	</game>
+	<game name="LIVE! Vocal Christmas Stage VOCAL.02 (World)" id="0017">
+		<description>LIVE! Vocal Christmas Stage VOCAL.02 (World)</description>
+		<rom name="LIVE! Vocal Christmas Stage VOCAL.02 (World).bin" size="10485760" crc="3e3fe694" md5="520c37de3b847853a5d3da7514773b2e" sha1="0ac2d1ff602b4fdc102c027749339bc7ec5a9a0e" sha256="f5f6e59fa4a6ab35c788f89fd6a231375389230210950ba836b7a5894e5f9dc6"/>
+	</game>
+	<game name="Misora Hibari - Best &amp; Swing - Like the Flow of a River (World)" id="0018">
+		<description>Misora Hibari - Best &amp; Swing - Like the Flow of a River (World)</description>
+		<rom name="Misora Hibari - Best &amp; Swing - Like the Flow of a River (World).bin" size="10485760" crc="c16ab8a0" md5="a6fb4f7d5c6791c05609ef98a4b8b2ab" sha1="68cf9e717f401f37708f6ee381bc37fdd30408f8" sha256="c9bffad399d66c6bea75d2379b18004f61f18dfbcc87e1fc9b9bd6eb3cae00d0"/>
+	</game>
+</datafile>

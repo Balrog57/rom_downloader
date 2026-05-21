@@ -1,0 +1,287 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<id>105</id>
+		<name>Mattel - Intellivision (Aftermarket)</name>
+		<description>Mattel - Intellivision (Aftermarket)</description>
+		<version>20260304-102057</version>
+		<author>Aringon, C. V. Reynolds, Flashfire42, Gefflon, Hiccup, nnssxx, omonim2007, Psychofox11, psykopat, RetroUprising, SonGoku</author>
+		<homepage>No-Intro</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"/>
+	</header>
+	<game name="Antarctic Tales (World) (Aftermarket) (Unl)" id="0223">
+		<description>Antarctic Tales (World) (Aftermarket) (Unl)</description>
+		<rom name="Antarctic Tales (World) (Aftermarket) (Unl).rom" size="77396" crc="9ba5a798" md5="27051b100ff89970d8a24291e8b6cb67" sha1="bc8d07fc972770dabf6a77ef73a7be15c0521c3e" sha256="3435f8755b586ced0ebb53f72da713164e7405e09dce7c44f43dfe0f6e08e5d4" date="2025-09-25"/>
+		<rom name="Antarctic Tales (World) (Aftermarket) (Unl).bin" size="63041" crc="54f3a391" md5="0ceb547163e96e2153f8c6a2e5a21e31" sha1="16e6e0c1486514b9fb5035a63607abe65614dd9f" sha256="31ee3d6f3211a43472b8395f5632701fdf3f7ec2db767e3d6ee2cb6cde61aabc" date="2025-09-25"/>
+	</game>
+	<game name="B-17 Bomber Flying Fortress (World) (Aftermarket) (Unl)" id="0271">
+		<description>B-17 Bomber Flying Fortress (World) (Aftermarket) (Unl)</description>
+		<rom name="B-17 Bomber Flying Fortress (World) (Aftermarket) (Unl).rom" size="32833" crc="6185c51c" md5="960c2c6dcb7f309b12b2cb750f23333f" sha1="06457add8cb2b45846b9b8dc41c9a9e6b77aa04e" sha256="7eb688f9b1f4132a276b41222884c5c92d3417a304340c64586fc6f6f879e3bb" date="2025-09-25"/>
+		<rom name="B-17 Bomber Flying Fortress (World) (Aftermarket) (Unl).bin" size="32768" crc="fc4ae46d" md5="5a6aff0c1ab9f5968ba9e8b78a993d79" sha1="1027ca6c20c30d9349ac1baf7578ab75de132c2f" sha256="cab59087a2d087b597c5852f49244171bab442a6a1c5d643c49411e46bdb8481" date="2025-09-25"/>
+	</game>
+	<game name="Bank Panic (World) (Aftermarket) (Unl)" id="0224">
+		<description>Bank Panic (World) (Aftermarket) (Unl)</description>
+		<rom name="Bank Panic (World) (Aftermarket) (Unl).rom" size="69200" crc="fc49b63e" md5="04116d56e750f392e7b66b908f17bc44" sha1="7515fadca1a0a8d0973146e29478f44617e817ce" sha256="849e4f025c9056eceb1c9a163436ab9a90391b19123a3de864864145decfa8f7" date="2025-09-25"/>
+	</game>
+	<game name="Beach-Head (World) (Aftermarket) (Unl)" id="0225">
+		<description>Beach-Head (World) (Aftermarket) (Unl)</description>
+		<rom name="Beach-Head (World) (Aftermarket) (Unl).rom" size="63056" crc="8b2727d9" md5="476e65987c3eff704303ed559bb90a5b" sha1="8122e2c1cb51d036862df4c373cdd162ce0648d8" sha256="de1cfe34ae04caf4462b107c7d1365978b584b99ececa57343f13e23c085cbe9" date="2025-09-25"/>
+		<rom name="Beach-Head (World) (Aftermarket) (Unl).bin" size="61488" crc="922fa5b4" md5="76faea7fcd611ab3b13146ed2d063335" sha1="cd6e5e23a1a966edc83856ab536c86eb89177f2d" sha256="4d9ccc3cadbb7a4478e65191c56be5023b816980942898739ef606c34b3bdacd" date="2025-09-25"/>
+	</game>
+	<game name="Beat'em &amp; Eat'em (World) (Aftermarket) (Unl)" id="0226">
+		<description>Beat'em &amp; Eat'em (World) (Aftermarket) (Unl)</description>
+		<rom name="Beat'em &amp; Eat'em (World) (Aftermarket) (Unl).rom" size="14905" crc="e08f0192" md5="d38cb49b52209e7f34b8ec3805641932" sha1="c2061dfd14da2c0570b3c9e87f2f220dd8f37e75" sha256="b473473a2a24cbbc5f47fd856d0588546ff081f795878d05b20698adde7a4526" date="2025-09-25"/>
+		<rom name="Beat'em &amp; Eat'em (World) (Aftermarket) (Unl).bin" size="14848" crc="e28c545d" md5="521e4fcbbd381aed406eba2608607feb" sha1="2c8688ab173960bee1c11503a783e78ed2cedc9f" sha256="f455dbdcf15c8a014f78808d85ebd8609c64e8f81525e3360002537d639baf17" date="2025-09-25"/>
+	</game>
+	<game name="Buck Rogers - Planet of Zoom (World) (Aftermarket) (Unl)" id="0227">
+		<description>Buck Rogers - Planet of Zoom (World) (Aftermarket) (Unl)</description>
+		<rom name="Buck Rogers - Planet of Zoom (World) (Aftermarket) (Unl).rom" size="54860" crc="6e98c7a1" md5="5b47e2a800285edae1dfdc3d1dad2bc0" sha1="7db61cc304167bea9f1763743f789f363ca6cc6e" sha256="1449080938c8dffaf3e3fd73ef81e94998891f466823241601d53656ccbae6e6" date="2025-09-25"/>
+		<rom name="Buck Rogers - Planet of Zoom (World) (Aftermarket) (Unl).bin" size="54784" crc="d6d9b548" md5="5a943b09219a28fc66708ae16f1697b9" sha1="4a164e9970f5ef9241244734d923c997ea539212" sha256="72f444222b7eb0760de003dd251ae19f1d7406392b0557bea85cad1e9c178c1d" date="2025-09-25"/>
+	</game>
+	<game name="Choplifter (World) (Aftermarket) (Unl)" id="0266">
+		<description>Choplifter (World) (Aftermarket) (Unl)</description>
+		<rom name="Choplifter (World) (Aftermarket) (Unl).rom" size="32829" crc="a1ad74af" md5="1ea3a352b033c277100ce75922e7da4f" sha1="83b87a8d52214351b43f88055965467bfa549fde" sha256="6030c116c5df35d313306c6dfe6a40ac1c998bf6b61e60d886e9ea15292e298b" date="2025-09-25"/>
+		<rom name="Choplifter (World) (Aftermarket) (Unl).bin" size="32768" crc="3ea0cb91" md5="80c4c7baad739212014492eaa4d3aed1" sha1="eb0f6bac1d73ae517d2c72a7a8e45da5172c1d2b" sha256="f1585c017a42bbea3140fa915bfbfc53497b6db2b21d1c54a9438ed3a408668a" date="2025-09-25"/>
+	</game>
+	<game name="Copter Command (World) (Aftermarket) (Unl)" id="0228">
+		<description>Copter Command (World) (Aftermarket) (Unl)</description>
+		<rom name="Copter Command (World) (Aftermarket) (Unl).rom" size="26689" crc="e8b99963" md5="0047ca56cec107e3d818c5a756358e6f" sha1="8c3ac6c117acf1b6724d85ea27503730e4500fcf" sha256="5852412425471640a4ee92c8172f03fbf706d5754744dc6cb32c9641a37ffb6f" date="2025-09-25"/>
+		<rom name="Copter Command (World) (Aftermarket) (Unl).bin" size="26624" crc="c05449be" md5="2ae7a4df95c19082ea5522f120682f7d" sha1="afffd70abe100bc98111fed9d6e63330e24667d7" sha256="022d96ad12b92f174c4a30f8ce9eb239962ab78edcfda0d23abb21b98dc7c3cb" date="2025-09-25"/>
+	</game>
+	<game name="Desert Bus (World) (Aftermarket) (Unl)" id="0229">
+		<description>Desert Bus (World) (Aftermarket) (Unl)</description>
+		<rom name="Desert Bus (World) (Aftermarket) (Unl).rom" size="83538" crc="385e8c1e" md5="2015bda26826ae7e7965ff49c3259e10" sha1="07e44cc61f584958982bd7f25a8823492374da5d" sha256="b3a5bf87683c33881ef7126c4091f392a5c176cc89334acf128e554175b514cf" date="2025-09-25"/>
+		<rom name="Desert Bus (World) (Aftermarket) (Unl).bin" size="81692" crc="32911333" md5="dc9a4f5267af0b5737aa2aff90a69f6e" sha1="a448c252ab152515a22be71f0ae9a6593272ac3d" sha256="12e054c38c47c7ab8e36bae053d642b1ed8a39a990eb9f166eabac747481f6f9" date="2025-09-25"/>
+	</game>
+	<game name="DK Arcade (World) (Intelligentvision) (Aftermarket) (Unl)" id="0221">
+		<category>Games</category>
+		<description>DK Arcade (World) (Intelligentvision) (Aftermarket) (Unl)</description>
+		<rom name="DK Arcade (World) (Intelligentvision) (Aftermarket) (Unl).int" size="49152" crc="ef1bec41" md5="607d0a959d1c64f6feb66433b4171d5f" sha1="fad323a8c88b7155ec4456e8909fe21e3cdbbe07" sha256="0bb995f068921a7f7513e4e2251d6bcc15fa630a6c64362f34efc9f80ba3e776"/>
+	</game>
+	<game name="Donkey Kong Junior (World) (Aftermarket) (Unl)" id="0222">
+		<description>Donkey Kong Junior (World) (Aftermarket) (Unl)</description>
+		<rom name="Donkey Kong Junior (World) (Aftermarket) (Unl).rom" size="79956" crc="f62f1451" md5="60dab95c20fe430492b71911ddeebda4" sha1="809144e73bf36c616a08fa68a9b27bd5a463f1df" sha256="7ed52915e9c9a4274d5cf9f397ef5a16369465626d6047480dea22fde8ee2d5a" date="2025-09-25"/>
+		<rom name="Donkey Kong Junior (World) (Aftermarket) (Unl).bin" size="77842" crc="57b2545b" md5="9f2cfabb473ff8a9a3349633e3d6db94" sha1="bb6e67b1507ab85acf5d6b52ce80dea2f9f4b7ef" sha256="30fc9522f4f33a1f5d90c35ee8cc009ecfe5259900301452e2ed854671515e28" date="2025-09-25"/>
+	</game>
+	<game name="Dragon Quest (World) (v1.1) (Aftermarket) (Unl)" id="0230">
+		<description>Dragon Quest (World) (v1.1) (Aftermarket) (Unl)</description>
+		<rom name="Dragon Quest (World) (v1.1) (Aftermarket) (Unl).rom" size="93268" crc="4803b901" md5="92986098061e0ce17d14d089952c79b8" sha1="9b9bff4760771867018cf1b05607b26c3e0c6c64" sha256="b0e34fc7e6a79c9fe4391c3ef03ea16b7fd1fdb0bb580e4ca323c4dd32cea03e" date="2025-09-25"/>
+		<rom name="Dragon Quest (World) (v1.1) (Aftermarket) (Unl).bin" size="91970" crc="f60fa56d" md5="166a8c4a80a423ec2b854b98e3403546" sha1="8667708d2af7eeb358f3b6442c6a24595f6976f4" sha256="c1badcd32070c7fbcf0be40056c71bbc71ffeda0a56b4e5b31b1e1c98a813173" date="2025-09-25"/>
+	</game>
+	<game name="E.T. The Extra-Terrestrial (World) (Aftermarket) (Unl)" id="0231">
+		<description>E.T. The Extra-Terrestrial (World) (Aftermarket) (Unl)</description>
+		<rom name="E.T. The Extra-Terrestrial (World) (Aftermarket) (Unl).rom" size="89168" crc="1b850d3d" md5="37a0027454fa72d85ec3d4906e0f6e36" sha1="fe162cf66d5127ace4fa642d97affecd11c44e14" sha256="c084815d84a3425d3c7acfe20297b804ae291122ea7fe4f3241dc4dff6397c73" date="2025-09-25"/>
+		<rom name="E.T. The Extra-Terrestrial (World) (Aftermarket) (Unl).bin" size="89088" crc="f6db8f7c" md5="6ccdc15ede219a52210436273c66827e" sha1="2f9f68de4360cf1bc140a8c2bd65697622d5ff6c" sha256="2e56d42805712ebb26a50cc4ac093d9af1ff554bbe4f5fb9bc103548d5eb57e3" date="2025-09-25"/>
+	</game>
+	<game name="Fantasy Puzzle (World) (Aftermarket) (Unl)" id="0232">
+		<description>Fantasy Puzzle (World) (Aftermarket) (Unl)</description>
+		<rom name="Fantasy Puzzle (World) (Aftermarket) (Unl).bin" size="81408" crc="fe1087f3" md5="08042c041e52f809d06bdcd8e43484ba" sha1="ffbbd3d1960bdf3bff61b2199cddb4c73dda2eef" sha256="5cc34e585376acdec4b2b63ecaed776553a73db0f72ccb0a15be5b6ec8ced214" date="2025-09-25"/>
+	</game>
+	<game name="Fox's Quest (World) (Aftermarket) (Unl)" id="0233">
+		<description>Fox's Quest (World) (Aftermarket) (Unl)</description>
+		<rom name="Fox's Quest (World) (Aftermarket) (Unl).rom" size="42053" crc="b28925ec" md5="220058ade084f2a0868795a0bb894bac" sha1="858256c823fa460c927b517130b149a01a46ec82" sha256="76a16536c133935cada5501acdb5709bb514d59ce9e3050779f0dca60a971220" date="2025-09-25"/>
+		<rom name="Fox's Quest (World) (Aftermarket) (Unl).bin" size="41984" crc="7eeb5831" md5="ae7d632e5efdd9727fbe8b60b03a3597" sha1="cc5efa78f37b3c4680c8da4993200e379f0e281f" sha256="81e83894401f79ff871e9513ba0a072272f55122af5a2937a0c3089397441263" date="2025-09-25"/>
+	</game>
+	<game name="FW Diagnostics (World) (Aftermarket) (Unl)" id="0234">
+		<description>FW Diagnostics (World) (Aftermarket) (Unl)</description>
+		<rom name="FW Diagnostics (World) (Aftermarket) (Unl).rom" size="64592" crc="69adbba6" md5="3cad6ee189d5a28eb6fbc830a1398124" sha1="3b687a042740b35f0c523c2267562f1309c6529f" sha256="b815863ac7bd79e3b21d3a063ef59aaec7be0e456eda03efad86723ec77e8761" date="2025-09-25"/>
+		<rom name="FW Diagnostics (World) (Aftermarket) (Unl).bin" size="63018" crc="fd59fe5d" md5="9b75f8a01d210b1a961424e202a1c5be" sha1="d2bd450d223043860f505d8f32d5d41c5a8e6e68" sha256="974f41424ed8c620e3621a620175218adc21460ca228173605a4fc59e450a8ad" date="2025-09-25"/>
+	</game>
+	<game name="GoatNom (World) (Aftermarket) (Unl)" id="0235">
+		<description>GoatNom (World) (Aftermarket) (Unl)</description>
+		<rom name="GoatNom (World) (Aftermarket) (Unl).rom" size="30792" crc="99e7b4fc" md5="22d8595825e3dfb5a406d5bbb0c32f35" sha1="b11a6783c5d3e1cad686852ca55d04a17f373447" sha256="7ce99b7b67032789701cb4722ff9d0893c35554c23c5ae4fa0a7aff3fbe311ee" date="2025-09-25"/>
+		<rom name="GoatNom (World) (Aftermarket) (Unl).bin" size="29372" crc="d7e7e7be" md5="5b56d64065f13944c3ed7fa34b5e371c" sha1="f05a012c729ff6766821c4356c651e1775ef095d" sha256="ce795cc577b1a32acf427156273999cedebcfde61af10a27aaceb2a8616b8102" date="2025-09-25"/>
+	</game>
+	<game name="Gooninuff, The (World) (Aftermarket) (Unl)" id="0236">
+		<description>Gooninuff, The (World) (Aftermarket) (Unl)</description>
+		<rom name="Gooninuff, The (World) (Aftermarket) (Unl).rom" size="84044" crc="71c2c0bf" md5="783d44f600541ed9ee4471f263cacde0" sha1="f2f28a9f4c084a2037e3b7c34d5eb071078e5cb0" sha256="fb43e33969166a4d4540e53366639426292f24e75daa31db8d37a01d209e568d" date="2025-09-25"/>
+	</game>
+	<game name="Grail of the Gods (World) (Aftermarket) (Unl)" id="0237">
+		<description>Grail of the Gods (World) (Aftermarket) (Unl)</description>
+		<rom name="Grail of the Gods (World) (Aftermarket) (Unl).rom" size="37958" crc="be70300b" md5="ae91ce111aa461c2c37d57da19c9e240" sha1="da8e1f4dafd4df73bb0eb9bae7bb5faa493ed636" sha256="05f944a608a958ea5ea3b3dc672f12a4416956f2c98dda4eb46cab71c0486c7a" date="2025-09-25"/>
+		<rom name="Grail of the Gods (World) (Aftermarket) (Unl).bin" size="37888" crc="7d888c87" md5="d0c918b3f2c67fc900a3f3343242fdef" sha1="693cba10f797c8ef4a7fff806ce416857a17f601" sha256="374cf04ab77215b9f926dbc9e92d6227d4abdb14f20e323c6d5dd0d855833356" date="2025-09-25"/>
+	</game>
+	<game name="H.E.L.I. (World) (Aftermarket) (Unl)" id="0238">
+		<description>H.E.L.I. (World) (Aftermarket) (Unl)</description>
+		<rom name="H.E.L.I. (World) (Aftermarket) (Unl).rom" size="85061" crc="906989e2" md5="7c4081e6f24a0034ae4a47bf6dcf2b42" sha1="edb8aab5e4a4b7bd678350bd5fe04616dcd018ea" sha256="2a13684f60245a349e837c6091e1aad3b4335a3276ff89211795fd846380ee02" date="2025-09-25"/>
+	</game>
+	<game name="Hotel Bunny (World) (Aftermarket) (Unl)" id="0239">
+		<description>Hotel Bunny (World) (Aftermarket) (Unl)</description>
+		<rom name="Hotel Bunny (World) (Aftermarket) (Unl).rom" size="11321" crc="e55546fb" md5="96c495aebf26da578fcc54ec412d2632" sha1="4a77f9f5bc68f6a83f6ca7ec0f8a14a0502cf041" sha256="4dd15319d230766a2da2c208333cd3135d2e5be6b8702bb680fa6e5459460d3e" date="2025-09-25"/>
+		<rom name="Hotel Bunny (World) (Aftermarket) (Unl).bin" size="11264" crc="1d20ef50" md5="c28e3676b1b65236896ab5847e802307" sha1="a5d17e2544f91ef51d6c53d4cf76df892609150c" sha256="234b0a4fa6094b32d148ba9f39923d697c4c9dc59413c8a9b3c1428538e9ece9" date="2025-09-25"/>
+	</game>
+	<game name="Jr. Pac-Man (World) (Aftermarket) (Unl)" id="0240">
+		<description>Jr. Pac-Man (World) (Aftermarket) (Unl)</description>
+		<rom name="Jr. Pac-Man (World) (Aftermarket) (Unl).rom" size="72777" crc="613e109b" md5="0ad8835254cba21bd33664edd0f90992" sha1="7b7c9709ef972ab9ab43f970da187b15f3bb1ae6" sha256="336c6cc2f7d1cbd1a1e945f20da70d522970a329ab65d54e80b7762a13ed2b29" date="2025-09-25"/>
+		<rom name="Jr. Pac-Man (World) (Aftermarket) (Unl).bin" size="72704" crc="fcec96e6" md5="801ea9279d93de097834df5894244614" sha1="b1954faac5d577e13ce5c9565416df9d880851cf" sha256="3ae7b5a933bb1b6ba328a797a34b1fbffe370c03030602d74be2e69b2a397c6d" date="2025-09-25"/>
+	</game>
+	<game name="Jumpking Junior (World) (Aftermarket) (Unl)" id="0241">
+		<description>Jumpking Junior (World) (Aftermarket) (Unl)</description>
+		<rom name="Jumpking Junior (World) (Aftermarket) (Unl).rom" size="49221" crc="c412dcde" md5="400c47727c0b6eb2464dc208b733b54d" sha1="822a28228909b7dd3e4b26d2478b3aa9c258f675" sha256="b77ab4688b29eff3992f3b866798b71ee36ebd10a00784ee749cc7c3f5ce2733" date="2025-09-25"/>
+		<rom name="Jumpking Junior (World) (Aftermarket) (Unl).bin" size="49152" crc="bd96edfb" md5="6675ec800683a67806b6c886bfc8ad21" sha1="c67b0d25c230d6b27921f87e24a6cab649462694" sha256="30a5690ad006a5138d8bc215e67cce93429b52bbfcf3df0377217d41f676e323" date="2025-09-25"/>
+	</game>
+	<game name="Laser Sharks (World) (Aftermarket) (Unl)" id="0242">
+		<description>Laser Sharks (World) (Aftermarket) (Unl)</description>
+		<rom name="Laser Sharks (World) (Aftermarket) (Unl).rom" size="49213" crc="6fa5cff8" md5="5833b48c7232b76a60c39224859bdafe" sha1="2923889aa6b6c7ec30ab5e6a4b496ed3ce608743" sha256="f450b4129e6a99a11eef2dcbfb062e6fdd8968fbba02bfce9a8c0d984efc6158" date="2025-09-25"/>
+		<rom name="Laser Sharks (World) (Aftermarket) (Unl).bin" size="49152" crc="647378a6" md5="81e7cde44a4a67b3d3475070136030d3" sha1="43f724a3dc9cc91f47f1e2fbd0367d0d6e220b13" sha256="9c373f3b9e36fcdaa91c0bbea245ee94525d442c92826c7ef046c1f12bbc6c4b" date="2025-09-25"/>
+	</game>
+	<game name="Lode Runner (World) (Aftermarket) (Unl)" id="0243">
+		<description>Lode Runner (World) (Aftermarket) (Unl)</description>
+		<rom name="Lode Runner (World) (Aftermarket) (Unl).rom" size="35402" crc="18ec189d" md5="f46fbf24340fc0edfd7c031b41806367" sha1="c5f0ff722bfe28accaeb6c04bfa1407e95d111dd" sha256="49ea66f598b76f203d3c1760ac8690e1a9ad3d020cfeef2d3e27edbd5939acef" date="2025-09-25"/>
+		<rom name="Lode Runner (World) (Aftermarket) (Unl).bin" size="35328" crc="56336ce7" md5="1616753e3031bf9d3d0ea081dbb1536e" sha1="6db64585c51a5f10a9515c335661ac79371e0e04" sha256="f50e0dfab6f86a9cba515525150eda091617c54ba97c2197ea28115679af4939" date="2025-09-25"/>
+	</game>
+	<game name="Maria (World) (Aftermarket) (Unl)" id="0244">
+		<description>Maria (World) (Aftermarket) (Unl)</description>
+		<rom name="Maria (World) (Aftermarket) (Unl).bin" size="84480" crc="a7ae1e65" md5="34c0a973f183628a58b64478f87ad96a" sha1="59b7edd9d85a469d08129d057a3a9632bae2d33f" sha256="2b033d7207b38c4b962d2dcea500804b1d63cfed0fbbaa9f7602f4c8f6a53550" date="2025-09-25"/>
+	</game>
+	<game name="Missile Domination (World) (Aftermarket) (Unl)" id="0245">
+		<description>Missile Domination (World) (Aftermarket) (Unl)</description>
+		<rom name="Missile Domination (World) (Aftermarket) (Unl).rom" size="29761" crc="ec2e2320" md5="fc420b5adfdf50d76c779b7e6f4900d6" sha1="f1d1b57696c99a36cb7302442db58d5f75b94fe7" sha256="e4c87792b964a315f40fe96f17f047de5cb157c45b00545b57dca907829e1261" date="2025-09-25"/>
+		<rom name="Missile Domination (World) (Aftermarket) (Unl).bin" size="29696" crc="36171a50" md5="d44140eb3cc1c0150d7f3830be9f2fa8" sha1="42cfe6423225dcc30206f8f1953e549ca599c657" sha256="49061b1b2cf84500dba94e4873b51600840ad5549083242eb5e002fd5abcaadc" date="2025-09-25"/>
+	</game>
+	<game name="Missile Domination DX (World) (Aftermarket) (Unl)" id="0246">
+		<description>Missile Domination DX (World) (Aftermarket) (Unl)</description>
+		<rom name="Missile Domination DX (World) (Aftermarket) (Unl).rom" size="33857" crc="64d5cb31" md5="b78b8809bc6695d9f657589ccf1ca1ec" sha1="f9aaebf2730d12fca52f3472dc6fc6447aa12630" sha256="924bb0310c7dab1fcd96e5d4a77fbc66dc38f63c35d13acf02951bf944b2342a" date="2025-09-25"/>
+		<rom name="Missile Domination DX (World) (Aftermarket) (Unl).bin" size="33792" crc="fac8f0fe" md5="b2919b6379b8977d1a90940d4360e63c" sha1="4cd7c7fdd37ab2e60be09d9cd9e92e75e4c6287c" sha256="283bbec68ccb08258d0cdb26dc3b442de53347e25a1f031fb2654f825214c03c" date="2025-09-25"/>
+	</game>
+	<game name="Moon Blast (World) (Aftermarket) (Unl)" id="0247">
+		<description>Moon Blast (World) (Aftermarket) (Unl)</description>
+		<rom name="Moon Blast (World) (Aftermarket) (Unl).rom" size="34369" crc="b229d5c7" md5="d9b6d0d28c9f3f20ef13bd3b365c58e7" sha1="2d68cbf33043e3176aa33359b782d7cfd396919e" sha256="33b23bdfbf921e3f5cf74bdcd9bec5750c768a9ca5b2eb76c382129aa6e6d51a" date="2025-09-25"/>
+		<rom name="Moon Blast (World) (Aftermarket) (Unl).bin" size="34304" crc="26642b16" md5="8cc820e7e56a6e8cbb0b2c71436f6800" sha1="ee0f90d2c414462f9ccaffd364af4158d950529a" sha256="de9aa76da0cee398c37570cdc19cc469fd16fa2ec1b41ecca20b1b36b1943770" date="2025-09-25"/>
+	</game>
+	<game name="Onion (World) (Aftermarket) (Unl)" id="0250">
+		<description>Onion (World) (Aftermarket) (Unl)</description>
+		<rom name="Onion (World) (Aftermarket) (Unl).bin" size="416954" crc="a1b83fdb" md5="836b46ac3cd6d7c651dd7ac0c3a004f2" sha1="a051d6e581c3b959c23356268db0e1d02e5615e5" sha256="226f8b3b9cd33f3acbad85f12c6bd2867772d33d24e18c46c52a18f83f4e48a3" date="2025-09-25"/>
+	</game>
+	<game name="Oregon Bound (World) (Aftermarket) (Unl)" id="0252">
+		<description>Oregon Bound (World) (Aftermarket) (Unl)</description>
+		<rom name="Oregon Bound (World) (Aftermarket) (Unl).rom" size="90188" crc="88426823" md5="0f92331c755659006839de4c2fe330c9" sha1="3dba4fa7c460de44c979f884553ca3acfee4f101" sha256="851871d7d526d51390a89ac1fbdec6159071fb2fad9dac090486d6b7c20320f9" date="2025-09-25"/>
+		<rom name="Oregon Bound (World) (Aftermarket) (Unl).bin" size="90112" crc="f1791ae4" md5="01018ae5d5154fef838b51969fa5d53e" sha1="aa2cd1ff5aa4debcb906a0d78a728e8378d3bfc1" sha256="dd1c44dc7fd6db1d2b24decec06de8ac589a0089a2b3625d536ab08bab3c8550" date="2025-09-25"/>
+	</game>
+	<game name="Parsec (World) (Aftermarket) (Unl)" id="0253">
+		<description>Parsec (World) (Aftermarket) (Unl)</description>
+		<rom name="Parsec (World) (Aftermarket) (Unl).rom" size="48716" crc="9c592813" md5="38aabd14fd02bde43a585156ac6ee4d0" sha1="e461256fa6ce64f8bfd5ae9cdf0ec89534a49095" sha256="3f9cb1509d802ad98b21135a2a11be1fb51ed774b5854dc62903fd503f86d253" date="2025-09-25"/>
+		<rom name="Parsec (World) (Aftermarket) (Unl).bin" size="48640" crc="8cff3602" md5="99aa067d01ae282a8ea9e624cbc14e03" sha1="9c75002c73fa058cbabf213d5f918479a7440771" sha256="5b71ab5256535968a50433e4d0e2eb9258571648ecdf198fd5b051236c8e4fe9" date="2025-09-25"/>
+	</game>
+	<game name="Penguin Land (World) (Aftermarket) (Unl)" id="0254">
+		<description>Penguin Land (World) (Aftermarket) (Unl)</description>
+		<rom name="Penguin Land (World) (Aftermarket) (Unl).rom" size="77904" crc="1a7aac88" md5="d0131d2e481f9393c55b9701ae026860" sha1="7501a4e9ff61de3b51e7af0be72941022f14b041" sha256="a6985dc6bb1e2bb2e0fa35c40c2a067191f09a0240c4745516e5ddeb87078844" date="2025-09-25"/>
+		<rom name="Penguin Land (World) (Aftermarket) (Unl).bin" size="75904" crc="d7bba156" md5="66ffe6c47daa447295d2c93f72e7bb29" sha1="f6498bb15f8b0aadc86a6c43828c707056c0f2ac" sha256="a29df1f7517fddc59d9880cca528cb8ba0cf06fee7fd415d9662788eb7df4ffc" date="2025-09-25"/>
+	</game>
+	<game name="Pitfall II - Lost Caverns (World) (Aftermarket) (Unl)" id="0255">
+		<description>Pitfall II - Lost Caverns (World) (Aftermarket) (Unl)</description>
+		<rom name="Pitfall II - Lost Caverns (World) (Aftermarket) (Unl).rom" size="89168" crc="cd792e9e" md5="ef6d6b82f25f134c8cef5c0b5c4d8efc" sha1="81de194dfc470a9ccee39e440c21b4f8598d082a" sha256="cd5b8a517cf07d41d0eef50a8c77799aca2bcf6b6c2c4a2eb4266c5c431b56a1" date="2025-09-25"/>
+		<rom name="Pitfall II - Lost Caverns (World) (Aftermarket) (Unl).bin" size="89088" crc="ef098108" md5="51b5e360ae705f4b32e1447c9cea3e9e" sha1="ec54c6710cc5c711b270e49cb8880ddf0051e11d" sha256="a7665be3c977b938e99b2604a22fc8342d2ea60dbf18cb2b4dfc7fc2103fc00c" date="2025-09-25"/>
+	</game>
+	<game name="Pitfall III - Return to the Caverns (World) (Aftermarket) (Unl)" id="0256">
+		<description>Pitfall III - Return to the Caverns (World) (Aftermarket) (Unl)</description>
+		<rom name="Pitfall III - Return to the Caverns (World) (Aftermarket) (Unl).rom" size="44620" crc="1045e742" md5="98b36756b986e7b2aff9abc8b7062b6e" sha1="f341e552e054d60e232339e7497ee239b899726b" sha256="b87630435c6db661452e1e96de5224ef5ceecc2cd3f09fee231c0cd3d6cea93b" date="2025-09-25"/>
+		<rom name="Pitfall III - Return to the Caverns (World) (Aftermarket) (Unl).bin" size="44544" crc="f82291eb" md5="933b88f5f52bd0cfa374f932ffb41799" sha1="06d9be193870a5b439b8673aa156fd13adab003f" sha256="ef2d64382ba9063d8998d73208eb81ab36b0dd439966bfd0fa71372f631edb9a" date="2025-09-25"/>
+	</game>
+	<game name="Poker Risque (World) (Aftermarket) (Unl)" id="0257">
+		<description>Poker Risque (World) (Aftermarket) (Unl)</description>
+		<rom name="Poker Risque (World) (Aftermarket) (Unl).rom" size="46145" crc="0cf06519" md5="0a0a35aee0b6155ac009cae75e004cda" sha1="5d06284636076f14f596118316f4adc21965a232" sha256="b1ff94c444cd62dc7ffadcc879a37dfb5eada41f48c909fd2b209d8c94a328cc" date="2025-09-25"/>
+		<rom name="Poker Risque (World) (Aftermarket) (Unl).bin" size="46080" crc="53f852a5" md5="e7341ae50de05aa45cd4b6ce824024f4" sha1="b08b7a905c1380ef21900f134833701879a80541" sha256="54712bbea8a3b10de29072694a02d0757ceabc5617fdd23f3e3db96d0fe59105" date="2025-09-25"/>
+	</game>
+	<game name="Pyramid Warp (World) (Aftermarket) (Unl)" id="0258">
+		<description>Pyramid Warp (World) (Aftermarket) (Unl)</description>
+		<rom name="Pyramid Warp (World) (Aftermarket) (Unl).rom" size="44628" crc="07293ba8" md5="c37ede8b9c9579bec62b9ca62cd033c5" sha1="945ad9d51c7bf123463be1df6baf7114c681ae51" sha256="77c8d01fa25f589cb63166d53265155401482888818ccb3b78d7fa4de926f1db" date="2025-09-25"/>
+		<rom name="Pyramid Warp (World) (Aftermarket) (Unl).bin" size="44544" crc="69ef7202" md5="2e474766a72974a78a2a2dc9d6525488" sha1="f79492156ae58890eff747c0c98b49b614b84beb" sha256="8b83af0f7f9fa60109ff0d17e431372350faa1b36bf3340e6a06adf7dc9be698" date="2025-09-25"/>
+	</game>
+	<game name="Quarteto Brasileiro (World) (Aftermarket) (Unl)" id="0259">
+		<description>Quarteto Brasileiro (World) (Aftermarket) (Unl)</description>
+		<rom name="Quarteto Brasileiro (World) (Aftermarket) (Unl) (English Version).bin" size="184014" crc="f2c2aef3" md5="1c69c05d45ce1e5be7dc0a0bd78c2e18" sha1="f20b559c217b7d233e7180f10b83b4ea2304400c" sha256="d36c884854e99e2ab83454d252dd46508ff823ed502b50f185544816a637e678" date="2025-09-25"/>
+		<rom name="Quarteto Brasileiro (World) (Aftermarket) (Unl) (Portuguese Version).bin" size="209032" crc="54f3d8a4" md5="0c7080d3df0a3d8e783bcfecc4089ffb" sha1="a7f3075d028e5b6320645e5e0bfcbb7126accc8e" sha256="e2e63e6ef2a1862c6939e496961c45165f7dc383a88d1878e72723bc098a5705" date="2025-09-25"/>
+	</game>
+	<game name="Raiders of the Lost Ark (World) (Aftermarket) (Unl)" id="0260">
+		<description>Raiders of the Lost Ark (World) (Aftermarket) (Unl)</description>
+		<rom name="Raiders of the Lost Ark (World) (Aftermarket) (Unl).rom" size="59988" crc="bea60a31" md5="0540bb9195830b1f52baf6262926881d" sha1="da05af959ef5dd6272029f15c8438dc1c70baba4" sha256="ee263d6c5f46ac36e4dd98df56a8eb329ce45ed835609760e774d9fbaab67b6c" date="2025-09-25"/>
+		<rom name="Raiders of the Lost Ark (World) (Aftermarket) (Unl).bin" size="59904" crc="bdd0c48e" md5="da7809b6cbed075d5f1ace3cfcc1a44a" sha1="5790e9298925f380634e9508fdcddbf08d559163" sha256="27d171bd33cfa3ab619d269a9abd0a8662329d30ed836594aee8be386a395768" date="2025-09-25"/>
+	</game>
+	<game name="Road Fighter (World) (Aftermarket) (Unl)" id="0261">
+		<description>Road Fighter (World) (Aftermarket) (Unl)</description>
+		<rom name="Road Fighter (World) (Aftermarket) (Unl).bin" size="228600" crc="2ed0a8a4" md5="08c042a16dbc4c20d0d991410b1c9ac2" sha1="40d16adad163deb4ef39a7d43350b38fbc942b00" sha256="4847cdbbe492241e670756fe1793963b85f5de13b00896389d457a9cf3d9b4cf" date="2025-09-25"/>
+	</game>
+	<game name="Sea Venture (World) (Aftermarket) (Unl)" id="0262">
+		<description>Sea Venture (World) (Aftermarket) (Unl)</description>
+		<rom name="Sea Venture (World) (Aftermarket) (Unl).rom" size="48712" crc="6071dca7" md5="13687c1d898d8aac2be60f328a9f3e33" sha1="3783d6e67ef742f029579e62eb5c3169deade029" sha256="ccda743e474eeac45817a13f8f989fce00ce39694dba06c8c68607eb4467ca0f" date="2025-09-25"/>
+		<rom name="Sea Venture (World) (Aftermarket) (Unl).bin" size="48640" crc="42966c84" md5="2ea50c3c7df79ff43120a176bbad208c" sha1="3a413218ecb0845d117e77502f733632489d2a41" sha256="ae8707c4cd0775cbba2c190bcb935ca3af95a6b80db0cb83d92a14e6a2da4a16" date="2025-09-25"/>
+	</game>
+	<game name="Show Must Go On, The (World) (Aftermarket) (Unl)" id="0265">
+		<description>Show Must Go On, The (World) (Aftermarket) (Unl)</description>
+		<rom name="Show Must Go On, The (World) (Aftermarket) (Unl).rom" size="66644" crc="b7923858" md5="d9fe4dd2ad87069c4023acc0724884e4" sha1="629a2c45829fe2b2dd9fece77c6504eac4f70c45" sha256="911702cd8f5633bcf4d93f08464ec1e474b33d44c35f66c1e3b2dde3c92c9582" date="2025-09-25"/>
+		<rom name="Show Must Go On, The (World) (Aftermarket) (Unl).bin" size="65096" crc="b00156ae" md5="174b26a0e0af9402d1969f58a237252a" sha1="d2576864fa73f01eec2cb26b5bf5d1e625388357" sha256="7dd31466152f543162a29bb3b7e2d245ed0a8d84799d64206eab748bbb9864c0" date="2025-09-25"/>
+	</game>
+	<game name="Space Bandits (World) (Aftermarket) (Unl)" id="0263">
+		<description>Space Bandits (World) (Aftermarket) (Unl)</description>
+		<rom name="Space Bandits (World) (Aftermarket) (Unl).rom" size="35400" crc="600b38d3" md5="affa171657c0137a4079f3b8c2ffb20e" sha1="7f7e64d63ec2595af2203fc15353d4ff35069b7e" sha256="6349b126bfaed3582b4783c3f7ad525e95597ca410da8f9fcb73325e1911b63b" date="2025-09-25"/>
+		<rom name="Space Bandits (World) (Aftermarket) (Unl).bin" size="35328" crc="11578595" md5="7d9cc8d076adb3149f636c502e8e929c" sha1="3e6e64d502027025d138035c186c5d6fed396131" sha256="4c42d104b37aa2c19f01a7eb479e5267a93c7de4e613fb008c433fb157aedced" date="2025-09-25"/>
+	</game>
+	<game name="Space Panic (World) (Aftermarket) (Unl)" id="0264">
+		<description>Space Panic (World) (Aftermarket) (Unl)</description>
+		<rom name="Space Panic (World) (Aftermarket) (Unl).rom" size="38469" crc="cf39471a" md5="0caf07e2f3f80df033b65a2affa164bc" sha1="797f308c385a1bcf24033c25397e5e0640d1e81a" sha256="338e8fa31c812b84df6376546b3ce96bca6d8fab68208276eb94cd7fc0e20fc9" date="2025-09-25"/>
+		<rom name="Space Panic (World) (Aftermarket) (Unl).bin" size="38400" crc="191b74b9" md5="9507fd73f0db4cfdde3ed0d7eeb70e4e" sha1="60fc17a83c54195bfa39550249040467b21a15e4" sha256="89806cd075147bac1955d4bb9022abef2aa87258b199cf45a4c28581563bf826" date="2025-09-25"/>
+	</game>
+	<game name="Striker Super Pro Bowling (World) (Aftermarket) (Unl)" id="0276">
+		<description>Striker Super Pro Bowling (World) (Aftermarket) (Unl)</description>
+		<rom name="Striker Super Pro Bowling (World) (Aftermarket) (Unl).rom" size="16441" crc="d5949447" md5="1ff766faa76c78f59ade5f00b50501bf" sha1="723e2a7c26c339ef6a30b0d6e0fc5043d4fdf133" sha256="0ae344e6d879b3df97a7d4d763fe646c12085c5ca53563bf73008da70c513e5d" date="2025-09-25"/>
+		<rom name="Striker Super Pro Bowling (World) (Aftermarket) (Unl).bin" size="16384" crc="f8e09e8a" md5="a91a2a485a613844eab29e7e423ecda8" sha1="b83a9ffe07fae9a94eb6c1a67a283882f96124eb" sha256="d1adca936287cbca611e45e9377e86848e51e00304e7d7c7c7bc6fc669491d52" date="2025-09-25"/>
+	</game>
+	<game name="Super Chef BurgerTime (World) (Aftermarket) (Unl)" id="0273">
+		<description>Super Chef BurgerTime (World) (Aftermarket) (Unl)</description>
+		<rom name="Super Chef BurgerTime (World) (Aftermarket) (Unl).rom" size="41021" crc="0cba0677" md5="35bda653adbf4bc0ad91929aa6dc2750" sha1="bd8924b85f5e4c78c392e3d5e088ae78e2f8b251" sha256="b7704b0d353c321ee362201322cfdd9c83f9bb2f0b4c7f0d87065c4b00b46e07" date="2025-09-25"/>
+		<rom name="Super Chef BurgerTime (World) (Aftermarket) (Unl).bin" size="40960" crc="9ba99f2e" md5="184cf465625c9de1922a0e1f7182a58f" sha1="2985b63f527dc7af357e2f41ec0f2feefb75b9ff" sha256="36ae9fcc3ff3b0a3351e0bff90150857d619868d8ac2130fdb69694344845c94" date="2025-09-25"/>
+	</game>
+	<game name="Super Pro Auto Racing (World) (Aftermarket) (Unl)" id="0270">
+		<description>Super Pro Auto Racing (World) (Aftermarket) (Unl)</description>
+		<rom name="Super Pro Auto Racing (World) (Aftermarket) (Unl).rom" size="16441" crc="2c2af459" md5="c3b0443a3ae997c95f30b18cef04f556" sha1="f07432fe343a40fd1fbb0bf68560b3bc057d7304" sha256="c5affd9bfd5d45957d31ff076f4433ea026daa723f904834fa2fc2091af372e6" date="2025-09-25"/>
+		<rom name="Super Pro Auto Racing (World) (Aftermarket) (Unl).bin" size="16384" crc="51b6512a" md5="cb47f33b6a2c35d13ded6408fcea1e2b" sha1="d89b2a2420ce17d8420ff869ae1399834c9ef38c" sha256="f7095d6cdd02342388004201a6df080f4a3f63e620d73aedd2b8e26903eb4ffb" date="2025-09-25"/>
+	</game>
+	<game name="Super Pro Backgammon (World) (Aftermarket) (Unl)" id="0272">
+		<description>Super Pro Backgammon (World) (Aftermarket) (Unl)</description>
+		<rom name="Super Pro Backgammon (World) (Aftermarket) (Unl).rom" size="16441" crc="fd6f8acd" md5="7ac2b605de086b6b2c81baa1a1db95e1" sha1="c1dc71b12162793a75f06d5e3c6200f65426faba" sha256="724371c2822f32f96cfdeebd56de3c0b8fd6fedeeeec56c32d7a31d432a85922" date="2025-09-25"/>
+		<rom name="Super Pro Backgammon (World) (Aftermarket) (Unl).bin" size="16384" crc="0bb33e88" md5="d42ca9ed1a126ba4e8079fd7d86f7a88" sha1="0f46a941890aca532f96174f72afdbe8f5371ae3" sha256="8cc8b5526d7b36d5bf98d286a371313bb4292f93fddafd7357be03db490b58f9" date="2025-09-25"/>
+	</game>
+	<game name="Super Pro Baseball (World) (Aftermarket) (Unl)" id="0277">
+		<description>Super Pro Baseball (World) (Aftermarket) (Unl)</description>
+		<rom name="Super Pro Baseball (World) (Aftermarket) (Unl).rom" size="24637" crc="650fc1b4" md5="6bcaedee4c7629b862460595ee53e838" sha1="0e042ecf3fa406b8dacabc634bbf548983c5dbff" sha256="b77884920d965fc2f2291c707a0af5e30b0e28daacabdc1ba1e15453340dc3f6" date="2025-09-25"/>
+		<rom name="Super Pro Baseball (World) (Aftermarket) (Unl).bin" size="24576" crc="a6907505" md5="a248383b091c99ce1df7877237061a6e" sha1="7070bdb9c2023242d390415fde2ca6fe91fb2476" sha256="5845e4fd8b4b2c4d6636fff3523e4d998104fc230b94d89c9d3452cd74c4f153" date="2025-09-25"/>
+	</game>
+	<game name="Super Pro Beauty and the Beast (World) (Aftermarket) (Unl)" id="0278">
+		<description>Super Pro Beauty and the Beast (World) (Aftermarket) (Unl)</description>
+		<rom name="Super Pro Beauty and the Beast (World) (Aftermarket) (Unl).rom" size="20537" crc="89e53bf5" md5="e93abba411ce730e463e0630d56f4725" sha1="049f5b6858830854f4d8328350abba1b294a6cd4" sha256="6007ae65c41da6e68549195b49e21ba81d3ab33bbd90c0f04408869eccea5273" date="2025-09-25"/>
+		<rom name="Super Pro Beauty and the Beast (World) (Aftermarket) (Unl).bin" size="20480" crc="26f070ac" md5="79f97e2c618ca57d6d96e4d34b4ef69d" sha1="b66c4d9e32fa436acd6a625c792efdeaba86edb1" sha256="1fcd771da9899e2697b47c001669267c12c7e5b148dbe89224340b9a515039c6" date="2025-09-25"/>
+	</game>
+	<game name="Super Pro Bomb Squad (World) (Aftermarket) (Unl)" id="0279">
+		<description>Super Pro Bomb Squad (World) (Aftermarket) (Unl)</description>
+		<rom name="Super Pro Bomb Squad (World) (Aftermarket) (Unl) (INTV1 Version).rom" size="32833" crc="edc56c4a" md5="98c268d9c250a94ebbeae5dcc77a87f5" sha1="56314c458c8f433d5da3791e3e2c19a4d2ba3cdd" sha256="bf193ee9fd914e8a4d34aa78728760acd3eba1b2a0595e952c7d3a2bc54b7c15" date="2025-09-25"/>
+		<rom name="Super Pro Bomb Squad (World) (Aftermarket) (Unl) (Emulation Version).rom" size="32833" crc="bd194bd2" md5="3534648cad3a9dc0a54fe5b9063e8602" sha1="62da8cce9c806c5e86bc604ee159b41e82a25bff" sha256="edc68350a146a4181ae6b9c7317b480cf7b3873d1cf162b7a234b9f444284464" date="2025-09-25"/>
+		<rom name="Super Pro Bomb Squad (World) (Aftermarket) (Unl).bin" size="32768" crc="a9c08e9f" md5="de55b3535f22ecb01d3765e4b91fcdae" sha1="f6fa7af5d7dccb424fa500bcf4e63039be484f17" sha256="2e85d6502e3f3611166c5ffa0740dc1182230930760e37085277161a2747f7c7" date="2025-09-25"/>
+	</game>
+	<game name="Super Pro Boxing (World) (Aftermarket) (Unl)" id="0275">
+		<description>Super Pro Boxing (World) (Aftermarket) (Unl)</description>
+		<rom name="Super Pro Boxing (World) (Aftermarket) (Unl).rom" size="16441" crc="b865d598" md5="714eb76c4352d18eca764c1f441c73d3" sha1="b9c10d63f62c756d5f026b146d9bb94d148da71a" sha256="7ead1e994cd94f89d07c3a8a4f83301c49ef2c533520b8ddc8b7596d5e566052" date="2025-09-25"/>
+		<rom name="Super Pro Boxing (World) (Aftermarket) (Unl).bin" size="16384" crc="70e7f6a1" md5="f6f44f33ce68b805ff4ac94c42870eb3" sha1="d27fa0dc2713cc3b0e25294556edfcc2a9736269" sha256="a400bb4186ca2a57ba657f720129e48541d137b7fa7d55b984d60729e7ad6efe" date="2025-09-25"/>
+	</game>
+	<game name="Super Pro Bump-n-Jump (World) (Aftermarket) (Unl)" id="0274">
+		<description>Super Pro Bump-n-Jump (World) (Aftermarket) (Unl)</description>
+		<rom name="Super Pro Bump-n-Jump (World) (Aftermarket) (Unl).rom" size="41029" crc="6a5a2a27" md5="cc94c07bd474580fd4e729d0f127b970" sha1="714604c8e0be9433e99b527b7ab286b249757978" sha256="2f78f8da4fb97e142af284ad5caf9451994aca3116d061da5fa861e68f81db9d" date="2025-09-25"/>
+		<rom name="Super Pro Bump-n-Jump (World) (Aftermarket) (Unl).bin" size="40960" crc="c68cec2d" md5="7c7c9a11f1f50d8768983bffb2bd5a77" sha1="dff0f8f884c34216bb9a2c3abcb348c83586afc5" sha256="40153a29fa0e4a07071b6f0cae51df7aea69243448896da2ab02d91f40062be0" date="2025-09-25"/>
+	</game>
+	<game name="Ultimate Pong (World) (Aftermarket) (Unl)" id="0267">
+		<description>Ultimate Pong (World) (Aftermarket) (Unl)</description>
+		<rom name="Ultimate Pong (World) (Aftermarket) (Unl).rom" size="58437" crc="6b8e956c" md5="259b47fc039f56d17fa660d94b47c331" sha1="077e94baf30c55fca233b3a99e6dcc0cef1574d1" sha256="a563ae5177fa82b910e2e603fea1b264f042900702149330adc39e6de339a9be" date="2025-09-25"/>
+		<rom name="Ultimate Pong (World) (Aftermarket) (Unl).bin" size="57856" crc="a486b369" md5="92beb7b2e8e3488c2b75d512cac7e532" sha1="2a08fb0d8d6a12153b0b92abf8ec064cbb48eaa6" sha256="5bdcca330c9e3872f003a50fa46ac61ad214fd6e33b66ca2910f58ecef4f37a8" date="2025-09-25"/>
+	</game>
+	<game name="Vanguard (World) (Aftermarket) (Unl)" id="0268">
+		<description>Vanguard (World) (Aftermarket) (Unl)</description>
+		<rom name="Vanguard (World) (Aftermarket) (Unl).rom" size="72788" crc="c9624608" md5="03e4d138880d80275b5789af6e6970cd" sha1="ef924a0ee214188e9c9c93a6e5c0f6517129c86b" sha256="5c4ee558aa02f59da58ad104f787b84c41fcc6dbfd4986a99dfd9718631d7330" date="2025-09-25"/>
+		<rom name="Vanguard (World) (Aftermarket) (Unl).bin" size="71488" crc="5cbc1bef" md5="f48d48335de6118f908311bc899108be" sha1="a95e3d5e40f02ed37a22ad29ed573559a62354ca" sha256="e75be383464857991cfd6be2d071c07d5a3103c3cab217da080187666d51e6d3" date="2025-09-25"/>
+	</game>
+	<game name="X-Rally (World) (Aftermarket) (Unl)" id="0269">
+		<description>X-Rally (World) (Aftermarket) (Unl)</description>
+		<rom name="X-Rally (World) (Aftermarket) (Unl).rom" size="84045" crc="740c9c49" md5="23289cad9e7e5a7f222707054164a491" sha1="fbedd9aa0236e9909b75f2f9952cbb8e16d885fa" sha256="8819b577b1adccae41e12d6808abba9b99cb3696d86900b077567e5687cf7686" date="2025-09-25"/>
+		<rom name="X-Rally (World) (Aftermarket) (Unl).bin" size="83968" crc="2fc4a110" md5="e543025e13075db788c1145944918648" sha1="e7de5573939cfc37c49a894d5891fb1ce9038ce2" sha256="d76163e0ad636092ca492bdff1ddf09b0013fab28f979ac23f8305e349405c49" date="2025-09-25"/>
+	</game>
+</datafile>

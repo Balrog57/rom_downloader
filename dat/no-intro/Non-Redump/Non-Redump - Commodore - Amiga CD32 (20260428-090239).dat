@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<id>465</id>
+		<name>Non-Redump - Commodore - Amiga CD32</name>
+		<description>Non-Redump - Commodore - Amiga CD32</description>
+		<subset>Non-Redump</subset>
+		<version>20260428-090239</version>
+		<author>NovaAurora</author>
+		<homepage>No-Intro</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"/>
+	</header>
+	<game name="Labocode ETG1 (France) (1994) (v94-4)" id="0002">
+		<description>Labocode ETG1 (France) (1994) (v94-4)</description>
+		<rom name="Labocode ETG1 (France) (1994) (v94-4).cue" size="107" crc="8ec18cf6" sha1="b002f749845738d0cbef3794c63c0b2454263d99"/>
+		<rom name="Labocode ETG1 (France) (1994) (v94-4).bin" size="487115664" crc="ae12fdcc" md5="9696ac048a97c20da5de5a9ac08b300c" sha1="0e54d05e21555095efab241a38b254a4923c9382"/>
+	</game>
+	<game name="Labocode ETG1 (France) (1995) (v95-2) [b]" id="0003">
+		<description>Labocode ETG1 (France) (1995) (v95-2) [b]</description>
+		<rom name="Labocode ETG1 (France) (1995) (v95-2) [b].cue" size="107" crc="19ae3ce1" sha1="c572cde89d5e328acd4f2c598c69702357c0d960"/>
+		<rom name="Labocode ETG1 (France) (1995) (v95-2) [b].bin" size="483472416" crc="83a254ea" md5="b4978272754b92f919bfacb23433c534" sha1="52598cdd449e69b04f94de1b49a0a606c151e396" status="baddump"/>
+	</game>
+	<game name="Labocode ETG2 (France) (1994) (v94-4)" id="0004">
+		<description>Labocode ETG2 (France) (1994) (v94-4)</description>
+		<rom name="Labocode ETG2 (France) (1994) (v94-4).cue" size="107" crc="22853a6e" sha1="b99558669e84c2b8bfadc1c26caf89649cd69c38"/>
+		<rom name="Labocode ETG2 (France) (1994) (v94-4).bin" size="593717712" crc="97c14bc0" md5="74b7fd306226f919a8544cc17f29e6fa" sha1="b5f48ceeda2cbefaf1027cdd6d6901c572f519a2"/>
+	</game>
+	<game name="Labocode ETG2 (France) (1997)" id="0005">
+		<description>Labocode ETG2 (France) (1997)</description>
+		<rom name="Labocode ETG2 (France) (1997).cue" size="99" crc="9351301b" sha1="af384f364cd8a902b88394d836370fe43643b2b5"/>
+		<rom name="Labocode ETG2 (France) (1997).bin" size="476437584" crc="63aa5fb0" md5="2bfa15f52ac78ede23db1a1d21d44a76" sha1="2d845610148e33bcce6cf52c61472806d71f3e1e"/>
+	</game>
+	<game name="Labocode ETG3 (France) (1994) (v94-4)" id="0006">
+		<description>Labocode ETG3 (France) (1994) (v94-4)</description>
+		<rom name="Labocode ETG3 (France) (1994) (v94-4).cue" size="107" crc="46b957e6" sha1="3182a0f7bb0a99351e0a171cc9fd6d629461cb54"/>
+		<rom name="Labocode ETG3 (France) (1994) (v94-4).bin" size="448834512" crc="b16e5711" md5="6ee79324fbcf238954b1f307d5336aa4" sha1="77adb489a1e8a0f4cdfede6a8f91311065917fc8"/>
+	</game>
+	<game name="Labocode Moto (France) (1997)" id="0001">
+		<description>Labocode Moto (France) (1997)</description>
+		<rom name="Labocode Moto (France) (1997).cue" size="99" crc="9d5d3655" sha1="a8dbb45f57ba1cb4ce85c47f80ced58740902a37"/>
+		<rom name="Labocode Moto (France) (1997).bin" size="403600848" crc="cd50ea29" md5="a8ae17cadc6f9c5a3a82b9e59c0bf884" sha1="d3679d1c5fd9a4e468471757f9fc90a87ba7cdba"/>
+	</game>
+	<game name="MegaRace (World) (Proto) (1994-12-06) [b]" id="0007">
+		<description>MegaRace (World) (Proto) (1994-12-06) [b]</description>
+		<rom name="MegaRace (World) (Proto) (1994-12-06) [b].cue" size="107" crc="53907f1d" sha1="40e6de4dce65325f21231c2f5e803413da30b443"/>
+		<rom name="MegaRace (World) (Proto) (1994-12-06) [b].bin" size="725453232" crc="816e0a3f" md5="8d2d1a8c8792da0bbfac79a8ffc00668" sha1="dfc032c2e2c940878273c429feadaaa9edd59ae5" status="baddump"/>
+	</game>
+</datafile>

@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<id>464</id>
+		<name>Non-Redump - Commodore - Amiga CD</name>
+		<description>Non-Redump - Commodore - Amiga CD</description>
+		<subset>Non-Redump</subset>
+		<version>20260519-113337</version>
+		<author>Gefflon, NovaAurora</author>
+		<homepage>No-Intro</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"/>
+	</header>
+	<game name="Biing! Sex, Intrigen und Skalpelle (Germany) (AGA)" id="0006">
+		<description>Biing! Sex, Intrigen und Skalpelle (Germany) (AGA)</description>
+		<rom name="Biing! Sex, Intrigen und Skalpelle (Germany) (AGA).cue" size="120" crc="65170698" sha1="c09677eaace39d6bbeaa170eba198ac036ea47d2"/>
+		<rom name="Biing! Sex, Intrigen und Skalpelle (Germany) (AGA).bin" size="43422624" crc="849f6b2a" md5="7db87629c779a02e4af669491a64a00d" sha1="d17fafd7f94764c85346dfb848c0c14e30523057" sha256="b7ae6c4272d4f8bae992470a6b226ed8c82c30a2efa6d5a32c21aae825bb98d7"/>
+	</game>
+	<game name="Biing! Sex, Intrigen und Skalpelle (Germany) (ECS)" id="0007">
+		<description>Biing! Sex, Intrigen und Skalpelle (Germany) (ECS)</description>
+		<rom name="Biing! Sex, Intrigen und Skalpelle (Germany) (ECS).cue" size="120" crc="a46b65ba" sha1="7205262fa1a5cf754d7dc1710229ce28b209cec8"/>
+		<rom name="Biing! Sex, Intrigen und Skalpelle (Germany) (ECS).bin" size="27339648" crc="98055ef1" md5="0e62165e099ffca7a99fd117941a77ff" sha1="25444f3c46a2c1f58d38fd9ce9169828ad6a8b98" sha256="dddb587f7075b81a19eb6a641df90a809ca12db0510d3f0aaa25629dcaa97627"/>
+	</game>
+	<game name="Bridge Strike (Poland)" id="0001">
+		<description>Bridge Strike (Poland)</description>
+		<rom name="Bridge Strike (Poland).cue" size="88" crc="c7f745d7" sha1="effa29cc968aaf6301f773e1cbf2a469fb411f15"/>
+		<rom name="Bridge Strike (Poland).bin" size="37288608" crc="a0d951c0" md5="e18e7d6ee30c8d7bb6b44b0c87d811ee" sha1="1ed5c6852adba37888deb99833a30d36b8128959" sha256="0b303aa0bcc9189a44a517eee75a51e01a0af2995b7aa0a9de2c66a358a4cc68"/>
+	</game>
+	<game name="Genetic Species (Europe) (En,Fr,De,Es,It,Nl,Pt,Sv,No,Da,Fi,Pl,Hr,Sr,Sk) (Rev 1)" id="0004">
+		<description>Genetic Species (Europe) (En,Fr,De,Es,It,Nl,Pt,Sv,No,Da,Fi,Pl,Hr,Sr,Sk) (Rev 1)</description>
+		<rom name="Genetic Species (Europe) (En,Fr,De,Es,It,Nl,Pt,Sv,No,Da,Fi,Pl,Hr,Sr,Sk) (Rev 1).cue" size="1539" crc="c1f250d2" sha1="88cd26adde0996ca74e5ff16c20e5def9d3df125"/>
+		<rom name="Genetic Species (Europe) (En,Fr,De,Es,It,Nl,Pt,Sv,No,Da,Fi,Pl,Hr,Sr,Sk) (Rev 1) (Track 1).bin" size="366909648" crc="b023e43c" md5="dd3e75408f6a73678e405312bf24e8aa" sha1="fc068dacb8fa660a31710c0fa27e39f3ed0029ae"/>
+		<rom name="Genetic Species (Europe) (En,Fr,De,Es,It,Nl,Pt,Sv,No,Da,Fi,Pl,Hr,Sr,Sk) (Rev 1) (Track 2).bin" size="43507296" crc="298fb713" md5="1a3923e3456bdbc5ffd5ab81a07acd1a" sha1="b2ce79f8cb13b269721d70b4174d97bacc6e3a44"/>
+		<rom name="Genetic Species (Europe) (En,Fr,De,Es,It,Nl,Pt,Sv,No,Da,Fi,Pl,Hr,Sr,Sk) (Rev 1) (Track 3).bin" size="55020336" crc="6a1d9a47" md5="bdc82d3ebdc2fe3b6a1471ac0eb09e50" sha1="876ce80056a92b0563ccd172f9d06e4108329ef6"/>
+		<rom name="Genetic Species (Europe) (En,Fr,De,Es,It,Nl,Pt,Sv,No,Da,Fi,Pl,Hr,Sr,Sk) (Rev 1) (Track 4).bin" size="45951024" crc="1f496950" md5="c9ce32cafa04f2c81342a8f77405b609" sha1="d4a63a5af9e1e4771c39ab5064f2b632428344b2"/>
+		<rom name="Genetic Species (Europe) (En,Fr,De,Es,It,Nl,Pt,Sv,No,Da,Fi,Pl,Hr,Sr,Sk) (Rev 1) (Track 5).bin" size="52748304" crc="1e18231f" md5="21a54ce2169948288752677a4f0b5982" sha1="0a42e54a507e50d537223c6e0fb5b5a2ebd6b6da"/>
+		<rom name="Genetic Species (Europe) (En,Fr,De,Es,It,Nl,Pt,Sv,No,Da,Fi,Pl,Hr,Sr,Sk) (Rev 1) (Track 6).bin" size="74052720" crc="b4828c5e" md5="ab67176f77dd9270ae6ede7fba667609" sha1="05a38395bc17acba3403abec993249c7cf21bd1a"/>
+		<rom name="Genetic Species (Europe) (En,Fr,De,Es,It,Nl,Pt,Sv,No,Da,Fi,Pl,Hr,Sr,Sk) (Rev 1) (Track 7).bin" size="19399296" crc="5217b7a4" md5="8408e80404a1da39e7783ef8662b48f8" sha1="bd6115b8ccdb6127cbe502b6ef4efceb1bf95c3e"/>
+		<rom name="Genetic Species (Europe) (En,Fr,De,Es,It,Nl,Pt,Sv,No,Da,Fi,Pl,Hr,Sr,Sk) (Rev 1) (Track 8).bin" size="61300176" crc="014baa0c" md5="b7c93ab7d752d9bd3d09f956e2766070" sha1="434c55512d5ac2b238d7f9cc8bd65a9bc242d2ef"/>
+		<rom name="Genetic Species (Europe) (En,Fr,De,Es,It,Nl,Pt,Sv,No,Da,Fi,Pl,Hr,Sr,Sk) (Rev 1) (Track 9).bin" size="38935008" crc="199e8d32" md5="4298b01909f5c8ea9f53ca014b790490" sha1="9c5ab41bb7ba6a654a69252e559048cc4256fefe"/>
+	</game>
+	<game name="Great Giana Sisters Trilogy, The (World)" id="0005">
+		<description>Great Giana Sisters Trilogy, The (World)</description>
+		<rom name="Great Giana Sisters Trilogy, The (World).cue" size="106" crc="cd917429" sha1="dfdd581446e31d11df75581e57961bbeae29cb0d"/>
+		<rom name="Great Giana Sisters Trilogy, The (World).bin" size="45426528" crc="c0b88fb6" md5="4dffe7345cfadfd2dbe0fd4b85add621" sha1="2c9a8fca2464ae2be74af6327a706f233405a713" sha256="330269463bb6edf99bdb30599ded970365ecd2d2f61314485d464bbe0cea8a24"/>
+	</game>
+	<game name="Sixth Sense Investigations (Europe)" id="0003">
+		<description>Sixth Sense Investigations (Europe)</description>
+		<rom name="Sixth Sense Investigations (Europe).cue" size="101" crc="896d4304" sha1="633db19ac2c87eba33a95e6252fdae200d867c64"/>
+		<rom name="Sixth Sense Investigations (Europe).bin" size="278276880" crc="7925c4ec" md5="9fc030f338f01990b8efb0aa0f5a1c75" sha1="4371de2c32e111e0f63111ea3c19f469eec0fe30" sha256="cafb0e12dbdceef50053da6c114b5a11bb8fc578deebb12a26713fcbc73085b4"/>
+	</game>
+	<game name="Tanks Furry (Poland)" id="0002">
+		<description>Tanks Furry (Poland)</description>
+		<rom name="Tanks Furry (Poland).cue" size="86" crc="29d8b0b4" sha1="6e20fc187c488a24c1811f5d5b4086cf4fe5f29a"/>
+		<rom name="Tanks Furry (Poland).bin" size="6291600" crc="2005e284" md5="a312fc60387ea0d4922b676deac1b660" sha1="f8081aa77e40e9ad0b123945c57d55abf8ed8151" sha256="f45e034e6a6f3ac19561f28251d30698ed9d1630ab66d3a6970bd4c26f0d41fc"/>
+	</game>
+</datafile>

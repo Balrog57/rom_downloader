@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<id>170</id>
+		<name>Non-Redump - Sony - PlayStation 3</name>
+		<description>Non-Redump - Sony - PlayStation 3</description>
+		<subset>Non-Redump</subset>
+		<version>20250908-072347</version>
+		<author>Hiccup</author>
+		<homepage>No-Intro</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"/>
+	</header>
+	<game name="Dengeki Bunko - Fighting Climax (Asia) (En) (Beta)" id="0001">
+		<category>Games</category>
+		<category>Preproduction</category>
+		<description>Dengeki Bunko - Fighting Climax (Asia) (En) (Beta)</description>
+		<rom name="Dengeki Bunko - Fighting Climax (Asia) (En) (Beta).iso" size="1782841344" crc="aecdcd75" md5="0c7d73cfcd9cae444c9322e6bc4d9a44" sha1="31ce96396256f00f67ff9c54a6ed5f645c74f30b" sha256="c93657552bf6592bf9762fb4d534a5ae1acfd92b500bf682b88c7b1e614f0641"/>
+	</game>
+</datafile>

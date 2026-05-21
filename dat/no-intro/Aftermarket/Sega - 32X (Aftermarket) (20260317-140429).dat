@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<id>17</id>
+		<name>Sega - 32X (Aftermarket)</name>
+		<description>Sega - 32X (Aftermarket)</description>
+		<version>20260317-140429</version>
+		<author>bikerspade, BitLooter, ElBarto, FakeShemp, Gefflon, gigadeath, Hiccup, norkmetnoil577, omonim2007, psykopat, relax, Seventy7, SonGoku, Special T, xuom2</author>
+		<homepage>No-Intro</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"/>
+	</header>
+	<game name="240p Test Suite (World) (Program) (Aftermarket) (Unl)" id="0217">
+		<category>Applications</category>
+		<description>240p Test Suite (World) (Program) (Aftermarket) (Unl)</description>
+		<rom name="240p Test Suite (World) (Program) (Aftermarket) (Unl).32x" size="1966080" crc="0e320ae8" md5="2db9c9aeb705427b5a919a592fd9ef8f" sha1="f0039765f9adb55be8ceb4349a8cf80aa23a3429" sha256="a66868652ac0b72b0e32b2811d101501345b74b1eb036f46290ce147d8293be1" serial="20220208-00"/>
+	</game>
+	<game name="Mega Marble World 2 (World) (Proto) (Aftermarket) (Unl)" id="0225">
+		<category>Games</category>
+		<category>Preproduction</category>
+		<description>Mega Marble World 2 (World) (Proto) (Aftermarket) (Unl)</description>
+		<rom name="Mega Marble World 2 (World) (Proto) (Aftermarket) (Unl).32x" size="515852" crc="c00c76e6" md5="69fa2b2c75eb430a8c5805a8a6faf877" sha1="316851e0e036cc21b21551b0e2a31e32a265e92d" sha256="2bda6c7d0d43215b3ccfc7cf733b91597560561490438b9bf16bfc8904b1d8ee" serial="MK-0000-00"/>
+	</game>
+	<game name="OpenLara (World) (Demo) (Aftermarket) (Unl)" id="0226">
+		<category>Demos</category>
+		<category>Games</category>
+		<description>OpenLara (World) (Demo) (Aftermarket) (Unl)</description>
+		<rom name="OpenLara (World) (Demo) (Aftermarket) (Unl).32x" size="2097152" crc="bdd512bd" md5="fd3ade112a5498c5832e3a043467ad4a" sha1="c486bf92868cd24b49cf27b101989c51420c80a3" sha256="b8280ccb2115a1db7e2cc042263d5f82f46b876d2e3fa222c1dc3619290e7b0c" serial="14021968-01"/>
+	</game>
+	<game name="Sonic the Hedgehog (World) (Aftermarket) (Unl)" id="0231">
+		<category>Games</category>
+		<description>Sonic the Hedgehog (World) (Aftermarket) (Unl)</description>
+		<rom name="Sonic the Hedgehog (World) (Aftermarket) (Unl).32x" size="533958" crc="2221c701" md5="8c344084c0fee5be7d8c17fbd6b47b51" sha1="6bfe157720429063f3eb0d4dd9d86d9e087ddde3" sha256="a35ace04c746d92e4a560e2c5f411959ab72990cf55f5838f9a3edce63e8bf29" serial="00001009-32"/>
+	</game>
+	<game name="Sword of the Apocalypse (World) (En,De,Es,Pt) (Demo) (Aftermarket) (Unl)" id="0218">
+		<category>Demos</category>
+		<category>Games</category>
+		<description>Sword of the Apocalypse (World) (En,De,Es,Pt) (Demo) (Aftermarket) (Unl)</description>
+		<rom name="Sword of the Apocalypse (World) (En,De,Es,Pt) (Demo) (Aftermarket) (Unl).32x" size="1835008" crc="5a9ebd70" md5="de292f987dab9e52e2ee18fce1c12da7" sha1="e9f9369b5425e4aaa5f281a5695cfd15e2d1287e" sha256="4e16ed321640653bb178a66757c1f45b933e3bcd33e1b1ef4a8eda9b96075c13" serial="00000000-00"/>
+	</game>
+	<game name="Wolfenstein 3D (World) (Demo 1) (Aftermarket) (Unl)" id="0222" cloneofid="0227">
+		<category>Demos</category>
+		<category>Games</category>
+		<description>Wolfenstein 3D (World) (Demo 1) (Aftermarket) (Unl)</description>
+		<rom name="Wolfenstein 3D (World) (Demo 1) (Aftermarket) (Unl).32x" size="2794984" crc="078371c1" md5="7ad6263cde1964750bc780abf4c1f32a" sha1="0970b9c3a1b6b5f09cf357568751dfefbeb82617" sha256="9086ce596b74f0072ec4c6c6661f032abbda587aae4933d1866702f22b6c613f" serial="MK-0000-00"/>
+	</game>
+	<game name="Wolfenstein 3D (World) (Demo 3) (Aftermarket) (Unl)" id="0227">
+		<category>Demos</category>
+		<category>Games</category>
+		<description>Wolfenstein 3D (World) (Demo 3) (Aftermarket) (Unl)</description>
+		<rom name="Wolfenstein 3D (World) (Demo 3) (Aftermarket) (Unl).32x" size="2752512" crc="4849dd80" md5="1603f5967963e039db296017e3e0c01d" sha1="b98a17a55163e2289dc26c3e1dc3635d74fd0580" sha256="65c95c901fef3f186cde9e512ca01a348a91898ee36a0bf06d7cda5c41a6e10e" serial="20130104-0"/>
+	</game>
+	<game name="Wolfenstein 3D (World) (Demo 2) (Aftermarket) (Unl)" id="0228" cloneofid="0227">
+		<category>Demos</category>
+		<category>Games</category>
+		<description>Wolfenstein 3D (World) (Demo 2) (Aftermarket) (Unl)</description>
+		<rom name="Wolfenstein 3D (World) (Demo 2) (Aftermarket) (Unl).32x" size="2752512" crc="e2d23b01" md5="8ded3ef8dc40a7c5d6510388fb329229" sha1="2380221ddd51ff2387ac6c83785db27e87c6a1aa" sha256="563746bc6816d8a663910cc93591daa1326f6206ae85e864d22186e28abe0a21" serial="20130104-0"/>
+	</game>
+	<game name="Wolfenstein 3D - Spear of Destiny (World) (Demo 2) (Aftermarket) (Unl)" id="0229">
+		<category>Demos</category>
+		<category>Games</category>
+		<description>Wolfenstein 3D - Spear of Destiny (World) (Demo 2) (Aftermarket) (Unl)</description>
+		<rom name="Wolfenstein 3D - Spear of Destiny (World) (Demo 2) (Aftermarket) (Unl).32x" size="2359296" crc="e21ddb99" md5="41fb46d6cc214100f15e3e992d88579d" sha1="b26666043156cd467db4b0b4de6f02d2cf77eb17" sha256="b1342996c7525b42cad800df9f1153d5a391af18bc4a66a301455e927143d8d6" serial="20130104-0"/>
+	</game>
+	<game name="Wolfenstein 3D - Spear of Destiny (World) (Demo 1) (Aftermarket) (Unl)" id="0230" cloneofid="0229">
+		<category>Demos</category>
+		<category>Games</category>
+		<description>Wolfenstein 3D - Spear of Destiny (World) (Demo 1) (Aftermarket) (Unl)</description>
+		<rom name="Wolfenstein 3D - Spear of Destiny (World) (Demo 1) (Aftermarket) (Unl).32x" size="2359296" crc="2832cd01" md5="93f1142c5f25bfb36057c1f1da6862dc" sha1="6168d59c6ea3579e8e68a6f09056e01afa5729fe" sha256="8ef82284d67dc4e516e0259614adfb1bdf17c086b53f883e847718c262357ed2" serial="20130104-0"/>
+	</game>
+	<game name="xRick (World) (v1.1) (Aftermarket) (Unl)" id="0220">
+		<category>Games</category>
+		<description>xRick (World) (v1.1) (Aftermarket) (Unl)</description>
+		<rom name="xRick (World) (v1.1) (Aftermarket) (Unl).32x" size="4194304" crc="79cb7f70" md5="b3836ed6ad6a07e99de0f8e5896d17cf" sha1="62c941dcf36bf30dfd8311609ae6c4bd123cc6a6" sha256="11a683be76da37f3fd7e5d191bd8f6d35b493e41d840fd7b84c95156fa2c36a2" serial="MK-0000-00"/>
+	</game>
+	<game name="xRick (World) (Aftermarket) (Unl)" id="0221" cloneofid="0220">
+		<category>Games</category>
+		<description>xRick (World) (Aftermarket) (Unl)</description>
+		<rom name="xRick (World) (Aftermarket) (Unl).32x" size="4194304" crc="fd07db46" md5="f642e289bfb670022e0ae001786bdf94" sha1="f951890e6cd3cfd5e4cba13be8c8aea4f70d36a5" sha256="0e426d5be1edf15069c9e4576cd3275303acc9cf4818d45703b005be60eeded9" serial="MK-0000-00"/>
+	</game>
+	<game name="Yeti3D (World) (Demo 2) (Aftermarket) (Unl)" id="0223">
+		<category>Demos</category>
+		<category>Games</category>
+		<description>Yeti3D (World) (Demo 2) (Aftermarket) (Unl)</description>
+		<rom name="Yeti3D (World) (Demo 2) (Aftermarket) (Unl).32x" size="1048576" crc="228f23d3" md5="ddd354f912f296dde725c90721bb73fa" sha1="e4c99e4706be7a6bd8fc7fcd620e4bc019bd6573" sha256="c01c057371eae73d41874f913d75fea8cafa3ecbfffac3b6efa8815e80f8bf89" serial="MK-0000-00"/>
+	</game>
+	<game name="Yeti3D (World) (Demo 1) (Aftermarket) (Unl)" id="0224" cloneofid="0223">
+		<category>Demos</category>
+		<category>Games</category>
+		<description>Yeti3D (World) (Demo 1) (Aftermarket) (Unl)</description>
+		<rom name="Yeti3D (World) (Demo 1) (Aftermarket) (Unl).32x" size="524288" crc="9e9cf092" md5="47704b908f3efc013bc29bd7205baaa0" sha1="8e567ae7b0894228727593a6ed9eef560683e478" sha256="743569c39b2d04f42c7cc0da48d012009659afd107da95f4d4473ef7fb61a365" serial="MK-0000-00"/>
+	</game>
+</datafile>

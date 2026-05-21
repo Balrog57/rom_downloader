@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<id>14</id>
+		<name>Nintendo - Pokemon Mini (Aftermarket)</name>
+		<description>Nintendo - Pokemon Mini (Aftermarket)</description>
+		<version>20250407-153358</version>
+		<author>Arctic Circle System, Flashfire42, psykopat, rarenight, relax, SonGoku</author>
+		<homepage>No-Intro</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"/>
+	</header>
+	<game name="Mini Running Ant (World) (Aftermarket) (Unl)" id="0046">
+		<category>Games</category>
+		<description>Mini Running Ant (World) (Aftermarket) (Unl)</description>
+		<rom name="Mini Running Ant (World) (Aftermarket) (Unl).min" size="75264" crc="296da9bb" md5="ef8984f9e252298296f373598ca63e7e" sha1="03c19d49263dff65d655d54b89fc4fdecf56d876" sha256="8f44e0bf8ed91de6fbf117bbbcbbdd90a4bca811075cbf8e4fb6d987820d5eb0"/>
+	</game>
+	<game name="Silver Falls - Monsters In North Island (World) (Aftermarket) (Unl)" id="0045">
+		<category>Games</category>
+		<description>Silver Falls - Monsters In North Island (World) (Aftermarket) (Unl)</description>
+		<rom name="Silver Falls - Monsters In North Island (World) (Aftermarket) (Unl).min" size="74419" crc="68e0da6f" md5="0ce0bead3ee9911765d3d0eb097ee7e7" sha1="f3b3a7e95738033712e5adb0acb3b26c8dc2bdb2" sha256="572056ba87a2bf770a03f54eb0cb11206cd9325ffc1acf56a549715e2edb35ce"/>
+	</game>
+</datafile>

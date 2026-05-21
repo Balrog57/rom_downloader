@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<id>469</id>
+		<name>Non-Redump - Panasonic - M2</name>
+		<description>Non-Redump - Panasonic - M2</description>
+		<subset>Non-Redump</subset>
+		<version>20260428-114221</version>
+		<author>NovaAurora</author>
+		<homepage>No-Intro</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"/>
+	</header>
+	<game name="[BIOS] Panasonic FZ-35 (Japan)" id="0001">
+		<description>[BIOS] Panasonic FZ-35 (Japan)</description>
+		<rom name="[BIOS] Panasonic FZ-35 (Japan).bin" size="1048576" crc="e1c5bfd3" md5="5a015c319b1f552275ff98279c1bedbc" sha1="0a3e27d672be79eeee1d2dc2da60d82f6eba7934" sha256="7845d23b2b2d8be60e1117e1c21408c4e1dfd8ca11c292279e3ab9a8185c67bd"/>
+	</game>
+	<game name="IMSA Racing (World) (Proto)" id="0003">
+		<description>IMSA Racing (World) (Proto)</description>
+		<rom name="IMSA Racing (World) (Proto).cue" size="93" crc="b20c3e47" sha1="fcd7a211a68dcf337c9ff09e13db0f0e91db94a0"/>
+		<rom name="IMSA Racing (World) (Proto).bin" size="771060864" crc="25158143" md5="e7bae4c70649d44c94b7bacee7571005" sha1="30c915c2dad95c516863189ff7d5f341f343b438"/>
+	</game>
+	<game name="Shooter 2D (World) (Tech Demo)" id="0002">
+		<description>Shooter 2D (World) (Tech Demo)</description>
+		<rom name="Shooter 2D (World) (Tech Demo).cue" size="96" crc="ce45ef6a" sha1="05adc59299b26fe89779b8eef2209d799b06c57d"/>
+		<rom name="Shooter 2D (World) (Tech Demo).bin" size="9633792" crc="c6e34a50" md5="58fe56a55206c252ebe9c3025347a213" sha1="bb16fcd84cc835c389aabd3daa837791bdb76451"/>
+	</game>
+</datafile>

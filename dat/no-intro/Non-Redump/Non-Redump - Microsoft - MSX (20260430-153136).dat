@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<datafile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://datomatic.no-intro.org/stuff https://datomatic.no-intro.org/stuff/schema_nointro_datfile_v3.xsd">
+	<header>
+		<id>480</id>
+		<name>Non-Redump - Microsoft - MSX</name>
+		<description>Non-Redump - Microsoft - MSX</description>
+		<subset>Non-Redump</subset>
+		<version>20260430-153136</version>
+		<author>NovaAurora</author>
+		<homepage>No-Intro</homepage>
+		<url>https://www.no-intro.org</url>
+		<clrmamepro forcenodump="required"/>
+	</header>
+	<game name="Games Collection, The (Europe)" id="0001">
+		<description>Games Collection, The (Europe)</description>
+		<rom name="Games Collection, The (Europe).cue" size="3468" crc="47be9db8" sha1="c57937ab847b7a71481a453ca31a1b1c91b12f22"/>
+		<rom name="Games Collection, The (Europe) (Track 01).bin" size="24903187" crc="68a7a891" md5="5a7db55e0dcf8c280a57b2e4698e70be" sha1="866aa6b82bd9188650817c67041cf7f84b14d5e9"/>
+		<rom name="Games Collection, The (Europe) (Track 02).bin" size="25401825" crc="e4479786" md5="41efd25cc19d501285b110b19749cc29" sha1="9f4759770942229d94c84a4584461d05dda1eab8"/>
+		<rom name="Games Collection, The (Europe) (Track 03).bin" size="9189497" crc="5078706b" md5="ad1ef14ef7c4ee0dc361e022905df047" sha1="046567120926a17b53542ace7a41c1d903db45ef"/>
+		<rom name="Games Collection, The (Europe) (Track 04).bin" size="9674011" crc="63af42ce" md5="836888d4859cd176e9af7fc5853c8a49" sha1="2b11245a633db9fafbc79d041247ed7dadc0d824"/>
+		<rom name="Games Collection, The (Europe) (Track 05).bin" size="18009489" crc="8e20943f" md5="65f807d174359f90cddce1ecb82e028e" sha1="ef74a50cc3ca1d472bb520dc7b0c163c3fd3a286"/>
+		<rom name="Games Collection, The (Europe) (Track 06).bin" size="15982055" crc="8b176a61" md5="ec23a49cc5cfc4e599fb8ce0fad8ef07" sha1="339d21451560ecb3d6f04fe7cb5b742ba0561472"/>
+		<rom name="Games Collection, The (Europe) (Track 07).bin" size="17541429" crc="af166174" md5="2f6664d6483ccf43251711b58fbda1f7" sha1="6f4674f54bfb3ecd05d44fa709dec2dbb4b4d618"/>
+		<rom name="Games Collection, The (Europe) (Track 08).bin" size="9318833" crc="f2b525ff" md5="36682929a78d185e695adbaf920c5270" sha1="4821fadcac718a02d43963555406541df2357db2"/>
+		<rom name="Games Collection, The (Europe) (Track 09).bin" size="8702631" crc="32c50eea" md5="4f8dff911f52ef28ccf5c4479ac74e36" sha1="5c8227a230349468cde59872ee14a846269fc0c6"/>
+		<rom name="Games Collection, The (Europe) (Track 10).bin" size="16294879" crc="2bbb09f1" md5="0c31fc333d2965dd51b2ad8f07a2f0fb" sha1="d5ae08881fdee96e1e996972754f19db07943d42"/>
+		<rom name="Games Collection, The (Europe) (Track 11).bin" size="16087903" crc="4f8187d4" md5="0e11db7a932b30ef1cfac930c5f59f82" sha1="1417d04edfd9b734653eed21463c1cdf798d9664"/>
+		<rom name="Games Collection, The (Europe) (Track 12).bin" size="6491743" crc="4e2dbf4a" md5="1fd1f6e83105d776f3fbbf20b91d81c4" sha1="b28ad9a406ad8565c892dfc9c5847217e0b707dc"/>
+		<rom name="Games Collection, The (Europe) (Track 13).bin" size="17562627" crc="efb3221b" md5="f2c6c82bdf5558f5269d7677d9de6c8d" sha1="c78c5710371a42ada763e18d500fccb447ac1a6b"/>
+		<rom name="Games Collection, The (Europe) (Track 14).bin" size="15189435" crc="936681ff" md5="e739fb7b90c424dca3a36c0e53115ad8" sha1="f2b957cfae37b3a343a2d7cc7764e69cc5bacb52"/>
+		<rom name="Games Collection, The (Europe) (Track 15).bin" size="10777075" crc="6600832e" md5="7fe192d79953b798b554b53a64f01864" sha1="45b63d68696754c4aa862e30bafacad3b0d884dd"/>
+		<rom name="Games Collection, The (Europe) (Track 16).bin" size="17452067" crc="8321dd84" md5="ab4281a5e048d243a36bff3fc17c923e" sha1="8a76634b18013f4a553f9d256b2d1bd20cb2ac90"/>
+		<rom name="Games Collection, The (Europe) (Track 17).bin" size="18334071" crc="9e4c9f10" md5="85469e9e7c14ced723b64ec75f6c84b9" sha1="eb6d1093c58d1bb8395edca1e2f702b26ab50e64"/>
+		<rom name="Games Collection, The (Europe) (Track 18).bin" size="6185971" crc="d6afcf17" md5="02276f58f97757668d26fb86dc294128" sha1="5980b898afdb8bd41521cd7cee2a38563b441b5f"/>
+		<rom name="Games Collection, The (Europe) (Track 19).bin" size="12955047" crc="d53f81d3" md5="0ff390ffbe3dae0af28a7018053cdccc" sha1="98902dd312a05205a2999c1505af813d50ee03e5"/>
+		<rom name="Games Collection, The (Europe) (Track 20).bin" size="12823315" crc="113959d1" md5="d882ff3341d6068723879102778c69d5" sha1="5c98fa03c3d2e8411afca02be4f1c69fa70b7a79"/>
+		<rom name="Games Collection, The (Europe) (Track 21).bin" size="11426239" crc="2069ec94" md5="4741511a49d9f04b3696082080d4726d" sha1="882b59ad28a597ae50ba3d3a526de9fee18a79cf"/>
+		<rom name="Games Collection, The (Europe) (Track 22).bin" size="11172223" crc="c7ac5083" md5="8b498fce2100c97432eac0dad7fd3be2" sha1="9374f98e0107f710df02ef44ae8437a3f85b47be"/>
+		<rom name="Games Collection, The (Europe) (Track 23).bin" size="14893083" crc="fe811104" md5="a43bfeb7bf29ef42c10de103cd4fe7ed" sha1="1bb9a46c6659b8a52b3b6ae979287f23dcbcb366"/>
+		<rom name="Games Collection, The (Europe) (Track 24).bin" size="11296871" crc="e33070d2" md5="36afef61baa5df652d51d60912646e5b" sha1="4ec9b22774fdfd65db567b4ad67742905197dc3b"/>
+		<rom name="Games Collection, The (Europe) (Track 25).bin" size="10654775" crc="1d7bb2b8" md5="5d1372a241d4d43e730a137f51cc0377" sha1="846db3a0c589753a1a9b4d9765019b4133a35e96"/>
+		<rom name="Games Collection, The (Europe) (Track 26).bin" size="17557911" crc="6ac280e9" md5="b69312dc553c0c1c0bd6ce4236b462e6" sha1="6c858283d47b464aa5a7f7e9c2aa155af96a2c92"/>
+		<rom name="Games Collection, The (Europe) (Track 27).bin" size="8389811" crc="12ea44a2" md5="781ca1d54aaf64e27f7ad7c984e29c64" sha1="aa82f7ec5363558d642caceea0311cc7569f9db7"/>
+		<rom name="Games Collection, The (Europe) (Track 28).bin" size="12966795" crc="b662c2fe" md5="9184fff3be71632150bbd2742e29724d" sha1="22cb173811574d5710ae5690c4864e4613118008"/>
+		<rom name="Games Collection, The (Europe) (Track 29).bin" size="6966851" crc="a85628fe" md5="ac780052f76ce6b6c7ce61b9f3d4062a" sha1="feae58925b7cf3ff4b92d0370bc4c25dc58e3458"/>
+		<rom name="Games Collection, The (Europe) (Track 30).bin" size="15852703" crc="ae5f97e0" md5="f872119afb0497226361b23682060d53" sha1="c36b5d1ddc7d02f671faa2366e371e96cceb3345"/>
+		<rom name="Games Collection, The (Europe) (Track 31).bin" size="22579435" crc="d829e355" md5="e0613e8119d48b6d922320af506b9fd1" sha1="e64738cfa25a0ae85ef3775beae247b5d857a127"/>
+		<rom name="Games Collection, The (Europe) (Track 32).bin" size="5092303" crc="27c46377" md5="4068535b504e6c5f1352bc57e7258ac1" sha1="24aa089b7db6d45aa2f22294c8ad74ef0f486030"/>
+		<rom name="Games Collection, The (Europe) (Track 33).bin" size="15499915" crc="45dd0acc" md5="bb09c01a3efdafdb64a2e21cc7b4052c" sha1="91383ab30a6a2ba934b44d9b9e94eb53980ba5d5"/>
+		<rom name="Games Collection, The (Europe) (Track 34).bin" size="31027815" crc="73dfe570" md5="6c4bc8791b1d4d4ea80f6c976598d5f5" sha1="59ee1719cd20ca299870fd73140793e2b054f1d7"/>
+	</game>
+	<game name="Tele Atlas (Netherlands)" id="0002">
+		<description>Tele Atlas (Netherlands)</description>
+		<rom name="Tele Atlas (Netherlands).cue" size="90" crc="9381f3a8" sha1="b6324a85c580c433ad1edbb1ad10d007b534d02f"/>
+		<rom name="Tele Atlas (Netherlands).bin" size="81496800" crc="2f6d4fe0" md5="6c7561ec3ad9ad1b5a2e4ebe7cc30331" sha1="d69bec4c62bc5248051cd8474971d0bc98ef0cb6"/>
+	</game>
+</datafile>
