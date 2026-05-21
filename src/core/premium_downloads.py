@@ -281,142 +281,6 @@ def download_realdebrid(url: str, dest_path: str, api_key: str, progress_callbac
         return False
 
 
-def download_debridlink(url: str, dest_path: str, api_key: str, progress_callback=None) -> bool:
-    if not api_key:
-        print("  Erreur: Cle API Debrid-Link manquante")
-        return False
-
-    try:
-        unlock_url = 'https://debrid-link.com/api/v2/downloader/add'
-        headers = {'Authorization': f'Bearer {api_key}', 'Content-Type': 'application/x-www-form-urlencoded'}
-        data = {'link': url}
-
-        response = requests.post(unlock_url, data=data, headers=headers, timeout=30)
-
-        if response.status_code == 401:
-            print("  Erreur: Cle API Debrid-Link invalide")
-            return False
-        if response.status_code != 200:
-            print(f"  Erreur API Debrid-Link: {response.status_code}")
-            return False
-
-        result = response.json()
-
-        if result.get('error'):
-            print(f"  Erreur Debrid-Link: {result.get('error_message', 'Unknown error')}")
-            return False
-
-        download_url = (result.get('value') or {}).get('downloadUrl') or (result.get('value') or {}).get('link')
-        if not download_url:
-            download_url = result.get('downloadUrl') or result.get('link')
-        if not download_url:
-            print("  Erreur: Pas d'URL de telechargement Debrid-Link")
-            return False
-
-        session = requests.Session()
-        session.headers.update({'User-Agent': 'Mozilla/5.0', 'Authorization': f'Bearer {api_key}'})
-
-        with session.get(download_url, stream=True, allow_redirects=True, timeout=120) as resp:
-            resp.raise_for_status()
-            total = int(resp.headers.get('content-length', 0))
-            downloaded = 0
-
-            with open(dest_path, 'wb') as f:
-                for chunk in resp.iter_content(chunk_size=DOWNLOAD_CHUNK_SIZE):
-                    if chunk:
-                        f.write(chunk)
-                        downloaded += len(chunk)
-                        if total > 0 and progress_callback:
-                            progress_callback((downloaded / total) * 100)
-
-        if progress_callback:
-            progress_callback(100.0)
-        return True
-
-    except Exception as e:
-        print(f"  Erreur Debrid-Link: {e}")
-        return False
-
-
-def download_torbox(url: str, dest_path: str, api_key: str, progress_callback=None) -> bool:
-    if not api_key:
-        print("  Erreur: Cle API TorBox manquante")
-        return False
-
-    try:
-        create_url = 'https://api.torbox.app/v1/api/create'
-        headers = {'Authorization': f'Bearer {api_key}'}
-        data = {'link': url}
-
-        response = requests.post(create_url, data=data, headers=headers, timeout=30)
-
-        if response.status_code == 401:
-            print("  Erreur: Cle API TorBox invalide")
-            return False
-        if response.status_code != 200:
-            print(f"  Erreur API TorBox (create): {response.status_code}")
-            return False
-
-        result = response.json()
-
-        if not result.get('success'):
-            print(f"  Erreur TorBox: {result.get('detail', 'Unknown error')}")
-            return False
-
-        torrent_data = result.get('data') or result.get('download_url')
-        download_url = None
-
-        if isinstance(torrent_data, dict):
-            files = torrent_data.get('files', [])
-            if files:
-                download_url = files[0].get('download_url') or files[0].get('url')
-        elif isinstance(torrent_data, str):
-            download_url = torrent_data
-
-        if not download_url:
-            check_url = f'https://api.torbox.app/v1/api/checkCache'
-            check_params = {'link': url}
-            check_resp = requests.get(check_url, params=check_params, headers=headers, timeout=30)
-            if check_resp.status_code == 200:
-                check_data = check_resp.json()
-                if check_data.get('success') and check_data.get('data'):
-                    cached = check_data['data']
-                    if isinstance(cached, dict):
-                        files = cached.get('files', [])
-                        if files:
-                            download_url = files[0].get('download_url') or files[0].get('url')
-                    elif isinstance(cached, list) and len(cached) > 0:
-                        download_url = cached[0].get('download_url') or cached[0].get('url')
-
-        if not download_url:
-            print("  Erreur: Pas d'URL de telechargement TorBox")
-            return False
-
-        session = requests.Session()
-        session.headers.update({'User-Agent': 'Mozilla/5.0', 'Authorization': f'Bearer {api_key}'})
-
-        with session.get(download_url, stream=True, allow_redirects=True, timeout=120) as resp:
-            resp.raise_for_status()
-            total = int(resp.headers.get('content-length', 0))
-            downloaded = 0
-
-            with open(dest_path, 'wb') as f:
-                for chunk in resp.iter_content(chunk_size=DOWNLOAD_CHUNK_SIZE):
-                    if chunk:
-                        f.write(chunk)
-                        downloaded += len(chunk)
-                        if total > 0 and progress_callback:
-                            progress_callback((downloaded / total) * 100)
-
-        if progress_callback:
-            progress_callback(100.0)
-        return True
-
-    except Exception as e:
-        print(f"  Erreur TorBox: {e}")
-        return False
-
-
 def download_from_premium_source(source_type: str, url: str, dest_path: str,
                                 api_keys: dict, progress_callback=None) -> bool:
     if source_type == '1fichier':
@@ -435,22 +299,10 @@ def download_from_premium_source(source_type: str, url: str, dest_path: str,
             if download_alldebrid(url, dest_path, alldebrid_key, progress_callback):
                 return True
 
-        debridlink_key = api_keys.get('debridlink', '')
-        if debridlink_key:
-            print("  Tentative via Debrid-Link...")
-            if download_debridlink(url, dest_path, debridlink_key, progress_callback):
-                return True
-
         realdebrid_key = api_keys.get('realdebrid', '')
         if realdebrid_key:
             print("  Tentative via RealDebrid...")
             if download_realdebrid(url, dest_path, realdebrid_key, progress_callback):
-                return True
-
-        torbox_key = api_keys.get('torbox', '')
-        if torbox_key:
-            print("  Tentative via TorBox...")
-            if download_torbox(url, dest_path, torbox_key, progress_callback):
                 return True
 
         print("  Bascule en mode gratuit 1fichier...")
@@ -464,12 +316,6 @@ def download_from_premium_source(source_type: str, url: str, dest_path: str,
     elif source_type == 'realdebrid':
         return download_realdebrid(url, dest_path, api_keys.get('realdebrid', ''), progress_callback)
 
-    elif source_type == 'debridlink':
-        return download_debridlink(url, dest_path, api_keys.get('debridlink', ''), progress_callback)
-
-    elif source_type == 'torbox':
-        return download_torbox(url, dest_path, api_keys.get('torbox', ''), progress_callback)
-
     return False
 
 
@@ -480,7 +326,5 @@ __all__ = [
     'download_1fichier',
     'download_alldebrid',
     'download_realdebrid',
-    'download_debridlink',
-    'download_torbox',
     'download_from_premium_source',
 ]

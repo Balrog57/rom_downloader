@@ -1469,7 +1469,7 @@ def gui_mode():
                 window = tk.Toplevel(self.root)
                 window.title("Cles API locales")
                 window.configure(bg=UI_COLOR_BG)
-                window.geometry("560x340")
+                window.geometry("560x280")
                 window.transient(self.root)
                 window.columnconfigure(1, weight=1)
                 keys = load_api_keys()
@@ -1477,8 +1477,6 @@ def gui_mode():
                     ("1fichier", "onefichier", keys.get("1fichier", "")),
                     ("AllDebrid", "alldebrid", keys.get("alldebrid", "")),
                     ("RealDebrid", "realdebrid", keys.get("realdebrid", "")),
-                    ("Debrid-Link", "debridlink", keys.get("debridlink", "")),
-                    ("TorBox", "torbox", keys.get("torbox", "")),
                     ("archive.org compte", "archive_username", keys.get("archive_username", "")),
                     ("archive.org mot de passe", "archive_password", keys.get("archive_password", "")),
                 ]
@@ -1494,8 +1492,6 @@ def gui_mode():
                         "1fichier": vars_by_key["onefichier"].get().strip(),
                         "alldebrid": vars_by_key["alldebrid"].get().strip(),
                         "realdebrid": vars_by_key["realdebrid"].get().strip(),
-                        "debridlink": vars_by_key["debridlink"].get().strip(),
-                        "torbox": vars_by_key["torbox"].get().strip(),
                         "archive_username": vars_by_key["archive_username"].get().strip(),
                         "archive_password": vars_by_key["archive_password"].get().strip(),
                     })
