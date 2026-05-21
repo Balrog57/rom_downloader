@@ -6,9 +6,13 @@ from PyInstaller.utils.hooks import collect_data_files, collect_dynamic_libs, co
 datas = [
     ('assets', 'assets'),
     ('dat', 'dat'),
-    ('db', 'db'),
     ('VERSION', '.'),
 ]
+# Le dossier db/ n'est pas versionne (genere localement). On le copie
+# uniquement s'il existe, pour eviter l'erreur PyInstaller en CI.
+import os
+if os.path.isdir('db'):
+    datas.append(('db', 'db'))
 datas += collect_data_files('tkinterdnd2')
 
 binaries = []

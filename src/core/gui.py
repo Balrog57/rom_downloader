@@ -397,6 +397,8 @@ def gui_mode():
                     self._ui(lambda m=str(exc): self.dat_results_var.set(f"Erreur: {m}"))
                 finally:
                     self.running = False
+
+            def build_systems_page(self):
                 frame = self.page_frame()
                 top = tk.Frame(frame, bg=UI_COLOR_BG)
                 top.grid(row=0, column=0, sticky="ew")
