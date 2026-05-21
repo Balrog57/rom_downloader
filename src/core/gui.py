@@ -404,6 +404,7 @@ def gui_mode():
                 tk.Label(top, text="Systemes", bg=UI_COLOR_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 24, "bold")).grid(row=0, column=0, sticky="w")
                 search = self.entry(top, self.system_query_var)
                 search.grid(row=0, column=1, sticky="ew", padx=16, ipady=7)
+                search.bind("<Return>", lambda _event: self.refresh_systems())
                 self.button(top, "Rechercher", self.refresh_systems, kind="accent", width=12).grid(row=0, column=2)
 
                 filters = tk.Frame(frame, bg=UI_COLOR_BG)
@@ -521,7 +522,9 @@ def gui_mode():
                 top.grid(row=0, column=0, sticky="ew")
                 top.columnconfigure(1, weight=1)
                 tk.Label(top, text=title, bg=UI_COLOR_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 24, "bold")).grid(row=0, column=0, sticky="w")
-                self.entry(top, self.game_query_var).grid(row=0, column=1, sticky="ew", padx=16, ipady=7)
+                game_search = self.entry(top, self.game_query_var)
+                game_search.grid(row=0, column=1, sticky="ew", padx=16, ipady=7)
+                game_search.bind("<Return>", lambda _event: self.refresh_games())
                 self.button(top, "Filtrer", self.refresh_games, kind="accent", width=12).grid(row=0, column=2)
 
                 letters = tk.Frame(frame, bg=UI_COLOR_BG)
@@ -544,6 +547,8 @@ def gui_mode():
                         self.games_tree.column(col, width=width, anchor=anchor)
                     self.games_tree.column("#0", width=420, anchor="w")
                     self.games_tree.grid(row=3, column=0, sticky="nsew")
+                    self.games_tree.bind("<Double-1>", lambda _event: self.start_selected_game_download())
+                    self.games_tree.bind("<<TreeviewSelect>>", lambda _event: self._on_games_select())
                 else:
                     self.games_tree = ttk.Treeview(frame, style="Catalog.Treeview", columns=("rom", "size", "valid", "candidates", "local", "error"), show="tree headings")
                     self.games_tree.heading("#0", text="Jeu")
@@ -552,6 +557,8 @@ def gui_mode():
                         self.games_tree.column(col, width=width, anchor=anchor)
                     self.games_tree.column("#0", width=300, anchor="w")
                     self.games_tree.grid(row=3, column=0, sticky="nsew")
+                    self.games_tree.bind("<Double-1>", lambda _event: self.start_selected_game_download())
+                    self.games_tree.bind("<<TreeviewSelect>>", lambda _event: self._on_games_select())
 
                 actions = tk.Frame(frame, bg=UI_COLOR_BG)
                 actions.grid(row=4, column=0, sticky="ew", pady=(14, 0))
@@ -576,6 +583,14 @@ def gui_mode():
             def set_family_filter(self, value):
                 self.family_filter = value
                 self.refresh_systems()
+
+            def _on_games_select(self):
+                selection = self.games_tree.selection() if self.games_tree else []
+                if selection:
+                    game_name = self.games_tree.item(selection[0], "text")
+                    self.status_var.set(f"Selectionne: {game_name}")
+                else:
+                    self.refresh_games()
 
             def refresh_games(self):
                 if not self.games_tree:
@@ -679,6 +694,7 @@ def gui_mode():
                 if using_dat:
                     selection = self.games_tree.selection()
                     if not selection:
+                        messagebox.showinfo("Info", "Selectionnez un jeu dans la liste")
                         return
                     item_id = selection[0]
                     game_name = self.games_tree.item(item_id, "text")
@@ -696,6 +712,7 @@ def gui_mode():
                     return
                 selection = self.games_tree.selection()
                 if not selection:
+                    messagebox.showinfo("Info", "Selectionnez un jeu dans la liste")
                     return
                 game_id = selection[0]
                 games = list_catalog_games(self.current_system_id)
@@ -978,7 +995,9 @@ def gui_mode():
                 top.grid(row=0, column=0, sticky="ew")
                 top.columnconfigure(1, weight=1)
                 tk.Label(top, text="Historique", bg=UI_COLOR_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 24, "bold")).grid(row=0, column=0, sticky="w")
-                self.entry(top, self.history_query_var).grid(row=0, column=1, sticky="ew", padx=16, ipady=7)
+                history_search = self.entry(top, self.history_query_var)
+                history_search.grid(row=0, column=1, sticky="ew", padx=16, ipady=7)
+                history_search.bind("<Return>", lambda _event: self.refresh_history())
                 self.button(top, "Filtrer", self.refresh_history, kind="accent", width=12).grid(row=0, column=2)
 
                 self.history_tree = ttk.Treeview(frame, style="Catalog.Treeview", columns=("date", "system", "provider", "status"), show="tree headings")
@@ -1252,6 +1271,7 @@ def gui_mode():
                 if using_dat:
                     selection = self.games_tree.selection()
                     if not selection:
+                        messagebox.showinfo("Info", "Selectionnez un jeu dans la liste")
                         return
                     item_id = selection[0]
                     game_name = self.games_tree.item(item_id, "text")
@@ -1272,6 +1292,7 @@ def gui_mode():
                     return
                 selection = self.games_tree.selection()
                 if not selection:
+                    messagebox.showinfo("Info", "Selectionnez un jeu dans la liste")
                     return
                 game_id = selection[0]
                 games = list_catalog_games(self.current_system_id)
