@@ -34,6 +34,7 @@ from .scrapers import (
     list_lolroms_directory,
     _lolroms_subdir_for_system,
     iter_game_candidate_names,
+    build_listing_index,
     find_listing_match,
     resolve_edgeemu_game,
     list_planetemu_directory,
@@ -161,10 +162,11 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
                     print(f"\n--- Recherche sur PlanetEmu ({slug}) ---")
                     planet_files = list_planetemu_directory(slug, session)
                     if planet_files:
+                        planet_index = build_listing_index(planet_files)
                         newly_found = []
                         remaining = []
                         for game_info in still_missing:
-                            _matched_name, entry = find_listing_match(game_info, planet_files)
+                            _matched_name, entry = find_listing_match(game_info, planet_files, _listing_index=planet_index)
                             if entry and isinstance(entry, dict):
                                 game_info['page_url'] = entry.get('page_url', '')
                                 game_info['source'] = 'PlanetEmu'
@@ -225,6 +227,7 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
             minerva_files = collect_minerva_files_from_url(base_url, session, source.get('scan_depth', 0))
 
             if minerva_files:
+                minerva_index = build_listing_index(minerva_files)
                 torrent_url = resolve_minerva_torrent_url(source, system_name, session)
                 if not torrent_url:
                     candidates = build_minerva_torrent_urls(source, system_name)
@@ -235,7 +238,7 @@ def search_all_sources_legacy(missing_games: list, sources: list, session: reque
                 newly_found = []
                 remaining = []
                 for game_info in still_missing:
-                    _matched_name, matched = find_listing_match(game_info, minerva_files)
+                    _matched_name, matched = find_listing_match(game_info, minerva_files, _listing_index=minerva_index)
                     if matched:
                         game_info['download_filename'] = matched.get('filename', f"{game_info['game_name']}.zip")
                         game_info['torrent_url'] = torrent_url
@@ -484,10 +487,11 @@ def search_all_sources(
                         planet_files = list_planetemu_directory(slug, session)
                         session_cache.set_listing(listing_key, planet_files)
                     if planet_files:
+                        planet_index = build_listing_index(planet_files)
                         newly_found = []
                         remaining = []
                         for game_info in still_missing:
-                            _matched_name, entry = find_listing_match(game_info, planet_files)
+                            _matched_name, entry = find_listing_match(game_info, planet_files, _listing_index=planet_index)
                             if entry and isinstance(entry, dict):
                                 game_info['page_url'] = entry.get('page_url', '')
                                 game_info['source'] = 'PlanetEmu'
@@ -527,10 +531,11 @@ def search_all_sources(
                         if path_files:
                             lolroms_files = path_files
                     if lolroms_files and still_missing:
+                        lolroms_index = build_listing_index(lolroms_files)
                         newly_found = []
                         remaining = []
                         for game_info in still_missing:
-                            _matched_name, matched = find_listing_match(game_info, lolroms_files)
+                            _matched_name, matched = find_listing_match(game_info, lolroms_files, _listing_index=lolroms_index)
 
                             if matched and isinstance(matched, dict):
                                 game_info['download_url'] = matched.get('url', '')
@@ -828,8 +833,9 @@ def search_all_sources(
 
             newly_found = []
             remaining = []
+            minerva_index = build_listing_index(minerva_files)
             for game_info in still_missing:
-                _matched_name, matched = find_listing_match(game_info, minerva_files)
+                _matched_name, matched = find_listing_match(game_info, minerva_files, _listing_index=minerva_index)
                 if matched:
                     game_info['download_filename'] = matched.get('filename', f"{game_info['game_name']}.zip")
                     game_info['torrent_url'] = torrent_url

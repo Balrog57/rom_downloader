@@ -81,15 +81,36 @@ def detect_dat_profile(dat_file_path: str) -> dict:
     retool_marker = ''
 
     try:
-        tree = ET.parse(dat_file_path)
-        root = tree.getroot()
-        header_name = root.findtext('./header/name', default='').strip()
-        header_url = root.findtext('./header/url', default='').strip()
-        header_description = root.findtext('./header/description', default='').strip()
-        retool_marker = (
-            root.findtext('./header/retool', default='').strip()
-            or root.findtext('.//retool', default='').strip()
-        )
+        # Les diagnostics n'ont besoin que de l'en-tete DAT: ne pas charger
+        # toute la liste des jeux/ROMs en memoire pour extraire ces champs.
+        in_header = False
+        context = ET.iterparse(dat_file_path, events=('start', 'end'))
+        try:
+            for event, elem in context:
+                tag = elem.tag.rsplit('}', 1)[-1]
+                if event == 'start':
+                    if tag == 'header':
+                        in_header = True
+                    continue
+
+                if in_header:
+                    text = (elem.text or '').strip()
+                    if tag == 'name' and not header_name:
+                        header_name = text
+                    elif tag == 'url' and not header_url:
+                        header_url = text
+                    elif tag == 'description' and not header_description:
+                        header_description = text
+                    elif tag == 'retool' and not retool_marker:
+                        retool_marker = text
+
+                if tag == 'header':
+                    break
+                elem.clear()
+        finally:
+            close_context = getattr(context, 'close', None)
+            if close_context:
+                close_context()
     except Exception:
         pass
 

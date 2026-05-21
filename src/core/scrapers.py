@@ -706,11 +706,8 @@ def normalize_external_game_name(name: str) -> str:
     return re.sub(r'\s+', ' ', value).strip()
 
 
-def find_listing_match(game_info: dict, listing: dict, min_score: float = 0.92) -> tuple[str, dict] | tuple[None, None]:
-    """Trouve le meilleur resultat d'un listing avec exact + normalisation + fuzzy + containment."""
-    if not listing:
-        return None, None
-
+def build_listing_index(listing: dict) -> dict:
+    """Pre-calcule les index d'un listing pour eviter les normalisations repetees."""
     raw_index = {str(key).lower(): entry for key, entry in listing.items()}
     normalized_index = {}
     normalized_names = []
@@ -724,6 +721,24 @@ def find_listing_match(game_info: dict, listing: dict, min_score: float = 0.92) 
                 normalized_index[normalized] = entry
                 if normalized not in normalized_names:
                     normalized_names.append(normalized)
+    return {
+        'raw_index': raw_index,
+        'normalized_index': normalized_index,
+        'normalized_names': normalized_names,
+    }
+
+
+def find_listing_match(game_info: dict, listing: dict, min_score: float = 0.92,
+                       _listing_index: dict | None = None) -> tuple[str, dict] | tuple[None, None]:
+    """Trouve le meilleur resultat d'un listing avec exact + normalisation + fuzzy + containment."""
+    if not listing:
+        return None, None
+
+    if _listing_index is None:
+        _listing_index = build_listing_index(listing)
+    raw_index = _listing_index['raw_index']
+    normalized_index = _listing_index['normalized_index']
+    normalized_names = _listing_index['normalized_names']
 
     candidates = iter_game_candidate_names(game_info)
 
@@ -1932,6 +1947,7 @@ __all__ = [
     'list_edgeemu_directory',
     'iter_game_candidate_names',
     'normalize_external_game_name',
+    'build_listing_index',
     'find_listing_match',
     'resolve_edgeemu_game',
     'list_planetemu_directory',

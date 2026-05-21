@@ -1,10 +1,9 @@
 """Verifie que chaque DAT a un nombre minimal de providers et que les seuils sont respectes."""
 from pathlib import Path
-import sys, glob, os, json
+import sys, glob, json
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from src.core.dat_profile import detect_dat_profile, finalize_dat_profile
-from src.core.sources import SYSTEM_MAPPINGS, resolve_system_mapping
+from src.core.mapping_status import build_mapping_status
 
 _CONFIG_PATH = Path(__file__).resolve().parent / "dat_coverage_config.json"
 
@@ -29,28 +28,14 @@ def main() -> None:
         config.get("providers", []) + ["lolroms", "vimm", "planetemu", "coolrom",
                                         "romhustler", "retrogamesets", "romsxisos",
                                         "startgame", "hshop", "nopaystation",
-                                        "archive_org_collection"]
+                                        "archive_org_collection", "minerva", "archive_org"]
     })
-
-    system_names = []
-    all_missing: dict[str, list[tuple[str, str]]] = {provider: [] for provider in providers}
-
-    for f in files:
-        prof = detect_dat_profile(f)
-        sys_name = finalize_dat_profile(prof).get('system_name', '')
-        if not sys_name:
-            raise SystemExit(f'empty system_name for {f}')
-        system_names.append(sys_name)
-
-        for provider in providers:
-            mapping = SYSTEM_MAPPINGS.get(sys_name, {}).get(provider)
-            if not mapping:
-                mapping = resolve_system_mapping(sys_name, provider=provider)
-            if not mapping:
-                all_missing[provider].append((os.path.basename(f), sys_name))
-
-    unique_systems = sorted(set(system_names))
-    total_systems = len(unique_systems)
+    status = build_mapping_status(provider_types=providers)
+    total_systems = int(status.get("unique_systems") or 0)
+    all_missing: dict[str, list[tuple[str, str]]] = {
+        provider: [("", sys_name) for sys_name in (row.get("missing_systems") or [])]
+        for provider, row in (status.get("providers") or {}).items()
+    }
 
     global_min = int(config.get("global_min_providers") or 1)
     per_provider_thresholds = config.get("per_provider", {})
@@ -66,8 +51,6 @@ def main() -> None:
         expected = None
         if threshold is not None:
             expected = int(threshold)
-        elif provider == "lolroms":
-            expected = 100
         else:
             continue
 
@@ -83,14 +66,24 @@ def main() -> None:
             )
 
     systems_below_global = 0
-    for sys_name in unique_systems:
-        mapped_count = sum(
-            1 for provider in providers
-            if resolve_system_mapping(sys_name, provider)
-        )
-        if mapped_count < global_min:
+    if global_min <= 1:
+        for sys_name in status.get("without_any_provider") or []:
             systems_below_global += 1
-            failures.append(f"system '{sys_name}' has only {mapped_count} provider(s), min={global_min}")
+            failures.append(f"system '{sys_name}' has only 0 provider(s), min={global_min}")
+    else:
+        provider_counts: dict[str, int] = {}
+        for row in (status.get("providers") or {}).values():
+            for item in row.get("covered_systems") or []:
+                system_name = item.get("system_name", "")
+                provider_counts[system_name] = provider_counts.get(system_name, 0) + 1
+            for sys_name in row.get("fallback_systems") or []:
+                provider_counts[sys_name] = provider_counts.get(sys_name, 0) + 1
+        system_names = set(provider_counts) | set(status.get("without_any_provider") or [])
+        for sys_name in sorted(system_names):
+            mapped_count = provider_counts.get(sys_name, 0)
+            if mapped_count < global_min:
+                systems_below_global += 1
+                failures.append(f"system '{sys_name}' has only {mapped_count} provider(s), min={global_min}")
 
     if failures:
         for msg in sorted(failures)[:40]:

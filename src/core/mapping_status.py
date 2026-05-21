@@ -8,7 +8,12 @@ from pathlib import Path
 
 from .dat_profile import detect_dat_profile, finalize_dat_profile
 from .env import RESOURCE_ROOT
-from .sources import get_default_sources, resolve_system_mapping
+from .sources import (
+    get_default_sources,
+    provider_has_generic_fallback,
+    resolve_system_mapping,
+    system_is_explicitly_unsupported,
+)
 
 
 def _provider_types(provider_types: list[str] | None = None) -> list[str]:
@@ -31,34 +36,56 @@ def build_mapping_status(dat_root: str | Path | None = None,
     systems_by_name: dict[str, dict] = {}
 
     for dat_path in dat_files:
+        profile = {"system_name": dat_path.stem, "family": "unknown", "family_label": "Inconnu"}
         try:
             profile = finalize_dat_profile(detect_dat_profile(str(dat_path)))
-            system_name = profile.get("system_name") or dat_path.stem
         except Exception:
-            system_name = dat_path.stem
-        item = systems_by_name.setdefault(system_name, {"system_name": system_name, "dat_files": []})
+            pass
+        system_name = profile.get("system_name") or dat_path.stem
+        item = systems_by_name.setdefault(system_name, {"system_name": system_name, "dat_files": [], "profile": profile})
         item["dat_files"].append(str(dat_path))
 
     provider_rows = {}
+    source_by_type = {}
+    for source in get_default_sources():
+        source_by_type.setdefault(source.get("type"), source)
     for provider in providers:
         covered = []
+        fallback = []
+        unsupported = []
         missing = []
-        for system_name in sorted(systems_by_name, key=str.lower):
+        for system_name, system_info in sorted(systems_by_name.items(), key=lambda item: item[0].lower()):
+            profile = system_info.get("profile") or {}
             mapping = resolve_system_mapping(system_name, provider)
             if mapping:
                 covered.append({"system_name": system_name, "mapping": mapping})
+            elif system_is_explicitly_unsupported(system_name):
+                unsupported.append(system_name)
+            elif provider_has_generic_fallback(system_name, provider, profile, source_by_type.get(provider)):
+                fallback.append(system_name)
             else:
                 missing.append(system_name)
         provider_rows[provider] = {
             "covered": len(covered),
+            "fallback": len(fallback),
+            "unsupported": len(unsupported),
             "missing": len(missing),
             "covered_systems": covered,
+            "fallback_systems": fallback,
+            "unsupported_systems": unsupported,
             "missing_systems": missing,
         }
 
     without_any_provider = []
-    for system_name in sorted(systems_by_name, key=str.lower):
-        if not any(resolve_system_mapping(system_name, provider) for provider in providers):
+    for system_name, system_info in sorted(systems_by_name.items(), key=lambda item: item[0].lower()):
+        profile = system_info.get("profile") or {}
+        if system_is_explicitly_unsupported(system_name):
+            continue
+        if not any(
+            resolve_system_mapping(system_name, provider)
+            or provider_has_generic_fallback(system_name, provider, profile, source_by_type.get(provider))
+            for provider in providers
+        ):
             without_any_provider.append(system_name)
 
     return {
@@ -81,7 +108,14 @@ def format_mapping_status_report(status: dict, missing_limit: int = 20) -> str:
         "Providers:",
     ]
     for provider, row in (status.get("providers") or {}).items():
-        lines.append(f"  - {provider}: {row.get('covered', 0)} couvert(s), {row.get('missing', 0)} manquant(s)")
+        lines.append(
+            f"  - {provider}: {row.get('covered', 0)} mapping(s), "
+            f"{row.get('fallback', 0)} fallback(s), "
+            f"{row.get('unsupported', 0)} unsupported, "
+            f"{row.get('missing', 0)} manquant(s)"
+        )
+        for system_name in (row.get("fallback_systems") or [])[:max(0, min(missing_limit, 5))]:
+            lines.append(f"      fallback: {system_name}")
         missing = row.get("missing_systems") or []
         for system_name in missing[:max(0, missing_limit)]:
             lines.append(f"      manquant: {system_name}")
@@ -112,6 +146,20 @@ def export_mapping_status(status: dict, output_path: str | Path) -> str:
                         "system_name": item.get("system_name", ""),
                         "status": "covered",
                         "mapping": item.get("mapping", ""),
+                    })
+                for system_name in row.get("fallback_systems") or []:
+                    writer.writerow({
+                        "provider": provider,
+                        "system_name": system_name,
+                        "status": "fallback",
+                        "mapping": "",
+                    })
+                for system_name in row.get("unsupported_systems") or []:
+                    writer.writerow({
+                        "provider": provider,
+                        "system_name": system_name,
+                        "status": "unsupported",
+                        "mapping": "",
                     })
                 for system_name in row.get("missing_systems") or []:
                     writer.writerow({

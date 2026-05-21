@@ -72,7 +72,9 @@ class _WebHandler(BaseHTTPRequestHandler):
     def _ok(self, content_type="text/html; charset=utf-8"):
         self.send_response(200)
         self.send_header("Content-Type", content_type)
-        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header("X-Frame-Options", "DENY")
+        self.send_header("Referrer-Policy", "same-origin")
         self.end_headers()
 
     def _json(self, data):
@@ -86,6 +88,7 @@ class _WebHandler(BaseHTTPRequestHandler):
     def _error(self, code: int, msg: str):
         self.send_response(code)
         self.send_header("Content-Type", "application/json; charset=utf-8")
+        self.send_header("X-Content-Type-Options", "nosniff")
         self.end_headers()
         self.wfile.write(json.dumps({"error": msg}).encode("utf-8"))
 
@@ -146,6 +149,8 @@ class _WebHandler(BaseHTTPRequestHandler):
         return self._error(404, "unknown API endpoint")
 
     def do_POST(self):
+        if not self._same_origin_request():
+            return self._error(403, "origine refusee")
         path = urlparse(self.path).path.rstrip("/") or "/"
         if path == "/api/job/pause":
             return self._job_action(pause_download_job)
@@ -157,9 +162,30 @@ class _WebHandler(BaseHTTPRequestHandler):
             return self._job_action(retry_failed_queue_items, count=True)
         return self._error(404, "unknown API endpoint")
 
+    def _same_origin_request(self) -> bool:
+        """Bloque les POST cross-origin pour eviter les actions CSRF sur l'UI locale."""
+        host = (self.headers.get("Host") or "").strip().lower()
+        for header in ("Origin", "Referer"):
+            value = (self.headers.get(header) or "").strip()
+            if not value:
+                continue
+            parsed = urlparse(value)
+            if parsed.netloc and parsed.netloc.lower() != host:
+                return False
+        return True
+
     def _job_action(self, action, count=False):
-        length = int(self.headers.get("Content-Length", 0))
-        body = json.loads(self.rfile.read(length)) if length else {}
+        try:
+            length = int(self.headers.get("Content-Length", 0))
+        except ValueError:
+            return self._error(400, "taille de requete invalide")
+        # Les actions job n'attendent qu'un petit JSON; limiter la taille evite un DoS local trivial.
+        if length > 4096:
+            return self._error(413, "requete trop volumineuse")
+        try:
+            body = json.loads(self.rfile.read(length)) if length else {}
+        except json.JSONDecodeError:
+            return self._error(400, "json invalide")
         job_id = body.get("job_id", "")
         if not job_id:
             return self._error(400, "missing job_id")

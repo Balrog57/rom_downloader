@@ -123,6 +123,10 @@ DDL_SOURCE_TYPES = {
 
 ONEFICHIER_SOURCE_TYPES = {'retrogamesets', 'startgame'}
 
+GENERIC_FALLBACK_SOURCE_TYPES = {'archive_org', 'minerva'}
+
+UNSUPPORTED_SYSTEMS = set()
+
 
 ROMGOGETTER_ARCHIVE_ORG_COLLECTION_GROUPS = {
     'ps1_archive': [
@@ -2247,6 +2251,32 @@ def resolve_system_mapping(system_name: str, provider: str = 'lolroms') -> str |
                     return mapped
     return None
 
+
+def system_is_explicitly_unsupported(system_name: str) -> bool:
+    """Indique si un systeme est volontairement exclu de la couverture provider."""
+    return (system_name or '').strip() in UNSUPPORTED_SYSTEMS
+
+
+def provider_has_generic_fallback(system_name: str, provider: str,
+                                  dat_profile: dict | None = None,
+                                  source_config: dict | None = None) -> bool:
+    """Indique si un provider peut tenter une resolution generique sans mapping statique."""
+    if not system_name or system_is_explicitly_unsupported(system_name):
+        return False
+    provider_label = normalize_source_label(provider)
+    source_type = normalize_source_label((source_config or {}).get('type', ''))
+    if provider_label in {'archive_org', 'archive.org'} or source_type == 'archive_org':
+        return True
+    if provider_label != 'minerva' and source_type != 'minerva':
+        return False
+
+    family = (dat_profile or {}).get('family', 'unknown')
+    collection = normalize_source_label((source_config or {}).get('collection', ''))
+    if not collection:
+        return family in {'no-intro', 'redump', 'tosec', 'unknown'}
+    return normalize_source_label(family) == collection
+
+
 def build_custom_source(source_url: str) -> dict:
     """Detecte et construit une source personnalisee Minerva ou legacy."""
     normalized_url = (source_url or '').strip()
@@ -2329,6 +2359,8 @@ __all__ = [
     'SOURCE_TYPE_ORDER',
     'DDL_SOURCE_TYPES',
     'ONEFICHIER_SOURCE_TYPES',
+    'GENERIC_FALLBACK_SOURCE_TYPES',
+    'UNSUPPORTED_SYSTEMS',
     'ROMGOGETTER_ARCHIVE_ORG_COLLECTION_GROUPS',
     'source_order_key',
     'expand_collection_group',
@@ -2353,5 +2385,7 @@ __all__ = [
     'get_default_sources',
     'SYSTEM_MAPPINGS',
     'resolve_system_mapping',
+    'system_is_explicitly_unsupported',
+    'provider_has_generic_fallback',
     'build_custom_source',
 ]
