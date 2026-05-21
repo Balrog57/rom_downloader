@@ -81,6 +81,7 @@ from .downloads import *  # noqa: F401,F403
 from .interactive import *  # noqa: F401,F403
 from .verification import *  # noqa: F401,F403
 from .download_orchestrator import *  # noqa: F401,F403
+from .download_single import *  # noqa: F401,F403
 from .pipeline import *  # noqa: F401,F403
 from .cli import *  # noqa: F401,F403
 from .gui import *  # noqa: F401,F403

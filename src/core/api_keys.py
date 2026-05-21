@@ -21,6 +21,8 @@ def load_api_keys() -> dict:
         '1fichier': os.environ.get('ONE_FICHIER_API_KEY', ''),
         'alldebrid': os.environ.get('ALLDEBRID_API_KEY', ''),
         'realdebrid': os.environ.get('REALDEBRID_API_KEY', ''),
+        'debridlink': os.environ.get('DEBRIDLINK_API_KEY', ''),
+        'torbox': os.environ.get('TORBOX_API_KEY', ''),
         'archive_username': archive_username,
         'archive_password': archive_password,
     }
@@ -50,6 +52,8 @@ def save_api_keys(keys: dict) -> bool:
             '1fichier': 'ONE_FICHIER_API_KEY',
             'alldebrid': 'ALLDEBRID_API_KEY',
             'realdebrid': 'REALDEBRID_API_KEY',
+            'debridlink': 'DEBRIDLINK_API_KEY',
+            'torbox': 'TORBOX_API_KEY',
             'archive_username': 'ARCHIVE_ORG_USERNAME',
             'archive_password': 'ARCHIVE_ORG_PASSWORD',
         }

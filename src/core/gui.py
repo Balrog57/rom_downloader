@@ -1,4 +1,5 @@
 import os
+import queue
 import threading
 import time
 from pathlib import Path
@@ -32,6 +33,7 @@ from .dat_profile import (
 from .local_database import dashboard_stats
 from .download_history import list_download_history, record_download_history
 from .download_orchestrator import download_missing_games_sequentially
+from .download_single import download_single_game, auto_extract_and_repack
 from .env import *
 from .reports import write_download_report
 from .scanner import (
@@ -112,10 +114,13 @@ def gui_mode():
                 self.provider_stats = dict(self.preferences.get("provider_stats", {}))
                 self.download_job_id = ""
                 self.circuit_breaker = SourceCircuitBreaker()
+                self.download_queue: queue.Queue = queue.Queue()
+                self.download_results: list = []
                 self.downloads_tab = tk.StringVar(value="queue")
                 self.rom_folder = tk.StringVar(value=self.preferences.get("rom_folder", ""))
                 self.output_root_by_dat_var = tk.BooleanVar(value=bool(self.preferences.get("output_root_by_dat", False)))
-                self.clean_torrentzip_var = tk.BooleanVar(value=bool(self.preferences.get("clean_torrentzip", False)))
+                self.auto_extract_var = tk.BooleanVar(value=bool(self.preferences.get("auto_extract", True)))
+                self.clean_torrentzip_var = tk.BooleanVar(value=bool(self.preferences.get("clean_torrentzip", True)))
                 self.move_to_tosort_var = tk.BooleanVar(value=bool(self.preferences.get("move_to_tosort", False)))
                 self.prefer_1fichier_var = tk.BooleanVar(value=bool(self.preferences.get("prefer_1fichier", False)))
                 self.parallel_var = tk.IntVar(value=max(1, int(self.preferences.get("parallel_downloads", DEFAULT_PARALLEL_DOWNLOADS) or DEFAULT_PARALLEL_DOWNLOADS)))
@@ -126,9 +131,15 @@ def gui_mode():
                 self.history_query_var = tk.StringVar()
                 self.family_filter = "all"
                 self.letter_filter = "all"
+                self.games_filter = "all"
                 self.current_page = "home"
                 self.current_system_id = ""
+                self.dat_games = {}
+                self.dat_profile = {}
+                self.missing_games = []
+                self.local_signature_index = {}
                 self.running = False
+                self.download_worker_running = False
                 self.systems_tree = None
                 self.games_tree = None
                 self.history_tree = None
@@ -160,6 +171,7 @@ def gui_mode():
                     "rom_folder": self.rom_folder.get().strip(),
                     "output_root_by_dat": bool(self.output_root_by_dat_var.get()),
                     "clean_torrentzip": bool(self.clean_torrentzip_var.get()),
+                    "auto_extract": bool(self.auto_extract_var.get()),
                     "move_to_tosort": bool(self.move_to_tosort_var.get()),
                     "prefer_1fichier": bool(self.prefer_1fichier_var.get()),
                     "parallel_downloads": max(1, int(self.parallel_var.get() or 1)),
@@ -181,6 +193,7 @@ def gui_mode():
                 self.nav_buttons = {}
                 for page, label in [
                     ("home", "Accueil"),
+                    ("dat", "Charger DAT"),
                     ("systems", "Systemes"),
                     ("games", "Jeux"),
                     ("downloads", "Telechargements"),
@@ -236,12 +249,15 @@ def gui_mode():
                     btn.configure(bg=UI_COLOR_ACCENT if key == page else UI_COLOR_GHOST)
                 {
                     "home": self.build_home_page,
+                    "dat": self.build_dat_page,
                     "systems": self.build_systems_page,
                     "games": self.build_games_page,
                     "downloads": self.build_downloads_page,
                     "history": self.build_history_page,
                     "sources": self.build_sources_page,
                 }[page]()
+                if page == "downloads" and (self.running or self.download_worker_running):
+                    self._auto_refresh_downloads()
 
             def build_home_page(self):
                 frame = self.page_frame()
@@ -299,7 +315,88 @@ def gui_mode():
                     line = f"{item.get('date', '')} - {item.get('system_name', '')} - {item.get('game_name', '')} [{item.get('status', '')}]"
                     tk.Label(recent, text=line, bg=UI_COLOR_BG, fg=UI_COLOR_TEXT_SUB, anchor="w", font=(self.font, 10)).pack(fill="x", pady=3)
 
-            def build_systems_page(self):
+            def build_dat_page(self):
+                frame = self.page_frame()
+                tk.Label(frame, text="Charger un DAT", bg=UI_COLOR_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 24, "bold")).grid(row=0, column=0, sticky="w")
+
+                dat_info = tk.Frame(frame, bg=UI_COLOR_CARD_BG, highlightbackground=UI_COLOR_CARD_BORDER, highlightthickness=1)
+                dat_info.grid(row=1, column=0, sticky="ew", pady=(18, 0), ipadx=14, ipady=12)
+                dat_info.columnconfigure(1, weight=1)
+
+                self.dat_path_var = tk.StringVar(value=self.preferences.get("last_dat_path", ""))
+                tk.Label(dat_info, text="Fichier DAT", bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 11, "bold")).grid(row=0, column=0, sticky="w", padx=(10, 8))
+                self.entry(dat_info, self.dat_path_var).grid(row=0, column=1, sticky="ew", padx=(0, 8), ipady=7)
+                self.button(dat_info, "Parcourir", self.browse_dat_file, width=12).grid(row=0, column=2, padx=(0, 10))
+
+                self.dat_label = tk.StringVar(value="Aucun DAT charge")
+                tk.Label(dat_info, textvariable=self.dat_label, bg=UI_COLOR_CARD_BG, fg=UI_COLOR_TEXT_SUB, font=(self.font, 10)).grid(row=1, column=0, columnspan=3, sticky="w", padx=(10, 10), pady=(8, 0))
+
+                actions = tk.Frame(frame, bg=UI_COLOR_BG)
+                actions.grid(row=2, column=0, sticky="ew", pady=(18, 0))
+                self.button(actions, "Charger le DAT", self.load_dat_file, kind="accent", width=20).pack(side="left", padx=(0, 10))
+                self.button(actions, "Scanner le dossier", self.scan_rom_folder, width=20).pack(side="left", padx=(0, 10))
+
+                self.dat_results_var = tk.StringVar(value="")
+                tk.Label(frame, textvariable=self.dat_results_var, bg=UI_COLOR_BG, fg=UI_COLOR_TEXT_SUB, font=(self.font, 10)).grid(row=3, column=0, sticky="w", pady=(10, 0))
+
+                if self.dat_games and self.dat_profile:
+                    profile_desc = describe_dat_profile(self.dat_profile) if self.dat_profile else "Inconnu"
+                    total = len(self.dat_games)
+                    missing = len(self.missing_games) if self.missing_games else "?"
+                    self.dat_results_var.set(f"DAT: {profile_desc} | {total} jeux | {missing} manquants")
+
+            def browse_dat_file(self):
+                from tkinter import filedialog
+                path = filedialog.askopenfilename(title="Selectionner un fichier DAT", filetypes=[("DAT files", "*.dat *.xml"), ("All files", "*.*")])
+                if path:
+                    self.dat_path_var.set(path)
+                    self.preferences["last_dat_path"] = path
+                    self.persist_preferences()
+
+            def load_dat_file(self):
+                dat_path = self.dat_path_var.get().strip()
+                if not dat_path or not os.path.isfile(dat_path):
+                    self.dat_label.set("Fichier DAT introuvable")
+                    return
+                self.dat_games = parse_dat_file(dat_path)
+                self.dat_profile = finalize_dat_profile(detect_dat_profile(dat_path))
+                profile_desc = describe_dat_profile(self.dat_profile) if self.dat_profile else "Inconnu"
+                total = len(self.dat_games)
+                self.dat_label.set(f"DAT charge: {profile_desc} - {total} jeux")
+                self.missing_games = []
+                self.dat_results_var.set(f"DAT: {profile_desc} | {total} jeux | Cliquez sur 'Scanner le dossier' pour detecter les manquants")
+
+            def scan_rom_folder(self):
+                rom_folder = self.rom_folder.get().strip()
+                if not rom_folder:
+                    self.dat_results_var.set("Erreur: Selectionnez un dossier de sortie dans les Telechargements d'abord")
+                    self.show_page("downloads")
+                    return
+                if not self.dat_games:
+                    self.dat_results_var.set("Erreur: Chargez un DAT d'abord")
+                    return
+                self.running = True
+                self.dat_results_var.set("Scan en cours...")
+                threading.Thread(target=self.run_scan_rom_folder, args=(rom_folder,), daemon=True).start()
+
+            def run_scan_rom_folder(self, rom_folder):
+                try:
+                    output_folder = rom_folder
+                    if self.output_root_by_dat_var.get() and self.dat_profile:
+                        output_folder = resolve_dat_output_folder(self.dat_profile.get('dat_path', ''), rom_folder, True)
+                        os.makedirs(output_folder, exist_ok=True)
+                    local_roms, local_roms_normalized, local_game_names, self.local_signature_index = scan_local_roms(output_folder, self.dat_games)
+                    self.missing_games = find_missing_games(self.dat_games, local_roms, local_roms_normalized, local_game_names, self.local_signature_index)
+                    total = len(self.dat_games)
+                    present = total - len(self.missing_games)
+                    profile_desc = describe_dat_profile(self.dat_profile) if self.dat_profile else "Inconnu"
+                    msg = f"DAT: {profile_desc} | {total} jeux, {present} presents, {len(self.missing_games)} manquants"
+                    self._ui(lambda m=msg: self.dat_results_var.set(m))
+                    self._ui(lambda: self.show_page("games"))
+                except Exception as exc:
+                    self._ui(lambda m=str(exc): self.dat_results_var.set(f"Erreur: {m}"))
+                finally:
+                    self.running = False
                 frame = self.page_frame()
                 top = tk.Frame(frame, bg=UI_COLOR_BG)
                 top.grid(row=0, column=0, sticky="ew")
@@ -413,8 +510,13 @@ def gui_mode():
 
             def build_games_page(self):
                 frame = self.page_frame()
-                system = get_catalog_system(self.current_system_id) if self.current_system_id else None
-                title = system["system_name"] if system else "Jeux"
+                using_dat = bool(self.dat_games and self.missing_games is not None)
+                if using_dat:
+                    system_name = (self.dat_profile or {}).get('system_name', '') or 'Systeme inconnu'
+                    title = f"{system_name} ({len(self.missing_games)} manquants / {len(self.dat_games)} total)"
+                else:
+                    system = get_catalog_system(self.current_system_id) if self.current_system_id else None
+                    title = system["system_name"] if system else "Jeux"
                 top = tk.Frame(frame, bg=UI_COLOR_BG)
                 top.grid(row=0, column=0, sticky="ew")
                 top.columnconfigure(1, weight=1)
@@ -430,24 +532,37 @@ def gui_mode():
 
                 filters_row = tk.Frame(frame, bg=UI_COLOR_BG)
                 filters_row.grid(row=2, column=0, sticky="ew", pady=(0, 10))
-                self.games_filter_var = tk.StringVar(value="all")
+                self.games_filter_var = tk.StringVar(value="missing" if using_dat else "all")
                 for label, value in [("Tous", "all"), ("Manquants", "missing"), ("Presents", "present"), ("Providers valides", "valid"), ("Sans provider", "noprovider"), ("Erreur hash", "hash_error"), ("Erreur reseau", "network_error")]:
                     self.button(filters_row, label, lambda v=value: self.set_games_filter(v), width=14).pack(side="left", padx=(0, 5))
 
-                self.games_tree = ttk.Treeview(frame, style="Catalog.Treeview", columns=("rom", "size", "valid", "candidates", "local", "error"), show="tree headings")
-                self.games_tree.heading("#0", text="Jeu")
-                for col, label, width, anchor in [("rom", "ROM", 280, "w"), ("size", "Taille", 90, "e"), ("valid", "Valides", 70, "e"), ("candidates", "Candidats", 80, "e"), ("local", "Statut local", 110, "w"), ("error", "Derniere erreur", 200, "w")]:
-                    self.games_tree.heading(col, text=label)
-                    self.games_tree.column(col, width=width, anchor=anchor)
-                self.games_tree.column("#0", width=300, anchor="w")
-                self.games_tree.grid(row=3, column=0, sticky="nsew")
+                if using_dat:
+                    self.games_tree = ttk.Treeview(frame, style="Catalog.Treeview", columns=("rom", "size", "status"), show="tree headings")
+                    self.games_tree.heading("#0", text="Jeu")
+                    for col, label, width, anchor in [("rom", "ROM", 280, "w"), ("size", "Taille", 90, "e"), ("status", "Statut", 200, "w")]:
+                        self.games_tree.heading(col, text=label)
+                        self.games_tree.column(col, width=width, anchor=anchor)
+                    self.games_tree.column("#0", width=420, anchor="w")
+                    self.games_tree.grid(row=3, column=0, sticky="nsew")
+                else:
+                    self.games_tree = ttk.Treeview(frame, style="Catalog.Treeview", columns=("rom", "size", "valid", "candidates", "local", "error"), show="tree headings")
+                    self.games_tree.heading("#0", text="Jeu")
+                    for col, label, width, anchor in [("rom", "ROM", 280, "w"), ("size", "Taille", 90, "e"), ("valid", "Valides", 70, "e"), ("candidates", "Candidats", 80, "e"), ("local", "Statut local", 110, "w"), ("error", "Derniere erreur", 200, "w")]:
+                        self.games_tree.heading(col, text=label)
+                        self.games_tree.column(col, width=width, anchor=anchor)
+                    self.games_tree.column("#0", width=300, anchor="w")
+                    self.games_tree.grid(row=3, column=0, sticky="nsew")
 
                 actions = tk.Frame(frame, bg=UI_COLOR_BG)
                 actions.grid(row=4, column=0, sticky="ew", pady=(14, 0))
-                self.button(actions, "Telecharger le jeu", self.start_selected_game_download, kind="accent", width=18).pack(side="left", padx=(0, 10))
-                self.button(actions, "Telecharger le systeme", self.start_system_download, kind="success", width=22).pack(side="left", padx=(0, 10))
+                self.button(actions, "Telecharger ce jeu", self.start_selected_game_download, kind="accent", width=18).pack(side="left", padx=(0, 10))
                 self.button(actions, "Ajouter a la file", self.enqueue_selected_game, width=16).pack(side="left", padx=(0, 10))
-                self.button(actions, "Retour systemes", lambda: self.show_page("systems"), width=16).pack(side="left")
+                if using_dat:
+                    self.button(actions, "Telecharger tous les manquants", self.start_all_missing_download, kind="success", width=24).pack(side="left", padx=(0, 10))
+                    self.button(actions, "Ajouter tous a la file", self.enqueue_all_missing, width=18).pack(side="left", padx=(0, 10))
+                else:
+                    self.button(actions, "Telecharger le systeme", self.start_system_download, kind="success", width=22).pack(side="left", padx=(0, 10))
+                self.button(actions, "Retour", lambda: self.show_page("dat" if using_dat else "systems"), width=10).pack(side="left")
                 self.refresh_games()
 
             def set_letter_filter(self, value):
@@ -466,8 +581,12 @@ def gui_mode():
                 if not self.games_tree:
                     return
                 self.games_tree.delete(*self.games_tree.get_children())
+                using_dat = bool(self.dat_games and self.missing_games is not None)
+                if using_dat:
+                    self._refresh_dat_games()
+                    return
                 if not self.current_system_id:
-                    self.status_var.set("Selectionne un systeme")
+                    self.status_var.set("Selectionne un systeme ou charge un DAT")
                     return
                 games = list_catalog_games(self.current_system_id, self.game_query_var.get(), self.letter_filter)
                 game_ids = [g["game_id"] for g in games]
@@ -494,6 +613,38 @@ def gui_mode():
                         continue
                     self.games_tree.insert("", "end", iid=gid, text=game["game_name"], values=(game["primary_rom"], format_bytes(game["size"]), valid_count, candidates_count, local_status, last_error))
                 self.status_var.set(f"{len(self.games_tree.get_children())} jeu(x) affiche(s)")
+
+            def _refresh_dat_games(self):
+                if not self.dat_games:
+                    self.status_var.set("Aucun DAT charge")
+                    return
+                query = self.game_query_var.get().strip().lower()
+                game_filter = self.games_filter_var.get()
+                missing_names = {g.get('game_name', '') for g in self.missing_games} if self.missing_games else set()
+                letter = self.letter_filter
+                idx = 0
+                for game_name, game_info in self.dat_games.items():
+                    primary_rom = (game_info.get('roms') or [{}])[0].get('name', '') if game_info.get('roms') else game_name
+                    game_size = sum(int(r.get('size', 0) or 0) for r in (game_info.get('roms') or []))
+                    is_missing = game_name in missing_names
+                    if query and query not in game_name.lower() and query not in primary_rom.lower():
+                        continue
+                    if letter != "all":
+                        if letter == "#":
+                            if game_name[0:1].isalpha():
+                                continue
+                        else:
+                            if not game_name.lower().startswith(letter):
+                                continue
+                    if game_filter == "missing" and not is_missing:
+                        continue
+                    if game_filter == "present" and is_missing:
+                        continue
+                    status_text = "Manquant" if is_missing else "Present"
+                    iid = f"dat_{idx}"
+                    self.games_tree.insert("", "end", iid=iid, text=game_name, values=(primary_rom, format_bytes(game_size), status_text))
+                    idx += 1
+                self.status_var.set(f"{idx} jeu(x) affiche(s) — {len(missing_names)} manquants")
 
             def _game_error_summary(self, game_ids: list[str]) -> dict:
                 from .local_database import open_local_database as _opendb
@@ -524,6 +675,23 @@ def gui_mode():
                 return result
 
             def enqueue_selected_game(self):
+                using_dat = bool(self.dat_games and self.missing_games is not None)
+                if using_dat:
+                    selection = self.games_tree.selection()
+                    if not selection:
+                        return
+                    item_id = selection[0]
+                    game_name = self.games_tree.item(item_id, "text")
+                    game_info = self.dat_games.get(game_name)
+                    if not game_info:
+                        return
+                    missing_names = {g.get('game_name', '') for g in self.missing_games}
+                    if game_name not in missing_names:
+                        messagebox.showinfo("Info", f"{game_name} est deja present")
+                        return
+                    self.download_queue.put(game_info.copy())
+                    messagebox.showinfo("File", f"{game_name} ajoute a la file de telechargement")
+                    return
                 if not self.games_tree or not self.current_system_id:
                     return
                 selection = self.games_tree.selection()
@@ -555,6 +723,140 @@ def gui_mode():
                     job_id = create_download_job(system["system_id"], [game], folder)
                     messagebox.showinfo("File", f"Ajoute a la file (job {job_id[:8]})")
 
+            def enqueue_all_missing(self):
+                if not self.dat_games or self.missing_games is None:
+                    messagebox.showinfo("Info", "Chargez un DAT d'abord")
+                    return
+                count = len(self.missing_games)
+                for game in self.missing_games:
+                    self.download_queue.put(game.copy())
+                messagebox.showinfo("File", f"{count} jeu(x) ajoute(s) a la file de telechargement")
+                if not self.download_worker_running:
+                    self.start_download_worker()
+
+            def start_all_missing_download(self):
+                if not self.dat_games or self.missing_games is None:
+                    messagebox.showinfo("Info", "Chargez un DAT d'abord")
+                    return
+                rom_folder = self.rom_folder.get().strip()
+                if not rom_folder:
+                    messagebox.showerror("Erreur", "Selectionnez un dossier de sortie")
+                    return
+                self.persist_preferences()
+                self.running = True
+                self.progress_var.set(0)
+                self.show_page("downloads")
+                threading.Thread(target=self.run_all_missing_download, daemon=True).start()
+
+            def run_all_missing_download(self):
+                try:
+                    dat_profile = self.dat_profile
+                    system_name = dat_profile.get("system_name") if dat_profile else ""
+                    output_folder = self.rom_folder.get().strip()
+                    if self.output_root_by_dat_var.get() and dat_profile:
+                        output_folder = resolve_dat_output_folder(dat_profile.get('dat_path', ''), self.rom_folder.get().strip(), True)
+                    os.makedirs(output_folder, exist_ok=True)
+                    sources = self.selected_sources(dat_profile)
+                    result = download_missing_games_sequentially(
+                        self.missing_games,
+                        sources,
+                        self.session,
+                        system_name,
+                        dat_profile,
+                        output_folder,
+                        "",
+                        False,
+                        None,
+                        lambda value: self._ui(lambda v=value: self.progress_var.set(v)),
+                        self.log,
+                        lambda message: self._ui(lambda msg=message: self.status_var.set(msg)),
+                        is_running=lambda: self.running,
+                        parallel_downloads=max(1, int(self.parallel_var.get() or 1)),
+                        circuit_breaker=self.circuit_breaker,
+                    )
+                    self.update_provider_stats(result)
+                    if self.clean_torrentzip_var.get():
+                        torrentzip_summary = repack_verified_archives_to_torrentzip(
+                            self.dat_games, output_folder, False, self.log,
+                            lambda message: self._ui(lambda msg=message: self.status_var.set(msg)),
+                            is_running=lambda: self.running,
+                        )
+                        self.log(f"TorrentZip: {torrentzip_summary.get('repacked', 0)} repack(s)")
+                    if self.move_to_tosort_var.get():
+                        local_roms, local_roms_normalized, local_game_names, sig_idx = scan_local_roms(output_folder, self.dat_games)
+                        files_to_move = find_roms_not_in_dat(self.dat_games, local_roms, local_roms_normalized, output_folder)
+                        if files_to_move:
+                            moved, failed = move_files_to_tosort(files_to_move, output_folder, os.path.join(output_folder, "ToSort"), False)
+                            self.log(f"ToSort: {moved} deplace(s)")
+                    self._ui(lambda: self.status_var.set(f"Termine — {result.get('downloaded', 0)} telecharge(s), {result.get('failed', 0)} echec(s)"))
+                except Exception as exc:
+                    self.log(f"ERREUR: {exc}")
+                    self._ui(lambda msg=str(exc): self.status_var.set(f"Erreur: {msg}"))
+                finally:
+                    self.running = False
+                    self.persist_preferences()
+
+            def start_download_worker(self):
+                if self.download_worker_running:
+                    return
+                self.download_worker_running = True
+                threading.Thread(target=self._download_worker_loop, daemon=True).start()
+
+            def _download_worker_loop(self):
+                while self.download_worker_running:
+                    try:
+                        game_info = self.download_queue.get(timeout=1)
+                    except queue.Empty:
+                        self.download_worker_running = False
+                        return
+                    if not self.dat_games or not self.dat_profile:
+                        self.download_queue.task_done()
+                        continue
+                    rom_folder = self.rom_folder.get().strip()
+                    if not rom_folder:
+                        self.log("Erreur: dossier de sortie non configure")
+                        self.download_queue.task_done()
+                        continue
+                    dat_profile = self.dat_profile
+                    system_name = dat_profile.get("system_name", "") if dat_profile else ""
+                    output_folder = rom_folder
+                    try:
+                        if self.output_root_by_dat_var.get() and dat_profile:
+                            output_folder = resolve_dat_output_folder(dat_profile.get('dat_path', ''), rom_folder, True)
+                        os.makedirs(output_folder, exist_ok=True)
+                    except Exception:
+                        pass
+                    sources = self.selected_sources(dat_profile)
+                    self._ui(lambda: self.status_var.set(f"Telechargement: {game_info.get('game_name', '?')}"))
+                    try:
+                        result = download_single_game(
+                            game_info=game_info,
+                            sources=sources,
+                            session=self.session,
+                            system_name=system_name,
+                            dat_profile=dat_profile,
+                            output_folder=output_folder,
+                            dat_games=self.dat_games,
+                            clean_torrentzip=bool(self.clean_torrentzip_var.get()),
+                            log_func=self.log,
+                            is_running=lambda: self.running,
+                            circuit_breaker=self.circuit_breaker,
+                            parallel_downloads=max(1, int(self.parallel_var.get() or 1)),
+                            system_id=game_info.get('system_id', ''),
+                            game_id=game_info.get('game_id', ''),
+                        )
+                        status = result.get('status', 'failed')
+                        game_name = game_info.get('game_name', '?')
+                        if status == 'downloaded':
+                            self.log(f"OK: {game_name}")
+                        else:
+                            self.log(f"ECHEC: {game_name} ({status})")
+                        self.download_results.append(result)
+                    except Exception as exc:
+                        self.log(f"ERREUR: {game_info.get('game_name', '?')}: {exc}")
+                    self.download_queue.task_done()
+                self.download_worker_running = False
+
             def build_downloads_page(self):
                 frame = self.page_frame()
                 tk.Label(frame, text="Telechargements", bg=UI_COLOR_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 24, "bold")).grid(row=0, column=0, sticky="w")
@@ -565,11 +867,12 @@ def gui_mode():
                 self.entry(settings, self.rom_folder).grid(row=0, column=1, sticky="ew", padx=12, ipady=7)
                 self.button(settings, "Parcourir", self.browse_output, width=12).grid(row=0, column=2)
                 self.check(settings, "Sous-dossier nomme comme le DAT", self.output_root_by_dat_var).grid(row=1, column=1, sticky="w", pady=6)
-                self.check(settings, "Recompresser en ZIP TorrentZip apres validation MD5", self.clean_torrentzip_var).grid(row=2, column=1, sticky="w")
-                self.check(settings, "Deplacer les fichiers hors DAT vers ToSort", self.move_to_tosort_var).grid(row=3, column=1, sticky="w")
-                self.check(settings, "Privilegier les sources 1fichier configurees", self.prefer_1fichier_var).grid(row=4, column=1, sticky="w")
-                tk.Label(settings, text="Parallele", bg=UI_COLOR_BG, fg=UI_COLOR_TEXT_MAIN).grid(row=5, column=0, sticky="w", pady=(6, 0))
-                tk.Spinbox(settings, from_=1, to=12, textvariable=self.parallel_var, width=5, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, buttonbackground=UI_COLOR_GHOST, relief="flat").grid(row=5, column=1, sticky="w", pady=(6, 0))
+                self.check(settings, "Extraire + TorrentZip automatiquement", self.auto_extract_var).grid(row=2, column=1, sticky="w")
+                self.check(settings, "Recompresser en ZIP TorrentZip (apres telechargement complet)", self.clean_torrentzip_var).grid(row=3, column=1, sticky="w")
+                self.check(settings, "Deplacer les fichiers hors DAT vers ToSort", self.move_to_tosort_var).grid(row=4, column=1, sticky="w")
+                self.check(settings, "Privilegier les sources 1fichier configurees", self.prefer_1fichier_var).grid(row=5, column=1, sticky="w")
+                tk.Label(settings, text="Parallele", bg=UI_COLOR_BG, fg=UI_COLOR_TEXT_MAIN).grid(row=6, column=0, sticky="w", pady=(6, 0))
+                tk.Spinbox(settings, from_=1, to=12, textvariable=self.parallel_var, width=5, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, buttonbackground=UI_COLOR_GHOST, relief="flat").grid(row=6, column=1, sticky="w", pady=(6, 0))
 
                 tabs = tk.Frame(frame, bg=UI_COLOR_BG)
                 tabs.grid(row=2, column=0, sticky="ew", pady=(12, 0))
@@ -945,6 +1248,26 @@ def gui_mode():
                     self.running = False
 
             def start_selected_game_download(self):
+                using_dat = bool(self.dat_games and self.missing_games is not None)
+                if using_dat:
+                    selection = self.games_tree.selection()
+                    if not selection:
+                        return
+                    item_id = selection[0]
+                    game_name = self.games_tree.item(item_id, "text")
+                    game_info = self.dat_games.get(game_name)
+                    if not game_info:
+                        return
+                    rom_folder = self.rom_folder.get().strip()
+                    if not rom_folder:
+                        messagebox.showerror("Erreur", "Selectionnez un dossier de sortie dans l'onglet Telechargements")
+                        return
+                    self.persist_preferences()
+                    self.running = True
+                    self.progress_var.set(0)
+                    self.show_page("downloads")
+                    threading.Thread(target=self._run_single_dat_game, args=(game_info,), daemon=True).start()
+                    return
                 if not self.games_tree or not self.current_system_id:
                     return
                 selection = self.games_tree.selection()
@@ -955,6 +1278,47 @@ def gui_mode():
                 game = next((item for item in games if item["game_id"] == game_id), None)
                 if game:
                     self.start_download_job([game])
+
+            def _run_single_dat_game(self, game_info):
+                try:
+                    rom_folder = self.rom_folder.get().strip()
+                    dat_profile = self.dat_profile
+                    system_name = dat_profile.get("system_name", "") if dat_profile else ""
+                    output_folder = rom_folder
+                    if self.output_root_by_dat_var.get() and dat_profile:
+                        output_folder = resolve_dat_output_folder(dat_profile.get('dat_path', ''), rom_folder, True)
+                    os.makedirs(output_folder, exist_ok=True)
+                    sources = self.selected_sources(dat_profile)
+                    self._ui(lambda: self.status_var.set(f"Telechargement: {game_info.get('game_name', '?')}"))
+                    result = download_single_game(
+                        game_info=game_info,
+                        sources=sources,
+                        session=self.session,
+                        system_name=system_name,
+                        dat_profile=dat_profile,
+                        output_folder=output_folder,
+                        dat_games=self.dat_games,
+                        clean_torrentzip=bool(self.auto_extract_var.get() or self.clean_torrentzip_var.get()),
+                        progress_callback=lambda v: self._ui(lambda val=v: self.progress_var.set(val)),
+                        log_func=self.log,
+                        is_running=lambda: self.running,
+                        circuit_breaker=self.circuit_breaker,
+                    )
+                    status = result.get('status', 'failed')
+                    game_name = game_info.get('game_name', '?')
+                    if status == 'downloaded':
+                        self.log(f"Telecharge: {game_name}")
+                    elif status == 'skipped':
+                        self.log(f"Deja present: {game_name}")
+                    else:
+                        self.log(f"Echec: {game_name} ({status})")
+                    self._ui(lambda: self.status_var.set(f"{status}: {game_name}"))
+                except Exception as exc:
+                    self.log(f"ERREUR: {exc}")
+                    self._ui(lambda msg=str(exc): self.status_var.set(f"Erreur: {msg}"))
+                finally:
+                    self.running = False
+                    self.persist_preferences()
 
             def start_system_download(self):
                 if not self.current_system_id:
@@ -1105,7 +1469,7 @@ def gui_mode():
                 window = tk.Toplevel(self.root)
                 window.title("Cles API locales")
                 window.configure(bg=UI_COLOR_BG)
-                window.geometry("560x240")
+                window.geometry("560x340")
                 window.transient(self.root)
                 window.columnconfigure(1, weight=1)
                 keys = load_api_keys()
@@ -1113,6 +1477,8 @@ def gui_mode():
                     ("1fichier", "onefichier", keys.get("1fichier", "")),
                     ("AllDebrid", "alldebrid", keys.get("alldebrid", "")),
                     ("RealDebrid", "realdebrid", keys.get("realdebrid", "")),
+                    ("Debrid-Link", "debridlink", keys.get("debridlink", "")),
+                    ("TorBox", "torbox", keys.get("torbox", "")),
                     ("archive.org compte", "archive_username", keys.get("archive_username", "")),
                     ("archive.org mot de passe", "archive_password", keys.get("archive_password", "")),
                 ]
@@ -1128,6 +1494,8 @@ def gui_mode():
                         "1fichier": vars_by_key["onefichier"].get().strip(),
                         "alldebrid": vars_by_key["alldebrid"].get().strip(),
                         "realdebrid": vars_by_key["realdebrid"].get().strip(),
+                        "debridlink": vars_by_key["debridlink"].get().strip(),
+                        "torbox": vars_by_key["torbox"].get().strip(),
                         "archive_username": vars_by_key["archive_username"].get().strip(),
                         "archive_password": vars_by_key["archive_password"].get().strip(),
                     })
@@ -1140,6 +1508,15 @@ def gui_mode():
                     callback()
                 else:
                     self.root.after(0, callback)
+
+            def _auto_refresh_downloads(self):
+                if self.current_page == "downloads" and hasattr(self, "downloads_tree") and self.downloads_tree:
+                    try:
+                        self._refresh_downloads_tree()
+                    except Exception:
+                        pass
+                if self.running or self.download_worker_running:
+                    self.root.after(2000, self._auto_refresh_downloads)
 
         root = tk.Tk()
         app = App(root)
