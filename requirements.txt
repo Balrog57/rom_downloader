@@ -1,6 +1,6 @@
-requests>=2.31,<3
+requests>=2.34.2,<3
 beautifulsoup4>=4.14.3,<5
-internetarchive>=5.0,<6
+internetarchive>=5.8.0,<6
 cloudscraper>=1.2.71,<2
 py7zr>=1.0,<2
 rarfile>=4.0,<5
