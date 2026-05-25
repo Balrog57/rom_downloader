@@ -141,8 +141,15 @@ def init_local_database(path: str | Path | None = None, conn: sqlite3.Connection
             archive_org_identifier TEXT,
             archive_org_filename TEXT,
             download_filename TEXT,
+            size INTEGER NOT NULL DEFAULT 0,
             status TEXT NOT NULL DEFAULT 'resolved',
             error_code TEXT NOT NULL DEFAULT '',
+            http_status INTEGER NOT NULL DEFAULT 0,
+            content_type TEXT NOT NULL DEFAULT '',
+            announced_size INTEGER NOT NULL DEFAULT 0,
+            hash_final TEXT NOT NULL DEFAULT '',
+            html_snippet TEXT NOT NULL DEFAULT '',
+            provider_rank INTEGER NOT NULL DEFAULT 0,
             metadata_json TEXT NOT NULL DEFAULT '{}',
             last_checked_at REAL NOT NULL,
             expires_at REAL NOT NULL DEFAULT 0,
@@ -152,6 +159,8 @@ def init_local_database(path: str | Path | None = None, conn: sqlite3.Connection
         );
         CREATE INDEX IF NOT EXISTS idx_provider_candidates_game ON provider_candidates(game_id, status, last_checked_at);
         CREATE INDEX IF NOT EXISTS idx_provider_candidates_provider ON provider_candidates(provider, status);
+        CREATE INDEX IF NOT EXISTS idx_provider_candidates_system_provider ON provider_candidates(system_id, provider);
+        CREATE INDEX IF NOT EXISTS idx_provider_candidates_expires ON provider_candidates(expires_at);
         CREATE TABLE IF NOT EXISTS download_jobs (
             job_id TEXT PRIMARY KEY,
             system_id TEXT,
@@ -280,8 +289,19 @@ def init_local_database(path: str | Path | None = None, conn: sqlite3.Connection
     _ensure_column(conn, "download_attempts", "hash_final", "hash_final TEXT NOT NULL DEFAULT ''")
     _ensure_column(conn, "download_attempts", "html_snippet", "html_snippet TEXT NOT NULL DEFAULT ''")
     _ensure_column(conn, "download_attempts", "provider_rank", "provider_rank INTEGER NOT NULL DEFAULT 0")
+    _ensure_column(conn, "provider_candidates", "size", "size INTEGER NOT NULL DEFAULT 0")
+    _ensure_column(conn, "provider_candidates", "http_status", "http_status INTEGER NOT NULL DEFAULT 0")
+    _ensure_column(conn, "provider_candidates", "content_type", "content_type TEXT NOT NULL DEFAULT ''")
+    _ensure_column(conn, "provider_candidates", "announced_size", "announced_size INTEGER NOT NULL DEFAULT 0")
+    _ensure_column(conn, "provider_candidates", "hash_final", "hash_final TEXT NOT NULL DEFAULT ''")
+    _ensure_column(conn, "provider_candidates", "html_snippet", "html_snippet TEXT NOT NULL DEFAULT ''")
+    _ensure_column(conn, "provider_candidates", "provider_rank", "provider_rank INTEGER NOT NULL DEFAULT 0")
     conn.execute("CREATE INDEX IF NOT EXISTS idx_download_attempts_error_code ON download_attempts(error_code)")
     conn.execute("CREATE INDEX IF NOT EXISTS idx_provider_successes_provider ON provider_successes(provider)")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_provider_candidates_game ON provider_candidates(game_id, status, last_checked_at)")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_provider_candidates_provider ON provider_candidates(provider, status)")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_provider_candidates_system_provider ON provider_candidates(system_id, provider)")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_provider_candidates_expires ON provider_candidates(expires_at)")
     conn.execute(
         "CREATE VIRTUAL TABLE IF NOT EXISTS game_search_fts USING fts5("
         "game_id UNINDEXED, system_id UNINDEXED, game_name, primary_rom, "
@@ -903,6 +923,155 @@ def list_provider_metrics(path: str | Path | None = None) -> dict[str, dict]:
     return {row["provider"]: dict(row) for row in rows}
 
 
+def _health_action(enabled: bool, status: str, cloudflare_count: int, html_count: int,
+                   hash_count: int, failure_count: int) -> str:
+    if not enabled:
+        return "Reactiver la source si necessaire"
+    if cloudflare_count:
+        return "Tester navigateur/cache Cloudflare"
+    if html_count:
+        return "Verifier URL et selecteurs HTML"
+    if hash_count:
+        return "Verifier mapping DAT/provider"
+    if status == "degraded" or failure_count:
+        return "Relancer un test source"
+    if status == "ok":
+        return "Aucune action"
+    return "Sonder des candidats"
+
+
+def build_source_health_summary(sources: list[dict] | None = None,
+                                path: str | Path | None = None) -> list[dict]:
+    """Agrège candidates, succes, tentatives et circuits en un tableau source-health."""
+    if sources is None:
+        try:
+            from .sources import get_default_sources
+            sources = get_default_sources()
+        except Exception:
+            sources = []
+    now = time.time()
+    source_map = {
+        (source.get("name") or source.get("type") or ""): source
+        for source in (sources or [])
+        if source.get("name") or source.get("type")
+    }
+    with open_local_database(path) as conn:
+        metric_rows = conn.execute("SELECT * FROM provider_metrics").fetchall()
+        candidate_rows = conn.execute(
+            """
+            SELECT provider, source_type,
+                   COUNT(*) AS candidate_count,
+                   COUNT(DISTINCT game_id) AS covered_games,
+                   SUM(CASE WHEN status='resolved' AND (expires_at = 0 OR expires_at > ?) THEN 1 ELSE 0 END) AS active_candidates,
+                   SUM(CASE WHEN expires_at > 0 AND expires_at <= ? THEN 1 ELSE 0 END) AS expired_candidates,
+                   SUM(CASE WHEN status != 'resolved' OR error_code != '' THEN 1 ELSE 0 END) AS candidate_errors,
+                   MAX(last_checked_at) AS last_checked_at
+            FROM provider_candidates
+            GROUP BY provider, source_type
+            """,
+            (now, now),
+        ).fetchall()
+        success_rows = conn.execute(
+            """
+            SELECT provider, COUNT(*) AS success_count, COUNT(DISTINCT game_id) AS success_games,
+                   MAX(created_at) AS last_success_at
+            FROM provider_successes
+            GROUP BY provider
+            """
+        ).fetchall()
+        attempt_rows = conn.execute(
+            """
+            SELECT provider, COUNT(*) AS attempt_count,
+                   SUM(CASE WHEN status IN ('completed', 'downloaded') THEN 1 ELSE 0 END) AS completed_count,
+                   SUM(CASE WHEN status IN ('failed', 'error') THEN 1 ELSE 0 END) AS failure_count,
+                   SUM(CASE WHEN error_code='cloudflare_challenge' THEN 1 ELSE 0 END) AS cloudflare_count,
+                   SUM(CASE WHEN error_code IN ('unexpected_html', 'html_response') THEN 1 ELSE 0 END) AS html_count,
+                   SUM(CASE WHEN error_code IN ('checksum_mismatch', 'hash_mismatch') THEN 1 ELSE 0 END) AS hash_count,
+                   MAX(created_at) AS last_attempt_at
+            FROM download_attempts
+            WHERE provider != ''
+            GROUP BY provider
+            """
+        ).fetchall()
+        latest_errors = conn.execute(
+            """
+            SELECT provider, error_code, detail, created_at
+            FROM download_attempts
+            WHERE provider != '' AND status IN ('failed', 'error', 'not_found')
+            ORDER BY created_at DESC
+            """
+        ).fetchall()
+        circuit_rows = conn.execute("SELECT * FROM circuit_states").fetchall()
+
+    metrics = {row["provider"]: dict(row) for row in metric_rows}
+    candidates = {row["provider"]: dict(row) for row in candidate_rows}
+    successes = {row["provider"]: dict(row) for row in success_rows}
+    attempts = {row["provider"]: dict(row) for row in attempt_rows}
+    latest_error_by_provider = {}
+    for row in latest_errors:
+        provider = row["provider"]
+        if provider not in latest_error_by_provider:
+            latest_error_by_provider[provider] = dict(row)
+    circuits = {row["source_name"]: dict(row) for row in circuit_rows}
+    provider_names = set(source_map) | set(metrics) | set(candidates) | set(successes) | set(attempts) | set(circuits)
+    rows = []
+    for provider in sorted(provider_names, key=lambda value: value.lower()):
+        source = source_map.get(provider, {})
+        metric = metrics.get(provider, {})
+        candidate = candidates.get(provider, {})
+        success = successes.get(provider, {})
+        attempt = attempts.get(provider, {})
+        circuit = circuits.get(provider, {})
+        enabled = bool(source.get("enabled", True))
+        failure_count = int(metric.get("failed") or attempt.get("failure_count") or 0)
+        downloaded = int(metric.get("downloaded") or success.get("success_count") or attempt.get("completed_count") or 0)
+        cloudflare_count = int(attempt.get("cloudflare_count") or 0)
+        html_count = int(attempt.get("html_count") or 0)
+        hash_count = int(attempt.get("hash_count") or 0)
+        if not enabled:
+            status = "disabled"
+        elif int(circuit.get("failures") or 0) > 0 or cloudflare_count or html_count or (failure_count > downloaded and failure_count > 0):
+            status = "degraded"
+        elif downloaded or int(success.get("success_count") or 0):
+            status = "ok"
+        elif int(candidate.get("active_candidates") or 0):
+            status = "candidate"
+        else:
+            status = "unknown"
+        latest_error = latest_error_by_provider.get(provider, {})
+        last_success = float(metric.get("last_success_at") or success.get("last_success_at") or 0)
+        last_failure = float(metric.get("last_failure_at") or latest_error.get("created_at") or 0)
+        last_checked = float(candidate.get("last_checked_at") or 0)
+        rows.append({
+            "provider": provider,
+            "type": source.get("type") or candidate.get("source_type") or "",
+            "enabled": enabled,
+            "status": status,
+            "coverage": int(candidate.get("covered_games") or 0),
+            "candidate_count": int(candidate.get("candidate_count") or 0),
+            "active_candidates": int(candidate.get("active_candidates") or 0),
+            "expired_candidates": int(candidate.get("expired_candidates") or 0),
+            "candidate_errors": int(candidate.get("candidate_errors") or 0),
+            "success_count": int(success.get("success_count") or downloaded),
+            "success_games": int(success.get("success_games") or 0),
+            "attempt_count": int(metric.get("attempts") or attempt.get("attempt_count") or 0),
+            "failure_count": failure_count,
+            "average_speed": float(metric.get("average_speed") or 0),
+            "last_success_at": last_success,
+            "last_failure_at": last_failure,
+            "last_test_at": max(last_success, last_failure, last_checked, float(attempt.get("last_attempt_at") or 0)),
+            "last_error_code": latest_error.get("error_code") or "",
+            "last_error": latest_error.get("detail") or "",
+            "cloudflare_count": cloudflare_count,
+            "html_count": html_count,
+            "hash_mismatch_count": hash_count,
+            "circuit_state": f"failures={int(circuit.get('failures') or 0)}" if circuit else "ok",
+            "recommended_action": _health_action(enabled, status, cloudflare_count, html_count, hash_count, failure_count),
+        })
+    rows.sort(key=lambda item: (item["status"] == "disabled", item["provider"].lower()))
+    return rows
+
+
 def list_download_queue_items(filters: dict | None = None, limit: int = 1000,
                               path: str | Path | None = None) -> list[dict]:
     """Liste les jeux en file persistante."""
@@ -1060,6 +1229,23 @@ def record_provider_success(game_id: str, candidate: dict, file_info: dict,
         )
 
 
+def _candidate_ttl_seconds(status: str, error_code: str = "") -> int:
+    """TTL pragmatique des candidates non verifiees."""
+    normalized_status = (status or "").strip().lower()
+    normalized_error = (error_code or "").strip().lower()
+    if normalized_status == "resolved" and not normalized_error:
+        return 7 * 86400
+    if normalized_error in {"network_timeout", "http_429", "http_5xx", "cloudflare_challenge"}:
+        return 2 * 3600
+    if normalized_error == "http_404":
+        return 24 * 3600
+    if normalized_status in {"not_found", "missing"} or normalized_error in {"game_not_found", "provider_not_mapped"}:
+        return 24 * 3600
+    if normalized_error:
+        return 24 * 3600
+    return 7 * 86400
+
+
 def record_provider_candidates(game_id: str, candidates: list[dict], status: str = "resolved",
                                error_code: str = "", ttl_seconds: int | None = None,
                                path: str | Path | None = None) -> int:
@@ -1067,7 +1253,6 @@ def record_provider_candidates(game_id: str, candidates: list[dict], status: str
     if not game_id or not candidates:
         return 0
     now = time.time()
-    expires_at = now + ttl_seconds if ttl_seconds else 0
     stored = 0
     with open_local_database(path) as conn:
         row = conn.execute(
@@ -1080,6 +1265,14 @@ def record_provider_candidates(game_id: str, candidates: list[dict], status: str
             provider = candidate.get("source") or candidate.get("provider") or ""
             if not provider:
                 continue
+            candidate_status = candidate.get("status") or status or "resolved"
+            candidate_error = (
+                candidate.get("error_code")
+                or error_code
+                or classify_error(candidate_status, candidate.get("detail") or candidate.get("error") or "")
+            )
+            candidate_ttl = ttl_seconds if ttl_seconds is not None else _candidate_ttl_seconds(candidate_status, candidate_error)
+            expires_at = now + candidate_ttl if candidate_ttl else 0
             metadata = {
                 key: value
                 for key, value in candidate.items()
@@ -1091,6 +1284,13 @@ def record_provider_candidates(game_id: str, candidates: list[dict], status: str
                     "page_url",
                     "archive_org_identifier",
                     "archive_org_filename",
+                    "size",
+                    "http_status",
+                    "content_type",
+                    "announced_size",
+                    "hash_final",
+                    "html_snippet",
+                    "provider_rank",
                 }
             }
             conn.execute(
@@ -1098,15 +1298,23 @@ def record_provider_candidates(game_id: str, candidates: list[dict], status: str
                 INSERT INTO provider_candidates
                 (game_id, system_id, game_name, provider, source_type, confidence,
                  download_url, torrent_url, page_url, archive_org_identifier, archive_org_filename,
-                 download_filename, status, error_code, metadata_json, last_checked_at, expires_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                 download_filename, size, status, error_code, http_status, content_type,
+                 announced_size, hash_final, html_snippet, provider_rank, metadata_json, last_checked_at, expires_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ON CONFLICT(game_id, provider, download_url, torrent_url, page_url, archive_org_identifier, archive_org_filename)
                 DO UPDATE SET
                     source_type = excluded.source_type,
                     confidence = excluded.confidence,
                     download_filename = excluded.download_filename,
+                    size = excluded.size,
                     status = excluded.status,
                     error_code = excluded.error_code,
+                    http_status = excluded.http_status,
+                    content_type = excluded.content_type,
+                    announced_size = excluded.announced_size,
+                    hash_final = excluded.hash_final,
+                    html_snippet = excluded.html_snippet,
+                    provider_rank = excluded.provider_rank,
                     metadata_json = excluded.metadata_json,
                     last_checked_at = excluded.last_checked_at,
                     expires_at = excluded.expires_at
@@ -1124,8 +1332,15 @@ def record_provider_candidates(game_id: str, candidates: list[dict], status: str
                     candidate.get("archive_org_identifier") or "",
                     candidate.get("archive_org_filename") or "",
                     candidate.get("download_filename") or "",
-                    status,
-                    error_code,
+                    int(candidate.get("size") or 0),
+                    candidate_status,
+                    candidate_error,
+                    int(candidate.get("http_status") or 0),
+                    candidate.get("content_type") or "",
+                    int(candidate.get("announced_size") or 0),
+                    candidate.get("hash_final") or "",
+                    str(candidate.get("html_snippet") or "")[:500],
+                    int(candidate.get("provider_rank") or 0),
                     json.dumps(metadata, ensure_ascii=False, sort_keys=True),
                     now,
                     expires_at,
@@ -1188,8 +1403,15 @@ def _provider_candidate_row_to_dict(row: sqlite3.Row) -> dict:
         "archive_org_identifier": row["archive_org_identifier"],
         "archive_org_filename": row["archive_org_filename"],
         "download_filename": row["download_filename"],
+        "size": row["size"],
         "status": row["status"],
         "error_code": row["error_code"],
+        "http_status": row["http_status"],
+        "content_type": row["content_type"],
+        "announced_size": row["announced_size"],
+        "hash_final": row["hash_final"],
+        "html_snippet": row["html_snippet"],
+        "provider_rank": row["provider_rank"],
         "last_checked_at": row["last_checked_at"],
         "expires_at": row["expires_at"],
     })
@@ -1475,6 +1697,7 @@ __all__ = [
     "record_provider_candidates",
     "list_provider_candidates",
     "list_validated_providers",
+    "build_source_health_summary",
     "list_download_history",
     "database_status",
     "dashboard_stats",

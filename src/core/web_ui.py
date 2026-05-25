@@ -21,6 +21,7 @@ from .local_database import (
     list_download_jobs,
     list_download_history,
     list_provider_metrics,
+    build_source_health_summary,
     list_validated_providers,
     list_provider_candidates,
     pause_download_job,
@@ -212,6 +213,8 @@ class _WebHandler(BaseHTTPRequestHandler):
             return self._json(list_download_history({"query": q}, limit=limit))
         if path == "/api/metrics":
             return self._json(list_provider_metrics())
+        if path == "/api/source/health":
+            return self._json(build_source_health_summary(get_default_sources()))
         if path == "/api/providers":
             game_id = self._query().get("game_id", [""])[0]
             if not game_id:
@@ -512,18 +515,34 @@ class _WebHandler(BaseHTTPRequestHandler):
                 rows += f"<tr><td>{date}</td><td>{game_name}</td><td>{provider}</td><td>{status}</td></tr>"
             self._html(f"<h1>Historique</h1><table><tr><th>Date</th><th>Jeu</th><th>Provider</th><th>Statut</th></tr>{rows}</table>")
         elif path == "/sources":
-            sources = get_default_sources()
-            metrics = list_provider_metrics()
+            health_rows = build_source_health_summary(get_default_sources())
             rows = ""
-            for src in sources[:30]:
-                name = src.get("name", "")
-                m = metrics.get(name, {})
-                successes = m.get("downloaded", 0)
-                failures = m.get("failed", 0)
-                speed = format_bytes_for_web(m.get("average_speed", 0)) + "/s" if m.get("average_speed") else ""
+            for src in health_rows[:50]:
+                name = src.get("provider", "")
+                successes = src.get("success_count", 0)
+                failures = src.get("failure_count", 0)
+                speed = format_bytes_for_web(src.get("average_speed", 0)) + "/s" if src.get("average_speed") else ""
+                status = html.escape(str(src.get("status", "")))
+                coverage = int(src.get("coverage") or 0)
+                candidates = int(src.get("active_candidates") or 0)
+                last_error = html.escape(str(src.get("last_error_code") or ""))
+                action = html.escape(str(src.get("recommended_action") or ""))
                 js_name = html.escape(json.dumps(str(name)), quote=True)
-                rows += f"<tr><td>{html.escape(str(name))}</td><td>{html.escape(str(src.get('type','')))}</td><td>{successes}</td><td>{failures}</td><td>{speed}</td><td><button onclick=\"clearCaches({js_name})\">Cache</button></td></tr>"
-            self._html(f"<h1>Sources</h1><button onclick=\"testSources()\">Tester maintenant</button><button class=\"secondary\" onclick=\"clearCaches('')\">Vider caches</button><table><tr><th>Provider</th><th>Type</th><th>Succes</th><th>Echecs</th><th>Vitesse</th><th>Actions</th></tr>{rows}</table><pre id=\"api-result\"></pre>")
+                rows += (
+                    f"<tr><td>{html.escape(str(name))}</td><td>{html.escape(str(src.get('type','')))}</td>"
+                    f"<td>{status}</td><td>{coverage}</td><td>{candidates}</td>"
+                    f"<td>{successes}</td><td>{failures}</td><td>{speed}</td>"
+                    f"<td>{last_error}</td><td>{action}</td>"
+                    f"<td><button onclick=\"clearCaches({js_name})\">Cache</button></td></tr>"
+                )
+            self._html(
+                "<h1>Sources</h1><button onclick=\"testSources()\">Tester maintenant</button>"
+                "<button class=\"secondary\" onclick=\"clearCaches('')\">Vider caches</button>"
+                "<table><tr><th>Provider</th><th>Type</th><th>Statut</th><th>Couverture</th>"
+                "<th>Candidats</th><th>Succes</th><th>Echecs</th><th>Vitesse</th>"
+                "<th>Derniere erreur</th><th>Action</th><th>Cache</th></tr>"
+                f"{rows}</table><pre id=\"api-result\"></pre>"
+            )
         else:
             self._html("<h1>404</h1><p>Page non trouvee</p>")
 

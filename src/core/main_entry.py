@@ -11,6 +11,7 @@ from .dependencies import *
 from .diagnostics import (
     print_sources_info,
     print_provider_healthcheck,
+    print_source_health_summary,
     print_provider_registry_info,
     build_diagnostic_report,
     print_diagnostic_report,
@@ -80,6 +81,7 @@ Exemples:
     parser.add_argument('--diagnose', action='store_true', help='Afficher un diagnostic local de l application')
     parser.add_argument('--diagnose-output', help='Exporter le diagnostic JSON vers ce fichier')
     parser.add_argument('--healthcheck-sources', action='store_true', help='Tester rapidement les sources configurees')
+    parser.add_argument('--source-health', action='store_true', help='Afficher la sante SQLite des sources sans telecharger')
     parser.add_argument('--provider-registry', action='store_true', help='Afficher les providers via l interface commune')
     parser.add_argument('--refresh-cache', action='store_true', help='Ignorer et reconstruire le cache de resolution provider')
     parser.add_argument('--clear-listing-cache', action='store_true', help='Vider le cache des listings distants puis quitter')
@@ -153,6 +155,11 @@ Exemples:
 
     if args.healthcheck_sources:
         print_provider_healthcheck(provider_healthcheck())
+        return
+
+    if args.source_health:
+        from .local_database import build_source_health_summary
+        print_source_health_summary(build_source_health_summary())
         return
 
     if args.provider_registry:

@@ -49,6 +49,7 @@ from src.core import (  # noqa: E402
     record_provider_candidates,
     list_provider_candidates,
     list_provider_metrics,
+    build_source_health_summary,
     record_download_history,
     list_download_history,
     classify_error,
@@ -412,6 +413,16 @@ def main() -> None:
             ],
             "not_available": [{"game_name": "Gamma Game"}],
             "skipped_items": [{"game_name": "Delta Game"}],
+            "source_health": [{
+                "provider": "ProviderB",
+                "status": "degraded",
+                "coverage": 2,
+                "active_candidates": 1,
+                "success_count": 0,
+                "failure_count": 1,
+                "last_error_code": "checksum_mismatch",
+                "recommended_action": "Verifier mapping DAT/provider",
+            }],
         }
         payload = build_report_payload(report_summary)
         assert_true(payload["metadata"]["mode"] == "dry-run", "report payload mode failed")
@@ -425,11 +436,13 @@ def main() -> None:
         assert_true("Telecharges/Simules" in txt_report, "txt simulated section missing")
         json_report = json.loads(Path(report_paths["json"]).read_text(encoding="utf-8"))
         assert_true("metadata" in json_report and "counts" in json_report and "items" in json_report, "json report shape failed")
+        assert_true(json_report["source_health"][0]["provider"] == "ProviderB", "json source health failed")
         csv_report = Path(report_paths["csv"]).read_text(encoding="utf-8")
         assert_true("status,system_name,game_name,provider,download_filename,size,error_code,detail,file_path" in csv_report, "csv header failed")
         assert_true("checksum_mismatch" in csv_report and "not_found" in csv_report, "csv rows failed")
         html_report = Path(report_paths["html"]).read_text(encoding="utf-8")
         assert_true("Alpha &lt;Bad &amp; &quot;Game&quot;&gt;" in html_report, "html escaping failed")
+        assert_true("Sante sources" in html_report and "ProviderB" in html_report, "html source health failed")
         assert_true("Alpha <Bad" not in html_report, "html must not contain raw game name")
         compat_path = write_download_report(report_dir, report_summary)
         assert_true(Path(compat_path).exists() and compat_path.endswith(".txt"), "compat txt report failed")
@@ -598,9 +611,34 @@ def main() -> None:
         assert_true(len(candidates) == 2, "provider candidate dedup failed")
         provider_a = next(item for item in candidates if item["source"] == "ProviderA")
         assert_true(provider_a["download_filename"] == "a2.zip", "provider candidate update failed")
+        assert_true(provider_a["expires_at"] > time.time(), "provider candidate TTL missing")
+        stored_error = record_provider_candidates(
+            enriched["game_id"],
+            [{
+                "source": "ProviderB",
+                "page_url": "https://example.invalid/html",
+                "status": "not_found",
+                "error_code": "html_response",
+                "http_status": 403,
+                "content_type": "text/html; charset=utf-8",
+                "html_snippet": "<html>Just a moment</html>",
+                "provider_rank": 2,
+            }],
+            path=catalog_root,
+        )
+        assert_true(stored_error == 1, "provider candidate error insert failed")
+        provider_b = next(item for item in list_provider_candidates(enriched["game_id"], path=catalog_root) if item["source"] == "ProviderB")
+        assert_true(
+            provider_b["error_code"] == "html_response"
+            and provider_b["http_status"] == 403
+            and "Just a moment" in provider_b["html_snippet"],
+            "provider candidate diagnostic fields failed",
+        )
 
         from src.core import local_database as _local_db
+        from src.core import _facade as _core_facade
         original_list_provider_candidates = _local_db.list_provider_candidates
+        original_search_all_sources = _core_facade.search_all_sources
         try:
             _local_db.list_provider_candidates = lambda _game_id, status="all": [
                 {
@@ -624,8 +662,32 @@ def main() -> None:
                 cache={"entries": {}},
             )
             assert_true(cache_hit and not unavailable and found[0]["download_filename"] == "a2.zip", "provider candidate reuse failed")
+            _local_db.list_provider_candidates = lambda _game_id, status="all": [
+                {
+                    "game_id": enriched["game_id"],
+                    "system_id": systems[0]["system_id"],
+                    "game_name": enriched["game_name"],
+                    "source": "ProviderExpired",
+                    "type": "expired",
+                    "download_url": "https://example.invalid/expired.zip",
+                    "download_filename": "expired.zip",
+                    "status": "resolved",
+                    "expires_at": time.time() - 1,
+                }
+            ]
+            _core_facade.search_all_sources = lambda *_args, **_kwargs: ([], [])
+            found, unavailable, cache_hit = resolve_game_sources_with_cache(
+                enriched,
+                [{"name": "ProviderExpired", "type": "expired", "enabled": True}],
+                session=None,
+                system_name=systems[0]["system_name"],
+                dat_profile=None,
+                cache={"entries": {}},
+            )
+            assert_true(not cache_hit and not found, "expired provider candidate must not be reused")
         finally:
             _local_db.list_provider_candidates = original_list_provider_candidates
+            _core_facade.search_all_sources = original_search_all_sources
 
         mapping_root = tmp_path / "mapping-dat"
         mapping_root.mkdir()
@@ -716,6 +778,48 @@ def main() -> None:
             metrics["LoLROMs"]["attempts"] == 1 and metrics["LoLROMs"]["failed"] == 1,
             "provider metrics failure failed",
         )
+        record_download_history(
+            {
+                "game_name": "Gamma Game",
+                "system_id": systems[0]["system_id"],
+                "provider": "ProviderB",
+                "status": "failed",
+                "error_code": "html_response",
+                "error": "Reponse HTML inattendue",
+                "http_status": 403,
+                "content_type": "text/html",
+                "html_snippet": "<html>challenge</html>",
+                "provider_rank": 2,
+            },
+            path=catalog_root,
+        )
+        record_download_history(
+            {
+                "game_name": "Delta Game",
+                "system_id": systems[0]["system_id"],
+                "provider": "ProviderC",
+                "status": "failed",
+                "error_code": "checksum_mismatch",
+                "error": "MD5 KO",
+            },
+            path=catalog_root,
+        )
+        health = build_source_health_summary(
+            [
+                {"name": "ProviderA", "type": "providera", "enabled": True},
+                {"name": "ProviderB", "type": "providerb", "enabled": True},
+                {"name": "ProviderC", "type": "providerc", "enabled": True},
+            ],
+            path=catalog_root,
+        )
+        health_by_name = {row["provider"]: row for row in health}
+        assert_true(health_by_name["ProviderA"]["active_candidates"] >= 1, "source health candidates failed")
+        assert_true(
+            health_by_name["ProviderB"]["html_count"] == 1
+            and health_by_name["ProviderB"]["last_error_code"] == "html_response",
+            "source health HTML diagnostics failed",
+        )
+        assert_true(health_by_name["ProviderC"]["hash_mismatch_count"] == 1, "source health hash diagnostics failed")
 
         from src.core import download_orchestrator as orchestrator
 

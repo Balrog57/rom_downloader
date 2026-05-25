@@ -127,6 +127,33 @@ def print_provider_healthcheck(results: list[dict]) -> None:
     print("=" * 70)
 
 
+def print_source_health_summary(rows: list[dict]) -> None:
+    """Affiche le resume source-health SQLite."""
+    from ..network.utils import format_bytes
+    print("\n" + "=" * 120)
+    print("SOURCE HEALTH")
+    print("=" * 120)
+    if not rows:
+        print("Aucune source connue.")
+        print("=" * 120)
+        return
+    print(f"{'Provider':<24} {'Statut':<10} {'Couv.':>6} {'Cand.':>6} {'OK':>5} {'KO':>5} {'Vitesse':>12} {'Erreur':<18} Action")
+    for row in rows:
+        speed = f"{format_bytes(row.get('average_speed'))}/s" if row.get("average_speed") else "-"
+        print(
+            f"{row.get('provider', '')[:24]:<24} "
+            f"{row.get('status', ''):<10} "
+            f"{int(row.get('coverage') or 0):>6} "
+            f"{int(row.get('active_candidates') or 0):>6} "
+            f"{int(row.get('success_count') or 0):>5} "
+            f"{int(row.get('failure_count') or 0):>5} "
+            f"{speed:>12} "
+            f"{(row.get('last_error_code') or '-')[:18]:<18} "
+            f"{row.get('recommended_action', '')}"
+        )
+    print("=" * 120)
+
+
 def print_provider_registry_info() -> None:
     """Affiche les providers via l'interface commune."""
     from .providers import build_provider_registry

@@ -60,7 +60,7 @@ Pages utiles:
 - `Accueil`: statistiques et formulaire analyse/job.
 - `Systemes`: navigation catalogue.
 - `Jobs`: suivi, pause, reprise, retry et annulation.
-- `Sources`: etat, test source et nettoyage cache.
+- `Sources`: etat SQLite, couverture candidats, dernier diagnostic, test source et nettoyage cache.
 - `Historique`: tentatives passees.
 
 Les endpoints `/api/*` renvoient du JSON et utilisent le polling, pas de WebSocket.

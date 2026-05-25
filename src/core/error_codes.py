@@ -11,6 +11,7 @@ RETRYABLE_ERROR_CODES = {
 }
 
 NON_RETRYABLE_ERROR_CODES = {
+    "html_response",
     "unexpected_html",
     "checksum_mismatch",
     "quota_exceeded",
@@ -44,8 +45,8 @@ def classify_error(status: str | None = None, detail: str | None = None) -> str:
         return "checksum_mismatch"
     if "cloudflare" in haystack or "__cf_chl" in haystack or "just a moment" in haystack:
         return "cloudflare_challenge"
-    if "html inattendu" in haystack or "reponse html" in haystack:
-        return "unexpected_html"
+    if "html inattendu" in haystack or "reponse html" in haystack or "content-type html" in haystack:
+        return "html_response"
     if "quota" in haystack or "rate limit" in haystack:
         return "quota_exceeded"
     if "timeout" in haystack or "timed out" in haystack or "delai" in haystack:
@@ -79,7 +80,7 @@ def error_is_retryable(error_code: str | None) -> bool:
 
 def error_is_poison(error_code: str | None) -> bool:
     """Indique si une erreur empoisonne la source (ne jamais reessayer)."""
-    return (error_code or "") == "unexpected_html"
+    return (error_code or "") in {"unexpected_html", "html_response"}
 
 
 def retry_delay_seconds(error_code: str | None) -> int:
