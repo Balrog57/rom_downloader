@@ -5,6 +5,15 @@ Cette roadmap transforme les objectifs produit en lots suivables. Elle garde deu
 - Myrient n'est pas une source a gerer directement. Minerva torrent et archive.org restent les derniers recours.
 - ROM Downloader ne choisit pas les variantes 1G1R. Pour un set 1G1R, utilisez un DAT Retool/1G1R deja filtre.
 
+## Livre en v0.1.4
+
+- Web UI locale REST + polling: analyse DAT, jobs, actions pause/reprise/retry/cancel, sources et cache.
+- Rapports TXT/JSON/CSV/HTML enrichis avec details provider, erreurs HTML, hash final et sections DAT/rebuild.
+- Sorties finalisees: `--output-mode`, `--archive-mode`, `--rebuild-tosort` et compatibilite TorrentZip.
+- DAT capabilities: detection CHD, headers, clones, BIOS/devices et merge metadata, sans rebuild arcade complet.
+- Documentation publique: README, guide utilisateur, captures, roadmap, templates issues, labels, licence et disclaimer.
+- Release Windows `v0.1.4`: EXE portable, checksum SHA256, CI, CodeQL, Dependabot et workflow release.
+
 ## Court terme
 
 - Maintenir les captures d'interface et rapports HTML dans `docs/screenshots/`.
@@ -15,17 +24,18 @@ Cette roadmap transforme les objectifs produit en lots suivables. Elle garde deu
 
 ## Moyen terme
 
-- Ameliorer la queue persistante SQLite: reprise fine, retry des echecs, nettoyage `.part`, priorite par systeme.
-- Enrichir les metriques provider par systeme: taux de succes, vitesse, faux positifs, Cloudflare, hash invalide.
+- Ameliorer la queue persistante SQLite: reprise fine, retry des echecs, nettoyage `.part`, priorite par systeme et reprise apres fermeture.
+- Enrichir les metriques provider par systeme: taux de succes, vitesse, faux positifs, Cloudflare, hash invalide et scoring plus fin.
+- Persister les `provider_candidates` non verifies avec TTL, statut et raison d'erreur.
 - Ajouter des exports pratiques pour les workflows RomVault/clrmamepro: FixDAT, rapports filtrables, listes d'echecs.
 - Completer le tableau de sante des sources dans la GUI et la Web UI locale avec plus d'actions par provider.
 - Ajouter des variantes plus fines aux profils de configuration: debutant, rapide, archive propre sont disponibles en GUI et CLI.
 
 ## Long terme
 
-- Support CHD et cas disque avances au-dela de la validation hash/taille.
+- Support CHD avance et cas disque au-dela de la validation hash/taille.
+- Merge arcade complet: split, merged, non-merged et cas multi-ROM/multi-disque complexes.
 - Rebuilder `ToSort` plus riche sans devenir un clone complet de RomVault.
-- Modes de sortie plus stricts pour les cas multi-ROM et multi-disque.
 - Compatibilite frontend plus complete: BIOS, CHD, gamelist enrichi.
 - API/Web UI locale plus riche: progression temps reel type SSE/WebSocket si necessaire.
 

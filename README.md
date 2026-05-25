@@ -4,7 +4,7 @@
 
 Audit, complete et verifie une collection ROMs a partir de DAT No-Intro, Redump ou Retool, avec sources multiples, reprise de telechargement, validation hash/taille, rapports exportables (TXT/JSON/CSV/HTML), scoring provider par systeme et interface Windows portable.
 
-Version developpement: `0.1.4` - Derniere release stable: [`v0.1.3`](https://github.com/Balrog57/rom_downloader/releases)
+Version developpement: `0.1.4` - Derniere release stable: [`v0.1.4`](https://github.com/Balrog57/rom_downloader/releases/tag/v0.1.4)
 
 > **Avertissement**: ROM Downloader est un outil de gestion de collection. Il ne fournit ni n'heberge de fichiers ROMs. Voir [DISCLAIMER.md](DISCLAIMER.md).
 
@@ -42,6 +42,8 @@ Sans argument, l'application lance aussi la GUI:
 ```powershell
 python main.py
 ```
+
+Un guide utilisateur plus direct est disponible dans [docs/USER_GUIDE.md](docs/USER_GUIDE.md).
 
 ## Captures d'ecran
 
@@ -215,8 +217,6 @@ La fiabilite repose sur:
 
 Les politiques par source se reglent dans la GUI: activation, ordre, timeout, quota par run et delai avant telechargement. LoLROMs utilise par defaut un delai pour limiter les blocages Cloudflare.
 
-Les politiques par source se reglent dans la GUI: activation, ordre, timeout, quota par run et delai avant telechargement. LoLROMs utilise par defaut un delai pour limiter les blocages Cloudflare.
-
 ## DAT, Retool et 1G1R
 
 ROM Downloader ne choisit pas encore lui-meme les variantes 1G1R. Pour obtenir un set 1G1R, utilisez un DAT Retool deja filtre, par exemple un DAT `Retool - French No Unl`.
@@ -256,7 +256,7 @@ ROM Downloader ne fournit pas de profil 1G1R interne: utilisez directement un DA
 - **Scraping fragile**: les extracteurs de pages peuvent casser si le HTML source change.
 - **Couverture provider inegale**: LoLROMs couvre ~312 systemes, mais la plupart des autres sources en couvrent moins de 50.
 - **Pas de gestion 1G1R integree**: utilisez un DAT Retool/1G1R deja filtre pour definir exactement le set attendu.
-- **CHD non supporte**: les jeux en format CHD (arcade, disque) ne sont pas encore geres.
+- **CHD pragmatique**: les CHD sont detectes et valides par hash/taille quand le DAT le permet, sans conversion ni rebuild arcade split/merged complet.
 - **Windows uniquement**: l'EXE portable est concu pour Windows. Le code source Python peut fonctionner sur Linux/macOS mais sans garantie.
 
 ## Roadmap
@@ -300,6 +300,10 @@ $files = @("main.py") + (Get-ChildItem src,tests -Recurse -Filter *.py | ForEach
 python -m py_compile @files
 python tests\smoke_checks.py
 python tests\core_helper_checks.py
+python tests\download_single_checks.py
+python tests\dat_coverage_checks.py
+python tests\output_checks.py
+python tests\web_ui_checks.py
 python main.py --version
 python main.py --sources
 python main.py --diagnose
@@ -319,7 +323,7 @@ Dans le diagnostic de l'exe, `Racine app` doit pointer vers le dossier contenant
 ## Release mainteneur
 
 ```powershell
-.\release.ps1 -Version 0.1.4 -Push
+.\release.ps1 -Version 0.1.5 -Push
 ```
 
 Le workflow `Release Windows` construit `ROMDownloader.exe`, genere `ROMDownloader.exe.sha256`, valide l'exe portable et attache les assets a la release GitHub quand le tag `v*` est pousse.
