@@ -1,0 +1,49 @@
+name: Rapport de bug
+description: Signaler un comportement inattendu ou une erreur
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: "Merci de prendre le temps de signaler ce bug."
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Mode d'execution
+      options:
+        - CLI (python main.py)
+        - GUI
+        - EXE portable
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: "Indiquez la version (--version ou visible dans le titre de la GUI)"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description du bug
+      description: Ce qui s'est passe, ce qui etait attendu
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / trace d'erreur
+      description: Copiez les messages d'erreur ou le contenu du panneau de log
+      render: text
+  - type: textarea
+    id: contexte
+    attributes:
+      label: Contexte
+      description: DAT utilise, source, systeme, nombre de jeux, options CLI
+  - type: input
+    id: os
+    attributes:
+      label: Systeme d'exploitation
+      placeholder: Windows 11 23H2
+    validations:
+      required: true

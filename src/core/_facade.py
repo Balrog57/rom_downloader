@@ -71,8 +71,11 @@ from .catalog import *  # noqa: F401,F403
 from .download_history import *  # noqa: F401,F403
 from .minerva import *  # noqa: F401,F403
 from .dat_profile import *  # noqa: F401,F403
+from .dat_capabilities import *  # noqa: F401,F403
+from .output_manager import *  # noqa: F401,F403
 from .torrent import *  # noqa: F401,F403
 from .api_keys import *  # noqa: F401,F403
+from .config_profiles import *  # noqa: F401,F403
 from .premium_downloads import *  # noqa: F401,F403
 from .archive_org import *  # noqa: F401,F403
 from .scrapers import *  # noqa: F401,F403
@@ -86,6 +89,8 @@ from .pipeline import *  # noqa: F401,F403
 from .cli import *  # noqa: F401,F403
 from .gui import *  # noqa: F401,F403
 from .main_entry import *  # noqa: F401,F403
+from .fixdat import *  # noqa: F401,F403
+from .frontend_mapping import *  # noqa: F401,F403
 
 
 def load_preferences() -> dict:

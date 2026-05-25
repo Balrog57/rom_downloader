@@ -38,30 +38,6 @@ def get_default_sources_legacy():
             'order': 160,
         },
         {
-            'name': 'Myrient No-Intro',
-            'base_url': config.get('myrient_no_intro', ''),
-            'type': 'myrient',
-            'enabled': True,
-            'description': 'ROMs No-Intro',
-            'priority': 2
-        },
-        {
-            'name': 'Myrient Redump',
-            'base_url': config.get('myrient_redump', ''),
-            'type': 'myrient',
-            'enabled': True,
-            'description': 'ROMs Redump',
-            'priority': 2
-        },
-        {
-            'name': 'Myrient TOSEC',
-            'base_url': config.get('myrient_tosec', ''),
-            'type': 'myrient',
-            'enabled': True,
-            'description': 'ROMs TOSEC',
-            'priority': 2
-        },
-        {
             'name': 'EdgeEmu',
             'base_url': config.get('edgeemu_browse', ''),
             'type': 'edgeemu',
@@ -671,7 +647,7 @@ def source_quota_limit(source: dict | None) -> int | None:
 
 
 def apply_source_policies(sources: list, policies: dict) -> list:
-    """Applique les politiques utilisateur (timeout, quota, delai) aux sources."""
+    """Applique les politiques utilisateur (timeout, quota, delai, UA, cookies) aux sources."""
     for source in sources:
         policy = policies.get(source.get('name', ''), {})
         if not policy:
@@ -688,6 +664,12 @@ def apply_source_policies(sources: list, policies: dict) -> list:
                 source['delay_seconds'] = max(0.0, min(float(delay), 60.0))
             except (TypeError, ValueError):
                 pass
+        ua = policy.get('user_agent', '').strip()
+        if ua:
+            source['user_agent'] = ua
+        cookie_str = policy.get('cookies', '').strip()
+        if cookie_str:
+            source['cookies'] = cookie_str
     return sources
 
 
@@ -702,6 +684,10 @@ def source_policy_summary(source: dict) -> str:
     delay = source_delay_seconds(source, 0.0)
     if delay:
         parts.append(f"delai {delay:g}s")
+    if source.get('user_agent'):
+        parts.append("UA perso")
+    if source.get('cookies'):
+        parts.append("Cookies")
     return ", ".join(parts)
 
 
@@ -877,7 +863,7 @@ def get_default_sources():
             'base_url': ROMSXISOS_BASE,
             'type': 'romsxisos',
             'enabled': True,
-            'description': 'GitHub Pages - Google Drive / directs non-Myrient',
+            'description': 'GitHub Pages - Google Drive / liens directs',
             'priority': 3,
             'order': 60,
         },

@@ -10,6 +10,7 @@ _ERROR_TYPE_THRESHOLDS = {
     "http_429": 5,
     "quota_exceeded": 3,
     "network_timeout": 10,
+    "unexpected_html": 3,
 }
 
 _ERROR_TYPE_RECOVERIES = {
@@ -17,6 +18,7 @@ _ERROR_TYPE_RECOVERIES = {
     "http_429": 300,
     "quota_exceeded": 600,
     "network_timeout": 300,
+    "unexpected_html": 600,
 }
 
 
@@ -47,6 +49,7 @@ class SourceCircuitBreaker:
         self._last_failure_time: dict[str, float] = {}
         self._typed_failures: dict[tuple[str, str], int] = {}
         self._typed_last_failure: dict[tuple[str, str], float] = {}
+        self._poisoned: set[str] = set()
         self._lock = threading.Lock()
 
     # ------------------------------------------------------------------
@@ -55,9 +58,19 @@ class SourceCircuitBreaker:
 
     def is_open(self, source_name: str, error_type: str | None = None) -> bool:
         with self._lock:
+            if source_name in self._poisoned:
+                return True
             if error_type:
                 return self._is_open_typed(source_name, error_type)
             return self._is_open_global(source_name)
+
+    def is_poisoned(self, source_name: str) -> bool:
+        with self._lock:
+            return source_name in self._poisoned
+
+    def poison(self, source_name: str) -> None:
+        with self._lock:
+            self._poisoned.add(source_name)
 
     def record_failure(self, source_name: str, error_type: str | None = None) -> None:
         with self._lock:

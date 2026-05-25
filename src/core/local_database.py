@@ -206,6 +206,13 @@ def init_local_database(path: str | Path | None = None, conn: sqlite3.Connection
             duration_seconds REAL NOT NULL DEFAULT 0,
             file_path TEXT,
             size INTEGER NOT NULL DEFAULT 0,
+            candidate_url TEXT NOT NULL DEFAULT '',
+            http_status INTEGER NOT NULL DEFAULT 0,
+            content_type TEXT NOT NULL DEFAULT '',
+            announced_size INTEGER NOT NULL DEFAULT 0,
+            hash_final TEXT NOT NULL DEFAULT '',
+            html_snippet TEXT NOT NULL DEFAULT '',
+            provider_rank INTEGER NOT NULL DEFAULT 0,
             created_at REAL NOT NULL
         );
         CREATE INDEX IF NOT EXISTS idx_download_attempts_created ON download_attempts(created_at);
@@ -228,6 +235,29 @@ def init_local_database(path: str | Path | None = None, conn: sqlite3.Connection
             last_success_at REAL NOT NULL DEFAULT 0,
             last_failure_at REAL NOT NULL DEFAULT 0
         );
+        CREATE TABLE IF NOT EXISTS provider_system_metrics (
+            provider TEXT NOT NULL,
+            system_id TEXT NOT NULL,
+            attempts INTEGER NOT NULL DEFAULT 0,
+            downloaded INTEGER NOT NULL DEFAULT 0,
+            failed INTEGER NOT NULL DEFAULT 0,
+            skipped INTEGER NOT NULL DEFAULT 0,
+            dry_run INTEGER NOT NULL DEFAULT 0,
+            quota_skipped INTEGER NOT NULL DEFAULT 0,
+            seconds REAL NOT NULL DEFAULT 0,
+            bytes INTEGER NOT NULL DEFAULT 0,
+            average_speed REAL NOT NULL DEFAULT 0,
+            last_success_at REAL NOT NULL DEFAULT 0,
+            last_failure_at REAL NOT NULL DEFAULT 0,
+            PRIMARY KEY (provider, system_id)
+        );
+        CREATE TABLE IF NOT EXISTS circuit_states (
+            source_name TEXT PRIMARY KEY,
+            failures INTEGER NOT NULL DEFAULT 0,
+            last_failure_time REAL NOT NULL DEFAULT 0,
+            typed_failures_json TEXT NOT NULL DEFAULT '{}',
+            last_typed_failure_json TEXT NOT NULL DEFAULT '{}'
+        );
         """
     )
     _ensure_column(conn, "download_jobs", "priority", "priority INTEGER NOT NULL DEFAULT 0")
@@ -243,6 +273,13 @@ def init_local_database(path: str | Path | None = None, conn: sqlite3.Connection
     _ensure_column(conn, "download_attempts", "error_code", "error_code TEXT NOT NULL DEFAULT ''")
     _ensure_column(conn, "download_attempts", "retryable", "retryable INTEGER NOT NULL DEFAULT 0")
     _ensure_column(conn, "download_attempts", "next_retry_at", "next_retry_at REAL NOT NULL DEFAULT 0")
+    _ensure_column(conn, "download_attempts", "candidate_url", "candidate_url TEXT NOT NULL DEFAULT ''")
+    _ensure_column(conn, "download_attempts", "http_status", "http_status INTEGER NOT NULL DEFAULT 0")
+    _ensure_column(conn, "download_attempts", "content_type", "content_type TEXT NOT NULL DEFAULT ''")
+    _ensure_column(conn, "download_attempts", "announced_size", "announced_size INTEGER NOT NULL DEFAULT 0")
+    _ensure_column(conn, "download_attempts", "hash_final", "hash_final TEXT NOT NULL DEFAULT ''")
+    _ensure_column(conn, "download_attempts", "html_snippet", "html_snippet TEXT NOT NULL DEFAULT ''")
+    _ensure_column(conn, "download_attempts", "provider_rank", "provider_rank INTEGER NOT NULL DEFAULT 0")
     conn.execute("CREATE INDEX IF NOT EXISTS idx_download_attempts_error_code ON download_attempts(error_code)")
     conn.execute("CREATE INDEX IF NOT EXISTS idx_provider_successes_provider ON provider_successes(provider)")
     conn.execute(
@@ -327,6 +364,7 @@ def create_download_job(system_id: str | None, game_ids: list | None, output_fol
 def _insert_download_queue_item(conn: sqlite3.Connection, job_id: str, system_id: str,
                                 item: dict, now: float) -> None:
     game_id = item.get("game_id") or None
+    system_ref = system_id or item.get("system_id") or None
     game_name = item.get("game_name") or game_id or "Jeu inconnu"
     conn.execute(
         """
@@ -339,7 +377,7 @@ def _insert_download_queue_item(conn: sqlite3.Connection, job_id: str, system_id
             uuid.uuid4().hex,
             job_id,
             game_id,
-            system_id or item.get("system_id") or "",
+            system_ref,
             game_name,
             "pending",
             int(item.get("priority") or 0),
@@ -555,6 +593,99 @@ def retry_failed_queue_items(job_id: str, path: str | Path | None = None) -> int
         return retried
 
 
+def get_job_status(job_id: str, path: str | Path | None = None) -> str:
+    """Retourne le statut actuel d'un job de telechargement."""
+    with open_local_database(path) as conn:
+        row = conn.execute(
+            "SELECT status FROM download_jobs WHERE job_id = ?", (job_id,)
+        ).fetchone()
+    return row["status"] if row else ""
+
+
+def get_job_config(job_id: str, path: str | Path | None = None) -> dict:
+    """Retourne la configuration persistante d'un job (output_folder, settings_json...)."""
+    with open_local_database(path) as conn:
+        row = conn.execute(
+            "SELECT system_id, output_folder, settings_json, created_at FROM download_jobs WHERE job_id = ?",
+            (job_id,),
+        ).fetchone()
+    if not row:
+        return {}
+    settings = {}
+    try:
+        settings = json.loads(row["settings_json"] or "{}")
+    except Exception:
+        pass
+    return {
+        "system_id": row["system_id"],
+        "output_folder": row["output_folder"],
+        "settings": settings,
+        "created_at": row["created_at"],
+    }
+
+
+def get_pending_queue_items_for_job(job_id: str, include_failed: bool = True,
+                                    path: str | Path | None = None) -> list[dict]:
+    """Retourne les items non terminaux d'un job, ordonnes par priorite."""
+    statuses = ["pending"]
+    if include_failed:
+        statuses.extend(["failed", "cancelled", "not_found"])
+    with open_local_database(path) as conn:
+        rows = conn.execute(
+            """
+            SELECT * FROM download_queue_items
+            WHERE job_id = ? AND status IN ({})
+            ORDER BY priority DESC, created_at ASC
+            """.format(", ".join("?" * len(statuses))),
+            [job_id, *statuses],
+        ).fetchall()
+    return [dict(row) for row in rows]
+
+
+def save_job_progress(job_id: str, last_processed_index: int,
+                      path: str | Path | None = None) -> None:
+    """Sauvegarde la progression d'un job (index du dernier jeu traite)."""
+    if not job_id:
+        return
+    now = time.time()
+    config = get_job_config(job_id, path=path)
+    settings = config.get("settings", {})
+    settings["last_processed_index"] = last_processed_index
+    with open_local_database(path) as conn:
+        conn.execute(
+            "UPDATE download_jobs SET settings_json = ?, updated_at = ? WHERE job_id = ?",
+            (json.dumps(settings, ensure_ascii=False, sort_keys=True), now, job_id),
+        )
+
+
+def cleanup_stale_locks(timeout_seconds: int = 3600,
+                        path: str | Path | None = None) -> dict:
+    """Debloque les items verrouilles depuis trop longtemps (crash ou abandon).
+    Passe les jobs dont tous les items sont terminaux en 'stopped'."""
+    now = time.time()
+    cutoff = now - int(timeout_seconds or 3600)
+    result = {"unlocked_items": 0, "stopped_jobs": 0}
+    with open_local_database(path) as conn:
+        cursor = conn.execute(
+            "UPDATE download_queue_items SET status='pending', locked_by='', locked_at=0, updated_at=? "
+            "WHERE locked_at > 0 AND locked_at < ? AND status = 'running'",
+            (now, cutoff),
+        )
+        result["unlocked_items"] = cursor.rowcount
+        orphan_rows = conn.execute(
+            "SELECT DISTINCT job_id FROM download_jobs WHERE status = 'running' AND job_id NOT IN "
+            "(SELECT DISTINCT job_id FROM download_queue_items WHERE status NOT IN ('completed', 'failed', "
+            "'skipped', 'not_found', 'cancelled', 'dry_run', 'stopped'))"
+        ).fetchall()
+        for row in orphan_rows:
+            conn.execute(
+                "UPDATE download_jobs SET status='stopped', finished_at=?, updated_at=? WHERE job_id = ?",
+                (now, now, row["job_id"]),
+            )
+            result["stopped_jobs"] += 1
+    return result
+
+
 def _provider_metric_status(status: str, error_code: str) -> str:
     normalized = (status or "").strip().lower()
     if normalized in {"completed", "downloaded"}:
@@ -623,6 +754,148 @@ def record_provider_metric(provider: str, status: str, duration_seconds: float =
         )
 
 
+def record_provider_system_metric(provider: str, system_id: str, status: str,
+                                   duration_seconds: float = 0.0, size: int = 0,
+                                   path: str | Path | None = None) -> None:
+    """Met a jour les metriques SQLite par (provider, system_id)."""
+    provider = (provider or "").strip()
+    system_id = (system_id or "").strip()
+    if not provider or not system_id:
+        return
+    now = time.time()
+    metric_status = _provider_metric_status(status, "")
+    seconds = max(0.0, float(duration_seconds or 0))
+    transferred = max(0, int(size or 0))
+    average_speed = transferred / seconds if transferred and seconds else 0
+    success_at = now if metric_status == "downloaded" else 0
+    failure_at = now if metric_status in {"failed", "quota_skipped"} else 0
+    with open_local_database(path) as conn:
+        conn.execute(
+            """
+            INSERT INTO provider_system_metrics
+            (provider, system_id, attempts, downloaded, failed, skipped, dry_run, quota_skipped,
+             seconds, bytes, average_speed, last_success_at, last_failure_at)
+            VALUES (?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(provider, system_id) DO UPDATE SET
+                attempts = provider_system_metrics.attempts + 1,
+                downloaded = provider_system_metrics.downloaded + excluded.downloaded,
+                failed = provider_system_metrics.failed + excluded.failed,
+                skipped = provider_system_metrics.skipped + excluded.skipped,
+                dry_run = provider_system_metrics.dry_run + excluded.dry_run,
+                quota_skipped = provider_system_metrics.quota_skipped + excluded.quota_skipped,
+                seconds = provider_system_metrics.seconds + excluded.seconds,
+                bytes = provider_system_metrics.bytes + excluded.bytes,
+                average_speed = CASE
+                    WHEN provider_system_metrics.seconds + excluded.seconds > 0
+                    THEN (provider_system_metrics.bytes + excluded.bytes) / (provider_system_metrics.seconds + excluded.seconds)
+                    ELSE 0
+                END,
+                last_success_at = MAX(provider_system_metrics.last_success_at, excluded.last_success_at),
+                last_failure_at = MAX(provider_system_metrics.last_failure_at, excluded.last_failure_at)
+            """,
+            (
+                provider, system_id,
+                1 if metric_status == "downloaded" else 0,
+                1 if metric_status == "failed" else 0,
+                1 if metric_status == "skipped" else 0,
+                1 if metric_status == "dry_run" else 0,
+                1 if metric_status == "quota_skipped" else 0,
+                seconds, transferred, average_speed, success_at, failure_at,
+            ),
+        )
+
+
+def list_provider_system_metrics(system_id: str = "", path: str | Path | None = None) -> dict[str, dict]:
+    """Retourne les metriques SQLite par (provider, system_id), filtrees par systeme si fourni."""
+    with open_local_database(path) as conn:
+        if system_id:
+            rows = conn.execute(
+                "SELECT * FROM provider_system_metrics WHERE system_id = ? ORDER BY provider COLLATE NOCASE",
+                (system_id,),
+            ).fetchall()
+        else:
+            rows = conn.execute("SELECT * FROM provider_system_metrics ORDER BY provider, system_id").fetchall()
+    result: dict[str, dict] = {}
+    for row in rows:
+        key = f"{row['provider']}::{row['system_id']}"
+        result[key] = dict(row)
+    return result
+
+
+def save_circuit_states(circuit_breaker: "SourceCircuitBreaker", path: str | Path | None = None) -> None:
+    """Persiste l'etat du circuit-breaker dans SQLite."""
+    with open_local_database(path) as conn:
+        conn.execute("DELETE FROM circuit_states")
+        status = circuit_breaker.status()
+        for source_name, state in status.items():
+            conn.execute(
+                "INSERT INTO circuit_states (source_name, failures, last_failure_time, typed_failures_json, last_typed_failure_json) "
+                "VALUES (?, ?, ?, ?, ?)",
+                (
+                    source_name,
+                    state.get("failures", 0),
+                    state.get("last_failure", 0.0) or 0.0,
+                    json.dumps(state.get("by_type", {}), sort_keys=True),
+                    "{}",
+                ),
+            )
+
+
+def load_circuit_states(path: str | Path | None = None) -> dict[str, dict]:
+    """Charge les etats de circuit-breaker depuis SQLite."""
+    with open_local_database(path) as conn:
+        rows = conn.execute("SELECT * FROM circuit_states").fetchall()
+    result: dict[str, dict] = {}
+    for row in rows:
+        result[row["source_name"]] = {
+            "failures": row["failures"],
+            "last_failure": row["last_failure_time"],
+            "by_type": json.loads(row["typed_failures_json"] or "{}"),
+        }
+    return result
+
+
+def compute_provider_score(metric: dict) -> float:
+    """Score pour reordonnancement (higher=better), compatible avec network/metrics.py."""
+    import time as _time
+    attempts = metric.get("attempts", 0)
+    downloaded = metric.get("downloaded", 0)
+    failed = metric.get("failed", 0)
+    seconds = metric.get("seconds", 0.0)
+    average_speed = metric.get("average_speed", 0.0)
+    last_failure_at = float(metric.get("last_failure_at", 0) or 0)
+    if attempts == 0:
+        return 1.0
+    success_rate = downloaded / attempts
+    avg_seconds = seconds / max(attempts, 1)
+    speed_bonus = min(float(average_speed or 0) / (2 * 1024 * 1024), 0.25)
+    recent_failure_penalty = 0.0
+    if last_failure_at and _time.time() - last_failure_at < 6 * 60 * 60:
+        recent_failure_penalty = 0.15
+    penalty = (failed / attempts) * 0.5 + avg_seconds * 0.01 + recent_failure_penalty
+    return max(0.0, success_rate + speed_bonus - penalty)
+
+
+def prioritize_sources_by_system(sources: list[dict], system_id: str,
+                                  path: str | Path | None = None) -> list[dict]:
+    """Reordonne les sources par score SQLite per-systeme, avec fallback global."""
+    system_metrics = list_provider_system_metrics(system_id, path=path)
+    global_metrics_list = list_provider_metrics(path=path)
+    def sort_key(src: dict) -> tuple:
+        name = src.get("name", "")
+        composite = f"{name}::{system_id}"
+        if composite in system_metrics:
+            score = compute_provider_score(system_metrics[composite])
+        elif name in global_metrics_list:
+            score = compute_provider_score(global_metrics_list[name])
+        else:
+            score = 1.0
+        base_priority = int(src.get("priority", 50))
+        order = int(src.get("order", base_priority))
+        return (order, -score, base_priority, name.lower())
+    return sorted(sources, key=sort_key)
+
+
 def list_provider_metrics(path: str | Path | None = None) -> dict[str, dict]:
     """Retourne les metriques providers stockees en SQLite."""
     with open_local_database(path) as conn:
@@ -680,8 +953,10 @@ def record_download_attempt(item: dict, path: str | Path | None = None) -> None:
             """
             INSERT INTO download_attempts
             (job_id, game_id, system_id, game_name, provider, status, error_code, retryable,
-             next_retry_at, detail, duration_seconds, file_path, size, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+             next_retry_at, detail, duration_seconds, file_path, size, candidate_url,
+             http_status, content_type, announced_size, hash_final, html_snippet,
+             provider_rank, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 item.get("job_id") or "",
@@ -697,6 +972,13 @@ def record_download_attempt(item: dict, path: str | Path | None = None) -> None:
                 float(item.get("duration_seconds") or 0),
                 item.get("file_path") or item.get("downloaded_path") or "",
                 int(item.get("size") or 0),
+                item.get("candidate_url") or item.get("download_url") or item.get("torrent_url") or item.get("page_url") or "",
+                int(item.get("http_status") or 0),
+                item.get("content_type") or "",
+                int(item.get("announced_size") or 0),
+                item.get("hash_final") or "",
+                str(item.get("html_snippet") or "")[:500],
+                int(item.get("provider_rank") or 0),
                 float(item.get("created_at") or now),
             ),
         )
@@ -707,6 +989,14 @@ def record_download_attempt(item: dict, path: str | Path | None = None) -> None:
         size=int(item.get("size") or 0),
         error_code=error_code,
         created_at=float(item.get("created_at") or now),
+        path=path,
+    )
+    record_provider_system_metric(
+        item.get("provider") or item.get("source") or "",
+        item.get("system_id") or "",
+        status,
+        duration_seconds=float(item.get("duration_seconds") or 0),
+        size=int(item.get("size") or 0),
         path=path,
     )
 
@@ -1155,6 +1445,7 @@ def database_status(path: str | Path | None = None) -> dict:
 
 __all__ = [
     "LOCAL_DATABASE_FILE",
+    "QUEUE_TERMINAL_STATUSES",
     "local_database_path",
     "open_local_database",
     "init_local_database",
@@ -1165,8 +1456,20 @@ __all__ = [
     "update_download_job",
     "update_download_queue_item",
     "list_download_queue_items",
+    "pause_download_job",
+    "resume_download_job",
+    "cancel_download_job",
+    "retry_failed_queue_items",
+    "get_job_status",
+    "get_job_config",
+    "get_pending_queue_items_for_job",
+    "save_job_progress",
+    "cleanup_stale_locks",
     "record_provider_metric",
+    "record_provider_system_metric",
     "list_provider_metrics",
+    "list_provider_system_metrics",
+    "prioritize_sources_by_system",
     "record_download_attempt",
     "record_provider_success",
     "record_provider_candidates",
@@ -1175,6 +1478,8 @@ __all__ = [
     "list_download_history",
     "database_status",
     "dashboard_stats",
+    "save_circuit_states",
+    "load_circuit_states",
     "system_coverage_data",
     "search_games_fts",
     "search_systems_fts",

@@ -4,11 +4,17 @@ from __future__ import annotations
 import json
 import os
 import time
-from http.server import HTTPServer, BaseHTTPRequestHandler
+import html
+import threading
+from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 from .catalog import list_catalog_systems, list_catalog_games, get_catalog_system
+from .scanner import analyze_dat_folder, scan_local_roms, find_missing_games
+from .dat_parser import parse_dat_file
+from .dat_profile import detect_dat_profile, finalize_dat_profile
+from .pipeline import resume_existing_download
 from .local_database import (
     database_status,
     dashboard_stats,
@@ -21,10 +27,31 @@ from .local_database import (
     resume_download_job,
     cancel_download_job,
     retry_failed_queue_items,
+    create_download_job,
+    get_job_config,
 )
 from .mapping_status import build_mapping_status
+from .diagnostics import provider_healthcheck
 from .sources import get_default_sources, resolve_system_mapping
+from .env import PREFERENCES_FILE
+from ..network.cache import clear_listing_cache_file, clear_resolution_cache_file
+from ..network.utils import load_json_file, save_json_file
 from ..version import APP_VERSION
+
+_WEB_THREADS: dict[str, threading.Thread] = {}
+
+
+def _load_preferences() -> dict:
+    return load_json_file(PREFERENCES_FILE, {})
+
+
+def _save_preferences(preferences: dict) -> bool:
+    return save_json_file(PREFERENCES_FILE, preferences or {})
+
+
+def _clear_caches_for_source(source: str) -> dict:
+    from . import _facade
+    return _facade.clear_caches_for_source(source)
 
 _WEB_CSS = """
 body{font-family:Segoe UI,sans-serif;background:#151515;color:#fff;margin:0;padding:20px}
@@ -44,12 +71,51 @@ a:hover{text-decoration:underline}
 .card{background:#1e1e1e;border:1px solid #444;border-radius:6px;padding:15px;margin:10px;display:inline-block;min-width:150px}
 .card .value{font-size:28px;font-weight:bold;color:#ff6699}
 .card .label{font-size:11px;color:#aaa}
+input,button{background:#202020;color:#fff;border:1px solid #444;border-radius:4px;padding:7px;margin:3px}
+select{background:#202020;color:#fff;border:1px solid #444;border-radius:4px;padding:7px;margin:3px}
+button{cursor:pointer;background:#ff6699;color:#111;font-weight:bold}
+button.secondary{background:#333;color:#fff}
+.panel{background:#1e1e1e;border:1px solid #444;border-radius:6px;padding:12px;margin:12px 0}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+pre{background:#101010;border:1px solid #333;padding:10px;overflow:auto;max-height:260px}
 """
 
 _WEB_HEAD = f"""<!DOCTYPE html>
 <html lang="fr">
 <head><meta charset="utf-8"><title>ROM Downloader {APP_VERSION} - Web</title>
-<style>{_WEB_CSS}</style></head>
+<style>{_WEB_CSS}</style>
+<script>
+async function apiPost(path, data) {{
+  const r = await fetch(path, {{method:'POST', headers:{{'Content-Type':'application/json'}}, body:JSON.stringify(data||{{}})}});
+  const j = await r.json();
+  const out = document.getElementById('api-result');
+  if (out) out.textContent = JSON.stringify(j, null, 2);
+  return j;
+}}
+function formData(run) {{
+  return {{
+    dat_path: document.getElementById('dat_path')?.value || '',
+    rom_folder: document.getElementById('rom_folder')?.value || '',
+    output_folder: document.getElementById('output_folder')?.value || document.getElementById('rom_folder')?.value || '',
+    candidate_limit: document.getElementById('candidate_limit')?.value || 0,
+    parallel_downloads: Number(document.getElementById('parallel')?.value || 1),
+    output_mode: document.getElementById('output_mode')?.value || 'flat',
+    archive_mode: document.getElementById('archive_mode')?.value || 'none',
+    frontend: document.getElementById('frontend')?.value || '',
+    include_tosort: true,
+    run: !!run
+  }};
+}}
+async function analyzeForm() {{ return apiPost('/api/analyze', formData(false)); }}
+async function createJob(run) {{ return apiPost('/api/job/create', formData(run)); }}
+async function jobAction(path, job_id) {{ return apiPost(path, {{job_id}}); }}
+async function clearCaches(source) {{ return apiPost('/api/cache/clear', source ? {{source}} : {{}}); }}
+async function testSources() {{ return apiPost('/api/source/test', {{}}); }}
+setInterval(() => {{
+  const table = document.getElementById('jobs-table');
+  if (table) fetch('/jobs').then(r=>r.text()).then(t=>{{ const d=document.createElement('div'); d.innerHTML=t; const n=d.querySelector('#jobs-table'); if(n) table.innerHTML=n.innerHTML; }});
+}}, 5000);
+</script></head>
 <body>
 <div class="nav">
 <a href="/">Accueil</a>
@@ -132,6 +198,14 @@ class _WebHandler(BaseHTTPRequestHandler):
             if not job_id:
                 return self._error(400, "missing id")
             return self._json(run_download_job(job_id))
+        if path == "/api/job/status":
+            job_id = self._query().get("id", [None])[0]
+            if not job_id:
+                return self._error(400, "missing id")
+            config = get_job_config(job_id) or {}
+            if config:
+                config["job_id"] = job_id
+            return self._json(config)
         if path == "/api/history":
             limit = int(self._query().get("limit", ["200"])[0])
             q = self._query().get("q", [""])[0]
@@ -139,9 +213,16 @@ class _WebHandler(BaseHTTPRequestHandler):
         if path == "/api/metrics":
             return self._json(list_provider_metrics())
         if path == "/api/providers":
-            return self._json(list_validated_providers())
+            game_id = self._query().get("game_id", [""])[0]
+            if not game_id:
+                return self._error(400, "missing game_id")
+            return self._json(list_validated_providers(game_id))
         if path == "/api/candidates":
-            return self._json(list_provider_candidates({}))
+            game_id = self._query().get("game_id", [""])[0]
+            if not game_id:
+                return self._error(400, "missing game_id")
+            status = self._query().get("status", ["all"])[0]
+            return self._json(list_provider_candidates(game_id, status=status))
         if path == "/api/sources":
             return self._json(get_default_sources())
         if path == "/api/mapping":
@@ -160,6 +241,18 @@ class _WebHandler(BaseHTTPRequestHandler):
             return self._job_action(cancel_download_job)
         if path == "/api/job/retry":
             return self._job_action(retry_failed_queue_items, count=True)
+        if path == "/api/analyze":
+            return self._api_analyze()
+        if path == "/api/job/create":
+            return self._api_job_create()
+        if path == "/api/job/run":
+            return self._api_job_run()
+        if path == "/api/source/test":
+            return self._json({"results": provider_healthcheck()})
+        if path == "/api/source/policy":
+            return self._api_source_policy()
+        if path == "/api/cache/clear":
+            return self._api_cache_clear()
         return self._error(404, "unknown API endpoint")
 
     def _same_origin_request(self) -> bool:
@@ -175,17 +268,9 @@ class _WebHandler(BaseHTTPRequestHandler):
         return True
 
     def _job_action(self, action, count=False):
-        try:
-            length = int(self.headers.get("Content-Length", 0))
-        except ValueError:
-            return self._error(400, "taille de requete invalide")
-        # Les actions job n'attendent qu'un petit JSON; limiter la taille evite un DoS local trivial.
-        if length > 4096:
-            return self._error(413, "requete trop volumineuse")
-        try:
-            body = json.loads(self.rfile.read(length)) if length else {}
-        except json.JSONDecodeError:
-            return self._error(400, "json invalide")
+        body = self._json_body()
+        if isinstance(body, tuple):
+            return self._error(body[0], body[1])
         job_id = body.get("job_id", "")
         if not job_id:
             return self._error(400, "missing job_id")
@@ -193,6 +278,130 @@ class _WebHandler(BaseHTTPRequestHandler):
         if count:
             return self._json({"retried": result})
         return self._json({"ok": result})
+
+    def _json_body(self, max_length: int = 65536):
+        try:
+            length = int(self.headers.get("Content-Length", 0))
+        except ValueError:
+            return (400, "taille de requete invalide")
+        if length > max_length:
+            return (413, "requete trop volumineuse")
+        try:
+            return json.loads(self.rfile.read(length)) if length else {}
+        except json.JSONDecodeError:
+            return (400, "json invalide")
+
+    def _api_analyze(self):
+        body = self._json_body()
+        if isinstance(body, tuple):
+            return self._error(body[0], body[1])
+        dat_path = body.get("dat_path", "")
+        rom_folder = body.get("rom_folder", "")
+        if not dat_path or not rom_folder:
+            return self._error(400, "dat_path et rom_folder requis")
+        return self._json(analyze_dat_folder(
+            dat_path,
+            rom_folder,
+            include_tosort=bool(body.get("include_tosort", False)),
+            candidate_limit=body.get("candidate_limit", 0),
+        ))
+
+    def _missing_games_for_job(self, dat_path: str, rom_folder: str) -> tuple[list, str]:
+        dat_games = parse_dat_file(dat_path)
+        profile = finalize_dat_profile(detect_dat_profile(dat_path))
+        local_roms, local_roms_normalized, local_game_names, signature_index = scan_local_roms(rom_folder, dat_games)
+        missing = find_missing_games(dat_games, local_roms, local_roms_normalized, local_game_names, signature_index)
+        return missing, ""
+
+    def _api_job_create(self):
+        body = self._json_body()
+        if isinstance(body, tuple):
+            return self._error(body[0], body[1])
+        dat_path = body.get("dat_path", "")
+        rom_folder = body.get("rom_folder", "")
+        output_folder = body.get("output_folder") or rom_folder
+        if not dat_path or not rom_folder:
+            return self._error(400, "dat_path et rom_folder requis")
+        missing, system_id = self._missing_games_for_job(dat_path, rom_folder)
+        settings = {
+            "dat_path": dat_path,
+            "rom_folder": rom_folder,
+            "parallel_downloads": int(body.get("parallel_downloads") or 1),
+            "report_formats": body.get("report_formats") or "txt,json,csv,html",
+            "output_mode": body.get("output_mode") or "flat",
+            "archive_mode": body.get("archive_mode") or "none",
+            "frontend": body.get("frontend") or None,
+            "dry_run": bool(body.get("dry_run", False)),
+        }
+        job_id = create_download_job(system_id, missing, output_folder, settings=settings)
+        if body.get("run"):
+            self._start_job_thread(job_id)
+        return self._json({"job_id": job_id, "queued": len(missing), "running": bool(body.get("run"))})
+
+    def _start_job_thread(self, job_id: str):
+        if job_id in _WEB_THREADS and _WEB_THREADS[job_id].is_alive():
+            return
+        config = get_job_config(job_id) or {}
+        settings = config.get("settings") or {}
+        dat_path = settings.get("dat_path", "")
+        rom_folder = settings.get("rom_folder") or config.get("output_folder", "")
+        parallel = int(settings.get("parallel_downloads") or 1)
+
+        def _run():
+            if dat_path and rom_folder:
+                resume_existing_download(
+                    job_id,
+                    dat_path,
+                    rom_folder,
+                    parallel_downloads=parallel,
+                    output_mode=settings.get("output_mode") or "flat",
+                    archive_mode=settings.get("archive_mode") or "none",
+                    frontend=settings.get("frontend") or None,
+                    report_formats=settings.get("report_formats", "txt"),
+                )
+
+        thread = threading.Thread(target=_run, name=f"romdl-web-job-{job_id[:8]}", daemon=True)
+        _WEB_THREADS[job_id] = thread
+        thread.start()
+
+    def _api_job_run(self):
+        body = self._json_body()
+        if isinstance(body, tuple):
+            return self._error(body[0], body[1])
+        job_id = body.get("job_id", "")
+        if not job_id:
+            return self._error(400, "missing job_id")
+        self._start_job_thread(job_id)
+        return self._json({"ok": True, "job_id": job_id})
+
+    def _api_source_policy(self):
+        body = self._json_body()
+        if isinstance(body, tuple):
+            return self._error(body[0], body[1])
+        source = body.get("source", "")
+        if not source:
+            return self._error(400, "source requise")
+        prefs = _load_preferences()
+        policies = dict(prefs.get("source_policies", {}))
+        current = dict(policies.get(source, {}))
+        for key in ("enabled", "timeout", "delay_seconds", "quota_per_run", "user_agent", "cookies"):
+            if key in body:
+                current[key] = body[key]
+        policies[source] = current
+        prefs["source_policies"] = policies
+        _save_preferences(prefs)
+        return self._json({"ok": True, "source": source, "policy": current})
+
+    def _api_cache_clear(self):
+        body = self._json_body()
+        if isinstance(body, tuple):
+            return self._error(body[0], body[1])
+        source = body.get("source", "")
+        if source:
+            return self._json({"ok": True, "removed": _clear_caches_for_source(source)})
+        clear_resolution_cache_file()
+        clear_listing_cache_file()
+        return self._json({"ok": True, "removed": "all"})
 
     def _handle_page(self, path):
         if path == "/":
@@ -217,12 +426,47 @@ class _WebHandler(BaseHTTPRequestHandler):
 <span class="badge badge-pause">Pause: {paused}</span>
 <span class="badge badge-fail">Echoues: {failed}</span>
 <span class="badge badge-ok">Termines: {completed}</span>
+<div class="panel">
+<h2>Analyse / job</h2>
+<div class="row">
+<input id="dat_path" size="52" placeholder="Chemin DAT">
+<input id="rom_folder" size="42" placeholder="Dossier ROMs">
+<input id="output_folder" size="42" placeholder="Dossier sortie optionnel">
+<input id="candidate_limit" type="number" min="0" value="0" title="Candidates">
+<input id="parallel" type="number" min="1" max="12" value="2" title="Parallele">
+<select id="output_mode" title="Mode de sortie">
+<option value="flat">Flat</option>
+<option value="verified">Verified</option>
+<option value="tosort">ToSort</option>
+<option value="dat-structure">Structure DAT</option>
+</select>
+<select id="archive_mode" title="Mode archive">
+<option value="none">Archive: aucune</option>
+<option value="zip">ZIP</option>
+<option value="torrentzip">TorrentZip</option>
+</select>
+<select id="frontend" title="Frontend">
+<option value="">Frontend: aucun</option>
+<option value="batocera">Batocera</option>
+<option value="retrobat">RetroBat</option>
+<option value="es-de">ES-DE</option>
+<option value="launchbox">LaunchBox</option>
+</select>
+</div>
+<button onclick="analyzeForm()">Analyser</button>
+<button class="secondary" onclick="createJob(false)">Creer job</button>
+<button onclick="createJob(true)">Creer et lancer</button>
+<pre id="api-result"></pre>
+</div>
 """)
         elif path == "/systems":
             systems = list_catalog_systems()
             rows = ""
             for item in systems[:200]:
-                rows += f"<tr><td><a href=\"/games?sid={item['system_id']}\">{item['system_name']}</a></td><td>{item.get('dat_section','')}</td><td>{item.get('game_count',0)}</td></tr>"
+                sid = html.escape(str(item.get('system_id', '')), quote=True)
+                system_label = html.escape(str(item.get('system_name', '')))
+                section = html.escape(str(item.get('dat_section', '')))
+                rows += f"<tr><td><a href=\"/games?sid={sid}\">{system_label}</a></td><td>{section}</td><td>{item.get('game_count',0)}</td></tr>"
             self._html(f"<h1>Systemes ({len(systems)})</h1><table><tr><th>Systeme</th><th>Section</th><th>Jeux</th></tr>{rows}</table>")
         elif path == "/games":
             sid = self._query().get("sid", [None])[0]
@@ -232,21 +476,40 @@ class _WebHandler(BaseHTTPRequestHandler):
             games = list_catalog_games(sid, limit=200)
             rows = ""
             for g in games:
-                rows += f"<tr><td>{g['game_name']}</td><td>{g.get('primary_rom','')}</td><td>{format_bytes_for_web(g.get('size',0))}</td><td>{len(g.get('providers',[]))}</td></tr>"
-            self._html(f"<h1>{sys_info.get('system_name',sid)}</h1><table><tr><th>Jeu</th><th>ROM</th><th>Taille</th><th>Providers</th></tr>{rows}</table>")
+                game_name = html.escape(str(g.get('game_name', '')))
+                primary_rom = html.escape(str(g.get('primary_rom', '')))
+                rows += f"<tr><td>{game_name}</td><td>{primary_rom}</td><td>{format_bytes_for_web(g.get('size',0))}</td><td>{len(g.get('providers',[]))}</td></tr>"
+            title = html.escape(str(sys_info.get('system_name', sid)))
+            self._html(f"<h1>{title}</h1><table><tr><th>Jeu</th><th>ROM</th><th>Taille</th><th>Providers</th></tr>{rows}</table>")
         elif path == "/jobs":
             jobs = list_download_jobs(status="all", limit=100)
             rows = ""
             for job in jobs:
                 q = job.get("queue", {})
                 queue_txt = ", ".join(f"{k}={v}" for k, v in sorted(q.items()))
-                rows += f"<tr><td>{job['job_id'][:8]}</td><td>{job['status']}</td><td>{job['completed']}/{job['total']}</td><td>{job['output_folder']}</td><td>{queue_txt}</td></tr>"
-            self._html(f"<h1>Jobs</h1><table><tr><th>ID</th><th>Statut</th><th>Progression</th><th>Dossier</th><th>File</th></tr>{rows}</table>")
+                job_short = html.escape(str(job.get('job_id', ''))[:8])
+                status = html.escape(str(job.get('status', '')))
+                output = html.escape(str(job.get('output_folder', '')))
+                queue_html = html.escape(queue_txt)
+                job_id = html.escape(str(job.get('job_id', '')), quote=True)
+                actions = (
+                    f"<button onclick=\"jobAction('/api/job/run','{job_id}')\">Run</button>"
+                    f"<button class=\"secondary\" onclick=\"jobAction('/api/job/pause','{job_id}')\">Pause</button>"
+                    f"<button class=\"secondary\" onclick=\"jobAction('/api/job/resume','{job_id}')\">Resume</button>"
+                    f"<button class=\"secondary\" onclick=\"jobAction('/api/job/retry','{job_id}')\">Retry</button>"
+                    f"<button class=\"secondary\" onclick=\"jobAction('/api/job/cancel','{job_id}')\">Cancel</button>"
+                )
+                rows += f"<tr><td>{job_short}</td><td>{status}</td><td>{job['completed']}/{job['total']}</td><td>{output}</td><td>{queue_html}</td><td>{actions}</td></tr>"
+            self._html(f"<h1>Jobs</h1><table id=\"jobs-table\"><tr><th>ID</th><th>Statut</th><th>Progression</th><th>Dossier</th><th>File</th><th>Actions</th></tr>{rows}</table><pre id=\"api-result\"></pre>")
         elif path == "/history":
             rows_items = list_download_history(limit=200)
             rows = ""
             for item in rows_items:
-                rows += f"<tr><td>{item.get('date','')}</td><td>{item.get('game_name','')}</td><td>{item.get('provider','')}</td><td>{item.get('status','')}</td></tr>"
+                date = html.escape(str(item.get('date', '')))
+                game_name = html.escape(str(item.get('game_name', '')))
+                provider = html.escape(str(item.get('provider', '')))
+                status = html.escape(str(item.get('status', '')))
+                rows += f"<tr><td>{date}</td><td>{game_name}</td><td>{provider}</td><td>{status}</td></tr>"
             self._html(f"<h1>Historique</h1><table><tr><th>Date</th><th>Jeu</th><th>Provider</th><th>Statut</th></tr>{rows}</table>")
         elif path == "/sources":
             sources = get_default_sources()
@@ -258,8 +521,9 @@ class _WebHandler(BaseHTTPRequestHandler):
                 successes = m.get("downloaded", 0)
                 failures = m.get("failed", 0)
                 speed = format_bytes_for_web(m.get("average_speed", 0)) + "/s" if m.get("average_speed") else ""
-                rows += f"<tr><td>{name}</td><td>{src.get('type','')}</td><td>{successes}</td><td>{failures}</td><td>{speed}</td></tr>"
-            self._html(f"<h1>Sources</h1><table><tr><th>Provider</th><th>Type</th><th>Succes</th><th>Echecs</th><th>Vitesse</th></tr>{rows}</table>")
+                js_name = html.escape(json.dumps(str(name)), quote=True)
+                rows += f"<tr><td>{html.escape(str(name))}</td><td>{html.escape(str(src.get('type','')))}</td><td>{successes}</td><td>{failures}</td><td>{speed}</td><td><button onclick=\"clearCaches({js_name})\">Cache</button></td></tr>"
+            self._html(f"<h1>Sources</h1><button onclick=\"testSources()\">Tester maintenant</button><button class=\"secondary\" onclick=\"clearCaches('')\">Vider caches</button><table><tr><th>Provider</th><th>Type</th><th>Succes</th><th>Echecs</th><th>Vitesse</th><th>Actions</th></tr>{rows}</table><pre id=\"api-result\"></pre>")
         else:
             self._html("<h1>404</h1><p>Page non trouvee</p>")
 
@@ -277,7 +541,7 @@ def format_bytes_for_web(val):
 
 def run_web_ui(host: str = "127.0.0.1", port: int = 8888, open_browser: bool = True):
     """Lance l'interface web locale."""
-    server = HTTPServer((host, port), _WebHandler)
+    server = ThreadingHTTPServer((host, port), _WebHandler)
     url = f"http://{host}:{port}"
     print(f"Web UI: {url}")
     if open_browser:

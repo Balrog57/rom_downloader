@@ -8,6 +8,10 @@ from .constants import *
 from .dependencies import *
 from .dat_profile import resolve_dat_output_folder
 from .pipeline import run_download
+from .fixdat import build_fixdat_from_results
+from .dat_capabilities import analyze_dat_capabilities
+from .output_manager import rebuild_tosort
+from .reports import write_download_reports
 
 
 def cli_mode(args):
@@ -16,7 +20,40 @@ def cli_mode(args):
     output_folder = resolve_dat_output_folder(args.dat_file, output_root, bool(getattr(args, 'output_root_by_dat', False)))
     os.makedirs(output_folder, exist_ok=True)
 
-    run_download(
+    if getattr(args, "rebuild_tosort", False):
+        from .dat_parser import parse_dat_file
+        dat_games = parse_dat_file(args.dat_file)
+        dat_caps = analyze_dat_capabilities(args.dat_file)
+        summary = rebuild_tosort(
+            dat_games,
+            os.path.join(output_folder, "ToSort"),
+            output_folder,
+            output_mode=getattr(args, "output_mode", "verified"),
+            archive_mode=getattr(args, "archive_mode", "none"),
+            frontend=getattr(args, "frontend", None),
+            system_name=dat_caps.get("dat_name", ""),
+            dry_run=bool(args.dry_run),
+        )
+        report_paths = write_download_reports(getattr(args, "report_dir", None) or output_folder, {
+            "dat_file": args.dat_file,
+            "system_name": dat_caps.get("dat_name", ""),
+            "output_folder": output_folder,
+            "mode": "rebuild",
+            "dry_run": bool(args.dry_run),
+            "rebuild": summary,
+            "dat_capabilities": dat_caps,
+            "total_dat_games": len(dat_games),
+            "resolved_items": [],
+            "downloaded_items": [],
+            "failed_items": [],
+            "skipped_items": [],
+            "not_available": [],
+        }, formats=getattr(args, "report_formats", "txt"))
+        print(f"Rebuild ToSort: {summary['rebuilt']} reconstruit(s), {summary['hash_mismatch']} non reconnu(s)")
+        print("Rapports: " + ", ".join(report_paths.values()))
+        return
+
+    result = run_download(
         args.dat_file,
         output_folder,
         '',
@@ -27,8 +64,25 @@ def cli_mode(args):
         args.clean_torrentzip,
         parallel_downloads=args.parallel,
         refresh_resolution_cache=args.refresh_cache,
-        prefer_1fichier=args.prefer_1fichier
+        prefer_1fichier=args.prefer_1fichier,
+        report_formats=getattr(args, "report_formats", "txt"),
+        report_dir=getattr(args, "report_dir", None),
+        frontend=getattr(args, "frontend", None),
+        output_mode=getattr(args, "output_mode", "flat"),
+        archive_mode=getattr(args, "archive_mode", "none"),
     )
+
+    if result and getattr(args, "fixdat", False):
+        from .dat_parser import parse_dat_file
+        dat_games = parse_dat_file(args.dat_file)
+        not_available = result.get("not_available", [])
+        failed_items = result.get("failed_items", [])
+        missing = list(not_available) + list(failed_items)
+        if missing:
+            fixdat_path = build_fixdat_from_results(args.dat_file, dat_games, missing, output_folder)
+            print(f"\nFixDAT genere: {fixdat_path}")
+        else:
+            print("\nAucun jeu manquant ou echoue: FixDAT non genere")
 
 
 def discover_dat_menu_items(dat_root: Path | None = None) -> list[dict]:

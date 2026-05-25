@@ -30,6 +30,9 @@ def main() -> None:
     for expected in ("Minerva No-Intro", "archive.org"):
         if expected not in provider_names:
             raise SystemExit(f"provider missing: {expected}")
+    for provider in providers:
+        if "myrient" in provider.name.lower() or provider.type == "myrient":
+            raise SystemExit(f"obsolete Myrient provider exposed: {provider.name}")
 
     if not Path("main.py").exists():
         raise SystemExit("main.py missing")

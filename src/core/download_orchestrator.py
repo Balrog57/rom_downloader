@@ -10,7 +10,7 @@ from ..network.cache_runtime import get_session_cache, clear_session_cache, Runt
 from ..network.downloads import ParallelDownloadPool
 from ..network.metrics import load_provider_metrics, save_provider_metrics, prioritize_sources, record_provider_attempt
 from ..network.exceptions import ChecksumMismatchError, SourceTimeoutError, DownloadNetworkError
-from .error_codes import classify_error
+from .error_codes import classify_error, error_is_poison
 from ..progress import DownloadProgressMeter, format_duration
 
 from .env import *
@@ -54,10 +54,18 @@ from .local_database import (
     record_download_attempt,
     record_provider_candidates,
     record_provider_success,
+    get_job_status,
+    cleanup_stale_locks,
 )
 
 
 CLOUDFLARE_SOURCE_TYPES = {'lolroms', 'vimm', 'coolrom', 'romhustler', 'romsxisos'}
+
+
+def _build_is_running_for_job(job_id: str) -> callable:
+    """Retourne un callable qui verifie si le job est toujours en cours d'execution.
+    Retourne False si le job est 'paused', 'cancelled' ou absent de la base."""
+    return lambda: get_job_status(job_id) in {"running", "pending", ""}
 
 
 def adapt_sources_for_circuit_state(sources: list, circuit_breaker, parallel_downloads: int) -> tuple[list, int]:
@@ -396,8 +404,9 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
     def candidates_payload() -> list[dict]:
         return [candidate.copy() for candidate in provider_candidates]
 
-    for candidate in provider_candidates:
+    for rank, candidate in enumerate(provider_candidates, 1):
         candidate['provider_candidates'] = candidates_payload()
+        candidate.setdefault('provider_rank', rank)
 
     current_game = provider_candidates[0].copy() if provider_candidates else game_info.copy()
     attempted_sources = []
@@ -454,6 +463,8 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
                 'status': 'skipped',
                 'duration_seconds': round(time.time() - attempt_started, 3),
                 'detail': reason,
+                'provider_rank': current_game.get('provider_rank', 0),
+                'candidate_url': current_game.get('download_url') or current_game.get('torrent_url') or current_game.get('page_url') or current_game.get('archive_org_identifier') or '',
             })
             current_game = next_provider_candidate()
             if current_game:
@@ -467,6 +478,8 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
                 'status': 'quota_skipped',
                 'duration_seconds': round(time.time() - attempt_started, 3),
                 'detail': quota_detail,
+                'provider_rank': current_game.get('provider_rank', 0),
+                'candidate_url': current_game.get('download_url') or current_game.get('torrent_url') or current_game.get('page_url') or current_game.get('archive_org_identifier') or '',
             })
             log_func(f"  Provider {source} ignore: {quota_detail}")
             current_game = next_provider_candidate()
@@ -512,6 +525,8 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
                     'detail': 'existing_valid',
                     'created_at': time.time(),
                     'bytes': os.path.getsize(existing_path) if os.path.exists(existing_path) else 0,
+                    'provider_rank': current_game.get('provider_rank', 0),
+                    'candidate_url': current_game.get('download_url') or current_game.get('torrent_url') or current_game.get('page_url') or current_game.get('archive_org_identifier') or '',
                 })
                 item_copy['provider_attempts'] = provider_attempts.copy()
                 return 'skipped', item_copy
@@ -535,6 +550,8 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
                 'status': 'failed',
                 'duration_seconds': round(time.time() - attempt_started, 3),
                 'detail': 'validation',
+                'provider_rank': current_game.get('provider_rank', 0),
+                'candidate_url': current_game.get('download_url') or current_game.get('torrent_url') or current_game.get('page_url') or current_game.get('archive_org_identifier') or '',
             })
             log_func(f"  Provider {source} checksum invalide, recherche d'un autre provider...")
             current_game = next_provider_candidate()
@@ -549,6 +566,8 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
                 'status': 'failed',
                 'duration_seconds': round(time.time() - attempt_started, 3),
                 'detail': 'timeout',
+                'provider_rank': current_game.get('provider_rank', 0),
+                'candidate_url': current_game.get('download_url') or current_game.get('torrent_url') or current_game.get('page_url') or current_game.get('archive_org_identifier') or '',
             })
             if circuit_breaker:
                 circuit_breaker.record_failure(source, error_type=error_code)
@@ -565,9 +584,15 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
                 'status': 'failed',
                 'duration_seconds': round(time.time() - attempt_started, 3),
                 'detail': detail_str or 'network_error',
+                'html_snippet': detail_str[:500] if 'html' in detail_str.lower() or 'cloudflare' in detail_str.lower() else '',
+                'provider_rank': current_game.get('provider_rank', 0),
+                'candidate_url': current_game.get('download_url') or current_game.get('torrent_url') or current_game.get('page_url') or current_game.get('archive_org_identifier') or '',
             })
             if circuit_breaker:
                 circuit_breaker.record_failure(source, error_type=error_code)
+                if error_is_poison(error_code):
+                    circuit_breaker.poison(source)
+                    log_func(f"  {source} empoisonnee: reponse HTML invalide, ignoree pour le reste de la session")
             suffix = f": {detail_str[:180]}" if detail_str else ""
             log_func(f"  Provider {source} erreur reseau{suffix}")
             log_func("  Recherche d'un autre provider...")
@@ -583,6 +608,8 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
                 'status': 'failed',
                 'duration_seconds': round(time.time() - attempt_started, 3),
                 'detail': detail_str,
+                'provider_rank': current_game.get('provider_rank', 0),
+                'candidate_url': current_game.get('download_url') or current_game.get('torrent_url') or current_game.get('page_url') or current_game.get('archive_org_identifier') or '',
             })
             if circuit_breaker:
                 circuit_breaker.record_failure(source, error_type=error_code)
@@ -604,6 +631,9 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
                 'duration_seconds': round(time.time() - attempt_started, 3),
                 'created_at': time.time(),
                 'bytes': os.path.getsize(downloaded_path) if downloaded_path and os.path.exists(downloaded_path) else 0,
+                'hash_final': verify_downloaded_md5(current_game, downloaded_path)[1] if downloaded_path else '',
+                'provider_rank': current_game.get('provider_rank', 0),
+                'candidate_url': current_game.get('download_url') or current_game.get('torrent_url') or current_game.get('page_url') or current_game.get('archive_org_identifier') or '',
             })
             item_copy['provider_attempts'] = provider_attempts.copy()
             return 'downloaded', item_copy
@@ -613,6 +643,8 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
             'status': 'failed',
             'duration_seconds': round(time.time() - attempt_started, 3),
             'detail': 'download_failed',
+            'provider_rank': current_game.get('provider_rank', 0),
+            'candidate_url': current_game.get('download_url') or current_game.get('torrent_url') or current_game.get('page_url') or current_game.get('archive_org_identifier') or '',
         })
         if circuit_breaker:
             circuit_breaker.record_failure(source, error_type='network_error')
@@ -641,7 +673,7 @@ def download_missing_games_sequentially(
     progress_callback=None,
     log_func=print,
     status_callback=None,
-    is_running=lambda: True,
+    is_running=None,
     parallel_downloads: int = 1,
     circuit_breaker=None,
     job_id: str | None = None,
@@ -673,6 +705,10 @@ def download_missing_games_sequentially(
             missing_games,
             output_folder,
         )
+    cleanup_stale_locks()
+
+    if is_running is None:
+        is_running = _build_is_running_for_job(job_id)
 
     total = len(missing_games)
     total_work = min(total, limit) if limit else total
@@ -696,6 +732,7 @@ def download_missing_games_sequentially(
 
     def persist_final_item(status: str, item: dict, default_game_name: str = ""):
         attempts = item.get('provider_attempts') or []
+        last_attempt = attempts[-1] if attempts else {}
         provider = attempts[-1].get('source') if attempts else item.get('source', '')
         duration = sum(float(attempt.get('duration_seconds', 0) or 0) for attempt in attempts)
         path = item.get('downloaded_path') or ''
@@ -711,6 +748,13 @@ def download_missing_games_sequentially(
             'duration_seconds': duration,
             'file_path': path,
             'size': size,
+            'candidate_url': last_attempt.get('candidate_url') or item.get('download_url') or item.get('torrent_url') or item.get('page_url') or item.get('archive_org_identifier') or '',
+            'http_status': last_attempt.get('http_status') or item.get('http_status') or 0,
+            'content_type': last_attempt.get('content_type') or item.get('content_type') or '',
+            'announced_size': last_attempt.get('announced_size') or item.get('announced_size') or 0,
+            'hash_final': last_attempt.get('hash_final') or item.get('hash_final') or '',
+            'html_snippet': last_attempt.get('html_snippet') or item.get('html_snippet') or '',
+            'provider_rank': last_attempt.get('provider_rank') or item.get('provider_rank') or 0,
         })
         update_download_queue_item(
             job_id,
@@ -1023,6 +1067,7 @@ def download_missing_games_sequentially(
 
 
 __all__ = [
+    '_build_is_running_for_job',
     'resolve_next_provider',
     'attempt_download_from_resolved_provider',
     'download_with_provider_retries',

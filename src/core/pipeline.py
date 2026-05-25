@@ -21,11 +21,14 @@ from .scanner import (
     move_files_to_tosort,
     build_analysis_summary,
     print_analysis_summary,
+    estimate_games_size,
 )
 from .dat_profile import detect_dat_profile, finalize_dat_profile, prepare_sources_for_profile, describe_dat_profile
 from .sources import get_default_sources, build_custom_source, normalize_source_label, apply_source_policies
-from .reports import write_download_report
+from .reports import write_download_reports
 from .torrentzip import repack_verified_archives_to_torrentzip
+from .dat_capabilities import analyze_dat_capabilities
+from .output_manager import organize_downloaded_items
 from .download_orchestrator import (
     download_missing_games_sequentially,
     download_with_provider_retries,
@@ -48,8 +51,8 @@ from .api_keys import load_api_keys
 from .torrent import download_from_minerva_torrent
 
 
-def _extract_session_metrics(result: dict) -> dict:
-    """Extract provider metrics from download result for persistence."""
+def _extract_session_metrics(result: dict, system_name: str = "") -> dict:
+    """Extrait les metriques providers de la session (per-systeme si system_name)."""
     return build_pipeline_summary(result or {}).get('provider_metrics', {})
 
 
@@ -62,7 +65,6 @@ def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_ru
     })
 
     dat_games = parse_dat_file(dat_file)
-
     local_roms, local_roms_normalized, local_game_names, signature_index = scan_local_roms(rom_folder, dat_games)
 
     missing_games = find_missing_games(dat_games, local_roms, local_roms_normalized, local_game_names, signature_index)
@@ -218,7 +220,10 @@ def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_ru
 def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limit,
                  move_to_tosort=False, clean_torrentzip=False, custom_sources=None,
                  parallel_downloads: int | None = None, refresh_resolution_cache: bool = False,
-                 prefer_1fichier: bool = False):
+                 prefer_1fichier: bool = False, report_formats=("txt",),
+                 report_dir: str | None = None,
+                 frontend: str | None = None, output_mode: str = "flat",
+                 archive_mode: str = "none"):
     """Run the download process with archive.org as the final fallback."""
     from . import _facade
     if refresh_resolution_cache:
@@ -230,6 +235,7 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
     session_metrics = load_provider_metrics()
 
     dat_games = parse_dat_file(dat_file)
+    dat_capabilities = analyze_dat_capabilities(dat_file)
     local_roms, local_roms_normalized, local_game_names, signature_index = scan_local_roms(rom_folder, dat_games)
     missing_games = find_missing_games(dat_games, local_roms, local_roms_normalized, local_game_names, signature_index)
     dat_profile = finalize_dat_profile(detect_dat_profile(dat_file))
@@ -242,6 +248,17 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
     tosort_moved = 0
     tosort_failed = 0
     torrentzip_summary = {'repacked': 0, 'skipped': 0, 'failed': 0, 'deleted': 0}
+    output_summary = {'moved': 0, 'zipped': 0, 'torrentzipped': 0, 'skipped': 0, 'failed': 0, 'items': []}
+    result = {
+        'resolved_items': [],
+        'downloaded_items': [],
+        'failed_items': [],
+        'skipped_items': [],
+        'not_available': [],
+        'downloaded': 0,
+        'failed': 0,
+        'skipped': 0,
+    }
     sources = [source.copy() for source in (custom_sources if custom_sources else get_default_sources())]
     if myrient_url and myrient_url not in [s['base_url'] for s in sources]:
         sources.insert(0, build_custom_source(myrient_url))
@@ -273,7 +290,7 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
         sources = apply_source_policies(sources, _policies)
         sources = prepare_sources_for_profile(sources, dat_profile, prefer_1fichier=prefer_1fichier)
         sources, parallel_downloads = adapt_sources_for_circuit_state(sources, circuit_breaker, parallel_downloads)
-        sources = prioritize_sources(sources, session_metrics)
+        sources = prioritize_sources(sources, session_metrics, system_name=system_name)
         report_active_sources = [source['name'] for source in sources if source.get('enabled', True)]
 
         if parallel_downloads is None:
@@ -393,7 +410,21 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
         else:
             print("\nAucun fichier a deplacer.")
 
-    if clean_torrentzip:
+    effective_archive_mode = archive_mode
+    if clean_torrentzip and effective_archive_mode == "none":
+        effective_archive_mode = "torrentzip"
+
+    output_summary = organize_downloaded_items(
+        downloaded_items,
+        output_folder,
+        system_name=system_name,
+        output_mode=output_mode,
+        archive_mode="zip" if effective_archive_mode == "zip" else "none",
+        frontend=frontend,
+        dry_run=dry_run,
+    )
+
+    if effective_archive_mode == "torrentzip":
         print("\n" + "=" * 60)
         print("Nettoyage des archives validees en ZIP TorrentZip/RomVault...")
         print("=" * 60)
@@ -404,17 +435,25 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
             print
         )
 
-    session_metrics = save_provider_metrics(merge_provider_metrics(load_provider_metrics(), _extract_session_metrics(result)))
+    save_provider_metrics(merge_provider_metrics(load_provider_metrics(), _extract_session_metrics(result, system_name=system_name)))
+    total_size, total_unknown = estimate_games_size(dat_games)
+    missing_size, missing_unknown = estimate_games_size(missing_games)
 
-    report_path = write_download_report(output_folder, {
+    report_summary = {
         'dat_file': dat_file,
         'system_name': system_name,
         'dat_profile': describe_dat_profile(dat_profile),
         'output_folder': output_folder,
         'source_url': myrient_url,
+        'dry_run': bool(dry_run),
         'active_sources': report_active_sources,
         'total_dat_games': len(dat_games),
+        'present_before': max(0, len(dat_games) - len(missing_games)),
         'missing_before': len(missing_games),
+        'total_size': total_size,
+        'total_unknown_sizes': total_unknown,
+        'missing_size': missing_size,
+        'missing_unknown_sizes': missing_unknown,
         'resolved_items': to_download,
         'downloaded_items': downloaded_items,
         'failed_items': failed_items,
@@ -426,12 +465,196 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
         'torrentzip_skipped': torrentzip_summary.get('skipped', 0),
         'torrentzip_deleted': torrentzip_summary.get('deleted', 0),
         'torrentzip_failed': torrentzip_summary.get('failed', 0),
-    })
-    return report_path
+        'output_mode': output_mode,
+        'archive_mode': effective_archive_mode,
+        'frontend': frontend or '',
+        'output_organized': output_summary,
+        'dat_capabilities': dat_capabilities,
+    }
+    report_paths = write_download_reports(report_dir or output_folder, report_summary, formats=report_formats)
+    return result
+
+
+def resume_existing_download(job_id: str, dat_file: str, rom_folder: str,
+                              parallel_downloads: int | None = None,
+                              refresh_resolution_cache: bool = False,
+                              move_to_tosort: bool = False,
+                              clean_torrentzip: bool = False,
+                              frontend: str | None = None,
+                              output_mode: str = "flat",
+                              archive_mode: str = "none",
+                              report_formats=("txt",),
+                              report_dir: str | None = None) -> dict:  # changed return type
+    """Reprend un job de telechargement existant depuis la base SQLite."""
+    from . import _facade
+    from .local_database import (
+        get_job_config,
+        get_pending_queue_items_for_job,
+        resume_download_job,
+        create_download_job,
+    )
+    from .download_orchestrator import download_missing_games_sequentially, _build_is_running_for_job
+
+    config = get_job_config(job_id)
+    if not config:
+        print(f"Job {job_id} introuvable.")
+        return ""
+    output_folder = config["output_folder"]
+    os.makedirs(output_folder, exist_ok=True)
+    resume_download_job(job_id)
+
+    if refresh_resolution_cache:
+        _facade.clear_resolution_cache()
+        _facade.clear_listing_cache()
+
+    session = create_optimized_session()
+    circuit_breaker = SourceCircuitBreaker()
+    session_metrics = load_provider_metrics()
+
+    dat_games = parse_dat_file(dat_file)
+    dat_capabilities = analyze_dat_capabilities(dat_file)
+    local_roms, local_roms_normalized, local_game_names, signature_index = scan_local_roms(rom_folder, dat_games)
+    missing_games_from_scan = find_missing_games(dat_games, local_roms, local_roms_normalized, local_game_names, signature_index)
+    missing_map = {game.get("game_id") or game.get("game_name", ""): game for game in missing_games_from_scan}
+    dat_profile = finalize_dat_profile(detect_dat_profile(dat_file))
+    system_name = dat_profile.get('system_name') or detect_system_name(dat_file)
+
+    pending_items = get_pending_queue_items_for_job(job_id, include_failed=True)
+    queue_game_map = {}
+    resumed_games = []
+    for item in pending_items:
+        key = item.get("game_id") or item.get("game_name", "")
+        if key in missing_map:
+            game = missing_map[key].copy()
+            game["queue_item_id"] = item.get("item_id")
+            game.setdefault("game_id", item.get("game_id") or "")
+            game.setdefault("game_name", item.get("game_name") or game.get("game_name", ""))
+            game.setdefault("system_id", item.get("system_id") or "")
+            resumed_games.append(game)
+            queue_game_map[key] = item
+
+    if not resumed_games:
+        print(f"Aucun jeu en attente pour le job {job_id}.")
+        return ""
+
+    print(f"Reprise du job {job_id}: {len(resumed_games)} jeu(x) en attente.")
+
+    sources = [source.copy() for source in get_default_sources()]
+    _prefs = _facade.load_preferences()
+    _policies = _prefs.get('source_policies', {})
+    _parallel = _prefs.get('parallel_downloads') if parallel_downloads is None else parallel_downloads
+    if _parallel is not None:
+        try:
+            parallel_downloads = int(_parallel)
+        except (TypeError, ValueError):
+            pass
+    sources = apply_source_policies(sources, _policies)
+    sources = prepare_sources_for_profile(sources, dat_profile, prefer_1fichier=False)
+    sources, parallel_downloads = adapt_sources_for_circuit_state(sources, circuit_breaker, parallel_downloads or 4)
+    sources = prioritize_sources(sources, session_metrics, system_name=system_name)
+    report_active_sources = [source['name'] for source in sources if source.get('enabled', True)]
+
+    missing_games_for_scan = [missing_map.get(item.get("game_id") or item.get("game_name", ""))
+                              for item in pending_items if (item.get("game_id") or item.get("game_name", "")) in missing_map]
+    missing_games_for_scan = [g for g in missing_games_for_scan if g is not None]
+    missing_size, missing_unknown = estimate_games_size(missing_games_for_scan) if missing_games_for_scan else (0, 0)
+
+    is_running = _build_is_running_for_job(job_id)
+    result = download_missing_games_sequentially(
+        resumed_games,
+        sources,
+        session,
+        system_name,
+        dat_profile,
+        output_folder,
+        '',
+        dry_run=False,
+        limit=None,
+        progress_callback=None,
+        log_func=print,
+        parallel_downloads=parallel_downloads or 4,
+        circuit_breaker=circuit_breaker,
+        job_id=job_id,
+        is_running=is_running,
+    )
+
+    to_download = result['resolved_items']
+    not_available = result['not_available']
+    downloaded_items = result['downloaded_items']
+    failed_items = result['failed_items']
+    skipped_items = result['skipped_items']
+    tosort_moved = 0
+    tosort_failed = 0
+    output_summary = {'moved': 0, 'copied': 0, 'zipped': 0, 'torrentzipped': 0, 'skipped': 0, 'failed': 0}
+    torrentzip_summary = {'repacked': 0, 'skipped': 0, 'failed': 0, 'deleted': 0}
+
+    if move_to_tosort:
+        print("\nRecherche des fichiers a deplacer vers ToSort...")
+        tosort_folder = os.path.join(rom_folder, "ToSort")
+        files_to_move = find_roms_not_in_dat(dat_games, local_roms, local_roms_normalized, rom_folder)
+        if files_to_move:
+            tosort_moved, tosort_failed = move_files_to_tosort(files_to_move, rom_folder, tosort_folder, dry_run=False)
+
+    effective_archive_mode = archive_mode
+    if clean_torrentzip and effective_archive_mode == "none":
+        effective_archive_mode = "torrentzip"
+
+    output_summary = organize_downloaded_items(
+        downloaded_items,
+        output_folder,
+        system_name=system_name,
+        output_mode=output_mode,
+        archive_mode="zip" if effective_archive_mode == "zip" else "none",
+        frontend=frontend,
+        dry_run=False,
+    )
+
+    if effective_archive_mode == "torrentzip":
+        print("\nNettoyage des archives validees en ZIP TorrentZip/RomVault...")
+        torrentzip_summary = repack_verified_archives_to_torrentzip(dat_games, output_folder, False, print)
+
+    save_provider_metrics(merge_provider_metrics(load_provider_metrics(), _extract_session_metrics(result, system_name=system_name)))
+    total_size, total_unknown = estimate_games_size(dat_games)
+
+    report_summary = {
+        'dat_file': dat_file,
+        'system_name': system_name,
+        'dat_profile': describe_dat_profile(dat_profile),
+        'output_folder': output_folder,
+        'source_url': '',
+        'dry_run': False,
+        'output_mode': output_mode,
+        'archive_mode': effective_archive_mode,
+        'frontend': frontend or '',
+        'active_sources': report_active_sources,
+        'total_dat_games': len(dat_games),
+        'present_before': max(0, len(dat_games) - len(missing_games_for_scan)),
+        'missing_before': len(missing_games_for_scan),
+        'total_size': total_size,
+        'total_unknown_sizes': total_unknown,
+        'missing_size': missing_size,
+        'missing_unknown_sizes': missing_unknown,
+        'resolved_items': to_download,
+        'downloaded_items': downloaded_items,
+        'failed_items': failed_items,
+        'skipped_items': skipped_items,
+        'not_available': not_available,
+        'tosort_moved': tosort_moved,
+        'tosort_failed': tosort_failed,
+        'torrentzip_repacked': torrentzip_summary.get('repacked', 0),
+        'torrentzip_skipped': torrentzip_summary.get('skipped', 0),
+        'torrentzip_deleted': torrentzip_summary.get('deleted', 0),
+        'torrentzip_failed': torrentzip_summary.get('failed', 0),
+        'output_organized': output_summary,
+        'dat_capabilities': dat_capabilities,
+    }
+    report_paths = write_download_reports(report_dir or output_folder, report_summary, formats=report_formats)
+    return result
 
 
 __all__ = [
     'run_download',
+    'resume_existing_download',
     '_extract_session_metrics',
     'run_download_legacy',
 ]

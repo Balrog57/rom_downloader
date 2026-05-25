@@ -1,0 +1,40 @@
+name: Demande de nouveau provider
+description: Suggérer l'ajout d'une nouvelle source de telechargement
+labels: [provider]
+body:
+  - type: markdown
+    attributes:
+      value: "Renseignez les informations sur la source a ajouter."
+  - type: input
+    id: name
+    attributes:
+      label: Nom du site / service
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: URL principale
+    validations:
+      required: true
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type de source
+      options:
+        - DDL direct (HTTP/HTTPS)
+        - Torrent
+        - Archive.org collection
+        - API
+    validations:
+      required: true
+  - type: textarea
+    id: mapping
+    attributes:
+      label: Systemes couverts
+      description: Quels sont les systemes disponibles sur cette source ?
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes additionnelles
+      description: Limitations, Cloudflare, quota, format des fichiers, etc.

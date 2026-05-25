@@ -46,9 +46,14 @@ jobs:
           Set-Content -Path VERSION -Value $version -Encoding ASCII
 
       - name: Install build dependencies
+        shell: pwsh
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          if (Test-Path requirements-lock.txt) {
+            pip install -r requirements-lock.txt
+          } else {
+            pip install -r requirements.txt
+          }
           pip install pyinstaller
 
       - name: Validate runtime
@@ -58,6 +63,10 @@ jobs:
           python -m py_compile @files
           python tests\smoke_checks.py
           python tests\core_helper_checks.py
+          python tests\download_single_checks.py
+          python tests\dat_coverage_checks.py
+          python tests\output_checks.py
+          python tests\web_ui_checks.py
           python main.py --version
           python main.py --sources
           python main.py --diagnose
