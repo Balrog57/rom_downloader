@@ -1,5 +1,5 @@
 requests>=2.31,<3
-beautifulsoup4>=4.12,<5
+beautifulsoup4>=4.14.3,<5
 internetarchive>=5.0,<6
 cloudscraper>=1.2,<2
 py7zr>=1.0,<2
