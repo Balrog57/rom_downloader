@@ -1,5 +1,6 @@
 """Targeted runtime helper checks without network access."""
 
+import json
 from pathlib import Path
 import sys
 import tempfile
@@ -56,12 +57,31 @@ from src.core import (  # noqa: E402
     export_mapping_status,
     resolve_game_sources_with_cache,
     probe_catalog_providers,
+    build_report_payload,
+    write_download_report,
+    write_download_reports,
+    get_job_status,
+    get_job_config,
+    get_pending_queue_items_for_job,
+    save_job_progress,
+    cleanup_stale_locks,
+    pause_download_job,
+    resume_download_job,
+    cancel_download_job,
+    retry_failed_queue_items,
+    update_download_job,
+    QUEUE_TERMINAL_STATUSES,
+    reset_local_database,
+    apply_config_profile,
+    config_profile_settings,
+    normalize_config_profile,
 )
-from src.network.metrics import compute_provider_score  # noqa: E402
+from src.network.metrics import compute_provider_score, record_provider_attempt, prioritize_sources, load_provider_metrics  # noqa: E402
 from src.network.exceptions import ChecksumMismatchError  # noqa: E402
 from src.network.cloudflare_detection import looks_like_cloudflare_block  # noqa: E402
 from src.pipeline import build_pipeline_summary, merge_provider_metrics  # noqa: E402
 from src.progress import DownloadProgressMeter, format_duration  # noqa: E402
+from src.core.downloads import recover_orphaned_parts  # noqa: E402
 
 
 def assert_true(condition, message: str) -> None:
@@ -90,6 +110,21 @@ def main() -> None:
     assert_true(optional_positive_int("0") is None, "zero should be ignored")
     assert_true(parse_candidate_limit("all", 42) == 42, "candidate limit all failed")
     assert_true(parse_candidate_limit("7", 42) == 7, "candidate limit number failed")
+    assert_true(normalize_config_profile("Archive propre") == "archive-propre", "profile alias failed")
+    assert_true(config_profile_settings("debutant-sur")["dry_run"] is True, "safe profile must force dry-run")
+    profile_args = type("Args", (), {
+        "dry_run": False,
+        "parallel": 3,
+        "clean_torrentzip": False,
+        "tosort": False,
+        "prefer_1fichier": True,
+        "report_formats": "txt",
+    })()
+    applied = apply_config_profile(profile_args, "archive-propre", {"parallel"})
+    assert_true(applied == "archive-propre", "profile should apply")
+    assert_true(profile_args.parallel == 3, "explicit parallel must be preserved")
+    assert_true(profile_args.clean_torrentzip is True, "archive profile must enable torrentzip")
+    assert_true(profile_args.tosort is True, "archive profile must enable tosort")
     assert_true(
         normalize_system_name("Nintendo - GameCube - Datfile (2019) (2026-03-31 11-37-45)") == "Nintendo - GameCube",
         "DAT filename cleanup failed",
@@ -343,6 +378,61 @@ def main() -> None:
     assert_true(pipeline_summary["failure_causes"]["not_found"] == 1, "pipeline not_found cause failed")
     merged = merge_provider_metrics({"EdgeEmu": {"attempts": 1, "failed": 1}}, {"EdgeEmu": {"attempts": 2, "downloaded": 1}})
     assert_true(merged["EdgeEmu"]["attempts"] == 3 and merged["EdgeEmu"]["downloaded"] == 1, "provider metric merge failed")
+
+    with tempfile.TemporaryDirectory() as report_dir:
+        report_summary = {
+            "dat_file": "Nintendo - Test.dat",
+            "system_name": "Nintendo - Test",
+            "dat_profile": "No-Intro - Nintendo - Test",
+            "output_folder": report_dir,
+            "dry_run": True,
+            "active_sources": ["ProviderA", "ProviderB"],
+            "total_dat_games": 4,
+            "present_before": 1,
+            "missing_before": 3,
+            "total_size": 12,
+            "missing_size": 9,
+            "resolved_items": [
+                {
+                    "game_name": "Alpha <Bad & \"Game\">",
+                    "source": "ProviderA",
+                    "download_filename": "alpha.zip",
+                    "size": 4,
+                    "provider_attempts": [{"source": "ProviderA", "status": "dry_run", "duration_seconds": 0.5}],
+                }
+            ],
+            "failed_items": [
+                {
+                    "game_name": "Beta Game",
+                    "source": "ProviderB",
+                    "error_code": "checksum_mismatch",
+                    "error": "MD5 DAT KO",
+                    "provider_attempts": [{"source": "ProviderB", "status": "failed", "detail": "MD5 DAT KO"}],
+                }
+            ],
+            "not_available": [{"game_name": "Gamma Game"}],
+            "skipped_items": [{"game_name": "Delta Game"}],
+        }
+        payload = build_report_payload(report_summary)
+        assert_true(payload["metadata"]["mode"] == "dry-run", "report payload mode failed")
+        assert_true(payload["counts"]["present_before"] == 1, "report payload present count failed")
+        report_paths = write_download_reports(report_dir, report_summary, formats=("txt", "json", "csv", "html"))
+        assert_true(set(report_paths) == {"txt", "json", "csv", "html"}, "multi report formats failed")
+        for path in report_paths.values():
+            assert_true(Path(path).exists(), f"report file missing: {path}")
+        txt_report = Path(report_paths["txt"]).read_text(encoding="utf-8")
+        assert_true("Mode: dry-run, aucun telechargement effectue" in txt_report, "dry-run report marker missing")
+        assert_true("Telecharges/Simules" in txt_report, "txt simulated section missing")
+        json_report = json.loads(Path(report_paths["json"]).read_text(encoding="utf-8"))
+        assert_true("metadata" in json_report and "counts" in json_report and "items" in json_report, "json report shape failed")
+        csv_report = Path(report_paths["csv"]).read_text(encoding="utf-8")
+        assert_true("status,system_name,game_name,provider,download_filename,size,error_code,detail,file_path" in csv_report, "csv header failed")
+        assert_true("checksum_mismatch" in csv_report and "not_found" in csv_report, "csv rows failed")
+        html_report = Path(report_paths["html"]).read_text(encoding="utf-8")
+        assert_true("Alpha &lt;Bad &amp; &quot;Game&quot;&gt;" in html_report, "html escaping failed")
+        assert_true("Alpha <Bad" not in html_report, "html must not contain raw game name")
+        compat_path = write_download_report(report_dir, report_summary)
+        assert_true(Path(compat_path).exists() and compat_path.endswith(".txt"), "compat txt report failed")
 
     # ── System name cleanup: format suffixes ──
     nsys = normalize_system_name
@@ -843,6 +933,134 @@ def main() -> None:
             assert_true("Avec au moins 1 provider" in formatted, "mapper report must show provider count")
         finally:
             _pm.resolve_system_mapping = _orig_mapping
+
+    from src.core.local_database import (
+        init_local_database,
+        open_local_database,
+    )
+    # ── Queue persistante ──
+    with tempfile.TemporaryDirectory() as job_tmp_dir:
+        job_db = Path(job_tmp_dir) / ".rom_downloader.sqlite"
+        init_local_database(path=job_db)
+        with open_local_database(job_db) as conn:
+            conn.execute(
+                "INSERT INTO systems (system_id, dat_path, dat_label, dat_section, system_name, family, family_label, updated_at) "
+                "VALUES ('system-test', '/fake/test.dat', 'Test', 'No-Intro', 'Test System', 'Test', 'Test', 0)"
+            )
+            conn.execute(
+                "INSERT INTO games (game_id, system_id, game_name, primary_rom, updated_at) "
+                "VALUES ('game-a', 'system-test', 'Alpha Game', 'alpha.bin', 0)"
+            )
+            conn.execute(
+                "INSERT INTO games (game_id, system_id, game_name, primary_rom, updated_at) "
+                "VALUES ('game-c', 'system-test', 'Gamma Game', 'gamma.bin', 0)"
+            )
+            conn.execute(
+                "INSERT INTO games (game_id, system_id, game_name, primary_rom, updated_at) "
+                "VALUES ('game-b', 'system-test', 'Beta Game', 'beta.bin', 0)"
+            )
+            conn.execute(
+                "INSERT INTO games (game_id, system_id, game_name, primary_rom, updated_at) "
+                "VALUES ('game-d', 'system-test', 'Delta Game', 'delta.bin', 0)"
+            )
+        job_id = create_download_job(
+            "system-test",
+            [{"game_id": "game-a", "system_id": "system-test", "game_name": "Alpha Game"}],
+            str(job_tmp_dir),
+            path=job_db,
+        )
+        assert_true(len(job_id) == 32, "create_download_job must return uuid hex")
+        jobs = list_download_jobs(limit=5, path=job_db)
+        assert_true(any(j["job_id"] == job_id for j in jobs), "job must appear in list")
+
+        assert_true(get_job_status(job_id, path=job_db) == "running", "new job must be running")
+        assert_true(pause_download_job(job_id, path=job_db), "pause must succeed")
+        assert_true(get_job_status(job_id, path=job_db) == "paused", "paused job status mismatch")
+        assert_true(resume_download_job(job_id, path=job_db), "resume must succeed")
+        assert_true(get_job_status(job_id, path=job_db) == "running", "resumed job must be running")
+
+        config = get_job_config(job_id, path=job_db)
+        assert_true(config["output_folder"] == str(job_tmp_dir), "job config output_folder mismatch")
+
+        update_download_queue_item(job_id, game_id="game-a", status="running", locked_by="orchestrator", path=job_db)
+        assert_true(cancel_download_job(job_id, path=job_db), "cancel must succeed")
+        assert_true(get_job_status(job_id, path=job_db) == "cancelled", "cancelled job status mismatch")
+
+        cancel_job_id = create_download_job(
+            "system-test",
+            [
+                {"game_id": "game-b", "system_id": "system-test", "game_name": "Beta Game"},
+                {"game_id": "game-c", "system_id": "system-test", "game_name": "Gamma Game"},
+            ],
+            str(job_tmp_dir),
+            path=job_db,
+        )
+        update_download_queue_item(cancel_job_id, game_id="game-b", status="completed", path=job_db)
+        update_download_queue_item(cancel_job_id, game_id="game-c", status="failed", path=job_db)
+        retried = retry_failed_queue_items(cancel_job_id, path=job_db)
+        assert_true(retried == 1, "retry must reset exactly 1 failed item")
+
+        pending = get_pending_queue_items_for_job(cancel_job_id, include_failed=True, path=job_db)
+        assert_true(len(pending) == 1, "pending items count after retry")
+        assert_true(pending[0]["game_id"] == "game-c", "retried item must be game-c")
+
+        save_job_progress(cancel_job_id, 42, path=job_db)
+        config2 = get_job_config(cancel_job_id, path=job_db)
+        assert_true(config2.get("settings", {}).get("last_processed_index") == 42, "job progress not saved")
+
+        lock_job_id = create_download_job(
+            "system-test",
+            [{"game_id": "game-d", "system_id": "system-test", "game_name": "Delta Game"}],
+            str(job_tmp_dir),
+            path=job_db,
+        )
+        update_download_queue_item(lock_job_id, game_id="game-d", status="running", locked_by="orchestrator", path=job_db)
+        stale = cleanup_stale_locks(timeout_seconds=-1, path=job_db)
+        assert_true(stale["unlocked_items"] >= 1, "cleanup must unlock stale locks")
+        assert_true(stale["unlocked_items"] >= 1, "cleanup must unlock stale locks")
+
+        reset_local_database(path=job_db)
+        assert_true(get_job_status(job_id, path=job_db) == "", "db reset must clear jobs")
+
+    # ── recover_orphaned_parts ──
+    with tempfile.TemporaryDirectory() as part_tmp_dir:
+        part_dir = Path(part_tmp_dir)
+        orphan = part_dir / "game_abc.part"
+        orphan.write_text("dummy data", encoding="utf-8")
+        assert_true(orphan.exists(), "part file must exist")
+        removed = recover_orphaned_parts(str(part_tmp_dir))
+        assert_true(str(orphan) in removed, "orphan part must be removed")
+        assert_true(not orphan.exists(), "part file must be deleted")
+
+    # ── Scoring per-systeme ──
+    per_system_metrics: dict = {}
+    record_provider_attempt(per_system_metrics, "LoLROMs", "downloaded", 5.0, system_name="Nintendo - Game Boy Advance")
+    record_provider_attempt(per_system_metrics, "LoLROMs", "failed", 2.0, system_name="Nintendo - Game Boy Advance")
+    record_provider_attempt(per_system_metrics, "LoLROMs", "downloaded", 3.0, system_name="Sony - PlayStation")
+    assert_true("LoLROMs::Nintendo - Game Boy Advance" in per_system_metrics, "composite key for GBA must exist")
+    assert_true("LoLROMs::Sony - PlayStation" in per_system_metrics, "composite key for PS1 must exist")
+    assert_true("LoLROMs" in per_system_metrics, "global key must be accumulated")
+    gba_metric = per_system_metrics["LoLROMs::Nintendo - Game Boy Advance"]
+    assert_true(gba_metric["downloaded"] == 1 and gba_metric["failed"] == 1, "GBA per-system counts wrong")
+    global_metric = per_system_metrics["LoLROMs"]
+    assert_true(global_metric["attempts"] == 3, f"global attempts must be 3, got {global_metric['attempts']}")
+
+    empty_sources = [{"name": "LoLROMs", "order": 3, "priority": 50}]
+    ordered = prioritize_sources(empty_sources, per_system_metrics, system_name="Nintendo - Game Boy Advance")
+    assert_true(len(ordered) == 1, "prioritize must preserve source count")
+    neutral_ordered = prioritize_sources(empty_sources, {}, system_name="Nintendo - Game Boy Advance")
+    assert_true(len(neutral_ordered) == 1, "empty metrics must not crash")
+
+    from src.pipeline import aggregate_provider_metrics
+    sys_items = [{"provider_attempts": [
+        {"source": "Vimm", "status": "downloaded", "duration_seconds": 2.0, "bytes": 100}
+    ]}]
+    sys_metrics = aggregate_provider_metrics(sys_items, system_name="SNES")
+    assert_true("Vimm::SNES" in sys_metrics, "composite key in aggregate_provider_metrics missing")
+    assert_true(sys_metrics["Vimm::SNES"]["downloaded"] == 1, "aggregate count wrong")
+
+    no_sys_metrics = aggregate_provider_metrics(sys_items)
+    assert_true("Vimm" in no_sys_metrics, "global only in aggregate_provider_metrics missing")
 
     print("core helper checks ok")
 

@@ -10,6 +10,19 @@ RETRYABLE_ERROR_CODES = {
     "cloudflare_challenge",
 }
 
+NON_RETRYABLE_ERROR_CODES = {
+    "unexpected_html",
+    "checksum_mismatch",
+    "quota_exceeded",
+    "http_404",
+    "http_403",
+    "game_not_found",
+    "provider_not_mapped",
+    "archive_invalid",
+    "disk_full",
+    "permission_denied",
+}
+
 
 def classify_error(status: str | None = None, detail: str | None = None) -> str:
     """Retourne un code d'erreur stable a partir d'un statut et d'un message."""
@@ -31,6 +44,8 @@ def classify_error(status: str | None = None, detail: str | None = None) -> str:
         return "checksum_mismatch"
     if "cloudflare" in haystack or "__cf_chl" in haystack or "just a moment" in haystack:
         return "cloudflare_challenge"
+    if "html inattendu" in haystack or "reponse html" in haystack:
+        return "unexpected_html"
     if "quota" in haystack or "rate limit" in haystack:
         return "quota_exceeded"
     if "timeout" in haystack or "timed out" in haystack or "delai" in haystack:
@@ -58,7 +73,13 @@ def classify_error(status: str | None = None, detail: str | None = None) -> str:
 
 def error_is_retryable(error_code: str | None) -> bool:
     """Indique si une erreur peut etre retentee automatiquement."""
-    return (error_code or "") in RETRYABLE_ERROR_CODES
+    code = error_code or ""
+    return code in RETRYABLE_ERROR_CODES
+
+
+def error_is_poison(error_code: str | None) -> bool:
+    """Indique si une erreur empoisonne la source (ne jamais reessayer)."""
+    return (error_code or "") == "unexpected_html"
 
 
 def retry_delay_seconds(error_code: str | None) -> int:

@@ -169,7 +169,7 @@ def detect_dat_profile(dat_file_path: str) -> dict:
         'family': family,
         'family_label': family_label,
         'is_retool': is_retool,
-        'retool_label': 'Retool / 1G1R' if is_retool else 'DAT brut',
+        'retool_label': 'Retool filtre' if is_retool else 'DAT brut',
         'default_source_url': ''
     }
 

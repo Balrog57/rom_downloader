@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import os
 import time
+import html
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
@@ -139,9 +140,16 @@ class _WebHandler(BaseHTTPRequestHandler):
         if path == "/api/metrics":
             return self._json(list_provider_metrics())
         if path == "/api/providers":
-            return self._json(list_validated_providers())
+            game_id = self._query().get("game_id", [""])[0]
+            if not game_id:
+                return self._error(400, "missing game_id")
+            return self._json(list_validated_providers(game_id))
         if path == "/api/candidates":
-            return self._json(list_provider_candidates({}))
+            game_id = self._query().get("game_id", [""])[0]
+            if not game_id:
+                return self._error(400, "missing game_id")
+            status = self._query().get("status", ["all"])[0]
+            return self._json(list_provider_candidates(game_id, status=status))
         if path == "/api/sources":
             return self._json(get_default_sources())
         if path == "/api/mapping":
@@ -222,7 +230,10 @@ class _WebHandler(BaseHTTPRequestHandler):
             systems = list_catalog_systems()
             rows = ""
             for item in systems[:200]:
-                rows += f"<tr><td><a href=\"/games?sid={item['system_id']}\">{item['system_name']}</a></td><td>{item.get('dat_section','')}</td><td>{item.get('game_count',0)}</td></tr>"
+                sid = html.escape(str(item.get('system_id', '')), quote=True)
+                system_label = html.escape(str(item.get('system_name', '')))
+                section = html.escape(str(item.get('dat_section', '')))
+                rows += f"<tr><td><a href=\"/games?sid={sid}\">{system_label}</a></td><td>{section}</td><td>{item.get('game_count',0)}</td></tr>"
             self._html(f"<h1>Systemes ({len(systems)})</h1><table><tr><th>Systeme</th><th>Section</th><th>Jeux</th></tr>{rows}</table>")
         elif path == "/games":
             sid = self._query().get("sid", [None])[0]
@@ -232,21 +243,32 @@ class _WebHandler(BaseHTTPRequestHandler):
             games = list_catalog_games(sid, limit=200)
             rows = ""
             for g in games:
-                rows += f"<tr><td>{g['game_name']}</td><td>{g.get('primary_rom','')}</td><td>{format_bytes_for_web(g.get('size',0))}</td><td>{len(g.get('providers',[]))}</td></tr>"
-            self._html(f"<h1>{sys_info.get('system_name',sid)}</h1><table><tr><th>Jeu</th><th>ROM</th><th>Taille</th><th>Providers</th></tr>{rows}</table>")
+                game_name = html.escape(str(g.get('game_name', '')))
+                primary_rom = html.escape(str(g.get('primary_rom', '')))
+                rows += f"<tr><td>{game_name}</td><td>{primary_rom}</td><td>{format_bytes_for_web(g.get('size',0))}</td><td>{len(g.get('providers',[]))}</td></tr>"
+            title = html.escape(str(sys_info.get('system_name', sid)))
+            self._html(f"<h1>{title}</h1><table><tr><th>Jeu</th><th>ROM</th><th>Taille</th><th>Providers</th></tr>{rows}</table>")
         elif path == "/jobs":
             jobs = list_download_jobs(status="all", limit=100)
             rows = ""
             for job in jobs:
                 q = job.get("queue", {})
                 queue_txt = ", ".join(f"{k}={v}" for k, v in sorted(q.items()))
-                rows += f"<tr><td>{job['job_id'][:8]}</td><td>{job['status']}</td><td>{job['completed']}/{job['total']}</td><td>{job['output_folder']}</td><td>{queue_txt}</td></tr>"
+                job_short = html.escape(str(job.get('job_id', ''))[:8])
+                status = html.escape(str(job.get('status', '')))
+                output = html.escape(str(job.get('output_folder', '')))
+                queue_html = html.escape(queue_txt)
+                rows += f"<tr><td>{job_short}</td><td>{status}</td><td>{job['completed']}/{job['total']}</td><td>{output}</td><td>{queue_html}</td></tr>"
             self._html(f"<h1>Jobs</h1><table><tr><th>ID</th><th>Statut</th><th>Progression</th><th>Dossier</th><th>File</th></tr>{rows}</table>")
         elif path == "/history":
             rows_items = list_download_history(limit=200)
             rows = ""
             for item in rows_items:
-                rows += f"<tr><td>{item.get('date','')}</td><td>{item.get('game_name','')}</td><td>{item.get('provider','')}</td><td>{item.get('status','')}</td></tr>"
+                date = html.escape(str(item.get('date', '')))
+                game_name = html.escape(str(item.get('game_name', '')))
+                provider = html.escape(str(item.get('provider', '')))
+                status = html.escape(str(item.get('status', '')))
+                rows += f"<tr><td>{date}</td><td>{game_name}</td><td>{provider}</td><td>{status}</td></tr>"
             self._html(f"<h1>Historique</h1><table><tr><th>Date</th><th>Jeu</th><th>Provider</th><th>Statut</th></tr>{rows}</table>")
         elif path == "/sources":
             sources = get_default_sources()
@@ -258,7 +280,7 @@ class _WebHandler(BaseHTTPRequestHandler):
                 successes = m.get("downloaded", 0)
                 failures = m.get("failed", 0)
                 speed = format_bytes_for_web(m.get("average_speed", 0)) + "/s" if m.get("average_speed") else ""
-                rows += f"<tr><td>{name}</td><td>{src.get('type','')}</td><td>{successes}</td><td>{failures}</td><td>{speed}</td></tr>"
+                rows += f"<tr><td>{html.escape(str(name))}</td><td>{html.escape(str(src.get('type','')))}</td><td>{successes}</td><td>{failures}</td><td>{speed}</td></tr>"
             self._html(f"<h1>Sources</h1><table><tr><th>Provider</th><th>Type</th><th>Succes</th><th>Echecs</th><th>Vitesse</th></tr>{rows}</table>")
         else:
             self._html("<h1>404</h1><p>Page non trouvee</p>")

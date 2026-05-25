@@ -98,14 +98,14 @@ def download_file_legacy(url: str, dest_path: str, session: requests.Session, pr
     return False
 
 
-def _response_preview(response: requests.Response, max_bytes: int = 512) -> str:
-    """Retourne un court extrait de reponse sans lever d'erreur secondaire."""
+def _response_preview(response: requests.Response, max_bytes: int = 4096) -> str:
+    """Retourne un extrait de reponse pour diagnostic (jusqu'a 4KB)."""
     try:
         preview = response.raw.read(max_bytes, decode_content=True)
-        return preview.decode('utf-8', errors='ignore').strip()[:200]
+        return preview.decode('utf-8', errors='ignore').strip()[:4000]
     except Exception:
         try:
-            return response.text.strip()[:200]
+            return response.text.strip()[:4000]
         except Exception:
             return ''
 
@@ -277,8 +277,44 @@ def download_from_archive_org(identifier: str, filename: str, dest_path: str, se
     return _impl(identifier, filename, dest_path, session, progress_callback)
 
 
+def recover_orphaned_parts(output_folder: str) -> list[str]:
+    """Scanne les fichiers .part orphelins et les supprime si aucun job actif ne les reference.
+    Retourne la liste des fichiers supprimes."""
+    from pathlib import Path
+    target = Path(output_folder)
+    if not target.is_dir():
+        return []
+    part_files = list(target.rglob("*.part"))
+    if not part_files:
+        return []
+    from .local_database import list_download_queue_items, list_download_jobs
+    active_jobs = list_download_jobs(status="running")
+    active_items = []
+    for job in active_jobs:
+        items = list_download_queue_items({"job_id": job["job_id"], "status": "running"})
+        active_items.extend(items)
+    active_names = set()
+    for item in active_items:
+        name = item.get("game_name") or ""
+        if name:
+            active_names.add(name.lower())
+    removed = []
+    for part_path in part_files:
+        part_name = part_path.stem.lower()
+        if part_name not in active_names:
+            try:
+                part_path.unlink()
+                removed.append(str(part_path))
+            except OSError:
+                pass
+    if removed:
+        print(f"Fichiers .part orphelins nettoyes: {len(removed)}")
+    return removed
+
+
 __all__ = [
     'download_file_legacy',
     'download_file',
     'download_from_archive_org',
+    'recover_orphaned_parts',
 ]

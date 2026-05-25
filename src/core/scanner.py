@@ -306,7 +306,9 @@ def format_analysis_summary(summary: dict) -> str:
         lines.append(f"Tailles manquantes inconnues: {summary.get('missing_unknown_sizes')}")
     if summary.get('tosort_candidates') is not None:
         lines.append(f"Candidats ToSort: {summary.get('tosort_candidates')}")
-    if summary.get('candidate_sample_size'):
+    if 'candidate_sample_size' not in summary:
+        lines.append("Trouvables via providers: non calcule")
+    elif summary.get('candidate_sample_size'):
         lines.append(f"Echantillon sources candidates: {summary.get('candidate_sample_size')} jeu(x)")
         source_counts = summary.get('candidate_source_counts') or {}
         if source_counts:

@@ -5,6 +5,11 @@ from __future__ import annotations
 from .network.exceptions import ChecksumMismatchError, SourceTimeoutError
 
 
+def _composite_key(name: str, system: str) -> str:
+    system_key = (system or "").strip()
+    return f"{name}::{system_key}" if system_key else name
+
+
 def aggregate_source_counts(items: list[dict]) -> dict[str, int]:
     """Compte les jeux resolus par source principale."""
     counts: dict[str, int] = {}
@@ -14,13 +19,14 @@ def aggregate_source_counts(items: list[dict]) -> dict[str, int]:
     return counts
 
 
-def aggregate_provider_metrics(items: list[dict]) -> dict[str, dict]:
-    """Agrege les tentatives provider en metriques exploitables par les rapports."""
+def aggregate_provider_metrics(items: list[dict], system_name: str = "") -> dict[str, dict]:
+    """Agrege les tentatives provider en metriques exploitables (per-systeme si system_name)."""
     metrics: dict[str, dict] = {}
     for item in items or []:
         for attempt in item.get("provider_attempts", []) or []:
             source_name = attempt.get("source") or "Inconnu"
-            metric = metrics.setdefault(source_name, {
+            key = _composite_key(source_name, system_name)
+            metric = metrics.setdefault(key, {
                 "attempts": 0,
                 "downloaded": 0,
                 "failed": 0,
@@ -88,14 +94,14 @@ def failure_cause_counts(failed_items: list[dict], not_available: list[dict]) ->
     return causes
 
 
-def build_pipeline_summary(summary: dict) -> dict:
+def build_pipeline_summary(summary: dict, system_name: str = "") -> dict:
     """Produit un resume testable des resultats runtime."""
     resolved = summary.get("resolved_items", []) or []
     failed = summary.get("failed_items", []) or []
     not_available = summary.get("not_available", []) or []
     return {
         "source_counts": aggregate_source_counts(resolved),
-        "provider_metrics": aggregate_provider_metrics(resolved + failed),
+        "provider_metrics": aggregate_provider_metrics(resolved + failed, system_name=system_name),
         "failure_causes": failure_cause_counts(failed, not_available),
     }
 

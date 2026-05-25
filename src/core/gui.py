@@ -22,6 +22,7 @@ from .catalog import (
     list_catalog_systems,
 )
 from .constants import *
+from .config_profiles import CONFIG_PROFILE_LABELS, config_profile_settings
 from .dat_parser import parse_dat_file
 from .dat_profile import (
     describe_dat_profile,
@@ -30,14 +31,15 @@ from .dat_profile import (
     prepare_sources_for_profile,
     resolve_dat_output_folder,
 )
-from .local_database import dashboard_stats
+from .local_database import dashboard_stats, load_circuit_states, save_circuit_states
 from .download_history import list_download_history, record_download_history
 from .download_orchestrator import download_missing_games_sequentially
 from .download_single import download_single_game, auto_extract_and_repack
 from .env import *
-from .reports import write_download_report
+from .reports import write_download_report, write_download_reports
 from .scanner import (
     build_analysis_summary,
+    estimate_games_size,
     find_missing_games,
     find_roms_not_in_dat,
     move_files_to_tosort,
@@ -78,6 +80,12 @@ _COVERAGE_BADGES = [
 from .torrentzip import repack_verified_archives_to_torrentzip
 
 
+def _resolve_per_system_stats(provider_stats: dict, provider_name: str, system_name: str) -> dict:
+    """Extrait les metriques per-systeme (cle composite 'provider::systeme') si disponibles."""
+    key = f"{provider_name}::{system_name}"
+    return provider_stats.get(key, {})
+
+
 def detect_system_name(dat_file_path: str) -> str:
     from .scanner import detect_system_name as _detect_system_name
     return _detect_system_name(dat_file_path)
@@ -114,6 +122,15 @@ def gui_mode():
                 self.provider_stats = dict(self.preferences.get("provider_stats", {}))
                 self.download_job_id = ""
                 self.circuit_breaker = SourceCircuitBreaker()
+                saved_states = load_circuit_states()
+                for source_name, state in saved_states.items():
+                    if state.get("failures", 0) >= self.circuit_breaker.threshold:
+                        for _ in range(state["failures"]):
+                            self.circuit_breaker.record_failure(source_name)
+                    for etype, edata in state.get("by_type", {}).items():
+                        for _ in range(edata.get("failures", 0)):
+                            self.circuit_breaker.record_failure(source_name, etype)
+                self._schedule_circuit_persist()
                 self.download_queue: queue.Queue = queue.Queue()
                 self.download_results: list = []
                 self.downloads_tab = tk.StringVar(value="queue")
@@ -123,7 +140,9 @@ def gui_mode():
                 self.clean_torrentzip_var = tk.BooleanVar(value=bool(self.preferences.get("clean_torrentzip", True)))
                 self.move_to_tosort_var = tk.BooleanVar(value=bool(self.preferences.get("move_to_tosort", False)))
                 self.prefer_1fichier_var = tk.BooleanVar(value=bool(self.preferences.get("prefer_1fichier", False)))
+                self.audit_only_var = tk.BooleanVar(value=bool(self.preferences.get("audit_only", False)))
                 self.parallel_var = tk.IntVar(value=max(1, int(self.preferences.get("parallel_downloads", DEFAULT_PARALLEL_DOWNLOADS) or DEFAULT_PARALLEL_DOWNLOADS)))
+                self.profile_var = tk.StringVar(value=str(self.preferences.get("profile", "")))
                 self.progress_var = tk.DoubleVar(value=0)
                 self.status_var = tk.StringVar(value="Pret")
                 self.system_query_var = tk.StringVar()
@@ -154,6 +173,7 @@ def gui_mode():
                 self.configure_style()
                 self.build_shell()
                 self.show_page("home")
+                self.root.after(1000, self._startup_cleanup)
 
             def configure_style(self):
                 self.style = ttk.Style(self.root)
@@ -174,13 +194,35 @@ def gui_mode():
                     "auto_extract": bool(self.auto_extract_var.get()),
                     "move_to_tosort": bool(self.move_to_tosort_var.get()),
                     "prefer_1fichier": bool(self.prefer_1fichier_var.get()),
+                    "audit_only": bool(self.audit_only_var.get()),
                     "parallel_downloads": max(1, int(self.parallel_var.get() or 1)),
+                    "profile": self.profile_var.get(),
                     "source_enabled": self.source_enabled,
                     "source_order": self.source_order,
                     "source_policies": self.source_policies,
                     "provider_stats": self.provider_stats,
                 })
                 _facade.save_preferences(self.preferences)
+
+            def _apply_profile(self, event=None):
+                settings = config_profile_settings(self.profile_var.get())
+                if not settings:
+                    return
+                self.audit_only_var.set(bool(settings.get("dry_run", False)))
+                self.parallel_var.set(max(1, int(settings.get("parallel", self.parallel_var.get()) or 1)))
+                self.clean_torrentzip_var.set(bool(settings.get("clean_torrentzip", False)))
+                self.move_to_tosort_var.set(bool(settings.get("tosort", False)))
+                self.prefer_1fichier_var.set(bool(settings.get("prefer_1fichier", False)))
+                self.persist_preferences()
+
+            def _schedule_circuit_persist(self):
+                def _persist():
+                    try:
+                        save_circuit_states(self.circuit_breaker)
+                    except Exception:
+                        pass
+                    self.root.after(300000, _persist)
+                self.root.after(300000, _persist)
 
             def build_shell(self):
                 header = tk.Frame(self.root, bg="#242529", height=62, highlightbackground="#151515", highlightthickness=1)
@@ -389,8 +431,9 @@ def gui_mode():
                     self.missing_games = find_missing_games(self.dat_games, local_roms, local_roms_normalized, local_game_names, self.local_signature_index)
                     total = len(self.dat_games)
                     present = total - len(self.missing_games)
+                    missing_size, _missing_unknown = estimate_games_size(self.missing_games)
                     profile_desc = describe_dat_profile(self.dat_profile) if self.dat_profile else "Inconnu"
-                    msg = f"DAT: {profile_desc} | {total} jeux, {present} presents, {len(self.missing_games)} manquants"
+                    msg = f"DAT: {profile_desc} | {total} jeux, {present} presents, {len(self.missing_games)} manquants | {format_bytes(missing_size)} a auditer"
                     self._ui(lambda m=msg: self.dat_results_var.set(m))
                     self._ui(lambda: self.show_page("games"))
                 except Exception as exc:
@@ -769,13 +812,14 @@ def gui_mode():
 
             def run_all_missing_download(self):
                 try:
+                    audit_only = bool(self.audit_only_var.get())
                     dat_profile = self.dat_profile
                     system_name = dat_profile.get("system_name") if dat_profile else ""
                     output_folder = self.rom_folder.get().strip()
                     if self.output_root_by_dat_var.get() and dat_profile:
                         output_folder = resolve_dat_output_folder(dat_profile.get('dat_path', ''), self.rom_folder.get().strip(), True)
                     os.makedirs(output_folder, exist_ok=True)
-                    sources = self.selected_sources(dat_profile)
+                    sources = self.selected_sources(dat_profile, system_name=system_name)
                     result = download_missing_games_sequentially(
                         self.missing_games,
                         sources,
@@ -784,7 +828,7 @@ def gui_mode():
                         dat_profile,
                         output_folder,
                         "",
-                        False,
+                        audit_only,
                         None,
                         lambda value: self._ui(lambda v=value: self.progress_var.set(v)),
                         self.log,
@@ -794,20 +838,47 @@ def gui_mode():
                         circuit_breaker=self.circuit_breaker,
                     )
                     self.update_provider_stats(result)
-                    if self.clean_torrentzip_var.get():
+                    if self.clean_torrentzip_var.get() and not audit_only:
                         torrentzip_summary = repack_verified_archives_to_torrentzip(
                             self.dat_games, output_folder, False, self.log,
                             lambda message: self._ui(lambda msg=message: self.status_var.set(msg)),
                             is_running=lambda: self.running,
                         )
                         self.log(f"TorrentZip: {torrentzip_summary.get('repacked', 0)} repack(s)")
-                    if self.move_to_tosort_var.get():
+                    if self.move_to_tosort_var.get() and not audit_only:
                         local_roms, local_roms_normalized, local_game_names, sig_idx = scan_local_roms(output_folder, self.dat_games)
                         files_to_move = find_roms_not_in_dat(self.dat_games, local_roms, local_roms_normalized, output_folder)
                         if files_to_move:
                             moved, failed = move_files_to_tosort(files_to_move, output_folder, os.path.join(output_folder, "ToSort"), False)
                             self.log(f"ToSort: {moved} deplace(s)")
-                    self._ui(lambda: self.status_var.set(f"Termine — {result.get('downloaded', 0)} telecharge(s), {result.get('failed', 0)} echec(s)"))
+                    total_size, total_unknown = estimate_games_size(self.dat_games)
+                    missing_size, missing_unknown = estimate_games_size(self.missing_games)
+                    report_paths = write_download_reports(output_folder, {
+                        "dat_file": dat_profile.get("dat_path", "") if dat_profile else "",
+                        "system_name": system_name,
+                        "dat_profile": describe_dat_profile(dat_profile),
+                        "output_folder": output_folder,
+                        "dry_run": audit_only,
+                        "active_sources": [source["name"] for source in sources if source.get("enabled", True)],
+                        "total_dat_games": len(self.dat_games),
+                        "present_before": max(0, len(self.dat_games) - len(self.missing_games)),
+                        "missing_before": len(self.missing_games),
+                        "total_size": total_size,
+                        "total_unknown_sizes": total_unknown,
+                        "missing_size": missing_size,
+                        "missing_unknown_sizes": missing_unknown,
+                        "resolved_items": result.get("resolved_items", []),
+                        "downloaded_items": result.get("downloaded_items", []),
+                        "failed_items": result.get("failed_items", []),
+                        "skipped_items": result.get("skipped_items", []),
+                        "not_available": result.get("not_available", []),
+                    }, formats=("txt", "json", "csv", "html"))
+                    report_txt = report_paths.get("txt", "")
+                    self.log(f"Rapport{' audit' if audit_only else ''}: {report_txt}")
+                    if audit_only:
+                        self._ui(lambda path=report_txt: self.status_var.set(f"Audit termine - rapport: {path}"))
+                    else:
+                        self._ui(lambda: self.status_var.set(f"Termine - {result.get('downloaded', 0)} telecharge(s), {result.get('failed', 0)} echec(s)"))
                 except Exception as exc:
                     self.log(f"ERREUR: {exc}")
                     self._ui(lambda msg=str(exc): self.status_var.set(f"Erreur: {msg}"))
@@ -845,7 +916,33 @@ def gui_mode():
                         os.makedirs(output_folder, exist_ok=True)
                     except Exception:
                         pass
-                    sources = self.selected_sources(dat_profile)
+                    sources = self.selected_sources(dat_profile, system_name=system_name)
+                    if self.audit_only_var.get():
+                        self._ui(lambda: self.status_var.set(f"Audit: {game_info.get('game_name', '?')}"))
+                        try:
+                            result = download_missing_games_sequentially(
+                                [game_info],
+                                sources,
+                                self.session,
+                                system_name,
+                                dat_profile,
+                                output_folder,
+                                "",
+                                True,
+                                None,
+                                None,
+                                self.log,
+                                lambda message: self._ui(lambda msg=message: self.status_var.set(msg)),
+                                is_running=lambda: self.running,
+                                parallel_downloads=1,
+                                circuit_breaker=self.circuit_breaker,
+                            )
+                            self.download_results.append(result)
+                            self.log(f"AUDIT: {game_info.get('game_name', '?')}")
+                        except Exception as exc:
+                            self.log(f"ERREUR AUDIT: {game_info.get('game_name', '?')}: {exc}")
+                        self.download_queue.task_done()
+                        continue
                     self._ui(lambda: self.status_var.set(f"Telechargement: {game_info.get('game_name', '?')}"))
                     try:
                         result = download_single_game(
@@ -886,12 +983,19 @@ def gui_mode():
                 self.entry(settings, self.rom_folder).grid(row=0, column=1, sticky="ew", padx=12, ipady=7)
                 self.button(settings, "Parcourir", self.browse_output, width=12).grid(row=0, column=2)
                 self.check(settings, "Sous-dossier nomme comme le DAT", self.output_root_by_dat_var).grid(row=1, column=1, sticky="w", pady=6)
-                self.check(settings, "Extraire + TorrentZip automatiquement", self.auto_extract_var).grid(row=2, column=1, sticky="w")
-                self.check(settings, "Recompresser en ZIP TorrentZip (apres telechargement complet)", self.clean_torrentzip_var).grid(row=3, column=1, sticky="w")
-                self.check(settings, "Deplacer les fichiers hors DAT vers ToSort", self.move_to_tosort_var).grid(row=4, column=1, sticky="w")
-                self.check(settings, "Privilegier les sources 1fichier configurees", self.prefer_1fichier_var).grid(row=5, column=1, sticky="w")
-                tk.Label(settings, text="Parallele", bg=UI_COLOR_BG, fg=UI_COLOR_TEXT_MAIN).grid(row=6, column=0, sticky="w", pady=(6, 0))
-                tk.Spinbox(settings, from_=1, to=12, textvariable=self.parallel_var, width=5, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, buttonbackground=UI_COLOR_GHOST, relief="flat").grid(row=6, column=1, sticky="w", pady=(6, 0))
+                tk.Label(settings, text="Profil DAT", bg=UI_COLOR_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 10)).grid(row=2, column=0, sticky="w", pady=(6, 0))
+                self.profile_combo = ttk.Combobox(settings, textvariable=self.profile_var,
+                    values=["", *CONFIG_PROFILE_LABELS],
+                    state="readonly", width=20, font=(self.font, 10))
+                self.profile_combo.grid(row=2, column=1, sticky="w", pady=(6, 0))
+                self.profile_combo.bind("<<ComboboxSelected>>", self._apply_profile)
+                self.check(settings, "Extraire + TorrentZip automatiquement", self.auto_extract_var).grid(row=3, column=1, sticky="w")
+                self.check(settings, "Recompresser en ZIP TorrentZip (apres telechargement complet)", self.clean_torrentzip_var).grid(row=4, column=1, sticky="w")
+                self.check(settings, "Deplacer les fichiers hors DAT vers ToSort", self.move_to_tosort_var).grid(row=5, column=1, sticky="w")
+                self.check(settings, "Privilegier les sources 1fichier configurees", self.prefer_1fichier_var).grid(row=6, column=1, sticky="w")
+                self.check(settings, "Audit uniquement (dry-run, aucun fichier ROM ecrit)", self.audit_only_var).grid(row=7, column=1, sticky="w")
+                tk.Label(settings, text="Parallele", bg=UI_COLOR_BG, fg=UI_COLOR_TEXT_MAIN).grid(row=8, column=0, sticky="w", pady=(6, 0))
+                tk.Spinbox(settings, from_=1, to=12, textvariable=self.parallel_var, width=5, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, buttonbackground=UI_COLOR_GHOST, relief="flat").grid(row=8, column=1, sticky="w", pady=(6, 0))
 
                 tabs = tk.Frame(frame, bg=UI_COLOR_BG)
                 tabs.grid(row=2, column=0, sticky="ew", pady=(12, 0))
@@ -914,6 +1018,8 @@ def gui_mode():
                 self.button(actions, "Reprise", lambda: self._job_action("resume"), width=12).pack(side="left", padx=(0, 6))
                 self.button(actions, "Annuler", lambda: self._job_action("cancel"), width=12).pack(side="left", padx=(0, 6))
                 self.button(actions, "Reessayer echecs", lambda: self._job_action("retry"), width=16).pack(side="left", padx=(0, 6))
+                self.button(actions, "Reessayer tout", self._retry_all_incomplete, width=16).pack(side="left", padx=(0, 6))
+                self.button(actions, "Nettoyer .part", self._cleanup_orphan_parts, width=16).pack(side="left", padx=(0, 6))
                 self.button(actions, "Arreter", self.stop, kind="danger", width=12).pack(side="left", padx=(20, 6))
 
                 self.log_text = tk.Text(frame, height=10, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, insertbackground=UI_COLOR_TEXT_MAIN, relief="flat", wrap="word", font=(self.font, 9))
@@ -991,6 +1097,45 @@ def gui_mode():
                     messagebox.showinfo("Info", f"{verb.get(action, action)} {'OK' if ok else 'ECHEC'}")
                 self._refresh_downloads_tree()
 
+            def _retry_all_incomplete(self):
+                from .local_database import list_download_jobs, retry_failed_queue_items as _retry
+                jobs = list_download_jobs(status="all", limit=100)
+                total = 0
+                for job in jobs:
+                    if job["status"] in ("failed", "stopped", "cancelled"):
+                        count = _retry(job["job_id"])
+                        total += count
+                if total:
+                    messagebox.showinfo("Info", f"{total} item(s) remis en file dans tous les jobs")
+                else:
+                    messagebox.showinfo("Info", "Aucun job a reprendre")
+                self._refresh_downloads_tree()
+
+            def _cleanup_orphan_parts(self):
+                import glob as _glob
+                output = self.rom_folder.get().strip()
+                if not output or not os.path.isdir(output):
+                    messagebox.showinfo("Info", "Dossier ROMs non configure ou introuvable")
+                    return
+                parts = _glob.glob(os.path.join(output, "**", "*.part"), recursive=True)
+                removed = 0
+                for p in parts:
+                    try:
+                        os.remove(p)
+                        removed += 1
+                    except Exception:
+                        pass
+                messagebox.showinfo("Nettoyage", f"{removed} fichier(s) .part supprime(s)")
+
+            def _startup_cleanup(self):
+                from .local_database import cleanup_stale_locks
+                try:
+                    result = cleanup_stale_locks()
+                    if result.get("unlocked_items", 0) or result.get("stopped_jobs", 0):
+                        self.log(f"Nettoyage au demarrage: {result['unlocked_items']} verrou(s) libere(s), {result['stopped_jobs']} job(s) stoppes")
+                except Exception:
+                    pass
+
             def build_history_page(self):
                 frame = self.page_frame()
                 top = tk.Frame(frame, bg=UI_COLOR_BG)
@@ -1037,55 +1182,159 @@ def gui_mode():
 
             def build_sources_page(self):
                 frame = self.page_frame()
+                frame.columnconfigure(0, weight=1)
                 tk.Label(frame, text="Sources", bg=UI_COLOR_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 24, "bold")).grid(row=0, column=0, sticky="w")
-                self.sources_tree = ttk.Treeview(frame, style="Catalog.Treeview", columns=("type", "priority", "coverage", "success", "failures", "speed", "quota", "delay", "timeout", "last_ok", "last_fail"), show="tree headings")
-                for col, label, width in [("#0", "Provider", 180), ("type", "Type", 100), ("priority", "Priorite", 60), ("coverage", "Couverture", 90), ("success", "Succes", 60), ("failures", "Echecs", 60), ("speed", "Vitesse", 80), ("quota", "Quota", 60), ("delay", "Delai", 60), ("timeout", "Timeout", 70), ("last_ok", "Dernier OK", 130), ("last_fail", "Dernier echec", 130)]:
+
+                filter_frame = tk.Frame(frame, bg=UI_COLOR_BG)
+                filter_frame.grid(row=1, column=0, sticky="ew", pady=(12, 0))
+                tk.Label(filter_frame, text="Systeme:", bg=UI_COLOR_BG, fg=UI_COLOR_TEXT_SUB, font=(self.font, 10)).pack(side="left", padx=(0, 6))
+                self.source_system_var = tk.StringVar(value="Tous")
+                self.source_system_combo = ttk.Combobox(filter_frame, textvariable=self.source_system_var,
+                                                        values=["Tous"], state="readonly", width=40, font=(self.font, 10))
+                self.source_system_combo.pack(side="left")
+                self.source_system_combo.bind("<<ComboboxSelected>>", lambda e: self.refresh_sources_list())
+                self._populate_source_system_filter()
+
+                self.sources_tree = ttk.Treeview(frame, style="Catalog.Treeview",
+                                                  columns=("type", "etat", "coverage", "success_rate", "success", "failures", "speed", "quota", "delay", "timeout", "last_ok", "last_fail"),
+                                                  show="tree headings")
+                for col, label, width in [
+                    ("#0", "Provider", 180), ("type", "Type", 100), ("etat", "Etat", 70),
+                    ("coverage", "Couverture", 90), ("success_rate", "Taux", 55),
+                    ("success", "Succes", 60), ("failures", "Echecs", 60),
+                    ("speed", "Vitesse", 80), ("quota", "Quota", 60), ("delay", "Delai", 60),
+                    ("timeout", "Timeout", 70), ("last_ok", "Dernier OK", 130), ("last_fail", "Dernier echec", 130)
+                ]:
                     self.sources_tree.heading(col, text=label)
                     if col == "#0":
                         self.sources_tree.column("#0", width=width, anchor="w")
                     else:
-                        self.sources_tree.column(col, width=width, anchor="e" if col in ("priority", "success", "failures", "quota", "delay") else "w")
-                self.sources_tree.grid(row=1, column=0, sticky="nsew", pady=(18, 0))
+                        self.sources_tree.column(col, width=width, anchor="e" if col in ("priority", "success", "failures", "quota", "delay", "success_rate", "coverage") else "w")
+                self.sources_tree.grid(row=2, column=0, sticky="nsew", pady=(18, 0))
+                self.sources_tree.bind("<Double-1>", self._edit_source_policy)
                 actions = tk.Frame(frame, bg=UI_COLOR_BG)
-                actions.grid(row=2, column=0, sticky="ew", pady=(14, 0))
-                self.button(actions, "Activer/desactiver", self.toggle_source, width=16).pack(side="left", padx=(0, 6))
-                self.button(actions, "Monter", lambda: self.move_source(-1), width=12).pack(side="left", padx=(0, 6))
-                self.button(actions, "Descendre", lambda: self.move_source(1), width=12).pack(side="left", padx=(0, 6))
-                self.button(actions, "Cles API", self.open_api_settings, width=12).pack(side="left", padx=(0, 6))
-                self.button(actions, "Tester connexion", self._test_provider_connection, width=16).pack(side="left", padx=(0, 6))
-                self.button(actions, "Diag Cloudflare", self._diagnose_cloudflare, width=16).pack(side="left", padx=(0, 6))
-                self.button(actions, "Sauver", self.persist_preferences, kind="accent", width=12).pack(side="left", padx=(20, 6))
+                actions.grid(row=3, column=0, sticky="ew", pady=(14, 0))
+                for label, command, kind in [
+                    ("Activer/desactiver", self.toggle_source, "ghost"),
+                    ("Monter", lambda: self.move_source(-1), "ghost"),
+                    ("Descendre", lambda: self.move_source(1), "ghost"),
+                    ("Editer politiques", self._edit_source_policy, "ghost"),
+                    ("Cles API", self.open_api_settings, "ghost"),
+                    ("Tester connexion", self._test_provider_connection, "ghost"),
+                    ("Vider cache", self._clear_source_cache, "ghost"),
+                ]:
+                    self.button(actions, label, command, kind=kind, width=14).pack(side="left", padx=(0, 4))
+                self.button(actions, "Sauver", self.persist_preferences, kind="accent", width=12).pack(side="left", padx=(6, 4))
                 self._cloudflare_status_label = tk.Label(frame, text="", bg=UI_COLOR_BG, fg=UI_COLOR_TEXT_SUB, font=(self.font, 10))
-                self._cloudflare_status_label.grid(row=3, column=0, sticky="w", pady=(10, 0))
+                self._cloudflare_status_label.grid(row=4, column=0, sticky="w", pady=(10, 0))
                 self.refresh_sources_list()
 
-            def _test_provider_connection(self):
-                name = self.selected_source_name()
-                if not name:
-                    return
-                messagebox.showinfo("Test connexion", f"Test de {name}: fonction non implantee - utilisez --healthcheck-sources en CLI")
+            def _populate_source_system_filter(self):
+                systems = ["Tous"]
+                try:
+                    catalog = list_catalog_systems()
+                    systems.extend([s["system_name"] for s in catalog[:100]])
+                except Exception:
+                    pass
+                self.source_system_combo["values"] = systems
 
-            def _diagnose_cloudflare(self):
+            def _edit_source_policy(self, event=None):
                 name = self.selected_source_name()
                 if not name:
                     return
-                cf_status = "Challenge" if self.circuit_breaker.is_open(name, error_type="cloudflare_challenge") else ("Bloque" if self.circuit_breaker.is_open(name) else "OK")
-                self._cloudflare_status_label.config(text=f"Statut Cloudflare {name}: {cf_status}")
+                known = {source["name"]: source for source in self.default_sources}
+                source = known.get(name)
+                if not source:
+                    return
+                policy = self.source_policies.get(name, {})
+                dialog = tk.Toplevel(self.root)
+                dialog.title(f"Politiques: {name}")
+                dialog.configure(bg=UI_COLOR_BG)
+                dialog.resizable(False, False)
+
+                entries = {}
+                row = 0
+                for key, label, default_val, validator in [
+                    ("timeout_seconds", "Timeout (s, 3-1800)", source.get("timeout_seconds", 120), lambda v: 3 <= int(v) <= 1800),
+                    ("quota_per_run", "Quota par run (1-100000)", source.get("quota_per_run", "-"), lambda v: v == "-" or 1 <= int(v) <= 100000),
+                    ("delay_seconds", "Delai (s, 0-60)", source.get("delay_seconds", "0"), lambda v: 0 <= float(v) <= 60),
+                    ("user_agent", "User-Agent (vide = defaut)", source.get("user_agent", ""), lambda v: len(v) <= 512),
+                    ("cookies", "Cookies (key=val;key2=val2)", source.get("cookies", ""), lambda v: len(v) <= 2048),
+                ]:
+                    tk.Label(dialog, text=label, bg=UI_COLOR_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 10)).grid(row=row, column=0, sticky="w", padx=12, pady=6)
+                    current = policy.get(key, default_val)
+                    var = tk.StringVar(value=str(current) if current is not None else "")
+                    entry = tk.Entry(dialog, textvariable=var, width=28 if key in ("user_agent", "cookies") else 12, font=(self.font, 10),
+                                    bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, insertbackground=UI_COLOR_TEXT_MAIN,
+                                    relief="flat")
+                    entry.grid(row=row, column=1, padx=12, pady=6)
+                    entries[key] = (var, validator)
+                    row += 1
+
+                def save_policy():
+                    new_policy = {}
+                    for key, (var, validator) in entries.items():
+                        val = var.get().strip()
+                        if not val:
+                            continue
+                        try:
+                            if not validator(val):
+                                messagebox.showwarning("Valeur invalide", f"La valeur de {key} est hors limites.", parent=dialog)
+                                return
+                        except (TypeError, ValueError):
+                            messagebox.showwarning("Valeur invalide", f"La valeur de {key} n'est pas un nombre.", parent=dialog)
+                            return
+                        if key in ("timeout_seconds", "quota_per_run"):
+                            new_policy[key] = int(val)
+                        elif key in ("delay_seconds",):
+                            new_policy[key] = float(val)
+                        else:
+                            new_policy[key] = val
+                    self.source_policies[name] = new_policy
+                    self.refresh_sources_list()
+                    self.persist_preferences()
+                    dialog.destroy()
+
+                btn_frame = tk.Frame(dialog, bg=UI_COLOR_BG)
+                btn_frame.grid(row=row, column=0, columnspan=2, pady=(12, 12))
+                self.button(btn_frame, "Appliquer", save_policy, kind="accent", width=12).pack(side="left", padx=6)
+                self.button(btn_frame, "Annuler", dialog.destroy, kind="ghost", width=12).pack(side="left", padx=6)
+
+            def _clear_source_cache(self):
+                name = self.selected_source_name()
+                if not name:
+                    return
+                from . import _facade
+                removed = _facade.clear_caches_for_source(name)
+                messagebox.showinfo("Cache vide",
+                    f"Cache {name}: {removed.get('resolution', 0)} resolution, {removed.get('listing', 0)} listing supprime(s).")
 
             def refresh_sources_list(self):
                 if not hasattr(self, "sources_tree") or not self.sources_tree:
                     return
                 self.sources_tree.delete(*self.sources_tree.get_children())
-                from .local_database import list_provider_metrics
+                from .local_database import list_provider_metrics, list_provider_system_metrics
+                from .sources import SYSTEM_MAPPINGS, resolve_system_mapping
+                system_filter = self.source_system_var.get().strip()
+                show_system = system_filter and system_filter != "Tous"
                 metrics = list_provider_metrics()
                 known = {source["name"]: source for source in self.default_sources}
+                if show_system:
+                    sys_metrics = list_provider_system_metrics(system_filter)
+                else:
+                    sys_metrics = {}
                 for name in self.ordered_source_names():
                     source = known[name]
                     active = self.source_enabled.get(name, source.get("enabled", True))
-                    provider_stats = metrics.get(name, {})
-                    m = provider_stats
+                    m = self.provider_stats.get(name, {})
+                    if show_system:
+                        composite = f"{name}::{system_filter}"
+                        if composite in sys_metrics:
+                            m = sys_metrics[composite]
                     success_val = m.get("downloaded", 0)
                     failure_val = m.get("failed", 0)
+                    attempts = m.get("attempts", 0)
+                    success_rate = (success_val / attempts * 100) if attempts > 0 else 0
                     avg_speed = format_bytes(m.get("average_speed", 0)) + "/s" if m.get("average_speed") else ""
                     last_ok = time.strftime("%Y-%m-%d %H:%M", time.localtime(m["last_success_at"])) if m.get("last_success_at") else ""
                     last_fail = time.strftime("%Y-%m-%d %H:%M", time.localtime(m["last_failure_at"])) if m.get("last_failure_at") else ""
@@ -1093,10 +1342,58 @@ def gui_mode():
                     quota_val = policy.get("quota_per_run", "") or source.get("quota_per_run", "")
                     delay_val = policy.get("delay_seconds") if policy.get("delay_seconds") is not None else source.get("delay_seconds", "")
                     timeout_val = policy.get("timeout_seconds", "") or source.get("timeout_seconds", "")
-                    coverage = len(m) if m else 0
+                    if show_system:
+                        coverage = 1
+                    else:
+                        source_type = source.get("type", "")
+                        if source_type in ("archive_org", "minerva"):
+                            coverage = "large"
+                        else:
+                            count = sum(1 for mapping in SYSTEM_MAPPINGS.values() if mapping.get(source_type))
+                            coverage = count if count > 0 else ""
+                    cb_open = self.circuit_breaker.is_open(name)
+                    cf_open = self.circuit_breaker.is_open(name, error_type="cloudflare_challenge")
+                    if cf_open:
+                        etat = "CF"
+                    elif cb_open:
+                        etat = "Bloque"
+                    elif success_val > 0:
+                        etat = "OK"
+                    else:
+                        etat = "?"
                     prefix = "[x]" if active else "[ ]"
-                    self.sources_tree.insert("", "end", iid=name, text=f"{prefix} {name}", values=(source.get("type", ""), source.get("priority", ""), coverage, success_val, failure_val, avg_speed, quota_val, delay_val, timeout_val, last_ok, last_fail))
+                    self.sources_tree.insert("", "end", iid=name, text=f"{prefix} {name}",
+                        values=(source.get("type", ""), etat, coverage, f"{success_rate:.0f}%" if attempts > 0 else "",
+                                success_val, failure_val,
+                                avg_speed, quota_val, delay_val, timeout_val, last_ok, last_fail))
                 self.refresh_cloudflare_status()
+
+            def _test_provider_connection(self):
+                name = self.selected_source_name()
+                if not name:
+                    return
+                threading.Thread(target=self._run_provider_test, args=(name,), daemon=True).start()
+
+            def _run_provider_test(self, name):
+                from .diagnostics import provider_healthcheck
+                known = {source["name"]: source for source in self.default_sources}
+                source = known.get(name)
+                if not source:
+                    return
+                result = provider_healthcheck([source], timeout=8)
+                if result:
+                    r = result[0]
+                    msg = f"{r['name']}: {r['status']} ({r.get('elapsed_ms', 0)} ms)\n{r.get('detail', '')}"
+                else:
+                    msg = f"{name}: impossible de tester"
+                self._ui(lambda m=msg: messagebox.showinfo("Test connexion", m))
+
+            def _diagnose_cloudflare(self):
+                name = self.selected_source_name()
+                if not name:
+                    return
+                cf_status = "Challenge" if self.circuit_breaker.is_open(name, error_type="cloudflare_challenge") else ("Bloque" if self.circuit_breaker.is_open(name) else "OK")
+                self._cloudflare_status_label.config(text=f"Statut Cloudflare {name}: {cf_status}")
 
             def refresh_cloudflare_status(self):
                 if not hasattr(self, "_cloudflare_status_label"):
@@ -1111,12 +1408,19 @@ def gui_mode():
                 )
 
             def selected_source_name(self):
-                if not hasattr(self, "sources_tree"):
-                    return ""
-                selection = self.sources_tree.selection()
-                if not selection:
-                    return ""
-                return selection[0]
+                if hasattr(self, "sources_tree") and self.sources_tree:
+                    selection = self.sources_tree.selection()
+                    if selection:
+                        return selection[0]
+                return ""
+
+            def ordered_source_names(self):
+                names = self.source_order or [source["name"] for source in self.default_sources]
+                known = {source["name"] for source in self.default_sources}
+                for source in self.default_sources:
+                    if source["name"] not in names:
+                        names.append(source["name"])
+                return [name for name in names if name in known]
 
             def toggle_source(self):
                 name = self.selected_source_name()
@@ -1129,7 +1433,9 @@ def gui_mode():
                 self.persist_preferences()
 
             def move_source(self, delta):
-                selection = self.sources_tree.selection() if hasattr(self, "sources_tree") and self.sources_tree else []
+                if not hasattr(self, "sources_tree") or not self.sources_tree:
+                    return
+                selection = self.sources_tree.selection()
                 if not selection:
                     return
                 names = self.ordered_source_names()
@@ -1145,82 +1451,13 @@ def gui_mode():
                 self.sources_tree.selection_set(selection[0])
                 self.persist_preferences()
 
-            def build_sources_page(self):
-                frame = self.page_frame()
-                frame.columnconfigure(0, weight=1)
-                tk.Label(frame, text="Sources", bg=UI_COLOR_BG, fg=UI_COLOR_TEXT_MAIN, font=(self.font, 24, "bold")).grid(row=0, column=0, sticky="w")
-                self.sources_list = tk.Listbox(frame, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, selectbackground=UI_COLOR_ACCENT, relief="flat", font=(self.font, 10), height=18)
-                self.sources_list.grid(row=2, column=0, sticky="nsew", pady=(18, 0))
-                actions = tk.Frame(frame, bg=UI_COLOR_BG)
-                actions.grid(row=3, column=0, sticky="ew", pady=(14, 0))
-                for label, command in [
-                    ("Activer/desactiver", self.toggle_source),
-                    ("Monter", lambda: self.move_source(-1)),
-                    ("Descendre", lambda: self.move_source(1)),
-                    ("Cles API", self.open_api_settings),
-                    ("Sauver", self.persist_preferences),
-                ]:
-                    self.button(actions, label, command, kind="accent" if label == "Sauver" else "ghost", width=16).pack(side="left", padx=(0, 8))
-                self.refresh_sources_list()
-
-            def ordered_source_names(self):
-                names = self.source_order or [source["name"] for source in self.default_sources]
-                known = {source["name"] for source in self.default_sources}
-                for source in self.default_sources:
-                    if source["name"] not in names:
-                        names.append(source["name"])
-                return [name for name in names if name in known]
-
-            def refresh_sources_list(self):
-                self.sources_list.delete(0, "end")
-                known = {source["name"]: source for source in self.default_sources}
-                for name in self.ordered_source_names():
-                    source = known[name]
-                    active = self.source_enabled.get(name, source.get("enabled", True))
-                    stats = self.provider_stats.get(name, {})
-                    speed = format_bytes(stats.get("average_speed", 0)) + "/s" if stats.get("average_speed") else ""
-                    policy = source_policy_summary(self.source_policies.get(name, {}))
-                    suffix = " | ".join(part for part in [policy, speed] if part)
-                    self.sources_list.insert("end", f"{'[x]' if active else '[ ]'} {name} ({source.get('type', '')}) {suffix}")
-
-            def selected_source_name(self):
-                selection = self.sources_list.curselection()
-                if not selection:
-                    return ""
-                return self.ordered_source_names()[selection[0]]
-
-            def toggle_source(self):
-                name = self.selected_source_name()
-                if not name:
-                    return
-                known = {source["name"]: source for source in self.default_sources}
-                current = self.source_enabled.get(name, known[name].get("enabled", True))
-                self.source_enabled[name] = not current
-                self.refresh_sources_list()
-                self.persist_preferences()
-
-            def move_source(self, delta):
-                selection = self.sources_list.curselection()
-                if not selection:
-                    return
-                names = self.ordered_source_names()
-                index = selection[0]
-                new_index = max(0, min(index + delta, len(names) - 1))
-                if index == new_index:
-                    return
-                names[index], names[new_index] = names[new_index], names[index]
-                self.source_order = names
-                self.refresh_sources_list()
-                self.sources_list.selection_set(new_index)
-                self.persist_preferences()
-
             def browse_output(self):
                 folder = filedialog.askdirectory(title="Selectionner le dossier de sortie")
                 if folder:
                     self.rom_folder.set(folder)
                     self.persist_preferences()
 
-            def selected_sources(self, dat_profile=None):
+            def selected_sources(self, dat_profile=None, system_name: str = ""):
                 known = {source["name"]: source for source in self.default_sources}
                 sources = []
                 for name in self.ordered_source_names():
@@ -1233,6 +1470,7 @@ def gui_mode():
                         item["timeout_seconds"] = timeout
                     if quota is not None:
                         item["quota_per_run"] = quota
+                    item["order"] = optional_positive_int(policy.get("order"), minimum=1, maximum=999)
                     if policy.get("delay_seconds") is not None:
                         try:
                             item["delay_seconds"] = max(0.0, min(float(policy.get("delay_seconds")), 60.0))
@@ -1241,7 +1479,7 @@ def gui_mode():
                     sources.append(item)
                 sources = apply_source_policies(sources, self.source_policies)
                 sources = prepare_sources_for_profile(sources, dat_profile, prefer_1fichier=bool(self.prefer_1fichier_var.get()))
-                return prioritize_sources(sources, self.provider_stats)
+                return prioritize_sources(sources, self.provider_stats, system_name=system_name)
 
             def output_folder_for_system(self, system):
                 root = self.rom_folder.get().strip()
@@ -1311,7 +1549,53 @@ def gui_mode():
                     if self.output_root_by_dat_var.get() and dat_profile:
                         output_folder = resolve_dat_output_folder(dat_profile.get('dat_path', ''), rom_folder, True)
                     os.makedirs(output_folder, exist_ok=True)
-                    sources = self.selected_sources(dat_profile)
+                    sources = self.selected_sources(dat_profile, system_name=system_name)
+                    if self.audit_only_var.get():
+                        self._ui(lambda: self.status_var.set(f"Audit: {game_info.get('game_name', '?')}"))
+                        result = download_missing_games_sequentially(
+                            [game_info],
+                            sources,
+                            self.session,
+                            system_name,
+                            dat_profile,
+                            output_folder,
+                            "",
+                            True,
+                            None,
+                            lambda value: self._ui(lambda v=value: self.progress_var.set(v)),
+                            self.log,
+                            lambda message: self._ui(lambda msg=message: self.status_var.set(msg)),
+                            is_running=lambda: self.running,
+                            parallel_downloads=1,
+                            circuit_breaker=self.circuit_breaker,
+                            system_id=game_info.get('system_id', ''),
+                        )
+                        total_size, total_unknown = estimate_games_size(self.dat_games)
+                        missing_size, missing_unknown = estimate_games_size([game_info])
+                        report_paths = write_download_reports(output_folder, {
+                            "dat_file": dat_profile.get("dat_path", "") if dat_profile else "",
+                            "system_name": system_name,
+                            "dat_profile": describe_dat_profile(dat_profile),
+                            "output_folder": output_folder,
+                            "dry_run": True,
+                            "active_sources": [source["name"] for source in sources if source.get("enabled", True)],
+                            "total_dat_games": len(self.dat_games),
+                            "present_before": max(0, len(self.dat_games) - 1),
+                            "missing_before": 1,
+                            "total_size": total_size,
+                            "total_unknown_sizes": total_unknown,
+                            "missing_size": missing_size,
+                            "missing_unknown_sizes": missing_unknown,
+                            "resolved_items": result.get("resolved_items", []),
+                            "downloaded_items": result.get("downloaded_items", []),
+                            "failed_items": result.get("failed_items", []),
+                            "skipped_items": result.get("skipped_items", []),
+                            "not_available": result.get("not_available", []),
+                        }, formats=("txt", "json", "csv", "html"))
+                        report_txt = report_paths.get("txt", "")
+                        self.log(f"Rapport audit: {report_txt}")
+                        self._ui(lambda path=report_txt: self.status_var.set(f"Audit termine - rapport: {path}"))
+                        return
                     self._ui(lambda: self.status_var.set(f"Telechargement: {game_info.get('game_name', '?')}"))
                     result = download_single_game(
                         game_info=game_info,
@@ -1369,10 +1653,11 @@ def gui_mode():
             def run_download_job(self, system, selected_games):
                 started = time.time()
                 try:
+                    audit_only = bool(self.audit_only_var.get())
                     dat_profile = finalize_dat_profile(detect_dat_profile(system["dat_path"]))
                     system_name = dat_profile.get("system_name") or system["system_name"]
                     output_folder = self.output_folder_for_system(system)
-                    sources = self.selected_sources(dat_profile)
+                    sources = self.selected_sources(dat_profile, system_name=system_name)
                     dat_games = parse_dat_file(system["dat_path"])
                     local_roms, local_roms_normalized, local_game_names, signature_index = scan_local_roms(output_folder, dat_games)
                     missing_games = find_missing_games(dat_games, local_roms, local_roms_normalized, local_game_names, signature_index)
@@ -1387,6 +1672,8 @@ def gui_mode():
                         missing_games = [game for game in missing_games if game.get("game_name") in wanted]
                     self.log(f"DAT detecte: {describe_dat_profile(dat_profile)}")
                     self.log(f"Jeux manquants: {len(missing_games)}")
+                    if audit_only:
+                        self.log("Mode audit uniquement: aucun fichier ROM ne sera ecrit")
                     if not missing_games:
                         self.status_var.set("Aucun jeu manquant")
                         return
@@ -1398,7 +1685,7 @@ def gui_mode():
                         dat_profile,
                         output_folder,
                         "",
-                        False,
+                        audit_only,
                         None,
                         lambda value: self._ui(lambda v=value: self.progress_var.set(v)),
                         self.log,
@@ -1408,23 +1695,31 @@ def gui_mode():
                         system_id=system["system_id"],
                     )
                     self.update_provider_stats(result)
-                    if self.move_to_tosort_var.get():
+                    if self.move_to_tosort_var.get() and not audit_only:
                         files_to_move = find_roms_not_in_dat(dat_games, local_roms, local_roms_normalized, output_folder)
                         if files_to_move:
                             moved, failed = move_files_to_tosort(files_to_move, output_folder, os.path.join(output_folder, "ToSort"), False)
                             self.log(f"ToSort: {moved} deplace(s), {failed} echec(s)")
                     torrentzip_summary = {"repacked": 0, "skipped": 0, "failed": 0, "deleted": 0}
-                    if self.clean_torrentzip_var.get():
+                    if self.clean_torrentzip_var.get() and not audit_only:
                         torrentzip_summary = repack_verified_archives_to_torrentzip(dat_games, output_folder, False, self.log, lambda message: self._ui(lambda msg=message: self.status_var.set(msg)), is_running=lambda: self.running)
-                    report_path = write_download_report(output_folder, {
+                    total_size, total_unknown = estimate_games_size(dat_games)
+                    missing_size, missing_unknown = estimate_games_size(missing_games)
+                    report_paths = write_download_reports(output_folder, {
                         "dat_file": system["dat_path"],
                         "system_name": system_name,
                         "dat_profile": describe_dat_profile(dat_profile),
                         "output_folder": output_folder,
                         "source_url": "",
+                        "dry_run": audit_only,
                         "active_sources": [source["name"] for source in sources if source.get("enabled", True)],
                         "total_dat_games": len(dat_games),
+                        "present_before": max(0, len(dat_games) - len(missing_games)),
                         "missing_before": len(missing_games),
+                        "total_size": total_size,
+                        "total_unknown_sizes": total_unknown,
+                        "missing_size": missing_size,
+                        "missing_unknown_sizes": missing_unknown,
                         "resolved_items": result.get("resolved_items", []),
                         "downloaded_items": result.get("downloaded_items", []),
                         "failed_items": result.get("failed_items", []),
@@ -1436,9 +1731,13 @@ def gui_mode():
                         "torrentzip_skipped": torrentzip_summary.get("skipped", 0),
                         "torrentzip_deleted": torrentzip_summary.get("deleted", 0),
                         "torrentzip_failed": torrentzip_summary.get("failed", 0),
-                    })
-                    self.log(f"Rapport: {report_path}")
-                    self._ui(lambda: self.status_var.set(f"Termine - {result.get('downloaded', 0)} telecharge(s), {result.get('failed', 0)} echec(s), {result.get('skipped', 0)} ignore(s)"))
+                    }, formats=("txt", "json", "csv", "html"))
+                    report_txt = report_paths.get("txt", "")
+                    self.log(f"Rapport{' audit' if audit_only else ''}: {report_txt}")
+                    if audit_only:
+                        self._ui(lambda path=report_txt: self.status_var.set(f"Audit termine - rapport: {path}"))
+                    else:
+                        self._ui(lambda: self.status_var.set(f"Termine - {result.get('downloaded', 0)} telecharge(s), {result.get('failed', 0)} echec(s), {result.get('skipped', 0)} ignore(s)"))
                 except Exception as exc:
                     self.log(f"ERREUR: {exc}")
                     self._ui(lambda msg=str(exc): self.status_var.set(f"Erreur: {msg}"))

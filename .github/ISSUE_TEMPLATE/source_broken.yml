@@ -1,0 +1,32 @@
+name: Source indisponible
+description: Signaler qu'une source de telechargement ne fonctionne plus
+labels: [provider, bug]
+body:
+  - type: markdown
+    attributes:
+      value: "Merci de signaler une source defaillante."
+  - type: input
+    id: source
+    attributes:
+      label: Source concernee
+      description: "Ex: LoLROMs, Vimm, PlanetEmu..."
+    validations:
+      required: true
+  - type: input
+    id: systeme
+    attributes:
+      label: Systeme concerne (optionnel)
+      description: Si le probleme est limite a un systeme
+  - type: textarea
+    id: symptomes
+    attributes:
+      label: Symptomes
+      description: "Erreur observee: Cloudflare, 404, timeout, page vide..."
+    validations:
+      required: true
+  - type: input
+    id: date
+    attributes:
+      label: Date de l'observation
+    validations:
+      required: true

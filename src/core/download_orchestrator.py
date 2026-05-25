@@ -10,7 +10,7 @@ from ..network.cache_runtime import get_session_cache, clear_session_cache, Runt
 from ..network.downloads import ParallelDownloadPool
 from ..network.metrics import load_provider_metrics, save_provider_metrics, prioritize_sources, record_provider_attempt
 from ..network.exceptions import ChecksumMismatchError, SourceTimeoutError, DownloadNetworkError
-from .error_codes import classify_error
+from .error_codes import classify_error, error_is_poison
 from ..progress import DownloadProgressMeter, format_duration
 
 from .env import *
@@ -54,10 +54,18 @@ from .local_database import (
     record_download_attempt,
     record_provider_candidates,
     record_provider_success,
+    get_job_status,
+    cleanup_stale_locks,
 )
 
 
 CLOUDFLARE_SOURCE_TYPES = {'lolroms', 'vimm', 'coolrom', 'romhustler', 'romsxisos'}
+
+
+def _build_is_running_for_job(job_id: str) -> callable:
+    """Retourne un callable qui verifie si le job est toujours en cours d'execution.
+    Retourne False si le job est 'paused', 'cancelled' ou absent de la base."""
+    return lambda: get_job_status(job_id) in {"running", "pending", ""}
 
 
 def adapt_sources_for_circuit_state(sources: list, circuit_breaker, parallel_downloads: int) -> tuple[list, int]:
@@ -568,6 +576,9 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
             })
             if circuit_breaker:
                 circuit_breaker.record_failure(source, error_type=error_code)
+                if error_is_poison(error_code):
+                    circuit_breaker.poison(source)
+                    log_func(f"  {source} empoisonnee: reponse HTML invalide, ignoree pour le reste de la session")
             suffix = f": {detail_str[:180]}" if detail_str else ""
             log_func(f"  Provider {source} erreur reseau{suffix}")
             log_func("  Recherche d'un autre provider...")
@@ -641,7 +652,7 @@ def download_missing_games_sequentially(
     progress_callback=None,
     log_func=print,
     status_callback=None,
-    is_running=lambda: True,
+    is_running=None,
     parallel_downloads: int = 1,
     circuit_breaker=None,
     job_id: str | None = None,
@@ -673,6 +684,10 @@ def download_missing_games_sequentially(
             missing_games,
             output_folder,
         )
+    cleanup_stale_locks()
+
+    if is_running is None:
+        is_running = _build_is_running_for_job(job_id)
 
     total = len(missing_games)
     total_work = min(total, limit) if limit else total
@@ -1023,6 +1038,7 @@ def download_missing_games_sequentially(
 
 
 __all__ = [
+    '_build_is_running_for_job',
     'resolve_next_provider',
     'attempt_download_from_resolved_provider',
     'download_with_provider_retries',

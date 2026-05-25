@@ -1,0 +1,26 @@
+name: Proposition d'amelioration
+description: Suggérer une nouvelle fonctionnalite ou une amelioration
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: "Decrivez l'amelioration souhaitee."
+  - type: textarea
+    id: probleme
+    attributes:
+      label: Probleme ou manque actuel
+      description: Qu'est-ce qui n'existe pas ou pourrait etre mieux ?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solution proposee
+      description: Comment voyez-vous la fonctionnalite ?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives envisagees
+      description: Avez-vous envisage d'autres approches ?

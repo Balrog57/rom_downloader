@@ -1,5 +1,6 @@
 import argparse
 import os
+import sys
 from pathlib import Path
 
 from ..version import APP_VERSION
@@ -17,15 +18,34 @@ from .diagnostics import (
 )
 from .scanner import analyze_dat_folder, print_analysis_summary
 from .dat_profile import detect_dat_profile, finalize_dat_profile, resolve_dat_output_folder
+from .config_profiles import CONFIG_PROFILE_HELP, apply_config_profile
+from .reports import write_download_reports
 from .pipeline import run_download
 from .cli import cli_mode
 from .gui import gui_mode
 from .interactive import interactive_mode
 
 
+def _explicit_cli_fields(argv: list[str]) -> set[str]:
+    option_fields = {
+        "--dry-run": "dry_run",
+        "--parallel": "parallel",
+        "--clean-torrentzip": "clean_torrentzip",
+        "--tosort": "tosort",
+        "--prefer-1fichier": "prefer_1fichier",
+        "--report-formats": "report_formats",
+    }
+    explicit = set()
+    for arg in argv:
+        for option, field in option_fields.items():
+            if arg == option or arg.startswith(option + "="):
+                explicit.add(field)
+    return explicit
+
+
 def main():
     parser = argparse.ArgumentParser(
-        description='ROM Downloader - Compare un DAT 1G1R a un dossier cible et telecharge les jeux manquants',
+        description='ROM Downloader - Compare un DAT No-Intro/Redump/Retool a un dossier cible et traite les jeux manquants',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=r'''
 Exemples:
@@ -42,6 +62,9 @@ Exemples:
     parser.add_argument('rom_folder', nargs='?', help='Chemin vers le dossier de sortie ou de ROMs existantes')
     parser.add_argument('-o', '--output', help='Dossier de sortie (defaut: rom_folder)')
     parser.add_argument('--dry-run', action='store_true', help='Simulation sans telechargement')
+    parser.add_argument('--config-profile', help=f'Appliquer un profil de configuration: {CONFIG_PROFILE_HELP}')
+    parser.add_argument('--report-formats', default='txt', help='Formats de rapport separes par des virgules: txt,json,csv,html')
+    parser.add_argument('--report-dir', help='Dossier ou ecrire les rapports (defaut: dossier de sortie)')
     parser.add_argument('--limit', type=int, help='Limite de telechargements')
     parser.add_argument('--gui', action='store_true', help='Mode interface graphique')
     parser.add_argument('--tosort', action='store_true', help='Deplacer les ROMs non presentes dans le DAT vers un sous-dossier ToSort')
@@ -68,7 +91,8 @@ Exemples:
     parser.add_argument('--pause-job', metavar='JOB_ID', help='Mettre en pause un job en cours')
     parser.add_argument('--resume-job', metavar='JOB_ID', help='Reprendre un job en pause')
     parser.add_argument('--cancel-job', metavar='JOB_ID', help='Annuler un job')
-    parser.add_argument('--retry-job', metavar='JOB_ID', help='Remettre en file les items echoues d''un job')
+    parser.add_argument('--retry-job', metavar='JOB_ID', help="Remettre en file les items echoues d'un job")
+    parser.add_argument('--job-id', metavar='JOB_ID', help='Reprendre un job de telechargement existant (necessite fichier DAT et dossier ROMs)')
     parser.add_argument('--mapping-status', action='store_true', help='Afficher la couverture des mappings DAT/providers')
     parser.add_argument('--mapping-missing-limit', type=int, default=20, help='Nombre de mappings manquants affiches par provider')
     parser.add_argument('--mapping-output', help='Exporter --mapping-status en JSON ou CSV')
@@ -76,14 +100,25 @@ Exemples:
     parser.add_argument('--probe-system', '--system', dest='probe_system', help='Systeme catalogue a sonder avec --probe-providers')
     parser.add_argument('--probe-limit', type=int, default=50, help='Nombre de jeux sondes avec --probe-providers')
     parser.add_argument('--reset-local-db', action='store_true', help='Supprimer la base SQLite locale puis quitter')
-    parser.add_argument('--web', nargs='?', const='127.0.0.1:8888', metavar='HOST:PORT', help='Lancer l''interface web locale (defaut: 127.0.0.1:8888)')
+    parser.add_argument('--web', nargs='?', const='127.0.0.1:8888', metavar='HOST:PORT', help="Lancer l'interface web locale (defaut: 127.0.0.1:8888)")
     parser.add_argument('--map-all-providers', action='store_true', help='Scanner en masse tous les systemes vers tous les providers et alimenter SQLite')
     parser.add_argument('--map-samples', type=int, default=5, help='Jeux sondes par systeme avec --map-all-providers (defaut: 5)')
     parser.add_argument('--map-providers', help='Providers filtres pour --map-all-providers (separes par ,)')
     parser.add_argument('--map-dry-run', action='store_true', help='Ne rien ecrire en base avec --map-all-providers')
-    parser.add_argument('--map-report-every', type=int, default=10, help='Rapport d''etape tous les N systemes (defaut: 10)')
+    parser.add_argument('--map-report-every', type=int, default=10, help="Rapport d'etape tous les N systemes (defaut: 10)")
+    parser.add_argument('--fixdat', action='store_true', help='Generer un DAT des jeux manquants (FixDAT compatible RomVault/clrmamepro)')
+    parser.add_argument('--frontend', choices=['batocera', 'retrobat', 'es-de', 'launchbox'], help='Organiser les ROMs dans l arborescence attendue par le frontend')
+    parser.add_argument('--output-mode', choices=['verified', 'tosort', 'dat-structure', 'flat'], default='flat', help='Mode d organisation des fichiers en sortie (defaut: flat)')
+    parser.add_argument('--archive-mode', choices=['none', 'zip', 'torrentzip'], default='none', help='Mode de reconditionnement des fichiers (defaut: none)')
 
     args = parser.parse_args()
+    applied_profile = apply_config_profile(args, getattr(args, "config_profile", None), _explicit_cli_fields(sys.argv[1:]))
+    if getattr(args, "config_profile", None) and not applied_profile:
+        parser.error(f"profil de configuration inconnu: {args.config_profile}")
+    report_export_requested = any(
+        value == '--report-formats' or value.startswith('--report-formats=') or value == '--report-dir' or value.startswith('--report-dir=')
+        for value in sys.argv[1:]
+    )
 
     from . import _facade
 
@@ -183,6 +218,31 @@ Exemples:
         from .local_database import retry_failed_queue_items
         count = retry_failed_queue_items(args.retry_job)
         print(f"{count} item(s) remis en file pour retry")
+        if count and args.dat_file and args.rom_folder:
+            print("Relance automatique du job...")
+            args.job_id = args.retry_job
+        else:
+            return
+
+    if args.job_id:
+        if not args.dat_file or not args.rom_folder:
+            print("--job-id necessite un fichier DAT et un dossier ROMs.")
+            return
+        from .pipeline import resume_existing_download
+        output_root = args.output if args.output else args.rom_folder
+        output_folder = resolve_dat_output_folder(args.dat_file, output_root, bool(getattr(args, 'output_root_by_dat', False)))
+        os.makedirs(output_folder, exist_ok=True)
+        resume_existing_download(
+            args.job_id,
+            args.dat_file,
+            output_folder,
+            parallel_downloads=args.parallel,
+            refresh_resolution_cache=args.refresh_cache,
+            move_to_tosort=args.tosort,
+            clean_torrentzip=args.clean_torrentzip,
+            report_formats=getattr(args, "report_formats", "txt"),
+            report_dir=getattr(args, "report_dir", None),
+        )
         return
 
     if args.mapping_status:
@@ -255,12 +315,26 @@ Exemples:
             _facade.clear_listing_cache()
         if args.analyze:
             os.makedirs(effective_rom_folder, exist_ok=True)
-            print_analysis_summary(analyze_dat_folder(
+            analysis = analyze_dat_folder(
                 args.dat_file,
                 effective_rom_folder,
                 include_tosort=args.tosort,
                 candidate_limit=args.analyze_candidates
-            ))
+            )
+            print_analysis_summary(analysis)
+            if report_export_requested:
+                paths = write_download_reports(args.report_dir or effective_rom_folder, {
+                    **analysis,
+                    'output_folder': effective_rom_folder,
+                    'dry_run': True,
+                    'mode': 'analyze',
+                    'resolved_items': [],
+                    'downloaded_items': [],
+                    'failed_items': [],
+                    'skipped_items': [],
+                    'not_available': [],
+                }, formats=args.report_formats)
+                print("Rapports d'audit: " + ", ".join(paths.values()))
             return
         cli_mode(args)
         return

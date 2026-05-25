@@ -20,6 +20,9 @@ $files = @("main.py") + (Get-ChildItem src,tests -Recurse -Filter *.py | ForEach
 python -m py_compile @files
 python tests\smoke_checks.py
 python tests\core_helper_checks.py
+python tests\download_single_checks.py
+python tests\dat_coverage_checks.py
+python tests\output_checks.py
 python main.py --version
 python main.py --sources
 python main.py --diagnose

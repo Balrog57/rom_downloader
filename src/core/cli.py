@@ -8,6 +8,7 @@ from .constants import *
 from .dependencies import *
 from .dat_profile import resolve_dat_output_folder
 from .pipeline import run_download
+from .fixdat import build_fixdat_from_results
 
 
 def cli_mode(args):
@@ -16,7 +17,7 @@ def cli_mode(args):
     output_folder = resolve_dat_output_folder(args.dat_file, output_root, bool(getattr(args, 'output_root_by_dat', False)))
     os.makedirs(output_folder, exist_ok=True)
 
-    run_download(
+    result = run_download(
         args.dat_file,
         output_folder,
         '',
@@ -27,8 +28,25 @@ def cli_mode(args):
         args.clean_torrentzip,
         parallel_downloads=args.parallel,
         refresh_resolution_cache=args.refresh_cache,
-        prefer_1fichier=args.prefer_1fichier
+        prefer_1fichier=args.prefer_1fichier,
+        report_formats=getattr(args, "report_formats", "txt"),
+        report_dir=getattr(args, "report_dir", None),
+        frontend=getattr(args, "frontend", None),
+        output_mode=getattr(args, "output_mode", "flat"),
+        archive_mode=getattr(args, "archive_mode", "none"),
     )
+
+    if result and getattr(args, "fixdat", False):
+        from .dat_parser import parse_dat_file
+        dat_games = parse_dat_file(args.dat_file)
+        not_available = result.get("not_available", [])
+        failed_items = result.get("failed_items", [])
+        missing = list(not_available) + list(failed_items)
+        if missing:
+            fixdat_path = build_fixdat_from_results(args.dat_file, dat_games, missing, output_folder)
+            print(f"\nFixDAT genere: {fixdat_path}")
+        else:
+            print("\nAucun jeu manquant ou echoue: FixDAT non genere")
 
 
 def discover_dat_menu_items(dat_root: Path | None = None) -> list[dict]:
