@@ -62,6 +62,8 @@ def main() -> None:
             assert_true(created.get("queued") == 1 and created.get("job_id"), "job create API failed")
             job = _get(base + "/api/job/status?id=" + created["job_id"])
             assert_true(job.get("job_id") == created["job_id"], "job status API failed")
+            detail = _get(base + "/api/job/detail?id=" + created["job_id"])
+            assert_true(detail.get("job", {}).get("job_id") == created["job_id"] and "items" in detail, "job detail API failed")
             paused = _post(base + "/api/job/pause", {"job_id": created["job_id"]})
             assert_true(paused.get("ok") is True, "job pause API failed")
             resumed = _post(base + "/api/job/resume", {"job_id": created["job_id"]})

@@ -22,6 +22,7 @@ from .local_database import (
     list_download_history,
     list_provider_metrics,
     build_source_health_summary,
+    get_download_job_detail,
     list_validated_providers,
     list_provider_candidates,
     pause_download_job,
@@ -207,6 +208,14 @@ class _WebHandler(BaseHTTPRequestHandler):
             if config:
                 config["job_id"] = job_id
             return self._json(config)
+        if path == "/api/job/detail":
+            job_id = self._query().get("id", [None])[0]
+            if not job_id:
+                return self._error(400, "missing id")
+            detail = get_download_job_detail(job_id)
+            if not detail:
+                return self._error(404, "job introuvable")
+            return self._json(detail)
         if path == "/api/history":
             limit = int(self._query().get("limit", ["200"])[0])
             q = self._query().get("q", [""])[0]
@@ -495,6 +504,7 @@ class _WebHandler(BaseHTTPRequestHandler):
                 output = html.escape(str(job.get('output_folder', '')))
                 queue_html = html.escape(queue_txt)
                 job_id = html.escape(str(job.get('job_id', '')), quote=True)
+                detail_link = f"<a href=\"/job?id={job_id}\">{job_short}</a>"
                 actions = (
                     f"<button onclick=\"jobAction('/api/job/run','{job_id}')\">Run</button>"
                     f"<button class=\"secondary\" onclick=\"jobAction('/api/job/pause','{job_id}')\">Pause</button>"
@@ -502,8 +512,57 @@ class _WebHandler(BaseHTTPRequestHandler):
                     f"<button class=\"secondary\" onclick=\"jobAction('/api/job/retry','{job_id}')\">Retry</button>"
                     f"<button class=\"secondary\" onclick=\"jobAction('/api/job/cancel','{job_id}')\">Cancel</button>"
                 )
-                rows += f"<tr><td>{job_short}</td><td>{status}</td><td>{job['completed']}/{job['total']}</td><td>{output}</td><td>{queue_html}</td><td>{actions}</td></tr>"
+                rows += f"<tr><td>{detail_link}</td><td>{status}</td><td>{job['completed']}/{job['total']}</td><td>{output}</td><td>{queue_html}</td><td>{actions}</td></tr>"
             self._html(f"<h1>Jobs</h1><table id=\"jobs-table\"><tr><th>ID</th><th>Statut</th><th>Progression</th><th>Dossier</th><th>File</th><th>Actions</th></tr>{rows}</table><pre id=\"api-result\"></pre>")
+        elif path == "/job":
+            job_id_raw = self._query().get("id", [""])[0]
+            detail = get_download_job_detail(job_id_raw)
+            if not detail:
+                return self._html("<h1>Job</h1><p>Job introuvable</p>")
+            job = detail.get("job", {})
+            job_id = html.escape(str(job.get("job_id", "")), quote=True)
+            queue_txt = ", ".join(f"{k}={v}" for k, v in sorted((detail.get("queue") or {}).items())) or "vide"
+            errors_txt = ", ".join(f"{k}={v}" for k, v in sorted((detail.get("errors") or {}).items())) or "aucune"
+            item_rows = ""
+            for item in detail.get("items", [])[:100]:
+                item_rows += (
+                    "<tr>"
+                    f"<td>{html.escape(str(item.get('status', '')))}</td>"
+                    f"<td>{html.escape(str(item.get('game_name', '')))}</td>"
+                    f"<td>{html.escape(str(item.get('priority', 0)))}</td>"
+                    f"<td>{html.escape(str(item.get('attempt_count', 0)))}</td>"
+                    f"<td>{html.escape(str(item.get('locked_by', '') or ''))}</td>"
+                    "</tr>"
+                )
+            attempt_rows = ""
+            for attempt in detail.get("attempts", [])[:100]:
+                attempt_rows += (
+                    "<tr>"
+                    f"<td>{html.escape(str(attempt.get('status', '')))}</td>"
+                    f"<td>{html.escape(str(attempt.get('game_name', '')))}</td>"
+                    f"<td>{html.escape(str(attempt.get('provider', '')))}</td>"
+                    f"<td>{html.escape(str(attempt.get('error_code', '') or '-'))}</td>"
+                    f"<td>{html.escape(str(attempt.get('detail', '') or ''))}</td>"
+                    "</tr>"
+                )
+            actions = (
+                f"<button onclick=\"jobAction('/api/job/run','{job_id}')\">Run</button>"
+                f"<button class=\"secondary\" onclick=\"jobAction('/api/job/pause','{job_id}')\">Pause</button>"
+                f"<button class=\"secondary\" onclick=\"jobAction('/api/job/resume','{job_id}')\">Resume</button>"
+                f"<button class=\"secondary\" onclick=\"jobAction('/api/job/retry','{job_id}')\">Retry</button>"
+                f"<button class=\"secondary\" onclick=\"jobAction('/api/job/cancel','{job_id}')\">Cancel</button>"
+            )
+            self._html(
+                f"<h1>Job {html.escape(str(job.get('job_id', ''))[:8])}</h1>"
+                f"<p>Statut: {html.escape(str(job.get('status', '')))} - Progression: {job.get('completed', 0)}/{job.get('total', 0)}</p>"
+                f"<p>Dossier: {html.escape(str(job.get('output_folder', '')))}</p>"
+                f"<p>File: {html.escape(queue_txt)}<br>Erreurs: {html.escape(errors_txt)}</p>"
+                f"<div class=\"row\">{actions}</div><pre id=\"api-result\"></pre>"
+                "<h2>Items</h2><table><tr><th>Statut</th><th>Jeu</th><th>Priorite</th><th>Essais</th><th>Lock</th></tr>"
+                f"{item_rows}</table>"
+                "<h2>Tentatives recentes</h2><table><tr><th>Statut</th><th>Jeu</th><th>Provider</th><th>Erreur</th><th>Detail</th></tr>"
+                f"{attempt_rows}</table>"
+            )
         elif path == "/history":
             rows_items = list_download_history(limit=200)
             rows = ""

@@ -1,6 +1,7 @@
 import argparse
 import os
 import sys
+import time
 from pathlib import Path
 
 from ..version import APP_VERSION
@@ -91,6 +92,7 @@ Exemples:
     parser.add_argument('--db-status', action='store_true', help='Afficher un resume de la base SQLite locale')
     parser.add_argument('--queue-status', action='store_true', help='Afficher les derniers jobs de telechargement persistants')
     parser.add_argument('--queue-limit', type=int, default=20, help='Nombre de jobs affiches avec --queue-status')
+    parser.add_argument('--queue-details', metavar='JOB_ID', help="Afficher le detail d'un job persistant")
     parser.add_argument('--pause-job', metavar='JOB_ID', help='Mettre en pause un job en cours')
     parser.add_argument('--resume-job', metavar='JOB_ID', help='Reprendre un job en pause')
     parser.add_argument('--cancel-job', metavar='JOB_ID', help='Annuler un job')
@@ -204,6 +206,39 @@ Exemples:
                 f"  - {job['job_id']} [{job['status']}] "
                 f"{job['completed']}/{job['total']} - {job['output_folder']} - {queue_text}"
             )
+        return
+
+    if args.queue_details:
+        from .local_database import get_download_job_detail
+        detail = get_download_job_detail(args.queue_details)
+        if not detail:
+            print(f"Job introuvable: {args.queue_details}")
+            return
+        job = detail["job"]
+        print(f"Job: {job['job_id']}")
+        print(f"Statut: {job['status']} - progression {job['completed']}/{job['total']}")
+        print(f"Dossier: {job['output_folder']}")
+        queue_text = ", ".join(f"{key}={value}" for key, value in sorted((detail.get("queue") or {}).items())) or "vide"
+        print(f"File: {queue_text}")
+        if detail.get("errors"):
+            print("Erreurs: " + ", ".join(f"{key}={value}" for key, value in sorted(detail["errors"].items())))
+        summary = detail.get("summary") or {}
+        if summary.get("last_error_code"):
+            print(f"Derniere erreur: {summary.get('last_error_code')} [{summary.get('last_provider')}] {summary.get('last_error')}")
+        print("Items recents:")
+        for item in detail.get("items", [])[:20]:
+            retry_at = item.get("next_retry_at") or 0
+            retry_txt = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(retry_at)) if retry_at else "-"
+            print(
+                f"  - {item.get('status', ''):<10} p={item.get('priority', 0):>3} "
+                f"essais={item.get('attempt_count', 0):>2} retry={retry_txt} "
+                f"{item.get('game_name', '')}"
+            )
+        print("Tentatives recentes:")
+        for attempt in detail.get("attempts", [])[:20]:
+            code = attempt.get("error_code") or "-"
+            provider = attempt.get("provider") or "-"
+            print(f"  - {attempt.get('status', ''):<10} {provider:<20} {code:<18} {attempt.get('game_name', '')}")
         return
 
     if args.pause_job:

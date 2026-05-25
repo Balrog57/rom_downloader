@@ -134,6 +134,7 @@ python main.py --source-health
 python main.py --provider-registry
 python main.py --db-status
 python main.py --queue-status
+python main.py --queue-details <JOB_ID>
 python main.py --mapping-status
 python main.py --web
 python main.py --clear-listing-cache

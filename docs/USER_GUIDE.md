@@ -59,7 +59,7 @@ Pages utiles:
 
 - `Accueil`: statistiques et formulaire analyse/job.
 - `Systemes`: navigation catalogue.
-- `Jobs`: suivi, pause, reprise, retry et annulation.
+- `Jobs`: suivi, detail de file, tentatives recentes, pause, reprise, retry et annulation.
 - `Sources`: etat SQLite, couverture candidats, dernier diagnostic, test source et nettoyage cache.
 - `Historique`: tentatives passees.
 
