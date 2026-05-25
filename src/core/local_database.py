@@ -206,6 +206,13 @@ def init_local_database(path: str | Path | None = None, conn: sqlite3.Connection
             duration_seconds REAL NOT NULL DEFAULT 0,
             file_path TEXT,
             size INTEGER NOT NULL DEFAULT 0,
+            candidate_url TEXT NOT NULL DEFAULT '',
+            http_status INTEGER NOT NULL DEFAULT 0,
+            content_type TEXT NOT NULL DEFAULT '',
+            announced_size INTEGER NOT NULL DEFAULT 0,
+            hash_final TEXT NOT NULL DEFAULT '',
+            html_snippet TEXT NOT NULL DEFAULT '',
+            provider_rank INTEGER NOT NULL DEFAULT 0,
             created_at REAL NOT NULL
         );
         CREATE INDEX IF NOT EXISTS idx_download_attempts_created ON download_attempts(created_at);
@@ -266,6 +273,13 @@ def init_local_database(path: str | Path | None = None, conn: sqlite3.Connection
     _ensure_column(conn, "download_attempts", "error_code", "error_code TEXT NOT NULL DEFAULT ''")
     _ensure_column(conn, "download_attempts", "retryable", "retryable INTEGER NOT NULL DEFAULT 0")
     _ensure_column(conn, "download_attempts", "next_retry_at", "next_retry_at REAL NOT NULL DEFAULT 0")
+    _ensure_column(conn, "download_attempts", "candidate_url", "candidate_url TEXT NOT NULL DEFAULT ''")
+    _ensure_column(conn, "download_attempts", "http_status", "http_status INTEGER NOT NULL DEFAULT 0")
+    _ensure_column(conn, "download_attempts", "content_type", "content_type TEXT NOT NULL DEFAULT ''")
+    _ensure_column(conn, "download_attempts", "announced_size", "announced_size INTEGER NOT NULL DEFAULT 0")
+    _ensure_column(conn, "download_attempts", "hash_final", "hash_final TEXT NOT NULL DEFAULT ''")
+    _ensure_column(conn, "download_attempts", "html_snippet", "html_snippet TEXT NOT NULL DEFAULT ''")
+    _ensure_column(conn, "download_attempts", "provider_rank", "provider_rank INTEGER NOT NULL DEFAULT 0")
     conn.execute("CREATE INDEX IF NOT EXISTS idx_download_attempts_error_code ON download_attempts(error_code)")
     conn.execute("CREATE INDEX IF NOT EXISTS idx_provider_successes_provider ON provider_successes(provider)")
     conn.execute(
@@ -350,6 +364,7 @@ def create_download_job(system_id: str | None, game_ids: list | None, output_fol
 def _insert_download_queue_item(conn: sqlite3.Connection, job_id: str, system_id: str,
                                 item: dict, now: float) -> None:
     game_id = item.get("game_id") or None
+    system_ref = system_id or item.get("system_id") or None
     game_name = item.get("game_name") or game_id or "Jeu inconnu"
     conn.execute(
         """
@@ -362,7 +377,7 @@ def _insert_download_queue_item(conn: sqlite3.Connection, job_id: str, system_id
             uuid.uuid4().hex,
             job_id,
             game_id,
-            system_id or item.get("system_id") or "",
+            system_ref,
             game_name,
             "pending",
             int(item.get("priority") or 0),
@@ -938,8 +953,10 @@ def record_download_attempt(item: dict, path: str | Path | None = None) -> None:
             """
             INSERT INTO download_attempts
             (job_id, game_id, system_id, game_name, provider, status, error_code, retryable,
-             next_retry_at, detail, duration_seconds, file_path, size, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+             next_retry_at, detail, duration_seconds, file_path, size, candidate_url,
+             http_status, content_type, announced_size, hash_final, html_snippet,
+             provider_rank, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 item.get("job_id") or "",
@@ -955,6 +972,13 @@ def record_download_attempt(item: dict, path: str | Path | None = None) -> None:
                 float(item.get("duration_seconds") or 0),
                 item.get("file_path") or item.get("downloaded_path") or "",
                 int(item.get("size") or 0),
+                item.get("candidate_url") or item.get("download_url") or item.get("torrent_url") or item.get("page_url") or "",
+                int(item.get("http_status") or 0),
+                item.get("content_type") or "",
+                int(item.get("announced_size") or 0),
+                item.get("hash_final") or "",
+                str(item.get("html_snippet") or "")[:500],
+                int(item.get("provider_rank") or 0),
                 float(item.get("created_at") or now),
             ),
         )

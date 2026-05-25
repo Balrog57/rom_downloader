@@ -19,6 +19,7 @@ from .diagnostics import (
 from .scanner import analyze_dat_folder, print_analysis_summary
 from .dat_profile import detect_dat_profile, finalize_dat_profile, resolve_dat_output_folder
 from .config_profiles import CONFIG_PROFILE_HELP, apply_config_profile
+from .dat_capabilities import analyze_dat_capabilities, format_dat_capabilities_report
 from .reports import write_download_reports
 from .pipeline import run_download
 from .cli import cli_mode
@@ -107,6 +108,8 @@ Exemples:
     parser.add_argument('--map-dry-run', action='store_true', help='Ne rien ecrire en base avec --map-all-providers')
     parser.add_argument('--map-report-every', type=int, default=10, help="Rapport d'etape tous les N systemes (defaut: 10)")
     parser.add_argument('--fixdat', action='store_true', help='Generer un DAT des jeux manquants (FixDAT compatible RomVault/clrmamepro)')
+    parser.add_argument('--rebuild-tosort', action='store_true', help='Reconstruire une sortie propre depuis le sous-dossier ToSort puis quitter')
+    parser.add_argument('--dat-capabilities', action='store_true', help='Afficher les capacites DAT avancees (CHD, headers, clones, merge) puis quitter')
     parser.add_argument('--frontend', choices=['batocera', 'retrobat', 'es-de', 'launchbox'], help='Organiser les ROMs dans l arborescence attendue par le frontend')
     parser.add_argument('--output-mode', choices=['verified', 'tosort', 'dat-structure', 'flat'], default='flat', help='Mode d organisation des fichiers en sortie (defaut: flat)')
     parser.add_argument('--archive-mode', choices=['none', 'zip', 'torrentzip'], default='none', help='Mode de reconditionnement des fichiers (defaut: none)')
@@ -240,6 +243,9 @@ Exemples:
             refresh_resolution_cache=args.refresh_cache,
             move_to_tosort=args.tosort,
             clean_torrentzip=args.clean_torrentzip,
+            frontend=getattr(args, "frontend", None),
+            output_mode=getattr(args, "output_mode", "flat"),
+            archive_mode=getattr(args, "archive_mode", "none"),
             report_formats=getattr(args, "report_formats", "txt"),
             report_dir=getattr(args, "report_dir", None),
         )
@@ -300,6 +306,10 @@ Exemples:
         print(format_map_all_report(report))
         return
 
+    if args.dat_capabilities and args.dat_file:
+        print(format_dat_capabilities_report(analyze_dat_capabilities(args.dat_file)))
+        return
+
     if not args.dat_file and not args.rom_folder:
         gui_mode()
         return
@@ -310,6 +320,9 @@ Exemples:
             args.output or args.rom_folder,
             args.output_root_by_dat,
         )
+        if args.dat_capabilities:
+            print(format_dat_capabilities_report(analyze_dat_capabilities(args.dat_file)))
+            return
         if args.refresh_cache:
             _facade.clear_resolution_cache()
             _facade.clear_listing_cache()

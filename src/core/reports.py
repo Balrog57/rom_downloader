@@ -68,6 +68,11 @@ def _detail_for_item(item: dict) -> str:
     return str(item.get("error") or item.get("detail") or detail or "")
 
 
+def _last_attempt(item: dict) -> dict:
+    attempts = item.get("provider_attempts") or []
+    return attempts[-1] if attempts else {}
+
+
 def _report_items(summary: dict) -> list[dict]:
     """Retourne une liste plate et stable d'elements pour CSV/JSON/HTML."""
     rows = []
@@ -85,6 +90,7 @@ def _report_items(summary: dict) -> list[dict]:
             if key in seen:
                 continue
             seen.add(key)
+            last_attempt = _last_attempt(item)
             rows.append({
                 "status": status,
                 "system_name": summary.get("system_name", ""),
@@ -95,6 +101,11 @@ def _report_items(summary: dict) -> list[dict]:
                 "error_code": item.get("error_code") or "",
                 "detail": _detail_for_item(item),
                 "file_path": item.get("downloaded_path") or item.get("file_path") or "",
+                "download_url": item.get("download_url") or item.get("page_url") or item.get("torrent_url") or "",
+                "http_status": last_attempt.get("http_status") or item.get("http_status") or "",
+                "content_type": last_attempt.get("content_type") or item.get("content_type") or "",
+                "hash_final": last_attempt.get("hash_final") or item.get("hash_final") or "",
+                "provider_rank": last_attempt.get("provider_rank") or item.get("provider_rank") or "",
             })
 
     add_items("downloaded", summary.get("downloaded_items", []))
@@ -201,7 +212,10 @@ def build_report_payload(summary: dict) -> dict:
             "torrentzip_skipped": _parse_size(summary.get("torrentzip_skipped")),
             "torrentzip_deleted": _parse_size(summary.get("torrentzip_deleted")),
             "torrentzip_failed": _parse_size(summary.get("torrentzip_failed")),
+            "output_organized": summary.get("output_organized") or {},
+            "rebuild": summary.get("rebuild") or {},
         },
+        "dat_capabilities": summary.get("dat_capabilities") or {},
         "validated_md5": validation_counts["validated_md5"],
         "validated_size_only": validation_counts["validated_size_only"],
     }
@@ -273,6 +287,37 @@ def _format_txt_report(payload: dict, summary: dict) -> str:
             f"TorrentZip sources supprimees: {extras['torrentzip_deleted']}",
             f"TorrentZip echecs: {extras['torrentzip_failed']}",
         ])
+    output_org = extras.get("output_organized") or {}
+    if output_org:
+        lines.extend([
+            f"Sortie organisee - deplaces: {output_org.get('moved', 0)}",
+            f"Sortie organisee - ZIP: {output_org.get('zipped', 0)}",
+            f"Sortie organisee - echecs: {output_org.get('failed', 0)}",
+        ])
+    rebuild = extras.get("rebuild") or {}
+    if rebuild:
+        lines.extend([
+            f"Rebuild ToSort - reconstruits: {rebuild.get('rebuilt', 0)}",
+            f"Rebuild ToSort - non reconnus: {rebuild.get('hash_mismatch', 0)}",
+            f"Rebuild ToSort - archives non supportees: {rebuild.get('archive_unsupported', 0)}",
+            f"Rebuild ToSort - echecs: {rebuild.get('failed', 0)}",
+        ])
+
+    caps = payload.get("dat_capabilities") or {}
+    if caps:
+        lines.extend([
+            "",
+            "Capacites DAT",
+            "-" * 72,
+            f"CHD ROMs: {caps.get('chd_roms', 0)}",
+            f"CHD disks: {caps.get('chd_disks', 0)}",
+            f"Header detecte: {'oui' if caps.get('headered') else 'non'}",
+            f"Clones/parents: {caps.get('clone_games', 0)}",
+            f"BIOS: {caps.get('bios_games', 0)}",
+            f"Devices: {caps.get('device_games', 0)}",
+            f"Mode merge suppose: {caps.get('merge_mode', 'simple')}",
+            f"Strategie rebuild: {caps.get('rebuild_strategy', 'non-merged/simple')}",
+        ])
 
     lines.extend(["", "Sources", "-" * 72])
     lines.append(f"Sources actives: {', '.join(sources['active']) or 'Aucune'}")
@@ -335,7 +380,11 @@ def _write_json(path: Path, payload: dict) -> None:
 
 
 def _write_csv(path: Path, payload: dict) -> None:
-    fieldnames = ["status", "system_name", "game_name", "provider", "download_filename", "size", "error_code", "detail", "file_path"]
+    fieldnames = [
+        "status", "system_name", "game_name", "provider", "download_filename", "size",
+        "error_code", "detail", "file_path", "download_url", "http_status",
+        "content_type", "hash_final", "provider_rank"
+    ]
     with open(path, "w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames)
         writer.writeheader()

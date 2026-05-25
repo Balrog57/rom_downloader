@@ -9,6 +9,9 @@ from .dependencies import *
 from .dat_profile import resolve_dat_output_folder
 from .pipeline import run_download
 from .fixdat import build_fixdat_from_results
+from .dat_capabilities import analyze_dat_capabilities
+from .output_manager import rebuild_tosort
+from .reports import write_download_reports
 
 
 def cli_mode(args):
@@ -16,6 +19,39 @@ def cli_mode(args):
     output_root = args.output if args.output else args.rom_folder
     output_folder = resolve_dat_output_folder(args.dat_file, output_root, bool(getattr(args, 'output_root_by_dat', False)))
     os.makedirs(output_folder, exist_ok=True)
+
+    if getattr(args, "rebuild_tosort", False):
+        from .dat_parser import parse_dat_file
+        dat_games = parse_dat_file(args.dat_file)
+        dat_caps = analyze_dat_capabilities(args.dat_file)
+        summary = rebuild_tosort(
+            dat_games,
+            os.path.join(output_folder, "ToSort"),
+            output_folder,
+            output_mode=getattr(args, "output_mode", "verified"),
+            archive_mode=getattr(args, "archive_mode", "none"),
+            frontend=getattr(args, "frontend", None),
+            system_name=dat_caps.get("dat_name", ""),
+            dry_run=bool(args.dry_run),
+        )
+        report_paths = write_download_reports(getattr(args, "report_dir", None) or output_folder, {
+            "dat_file": args.dat_file,
+            "system_name": dat_caps.get("dat_name", ""),
+            "output_folder": output_folder,
+            "mode": "rebuild",
+            "dry_run": bool(args.dry_run),
+            "rebuild": summary,
+            "dat_capabilities": dat_caps,
+            "total_dat_games": len(dat_games),
+            "resolved_items": [],
+            "downloaded_items": [],
+            "failed_items": [],
+            "skipped_items": [],
+            "not_available": [],
+        }, formats=getattr(args, "report_formats", "txt"))
+        print(f"Rebuild ToSort: {summary['rebuilt']} reconstruit(s), {summary['hash_mismatch']} non reconnu(s)")
+        print("Rapports: " + ", ".join(report_paths.values()))
+        return
 
     result = run_download(
         args.dat_file,

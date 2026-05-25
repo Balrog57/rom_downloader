@@ -43,9 +43,15 @@ Sans argument, l'application lance aussi la GUI:
 python main.py
 ```
 
-## Captures d'ecran (GUI)
+## Captures d'ecran
 
-*(des captures detaillees seront ajoutees prochainement)*
+Les captures suivantes sont generees depuis l'interface locale et un rapport HTML reel:
+
+![Accueil Web](docs/screenshots/web-home.png)
+![Systemes](docs/screenshots/web-systems.png)
+![Telechargements](docs/screenshots/web-jobs.png)
+![Sources](docs/screenshots/web-sources.png)
+![Rapport HTML](docs/screenshots/report-html.png)
 
 L'interface propose les pages suivantes:
 
@@ -107,6 +113,11 @@ python main.py <fichier.dat> <dossier_roms> [options]
 | `--parallel N` | Nombre de telechargements simultanes. |
 | `--tosort` | Deplace les fichiers hors DAT vers `ToSort`. |
 | `--clean-torrentzip` | Recompresse les archives validees en ZIP TorrentZip/RomVault. |
+| `--output-mode flat\|verified\|tosort\|dat-structure` | Organise les fichiers valides en sortie selon le workflow choisi. |
+| `--archive-mode none\|zip\|torrentzip` | Repacke les fichiers bruts en ZIP ou TorrentZip. Prioritaire sur `--clean-torrentzip`. |
+| `--rebuild-tosort` | Reconstruit une sortie propre depuis `ToSort` par hash/taille DAT, puis quitte. |
+| `--dat-capabilities` | Affiche les capacites DAT detectees: CHD, headers, clones, merge, BIOS/devices. |
+| `--frontend batocera\|retrobat\|es-de\|launchbox` | Place les sorties dans les dossiers attendus par le frontend. |
 | `--output-root-by-dat` | Cree un sous-dossier nomme comme le DAT sous le dossier indique. |
 | `--prefer-1fichier` | Priorise RetroGameSets/StartGame avant les DDL directs. |
 

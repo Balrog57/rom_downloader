@@ -20,6 +20,7 @@ def parse_dat_file(dat_path: str) -> dict:
             continue
 
         rom_elements = game.findall('rom')
+        disk_elements = game.findall('disk')
         rom_files = []
         for rom_elem in rom_elements:
             rom_info = {
@@ -27,16 +28,39 @@ def parse_dat_file(dat_path: str) -> dict:
                 'size': rom_elem.get('size', '0'),
                 'crc': rom_elem.get('crc', ''),
                 'md5': rom_elem.get('md5', ''),
-                'sha1': rom_elem.get('sha1', '')
+                'sha1': rom_elem.get('sha1', ''),
+                'merge': rom_elem.get('merge', ''),
+                'status': rom_elem.get('status', ''),
             }
             if rom_info['name']:
                 rom_files.append(rom_info)
+        for disk_elem in disk_elements:
+            disk_name = disk_elem.get('name', '')
+            if disk_name and not disk_name.lower().endswith('.chd'):
+                disk_name = f"{disk_name}.chd"
+            disk_info = {
+                'name': disk_name,
+                'size': disk_elem.get('size', '0'),
+                'crc': disk_elem.get('crc', ''),
+                'md5': disk_elem.get('md5', ''),
+                'sha1': disk_elem.get('sha1', ''),
+                'merge': disk_elem.get('merge', ''),
+                'status': disk_elem.get('status', ''),
+                'disk': True,
+            }
+            if disk_info['name']:
+                rom_files.append(disk_info)
 
         if rom_files:
             games[game_name] = {
                 'game_name': game_name,
                 'roms': rom_files,
-                'primary_rom': rom_files[0]['name'] if rom_files else ''
+                'primary_rom': rom_files[0]['name'] if rom_files else '',
+                'cloneof': game.get('cloneof', ''),
+                'romof': game.get('romof', ''),
+                'sampleof': game.get('sampleof', ''),
+                'isbios': game.get('isbios', ''),
+                'isdevice': game.get('isdevice', ''),
             }
 
     print(f"Found {len(games)} games in DAT file")

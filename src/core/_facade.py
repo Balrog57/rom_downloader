@@ -71,6 +71,8 @@ from .catalog import *  # noqa: F401,F403
 from .download_history import *  # noqa: F401,F403
 from .minerva import *  # noqa: F401,F403
 from .dat_profile import *  # noqa: F401,F403
+from .dat_capabilities import *  # noqa: F401,F403
+from .output_manager import *  # noqa: F401,F403
 from .torrent import *  # noqa: F401,F403
 from .api_keys import *  # noqa: F401,F403
 from .config_profiles import *  # noqa: F401,F403

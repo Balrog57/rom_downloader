@@ -27,6 +27,8 @@ from .dat_profile import detect_dat_profile, finalize_dat_profile, prepare_sourc
 from .sources import get_default_sources, build_custom_source, normalize_source_label, apply_source_policies
 from .reports import write_download_reports
 from .torrentzip import repack_verified_archives_to_torrentzip
+from .dat_capabilities import analyze_dat_capabilities
+from .output_manager import organize_downloaded_items
 from .download_orchestrator import (
     download_missing_games_sequentially,
     download_with_provider_retries,
@@ -63,7 +65,6 @@ def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_ru
     })
 
     dat_games = parse_dat_file(dat_file)
-
     local_roms, local_roms_normalized, local_game_names, signature_index = scan_local_roms(rom_folder, dat_games)
 
     missing_games = find_missing_games(dat_games, local_roms, local_roms_normalized, local_game_names, signature_index)
@@ -234,6 +235,7 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
     session_metrics = load_provider_metrics()
 
     dat_games = parse_dat_file(dat_file)
+    dat_capabilities = analyze_dat_capabilities(dat_file)
     local_roms, local_roms_normalized, local_game_names, signature_index = scan_local_roms(rom_folder, dat_games)
     missing_games = find_missing_games(dat_games, local_roms, local_roms_normalized, local_game_names, signature_index)
     dat_profile = finalize_dat_profile(detect_dat_profile(dat_file))
@@ -246,6 +248,7 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
     tosort_moved = 0
     tosort_failed = 0
     torrentzip_summary = {'repacked': 0, 'skipped': 0, 'failed': 0, 'deleted': 0}
+    output_summary = {'moved': 0, 'zipped': 0, 'torrentzipped': 0, 'skipped': 0, 'failed': 0, 'items': []}
     result = {
         'resolved_items': [],
         'downloaded_items': [],
@@ -407,7 +410,21 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
         else:
             print("\nAucun fichier a deplacer.")
 
-    if clean_torrentzip:
+    effective_archive_mode = archive_mode
+    if clean_torrentzip and effective_archive_mode == "none":
+        effective_archive_mode = "torrentzip"
+
+    output_summary = organize_downloaded_items(
+        downloaded_items,
+        output_folder,
+        system_name=system_name,
+        output_mode=output_mode,
+        archive_mode="zip" if effective_archive_mode == "zip" else "none",
+        frontend=frontend,
+        dry_run=dry_run,
+    )
+
+    if effective_archive_mode == "torrentzip":
         print("\n" + "=" * 60)
         print("Nettoyage des archives validees en ZIP TorrentZip/RomVault...")
         print("=" * 60)
@@ -448,6 +465,11 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
         'torrentzip_skipped': torrentzip_summary.get('skipped', 0),
         'torrentzip_deleted': torrentzip_summary.get('deleted', 0),
         'torrentzip_failed': torrentzip_summary.get('failed', 0),
+        'output_mode': output_mode,
+        'archive_mode': effective_archive_mode,
+        'frontend': frontend or '',
+        'output_organized': output_summary,
+        'dat_capabilities': dat_capabilities,
     }
     report_paths = write_download_reports(report_dir or output_folder, report_summary, formats=report_formats)
     return result
@@ -458,6 +480,9 @@ def resume_existing_download(job_id: str, dat_file: str, rom_folder: str,
                               refresh_resolution_cache: bool = False,
                               move_to_tosort: bool = False,
                               clean_torrentzip: bool = False,
+                              frontend: str | None = None,
+                              output_mode: str = "flat",
+                              archive_mode: str = "none",
                               report_formats=("txt",),
                               report_dir: str | None = None) -> dict:  # changed return type
     """Reprend un job de telechargement existant depuis la base SQLite."""
@@ -487,6 +512,7 @@ def resume_existing_download(job_id: str, dat_file: str, rom_folder: str,
     session_metrics = load_provider_metrics()
 
     dat_games = parse_dat_file(dat_file)
+    dat_capabilities = analyze_dat_capabilities(dat_file)
     local_roms, local_roms_normalized, local_game_names, signature_index = scan_local_roms(rom_folder, dat_games)
     missing_games_from_scan = find_missing_games(dat_games, local_roms, local_roms_normalized, local_game_names, signature_index)
     missing_map = {game.get("game_id") or game.get("game_name", ""): game for game in missing_games_from_scan}
@@ -559,6 +585,7 @@ def resume_existing_download(job_id: str, dat_file: str, rom_folder: str,
     skipped_items = result['skipped_items']
     tosort_moved = 0
     tosort_failed = 0
+    output_summary = {'moved': 0, 'copied': 0, 'zipped': 0, 'torrentzipped': 0, 'skipped': 0, 'failed': 0}
     torrentzip_summary = {'repacked': 0, 'skipped': 0, 'failed': 0, 'deleted': 0}
 
     if move_to_tosort:
@@ -568,7 +595,21 @@ def resume_existing_download(job_id: str, dat_file: str, rom_folder: str,
         if files_to_move:
             tosort_moved, tosort_failed = move_files_to_tosort(files_to_move, rom_folder, tosort_folder, dry_run=False)
 
-    if clean_torrentzip:
+    effective_archive_mode = archive_mode
+    if clean_torrentzip and effective_archive_mode == "none":
+        effective_archive_mode = "torrentzip"
+
+    output_summary = organize_downloaded_items(
+        downloaded_items,
+        output_folder,
+        system_name=system_name,
+        output_mode=output_mode,
+        archive_mode="zip" if effective_archive_mode == "zip" else "none",
+        frontend=frontend,
+        dry_run=False,
+    )
+
+    if effective_archive_mode == "torrentzip":
         print("\nNettoyage des archives validees en ZIP TorrentZip/RomVault...")
         torrentzip_summary = repack_verified_archives_to_torrentzip(dat_games, output_folder, False, print)
 
@@ -582,6 +623,9 @@ def resume_existing_download(job_id: str, dat_file: str, rom_folder: str,
         'output_folder': output_folder,
         'source_url': '',
         'dry_run': False,
+        'output_mode': output_mode,
+        'archive_mode': effective_archive_mode,
+        'frontend': frontend or '',
         'active_sources': report_active_sources,
         'total_dat_games': len(dat_games),
         'present_before': max(0, len(dat_games) - len(missing_games_for_scan)),
@@ -601,6 +645,8 @@ def resume_existing_download(job_id: str, dat_file: str, rom_folder: str,
         'torrentzip_skipped': torrentzip_summary.get('skipped', 0),
         'torrentzip_deleted': torrentzip_summary.get('deleted', 0),
         'torrentzip_failed': torrentzip_summary.get('failed', 0),
+        'output_organized': output_summary,
+        'dat_capabilities': dat_capabilities,
     }
     report_paths = write_download_reports(report_dir or output_folder, report_summary, formats=report_formats)
     return result
