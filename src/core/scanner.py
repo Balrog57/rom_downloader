@@ -251,6 +251,7 @@ def analyze_source_candidates(missing_games: list, sources: list, system_name: s
                               dat_profile: dict | None, candidate_limit: int = 10) -> dict:
     """Resolve les sources candidates pour un echantillon de jeux manquants."""
     from .sources import resolve_game_sources_with_cache, parse_candidate_limit
+    from .local_database import record_provider_candidates
     from ._facade import create_download_session, load_resolution_cache, save_resolution_cache
     session = create_download_session()
     resolution_cache = load_resolution_cache()
@@ -267,6 +268,17 @@ def analyze_source_candidates(missing_games: list, sources: list, system_name: s
             cache=resolution_cache
         )
         dirty = dirty or not cache_hit
+        if game_info.get("game_id"):
+            if found:
+                record_provider_candidates(game_info.get("game_id", ""), found)
+            elif unavailable:
+                not_found_candidates = []
+                for item in unavailable:
+                    candidate = item.copy()
+                    candidate["status"] = "not_found"
+                    candidate.setdefault("error_code", "game_not_found")
+                    not_found_candidates.append(candidate)
+                record_provider_candidates(game_info.get("game_id", ""), not_found_candidates, status="not_found", error_code="game_not_found")
         candidate_sources = [item.get('source', 'Inconnu') for item in found]
         for source_name in candidate_sources:
             source_counts[source_name] = source_counts.get(source_name, 0) + 1

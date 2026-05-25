@@ -65,6 +65,20 @@ def probe_catalog_providers(system_query: str, limit: int = 50, sources: list | 
             stored += record_provider_candidates(game.get("game_id", ""), found, path=catalog_dir)
         else:
             missing += 1
+            if _unavailable:
+                not_found_candidates = []
+                for item in _unavailable:
+                    candidate = item.copy()
+                    candidate["status"] = "not_found"
+                    candidate.setdefault("error_code", "game_not_found")
+                    not_found_candidates.append(candidate)
+                stored += record_provider_candidates(
+                    game.get("game_id", ""),
+                    not_found_candidates,
+                    status="not_found",
+                    error_code="game_not_found",
+                    path=catalog_dir,
+                )
 
     return {
         "system_found": True,

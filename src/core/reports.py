@@ -171,6 +171,13 @@ def build_report_payload(summary: dict) -> dict:
     generated_at = summary.get("generated_at") or datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     validation_counts = _count_validation_methods(downloaded_items)
     provider_metrics = pipeline_summary["provider_metrics"]
+    source_health = summary.get("source_health")
+    if source_health is None:
+        try:
+            from .local_database import build_source_health_summary
+            source_health = build_source_health_summary()
+        except Exception:
+            source_health = []
     return {
         "metadata": {
             "generated_at": generated_at,
@@ -203,6 +210,7 @@ def build_report_payload(summary: dict) -> dict:
             "provider_metrics": provider_metrics,
             "failure_causes": pipeline_summary["failure_causes"],
             "top_sources": _top_sources(provider_metrics),
+            "source_health": source_health,
         },
         "items": items,
         "extras": {
@@ -216,6 +224,7 @@ def build_report_payload(summary: dict) -> dict:
             "rebuild": summary.get("rebuild") or {},
         },
         "dat_capabilities": summary.get("dat_capabilities") or {},
+        "source_health": source_health,
         "validated_md5": validation_counts["validated_md5"],
         "validated_size_only": validation_counts["validated_size_only"],
     }
@@ -339,6 +348,17 @@ def _format_txt_report(payload: dict, summary: dict) -> str:
     else:
         lines.append("- Aucune metrique provider")
 
+    source_health = sources.get("source_health") or payload.get("source_health") or []
+    if source_health:
+        lines.extend(["", "Sante sources", "-" * 72])
+        for row in source_health[:20]:
+            lines.append(
+                f"- {row.get('provider', '')}: statut={row.get('status', '')}, "
+                f"couverture={row.get('coverage', 0)}, candidats={row.get('active_candidates', 0)}, "
+                f"ok={row.get('success_count', 0)}, ko={row.get('failure_count', 0)}, "
+                f"erreur={row.get('last_error_code') or '-'}, action={row.get('recommended_action', '')}"
+            )
+
     top_sources = sources.get("top_sources", [])
     if top_sources:
         lines.extend(["", "Sources les plus efficaces", "-" * 72])
@@ -406,6 +426,21 @@ def _write_html(path: Path, payload: dict, txt_body: str) -> None:
             "</tr>"
         )
     body = "\n".join(rows) or '<tr><td colspan="5">Aucun element</td></tr>'
+    health_rows = []
+    for row in payload.get("source_health", [])[:50]:
+        health_rows.append(
+            "<tr>"
+            f"<td>{html.escape(row.get('provider', ''))}</td>"
+            f"<td>{html.escape(row.get('status', ''))}</td>"
+            f"<td>{html.escape(str(row.get('coverage', 0)))}</td>"
+            f"<td>{html.escape(str(row.get('active_candidates', 0)))}</td>"
+            f"<td>{html.escape(str(row.get('success_count', 0)))}</td>"
+            f"<td>{html.escape(str(row.get('failure_count', 0)))}</td>"
+            f"<td>{html.escape(row.get('last_error_code') or '')}</td>"
+            f"<td>{html.escape(row.get('recommended_action', ''))}</td>"
+            "</tr>"
+        )
+    health_body = "\n".join(health_rows) or '<tr><td colspan="8">Aucune source</td></tr>'
     document = f"""<!doctype html>
 <html lang="fr">
 <head>
@@ -427,6 +462,13 @@ def _write_html(path: Path, payload: dict, txt_body: str) -> None:
     <thead><tr><th>Statut</th><th>Jeu</th><th>Provider</th><th>Taille</th><th>Detail</th></tr></thead>
     <tbody>
       {body}
+    </tbody>
+  </table>
+  <h2>Sante sources</h2>
+  <table>
+    <thead><tr><th>Provider</th><th>Statut</th><th>Couverture</th><th>Candidats</th><th>OK</th><th>KO</th><th>Erreur</th><th>Action</th></tr></thead>
+    <tbody>
+      {health_body}
     </tbody>
   </table>
 </body>

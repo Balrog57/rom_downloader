@@ -130,6 +130,7 @@ python main.py --version
 python main.py --sources
 python main.py --diagnose
 python main.py --healthcheck-sources
+python main.py --source-health
 python main.py --provider-registry
 python main.py --db-status
 python main.py --queue-status
@@ -147,7 +148,7 @@ Le rapport final est ecrit sous la forme:
 rom_downloader_report_<systeme>_<timestamp>.txt
 ```
 
-Avec `--report-formats`, les variantes `.json`, `.csv` et `.html` sont aussi produites. Le JSON contient des blocs stables `metadata`, `counts`, `sizes`, `sources` (incluant `top_sources` classees par succes) et `items`. Le CSV contient une ligne par jeu avec statut, provider, fichier, taille et detail d'erreur. Le HTML est autonome et ne depend d'aucune ressource externe.
+Avec `--report-formats`, les variantes `.json`, `.csv` et `.html` sont aussi produites. Le JSON contient des blocs stables `metadata`, `counts`, `sizes`, `sources` (incluant `top_sources` et `source_health`) et `items`. Le CSV contient une ligne par jeu avec statut, provider, fichier, taille et detail d'erreur. Le HTML est autonome et ne depend d'aucune ressource externe.
 
 En `--dry-run`, le rapport indique explicitement:
 
@@ -211,6 +212,7 @@ La fiabilite repose sur:
 - redemarrage propre si un serveur refuse la reprise ou retourne HTTP 416;
 - detection des pages HTML/Cloudflare pour eviter de sauvegarder une page de challenge comme ROM;
 - validation finale MD5, puis taille DAT si aucun MD5 n'est disponible;
+- cache SQLite des candidats providers avec TTL et diagnostics HTTP/HTML/hash KO visibles via `--source-health`, rapports et Web UI;
 - fallback provider apres erreur reseau, timeout, quota, rate-limit ou validation KO;
 - circuit-breaker par source pendant la session, **persiste en SQLite** entre les sessions (les sources bloquees le restent au redemarrage);
 - metriques provider persistantes en SQLite **par systeme** (`provider_system_metrics`) pour reordonner les sources les plus fiables par console.

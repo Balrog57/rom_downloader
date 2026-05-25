@@ -549,7 +549,8 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
                 'source': source,
                 'status': 'failed',
                 'duration_seconds': round(time.time() - attempt_started, 3),
-                'detail': 'validation',
+                'detail': str(exc) or 'checksum_mismatch',
+                'error_code': 'checksum_mismatch',
                 'provider_rank': current_game.get('provider_rank', 0),
                 'candidate_url': current_game.get('download_url') or current_game.get('torrent_url') or current_game.get('page_url') or current_game.get('archive_org_identifier') or '',
             })
@@ -744,6 +745,7 @@ def download_missing_games_sequentially(
             'game_name': item.get('game_name') or default_game_name,
             'provider': provider,
             'status': status,
+            'error_code': last_attempt.get('error_code') or item.get('error_code') or '',
             'detail': item.get('error') or (attempts[-1].get('detail') if attempts else ''),
             'duration_seconds': duration,
             'file_path': path,

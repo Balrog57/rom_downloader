@@ -10,6 +10,7 @@ _ERROR_TYPE_THRESHOLDS = {
     "http_429": 5,
     "quota_exceeded": 3,
     "network_timeout": 10,
+    "html_response": 3,
     "unexpected_html": 3,
 }
 
@@ -18,6 +19,7 @@ _ERROR_TYPE_RECOVERIES = {
     "http_429": 300,
     "quota_exceeded": 600,
     "network_timeout": 300,
+    "html_response": 600,
     "unexpected_html": 600,
 }
 

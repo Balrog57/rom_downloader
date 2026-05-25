@@ -346,6 +346,7 @@ def download_single_game(
 
     attempts = result_item.get('provider_attempts', [])
     provider = attempts[-1].get('source') if attempts else result_item.get('source', '')
+    last_attempt = attempts[-1] if attempts else {}
     duration = sum(float(a.get('duration_seconds', 0) or 0) for a in attempts)
     path = result['final_paths'][0] if result['final_paths'] else (result_item.get('downloaded_path') or '')
     size = os.path.getsize(path) if path and os.path.exists(path) else 0
@@ -357,10 +358,18 @@ def download_single_game(
         'game_name': game_name,
         'provider': provider,
         'status': 'completed' if status == 'downloaded' else ('skipped' if status == 'skipped' else status),
+        'error_code': last_attempt.get('error_code') or result_item.get('error_code') or '',
         'detail': result.get('md5_message', '') or (attempts[-1].get('detail', '') if attempts else ''),
         'duration_seconds': duration,
         'file_path': path,
         'size': size,
+        'candidate_url': last_attempt.get('candidate_url') or result_item.get('download_url') or result_item.get('torrent_url') or result_item.get('page_url') or result_item.get('archive_org_identifier') or '',
+        'http_status': last_attempt.get('http_status') or result_item.get('http_status') or 0,
+        'content_type': last_attempt.get('content_type') or result_item.get('content_type') or '',
+        'announced_size': last_attempt.get('announced_size') or result_item.get('announced_size') or 0,
+        'hash_final': last_attempt.get('hash_final') or result_item.get('hash_final') or '',
+        'html_snippet': last_attempt.get('html_snippet') or result_item.get('html_snippet') or '',
+        'provider_rank': last_attempt.get('provider_rank') or result_item.get('provider_rank') or 0,
     })
 
     if status in ('downloaded', 'skipped') and (game_id or game_info.get('game_id')):
