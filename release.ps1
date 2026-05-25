@@ -29,7 +29,11 @@ python main.py --sources
 python main.py --diagnose
 
 git add VERSION README.md .gitignore install.ps1 release.ps1 ROMDownloader.spec .github src tests
-git commit -m "Release $Version"
+if (git diff --cached --quiet) {
+    Write-Host "Aucune modification de release a committer pour $Version"
+} else {
+    git commit -m "Release $Version"
+}
 
 if (-not $NoTag) {
     git tag "v$Version"
