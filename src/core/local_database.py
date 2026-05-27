@@ -1107,6 +1107,81 @@ def list_download_queue_items(filters: dict | None = None, limit: int = 1000,
     return rows
 
 
+def get_download_job_detail(job_id: str, item_limit: int = 200, attempt_limit: int = 100,
+                            path: str | Path | None = None) -> dict:
+    """Retourne un detail actionnable de job: config, file et tentatives recentes."""
+    if not job_id:
+        return {}
+    with open_local_database(path) as conn:
+        job = conn.execute("SELECT * FROM download_jobs WHERE job_id = ?", (job_id,)).fetchone()
+        if not job:
+            return {}
+        queue_rows = conn.execute(
+            """
+            SELECT * FROM download_queue_items
+            WHERE job_id = ?
+            ORDER BY
+              CASE status
+                WHEN 'running' THEN 0
+                WHEN 'failed' THEN 1
+                WHEN 'not_found' THEN 2
+                WHEN 'pending' THEN 3
+                ELSE 4
+              END,
+              priority DESC,
+              updated_at DESC
+            LIMIT ?
+            """,
+            (job_id, max(1, int(item_limit or 200))),
+        ).fetchall()
+        queue_counts = conn.execute(
+            "SELECT status, COUNT(*) AS count FROM download_queue_items WHERE job_id = ? GROUP BY status",
+            (job_id,),
+        ).fetchall()
+        attempt_rows = conn.execute(
+            """
+            SELECT * FROM download_attempts
+            WHERE job_id = ?
+            ORDER BY created_at DESC
+            LIMIT ?
+            """,
+            (job_id, max(1, int(attempt_limit or 100))),
+        ).fetchall()
+        error_rows = conn.execute(
+            """
+            SELECT error_code, COUNT(*) AS count
+            FROM download_attempts
+            WHERE job_id = ? AND error_code NOT IN ('', 'skipped', 'dry_run')
+            GROUP BY error_code
+            ORDER BY count DESC, error_code
+            """,
+            (job_id,),
+        ).fetchall()
+    settings = {}
+    try:
+        settings = json.loads(job["settings_json"] or "{}")
+    except Exception:
+        settings = {}
+    attempts = [dict(row) for row in attempt_rows]
+    items = [dict(row) for row in queue_rows]
+    retryable_count = sum(1 for attempt in attempts if attempt.get("retryable"))
+    last_error = next((attempt for attempt in attempts if attempt.get("error_code") not in {"", "skipped", "dry_run"}), {})
+    return {
+        "job": dict(job),
+        "settings": settings,
+        "queue": {row["status"]: row["count"] for row in queue_counts},
+        "items": items,
+        "attempts": attempts,
+        "errors": {row["error_code"]: row["count"] for row in error_rows},
+        "summary": {
+            "retryable_recent": retryable_count,
+            "last_error_code": last_error.get("error_code") or "",
+            "last_error": last_error.get("detail") or "",
+            "last_provider": last_error.get("provider") or "",
+        },
+    }
+
+
 def record_download_attempt(item: dict, path: str | Path | None = None) -> None:
     """Ajoute une tentative ou un resultat de telechargement dans SQLite."""
     now = time.time()
@@ -1678,6 +1753,7 @@ __all__ = [
     "update_download_job",
     "update_download_queue_item",
     "list_download_queue_items",
+    "get_download_job_detail",
     "pause_download_job",
     "resume_download_job",
     "cancel_download_job",

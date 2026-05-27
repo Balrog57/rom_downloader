@@ -46,6 +46,7 @@ from src.core import (  # noqa: E402
     list_download_jobs,
     update_download_queue_item,
     list_download_queue_items,
+    get_download_job_detail,
     record_provider_candidates,
     list_provider_candidates,
     list_provider_metrics,
@@ -566,6 +567,29 @@ def main() -> None:
         )
         job_state = run_download_job(job_id, path=catalog_root)
         assert_true(job_state["queue"].get("completed") == 1 and job_state["queue"].get("pending") == 1, "download queue state summary failed")
+        record_download_history(
+            {
+                "job_id": job_id,
+                "game_id": beta["game_id"],
+                "system_id": systems[0]["system_id"],
+                "game_name": beta["game_name"],
+                "provider": "ProviderA",
+                "status": "failed",
+                "error_code": "http_429",
+                "error": "HTTP 429",
+                "retryable": True,
+            },
+            path=catalog_root,
+        )
+        job_detail = get_download_job_detail(job_id, path=catalog_root)
+        assert_true(
+            job_detail["job"]["job_id"] == job_id
+            and job_detail["queue"].get("completed") == 1
+            and job_detail["errors"].get("http_429") == 1
+            and job_detail["summary"]["last_error_code"] == "http_429"
+            and job_detail["attempts"][0]["retryable"] == 1,
+            "download job detail failed",
+        )
         jobs = list_download_jobs(path=catalog_root)
         assert_true(len(jobs) == 1 and jobs[0]["queue"].get("completed") == 1, "download jobs listing failed")
 
