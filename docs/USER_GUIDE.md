@@ -61,8 +61,7 @@ Pages utiles:
 - `Systemes`: navigation catalogue.
 - `Jobs`: suivi, detail de file, tentatives recentes, pause, reprise, retry et annulation.
 - `Sources`: etat SQLite, score provider, couverture candidats, dernier diagnostic, test source et nettoyage cache.
-- `Historique`: exports JSON des echecs et des echecs retryable pour preparer une relance ciblee.
-- `Historique`: tentatives passees.
+- `Historique`: tentatives passees, exports JSON des echecs et des echecs retryable pour preparer une relance ciblee.
 
 Les endpoints `/api/*` renvoient du JSON et utilisent le polling, pas de WebSocket.
 
@@ -96,6 +95,7 @@ python main.py "dat\Nintendo - Game Boy Advance.dat" "D:\Roms\GBA" --rebuild-tos
 ```
 
 Le rebuilder v1 matche par MD5, SHA1, CRC ou taille unique. Il ne remplace pas RomVault pour les sets arcade split/merged complexes.
+Les exports FixDAT et helpers frontend gardent les indices DAT utiles comme CHD, BIOS, devices et clones. Ils ne reconstruisent pas les sets arcade split/merged complets.
 
 ## FAQ rapide
 
