@@ -414,6 +414,17 @@ def main() -> None:
             ],
             "not_available": [{"game_name": "Gamma Game"}],
             "skipped_items": [{"game_name": "Delta Game"}],
+            "rebuild": {
+                "rebuilt": 3,
+                "moved": 1,
+                "copied": 1,
+                "already_in_place": 1,
+                "zipped": 1,
+                "torrentzipped": 1,
+                "hash_mismatch": 2,
+                "archive_unsupported": 1,
+                "failed": 0,
+            },
             "source_health": [{
                 "provider": "ProviderB",
                 "status": "degraded",
@@ -435,8 +446,10 @@ def main() -> None:
         txt_report = Path(report_paths["txt"]).read_text(encoding="utf-8")
         assert_true("Mode: dry-run, aucun telechargement effectue" in txt_report, "dry-run report marker missing")
         assert_true("Telecharges/Simules" in txt_report, "txt simulated section missing")
+        assert_true("Rebuild ToSort - TorrentZip: 1" in txt_report, "txt rebuild counters missing")
         json_report = json.loads(Path(report_paths["json"]).read_text(encoding="utf-8"))
         assert_true("metadata" in json_report and "counts" in json_report and "items" in json_report, "json report shape failed")
+        assert_true(json_report["extras"]["rebuild"]["already_in_place"] == 1, "json rebuild counters failed")
         assert_true(json_report["source_health"][0]["provider"] == "ProviderB", "json source health failed")
         csv_report = Path(report_paths["csv"]).read_text(encoding="utf-8")
         assert_true("status,system_name,game_name,provider,download_filename,size,error_code,detail,file_path" in csv_report, "csv header failed")

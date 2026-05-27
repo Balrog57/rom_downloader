@@ -111,7 +111,18 @@ def rebuild_tosort(dat_games: dict, tosort_folder: str, output_folder: str,
                    frontend: str | None = None, system_name: str = "",
                    copy: bool = False, dry_run: bool = False) -> dict:
     """Reconstruit une sortie propre depuis ToSort avec matching hash puis taille."""
-    summary = {"rebuilt": 0, "copied": 0, "moved": 0, "ignored": 0, "hash_mismatch": 0, "archive_unsupported": 0, "failed": 0, "items": []}
+    summary = {
+        "rebuilt": 0,
+        "copied": 0,
+        "moved": 0,
+        "already_in_place": 0,
+        "zipped": 0,
+        "torrentzipped": 0,
+        "failed": 0,
+        "archive_unsupported": 0,
+        "hash_mismatch": 0,
+        "items": [],
+    }
     source_root = Path(tosort_folder)
     if not source_root.exists():
         return summary
@@ -159,12 +170,17 @@ def rebuild_tosort(dat_games: dict, tosort_folder: str, output_folder: str,
                     _zip_file(path, target, _safe_name(rom.get("name") or path.name), archive_mode == "torrentzip")
                     if not copy:
                         path.unlink(missing_ok=True)
+                    summary["torrentzipped" if archive_mode == "torrentzip" else "zipped"] += 1
                 elif copy:
                     shutil.copy2(path, target)
+                    summary["copied"] += 1
                 else:
-                    shutil.move(str(path), str(target))
+                    if path.resolve() != target.resolve():
+                        shutil.move(str(path), str(target))
+                        summary["moved"] += 1
+                    else:
+                        summary["already_in_place"] += 1
             summary["rebuilt"] += 1
-            summary["copied" if copy else "moved"] += 1
             summary["items"].append({"source": str(path), "target": str(target), "game_name": game.get("game_name", ""), "method": method, "status": "rebuilt"})
         except Exception as exc:
             summary["failed"] += 1

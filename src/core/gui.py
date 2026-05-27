@@ -405,6 +405,7 @@ def gui_mode():
                 profile_desc = describe_dat_profile(self.dat_profile) if self.dat_profile else "Inconnu"
                 total = len(self.dat_games)
                 self.dat_label.set(f"DAT charge: {profile_desc} - {total} jeux")
+                self.dat_path = dat_path
                 self.missing_games = []
                 self.dat_results_var.set(f"DAT: {profile_desc} | {total} jeux | Cliquez sur 'Scanner le dossier' pour detecter les manquants")
 
