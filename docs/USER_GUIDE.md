@@ -65,6 +65,15 @@ Pages utiles:
 
 Les endpoints `/api/*` renvoient du JSON et utilisent le polling, pas de WebSocket.
 
+Pour reprendre proprement un job en echec, utilisez le detail puis un retry filtre:
+
+```powershell
+python main.py --queue-details <JOB_ID>
+python main.py --retry-job <JOB_ID> --retry-retryable-only
+python main.py --retry-job <JOB_ID> --retry-error-code http_429
+python main.py --cleanup-job-parts <JOB_ID>
+```
+
 ## Sortie RomVault et TorrentZip
 
 Pour une sortie compatible RomVault, utilisez les modes de sortie et d'archive explicites:

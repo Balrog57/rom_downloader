@@ -135,6 +135,9 @@ python main.py --provider-registry
 python main.py --db-status
 python main.py --queue-status
 python main.py --queue-details <JOB_ID>
+python main.py --retry-job <JOB_ID> --retry-retryable-only
+python main.py --retry-job <JOB_ID> --retry-error-code http_429
+python main.py --cleanup-job-parts <JOB_ID>
 python main.py --mapping-status
 python main.py --web
 python main.py --clear-listing-cache

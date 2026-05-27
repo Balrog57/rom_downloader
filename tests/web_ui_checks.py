@@ -70,6 +70,12 @@ def main() -> None:
             assert_true(resumed.get("ok") is True, "job resume API failed")
             retried = _post(base + "/api/job/retry", {"job_id": created["job_id"]})
             assert_true("retried" in retried, "job retry API failed")
+            retried_filtered = _post(base + "/api/job/retry", {"job_id": created["job_id"], "retryable_only": True})
+            assert_true("retried" in retried_filtered, "job retry filtered API failed")
+            orphan_part = rom_dir / "orphan.bin.part"
+            orphan_part.write_bytes(b"partial")
+            cleaned_parts = _post(base + "/api/job/cleanup-parts", {"job_id": created["job_id"]})
+            assert_true(cleaned_parts.get("removed") == 1 and not orphan_part.exists(), "job cleanup parts API failed")
             cancelled = _post(base + "/api/job/cancel", {"job_id": created["job_id"]})
             assert_true(cancelled.get("ok") is True, "job cancel API failed")
             policy = _post(base + "/api/source/policy", {"source": "LoLROMs", "delay_seconds": 9})
