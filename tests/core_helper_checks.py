@@ -50,6 +50,8 @@ from src.core import (  # noqa: E402
     record_provider_candidates,
     list_provider_candidates,
     list_provider_metrics,
+    record_provider_system_metric,
+    prioritize_sources_by_system,
     build_source_health_summary,
     record_download_history,
     list_download_history,
@@ -429,6 +431,8 @@ def main() -> None:
             "source_health": [{
                 "provider": "ProviderB",
                 "status": "degraded",
+                "score": 0.12,
+                "score_reasons": ["succes 0%", "hash KO 100%"],
                 "coverage": 2,
                 "active_candidates": 1,
                 "success_count": 0,
@@ -448,16 +452,18 @@ def main() -> None:
         assert_true("Mode: dry-run, aucun telechargement effectue" in txt_report, "dry-run report marker missing")
         assert_true("Telecharges/Simules" in txt_report, "txt simulated section missing")
         assert_true("Rebuild ToSort - TorrentZip: 1" in txt_report, "txt rebuild counters missing")
+        assert_true("score=0.12" in txt_report and "hash KO 100%" in txt_report, "txt source score missing")
         json_report = json.loads(Path(report_paths["json"]).read_text(encoding="utf-8"))
         assert_true("metadata" in json_report and "counts" in json_report and "items" in json_report, "json report shape failed")
         assert_true(json_report["extras"]["rebuild"]["already_in_place"] == 1, "json rebuild counters failed")
         assert_true(json_report["source_health"][0]["provider"] == "ProviderB", "json source health failed")
+        assert_true(json_report["source_health"][0]["score"] == 0.12, "json source score failed")
         csv_report = Path(report_paths["csv"]).read_text(encoding="utf-8")
         assert_true("status,system_name,game_name,provider,download_filename,size,error_code,detail,file_path" in csv_report, "csv header failed")
         assert_true("checksum_mismatch" in csv_report and "not_found" in csv_report, "csv rows failed")
         html_report = Path(report_paths["html"]).read_text(encoding="utf-8")
         assert_true("Alpha &lt;Bad &amp; &quot;Game&quot;&gt;" in html_report, "html escaping failed")
-        assert_true("Sante sources" in html_report and "ProviderB" in html_report, "html source health failed")
+        assert_true("Sante sources" in html_report and "ProviderB" in html_report and "hash KO 100%" in html_report, "html source health failed")
         assert_true("Alpha <Bad" not in html_report, "html must not contain raw game name")
         compat_path = write_download_report(report_dir, report_summary)
         assert_true(Path(compat_path).exists() and compat_path.endswith(".txt"), "compat txt report failed")
@@ -906,12 +912,19 @@ def main() -> None:
         )
         health_by_name = {row["provider"]: row for row in health}
         assert_true(health_by_name["ProviderA"]["active_candidates"] >= 1, "source health candidates failed")
+        assert_true(isinstance(health_by_name["ProviderA"]["score"], float) and health_by_name["ProviderA"]["score_reasons"], "source health score shape failed")
         assert_true(
             health_by_name["ProviderB"]["html_count"] == 1
             and health_by_name["ProviderB"]["last_error_code"] == "html_response",
             "source health HTML diagnostics failed",
         )
+        assert_true(
+            health_by_name["ProviderB"]["score"] >= 0
+            and any(reason.startswith("html ") for reason in health_by_name["ProviderB"]["score_reasons"]),
+            "source health score reasons failed",
+        )
         assert_true(health_by_name["ProviderC"]["hash_mismatch_count"] == 1, "source health hash diagnostics failed")
+        assert_true("hash KO 100%" in health_by_name["ProviderC"]["score_reasons"], "source health hash reason failed")
 
         from src.core import download_orchestrator as orchestrator
 
@@ -986,6 +999,21 @@ def main() -> None:
     fast_score = compute_provider_score({"attempts": 4, "downloaded": 4, "failed": 0, "seconds": 4.0, "average_speed": 4 * 1024 * 1024})
     slow_score = compute_provider_score({"attempts": 4, "downloaded": 2, "failed": 2, "seconds": 80.0, "average_speed": 128 * 1024})
     assert_true(fast_score > slow_score, "provider dynamic score failed")
+
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        score_db = Path(tmp_dir) / "score.sqlite"
+        record_provider_system_metric("FastProvider", "Nintendo - Test", "downloaded", duration_seconds=1.0, size=4 * 1024 * 1024, path=score_db)
+        record_provider_system_metric("SlowProvider", "Nintendo - Test", "failed", duration_seconds=10.0, size=0, path=score_db)
+        ordered = prioritize_sources_by_system(
+            [
+                {"name": "SlowProvider", "type": "slow", "priority": 10},
+                {"name": "FastProvider", "type": "fast", "priority": 10},
+            ],
+            "Nintendo - Test",
+            path=score_db,
+        )
+        assert_true(ordered[0]["name"] == "FastProvider", "provider system scoring order failed")
+        assert_true("_provider_score" in ordered[0] and ordered[0]["_provider_score"] > ordered[1]["_provider_score"], "provider scoring metadata failed")
 
     # ROM_DATABASE stale-binding guard: verify module-level attribute access works
     from src.core import rom_database as _rd_mod

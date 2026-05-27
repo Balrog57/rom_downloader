@@ -933,24 +933,82 @@ def compute_provider_score(metric: dict) -> float:
     return max(0.0, success_rate + speed_bonus - penalty)
 
 
+def provider_score_breakdown(metric: dict, attempt_summary: dict | None = None) -> dict:
+    """Retourne un score provider explicable pour diagnostics et source-health."""
+    attempt_summary = attempt_summary or {}
+    attempts = int(metric.get("attempts") or attempt_summary.get("attempt_count") or 0)
+    downloaded = int(metric.get("downloaded") or attempt_summary.get("completed_count") or 0)
+    failed = int(metric.get("failed") or attempt_summary.get("failure_count") or 0)
+    cloudflare = int(attempt_summary.get("cloudflare_count") or 0)
+    html_count = int(attempt_summary.get("html_count") or 0)
+    hash_count = int(attempt_summary.get("hash_count") or 0)
+    success_rate = downloaded / attempts if attempts else 0.0
+    failure_rate = failed / attempts if attempts else 0.0
+    cloudflare_rate = cloudflare / attempts if attempts else 0.0
+    html_rate = html_count / attempts if attempts else 0.0
+    hash_rate = hash_count / attempts if attempts else 0.0
+    if int(metric.get("attempts") or 0):
+        score = compute_provider_score(metric or {})
+    elif attempts:
+        score = max(0.0, success_rate - failure_rate * 0.5)
+    else:
+        score = 1.0
+    score = max(0.0, score - cloudflare_rate * 0.25 - html_rate * 0.2 - hash_rate * 0.2)
+    reasons = []
+    if not attempts:
+        reasons.append("aucune tentative")
+    else:
+        reasons.append(f"succes {success_rate:.0%}")
+        if failure_rate:
+            reasons.append(f"echecs {failure_rate:.0%}")
+        if cloudflare_rate:
+            reasons.append(f"cloudflare {cloudflare_rate:.0%}")
+        if html_rate:
+            reasons.append(f"html {html_rate:.0%}")
+        if hash_rate:
+            reasons.append(f"hash KO {hash_rate:.0%}")
+        if float(metric.get("average_speed") or 0) > 0:
+            reasons.append("vitesse connue")
+    return {
+        "score": round(score, 4),
+        "success_rate": round(success_rate, 4),
+        "failure_rate": round(failure_rate, 4),
+        "cloudflare_rate": round(cloudflare_rate, 4),
+        "html_rate": round(html_rate, 4),
+        "hash_mismatch_rate": round(hash_rate, 4),
+        "score_reasons": reasons,
+    }
+
+
 def prioritize_sources_by_system(sources: list[dict], system_id: str,
                                   path: str | Path | None = None) -> list[dict]:
     """Reordonne les sources par score SQLite per-systeme, avec fallback global."""
     system_metrics = list_provider_system_metrics(system_id, path=path)
     global_metrics_list = list_provider_metrics(path=path)
-    def sort_key(src: dict) -> tuple:
+
+    def scored_source(src: dict) -> dict:
         name = src.get("name", "")
         composite = f"{name}::{system_id}"
         if composite in system_metrics:
-            score = compute_provider_score(system_metrics[composite])
+            score_info = provider_score_breakdown(system_metrics[composite])
         elif name in global_metrics_list:
-            score = compute_provider_score(global_metrics_list[name])
+            score_info = provider_score_breakdown(global_metrics_list[name])
         else:
-            score = 1.0
+            score_info = provider_score_breakdown({})
+        enriched = dict(src)
+        enriched["_provider_score"] = score_info["score"]
+        enriched["_provider_score_reasons"] = score_info["score_reasons"]
+        return enriched
+
+    def sort_key(src: dict) -> tuple:
+        name = src.get("name", "")
+        score = float(src.get("_provider_score") or 0)
         base_priority = int(src.get("priority", 50))
         order = int(src.get("order", base_priority))
         return (order, -score, base_priority, name.lower())
-    return sorted(sources, key=sort_key)
+
+    scored = [scored_source(source) for source in sources]
+    return sorted(scored, key=sort_key)
 
 
 def list_provider_metrics(path: str | Path | None = None) -> dict[str, dict]:
@@ -1065,6 +1123,7 @@ def build_source_health_summary(sources: list[dict] | None = None,
         cloudflare_count = int(attempt.get("cloudflare_count") or 0)
         html_count = int(attempt.get("html_count") or 0)
         hash_count = int(attempt.get("hash_count") or 0)
+        score_info = provider_score_breakdown(metric, attempt)
         if not enabled:
             status = "disabled"
         elif int(circuit.get("failures") or 0) > 0 or cloudflare_count or html_count or (failure_count > downloaded and failure_count > 0):
@@ -1102,10 +1161,11 @@ def build_source_health_summary(sources: list[dict] | None = None,
             "cloudflare_count": cloudflare_count,
             "html_count": html_count,
             "hash_mismatch_count": hash_count,
+            **score_info,
             "circuit_state": f"failures={int(circuit.get('failures') or 0)}" if circuit else "ok",
             "recommended_action": _health_action(enabled, status, cloudflare_count, html_count, hash_count, failure_count),
         })
-    rows.sort(key=lambda item: (item["status"] == "disabled", item["provider"].lower()))
+    rows.sort(key=lambda item: (item["status"] == "disabled", -float(item.get("score") or 0), item["provider"].lower()))
     return rows
 
 
@@ -1823,6 +1883,8 @@ __all__ = [
     "cleanup_stale_locks",
     "record_provider_metric",
     "record_provider_system_metric",
+    "compute_provider_score",
+    "provider_score_breakdown",
     "list_provider_metrics",
     "list_provider_system_metrics",
     "prioritize_sources_by_system",

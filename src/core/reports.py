@@ -357,11 +357,14 @@ def _format_txt_report(payload: dict, summary: dict) -> str:
     if source_health:
         lines.extend(["", "Sante sources", "-" * 72])
         for row in source_health[:20]:
+            reasons = ", ".join(row.get("score_reasons") or [])
             lines.append(
                 f"- {row.get('provider', '')}: statut={row.get('status', '')}, "
+                f"score={float(row.get('score') or 0):.2f}, "
                 f"couverture={row.get('coverage', 0)}, candidats={row.get('active_candidates', 0)}, "
                 f"ok={row.get('success_count', 0)}, ko={row.get('failure_count', 0)}, "
-                f"erreur={row.get('last_error_code') or '-'}, action={row.get('recommended_action', '')}"
+                f"erreur={row.get('last_error_code') or '-'}, raisons={reasons or '-'}, "
+                f"action={row.get('recommended_action', '')}"
             )
 
     top_sources = sources.get("top_sources", [])
@@ -433,19 +436,23 @@ def _write_html(path: Path, payload: dict, txt_body: str) -> None:
     body = "\n".join(rows) or '<tr><td colspan="5">Aucun element</td></tr>'
     health_rows = []
     for row in payload.get("source_health", [])[:50]:
+        reasons = ", ".join(row.get("score_reasons") or [])
+        score_text = f"{float(row.get('score') or 0):.2f}"
         health_rows.append(
             "<tr>"
             f"<td>{html.escape(row.get('provider', ''))}</td>"
             f"<td>{html.escape(row.get('status', ''))}</td>"
+            f"<td>{html.escape(score_text)}</td>"
             f"<td>{html.escape(str(row.get('coverage', 0)))}</td>"
             f"<td>{html.escape(str(row.get('active_candidates', 0)))}</td>"
             f"<td>{html.escape(str(row.get('success_count', 0)))}</td>"
             f"<td>{html.escape(str(row.get('failure_count', 0)))}</td>"
             f"<td>{html.escape(row.get('last_error_code') or '')}</td>"
+            f"<td>{html.escape(reasons)}</td>"
             f"<td>{html.escape(row.get('recommended_action', ''))}</td>"
             "</tr>"
         )
-    health_body = "\n".join(health_rows) or '<tr><td colspan="8">Aucune source</td></tr>'
+    health_body = "\n".join(health_rows) or '<tr><td colspan="10">Aucune source</td></tr>'
     document = f"""<!doctype html>
 <html lang="fr">
 <head>
@@ -471,7 +478,7 @@ def _write_html(path: Path, payload: dict, txt_body: str) -> None:
   </table>
   <h2>Sante sources</h2>
   <table>
-    <thead><tr><th>Provider</th><th>Statut</th><th>Couverture</th><th>Candidats</th><th>OK</th><th>KO</th><th>Erreur</th><th>Action</th></tr></thead>
+    <thead><tr><th>Provider</th><th>Statut</th><th>Score</th><th>Couverture</th><th>Candidats</th><th>OK</th><th>KO</th><th>Erreur</th><th>Raisons</th><th>Action</th></tr></thead>
     <tbody>
       {health_body}
     </tbody>
