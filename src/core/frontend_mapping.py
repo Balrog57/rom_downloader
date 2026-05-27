@@ -121,18 +121,33 @@ def build_frontend_output_path(system_name: str, rom_filename: str,
 
 
 def generate_es_gamelist_xml(games: list[dict], system_name: str) -> str:
-    """Genere un squelette gamelist.xml minimal pour EmulationStation."""
+    """Genere un gamelist.xml minimal avec quelques infos DAT utiles."""
     import xml.etree.ElementTree as ET
     from xml.dom import minidom
 
     root = ET.Element("gameList")
     for game in games:
         gname = game.get("game_name", "")
-        path = game.get("download_filename") or game.get("primary_rom", "")
+        roms = game.get("roms") or []
+        primary = game.get("download_filename") or game.get("primary_rom", "")
+        if not primary and roms:
+            primary = roms[0].get("name", "")
+        chd = any((rom.get("name") or "").lower().endswith(".chd") for rom in roms)
+        flags = []
+        if chd:
+            flags.append("CHD")
+        if str(game.get("isbios") or "").lower() in {"yes", "true", "1"}:
+            flags.append("BIOS")
+        if str(game.get("isdevice") or "").lower() in {"yes", "true", "1"}:
+            flags.append("Device DAT")
+        if game.get("cloneof"):
+            flags.append(f"Clone de {game.get('cloneof')}")
+        if game.get("romof"):
+            flags.append(f"ROM de {game.get('romof')}")
         game_el = ET.SubElement(root, "game")
-        ET.SubElement(game_el, "path").text = f"./{path}"
+        ET.SubElement(game_el, "path").text = f"./{primary}"
         ET.SubElement(game_el, "name").text = gname
-        ET.SubElement(game_el, "desc").text = ""
+        ET.SubElement(game_el, "desc").text = " | ".join(flags)
         ET.SubElement(game_el, "image").text = ""
         ET.SubElement(game_el, "rating").text = ""
 
@@ -141,9 +156,32 @@ def generate_es_gamelist_xml(games: list[dict], system_name: str) -> str:
     return dom.toprettyxml(indent="  ", encoding="utf-8").decode("utf-8")
 
 
+def generate_missing_txt(games: list[dict]) -> str:
+    """Genere une liste lisible des jeux absents/echec pour frontend ou RomVault."""
+    lines = []
+    for game in games:
+        name = game.get("game_name") or game.get("name") or ""
+        status = game.get("status") or game.get("error_code") or "missing"
+        provider = game.get("source") or game.get("provider") or ""
+        roms = game.get("roms") or []
+        flags = []
+        if any((rom.get("name") or "").lower().endswith(".chd") for rom in roms):
+            flags.append("CHD")
+        if str(game.get("isbios") or "").lower() in {"yes", "true", "1"}:
+            flags.append("BIOS")
+        if str(game.get("isdevice") or "").lower() in {"yes", "true", "1"}:
+            flags.append("DEVICE")
+        suffix = f" [{', '.join(flags)}]" if flags else ""
+        provider_part = f" ({provider})" if provider else ""
+        if name:
+            lines.append(f"{name}{suffix} - {status}{provider_part}")
+    return "\n".join(lines) + ("\n" if lines else "")
+
+
 __all__ = [
     "get_frontend_mapping",
     "frontend_folder_for_system",
     "build_frontend_output_path",
     "generate_es_gamelist_xml",
+    "generate_missing_txt",
 ]

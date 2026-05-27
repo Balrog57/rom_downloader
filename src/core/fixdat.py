@@ -36,7 +36,11 @@ def _build_fixdat_xml(dat_games: dict, system_name: str, family: str, is_retool:
     ET.SubElement(header, "clrmamepro", {"forcenodump": "required"})
 
     for game_name, game_info in sorted(dat_games.items()):
-        game_elem = ET.SubElement(datafile, "game", {"name": game_name})
+        game_attrs = {"name": game_name}
+        for key in ("cloneof", "romof", "sampleof", "isbios", "isdevice"):
+            if game_info.get(key):
+                game_attrs[key] = str(game_info[key])
+        game_elem = ET.SubElement(datafile, "game", game_attrs)
         ET.SubElement(game_elem, "description").text = game_name
         for rom in game_info.get("roms", []):
             attrs = {"name": rom.get("name", ""), "size": str(rom.get("size", "0"))}
@@ -46,7 +50,16 @@ def _build_fixdat_xml(dat_games: dict, system_name: str, family: str, is_retool:
                 attrs["md5"] = rom["md5"]
             if rom.get("sha1"):
                 attrs["sha1"] = rom["sha1"]
-            ET.SubElement(game_elem, "rom", attrs)
+            if rom.get("merge"):
+                attrs["merge"] = rom["merge"]
+            if rom.get("status"):
+                attrs["status"] = rom["status"]
+            if rom.get("disk"):
+                attrs.pop("size", None)
+                attrs.pop("crc", None)
+                ET.SubElement(game_elem, "disk", attrs)
+            else:
+                ET.SubElement(game_elem, "rom", attrs)
 
     rough = ET.tostring(datafile, encoding="unicode")
     dom = minidom.parseString(rough.encode("utf-8"))

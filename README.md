@@ -119,7 +119,7 @@ python main.py <fichier.dat> <dossier_roms> [options]
 | `--archive-mode none\|zip\|torrentzip` | Repacke les fichiers bruts en ZIP ou TorrentZip. Prioritaire sur `--clean-torrentzip`. |
 | `--rebuild-tosort` | Reconstruit une sortie propre depuis `ToSort` par hash/taille DAT, puis quitte. |
 | `--dat-capabilities` | Affiche les capacites DAT detectees: CHD, headers, clones, merge, BIOS/devices. |
-| `--frontend batocera\|retrobat\|es-de\|launchbox` | Place les sorties dans les dossiers attendus par le frontend. |
+| `--frontend batocera\|retrobat\|es-de\|launchbox` | Place les sorties dans les dossiers attendus par le frontend; les helpers frontend conservent les indices BIOS/CHD dans `gamelist.xml`/`missing.txt`. |
 | `--output-root-by-dat` | Cree un sous-dossier nomme comme le DAT sous le dossier indique. |
 | `--prefer-1fichier` | Priorise RetroGameSets/StartGame avant les DDL directs. |
 

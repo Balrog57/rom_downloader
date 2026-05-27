@@ -19,23 +19,33 @@ from src.core.signatures import hash_file_signatures
 from src.core.fixdat import build_fixdat
 print("fixdat module OK")
 
-from src.core.frontend_mapping import frontend_folder_for_system, generate_es_gamelist_xml
+from src.core.frontend_mapping import frontend_folder_for_system, generate_es_gamelist_xml, generate_missing_txt
 print("gba -> " + frontend_folder_for_system("Nintendo - Game Boy Advance"))
 print("psx -> " + frontend_folder_for_system("Sony - PlayStation"))
 print("nes -> " + frontend_folder_for_system("Nintendo - Nintendo Entertainment System"))
 print("wii -> " + frontend_folder_for_system("Nintendo - Wii"))
 print("frontend module OK")
 
-test_xml = build_fixdat("test.dat", {"Test Game (USA)": {"game_name": "Test Game (USA)", "roms": [{"name": "test.rom", "size": "1024", "crc": "abc123", "md5": "d41d8cd98f00b204e9800998ecf8427e"}]}})
-if "<game name=\"Test Game (USA)\"" in test_xml:
+test_xml = build_fixdat("test.dat", {
+    "Test Game (USA)": {
+        "game_name": "Test Game (USA)",
+        "cloneof": "Parent",
+        "roms": [
+            {"name": "test.rom", "size": "1024", "crc": "abc123", "md5": "d41d8cd98f00b204e9800998ecf8427e"},
+            {"name": "test-disk.chd", "sha1": "0123456789abcdef0123456789abcdef01234567", "disk": True},
+        ],
+    }
+})
+if "<game name=\"Test Game (USA)\" cloneof=\"Parent\"" in test_xml and "<disk name=\"test-disk.chd\"" in test_xml:
     print("fixdat XML generation OK")
 else:
     print("fixdat FAILED")
     sys.exit(1)
 
-games = [{"game_name": "Test Game", "download_filename": "test.rom", "primary_rom": "test.rom"}]
+games = [{"game_name": "Test Game", "download_filename": "test.rom", "primary_rom": "test.rom", "roms": [{"name": "test-disk.chd"}], "isbios": "yes"}]
 gamelist = generate_es_gamelist_xml(games, "gba")
-if "test.rom" in gamelist:
+missing_txt = generate_missing_txt([{"game_name": "Missing Game", "status": "failed", "roms": [{"name": "missing.chd"}], "provider": "ProviderA"}])
+if "test.rom" in gamelist and "CHD" in gamelist and "BIOS" in gamelist and "Missing Game [CHD] - failed (ProviderA)" in missing_txt:
     print("gamelist generation OK")
 else:
     print("gamelist FAILED")
