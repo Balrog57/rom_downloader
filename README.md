@@ -217,6 +217,7 @@ La fiabilite repose sur:
 - detection des pages HTML/Cloudflare pour eviter de sauvegarder une page de challenge comme ROM;
 - validation finale MD5, puis taille DAT si aucun MD5 n'est disponible;
 - cache SQLite des candidats providers avec TTL et diagnostics HTTP/HTML/hash KO visibles via `--source-health`, rapports et Web UI;
+- score provider explicable dans `--source-health`, Web UI et rapports: taux succes/echec, Cloudflare, HTML parasite, hash KO et vitesse connue;
 - fallback provider apres erreur reseau, timeout, quota, rate-limit ou validation KO;
 - circuit-breaker par source pendant la session, **persiste en SQLite** entre les sessions (les sources bloquees le restent au redemarrage);
 - metriques provider persistantes en SQLite **par systeme** (`provider_system_metrics`) pour reordonner les sources les plus fiables par console.

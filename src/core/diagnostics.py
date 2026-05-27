@@ -137,19 +137,22 @@ def print_source_health_summary(rows: list[dict]) -> None:
         print("Aucune source connue.")
         print("=" * 120)
         return
-    print(f"{'Provider':<24} {'Statut':<10} {'Couv.':>6} {'Cand.':>6} {'OK':>5} {'KO':>5} {'Vitesse':>12} {'Erreur':<18} Action")
+    print(f"{'Provider':<24} {'Statut':<10} {'Score':>6} {'Couv.':>6} {'Cand.':>6} {'OK':>5} {'KO':>5} {'Vitesse':>12} {'Erreur':<18} Raisons / action")
     for row in rows:
         speed = f"{format_bytes(row.get('average_speed'))}/s" if row.get("average_speed") else "-"
+        reasons = ", ".join(row.get("score_reasons") or [])
+        suffix = f"{reasons or '-'} / {row.get('recommended_action', '')}"
         print(
             f"{row.get('provider', '')[:24]:<24} "
             f"{row.get('status', ''):<10} "
+            f"{float(row.get('score') or 0):>6.2f} "
             f"{int(row.get('coverage') or 0):>6} "
             f"{int(row.get('active_candidates') or 0):>6} "
             f"{int(row.get('success_count') or 0):>5} "
             f"{int(row.get('failure_count') or 0):>5} "
             f"{speed:>12} "
             f"{(row.get('last_error_code') or '-')[:18]:<18} "
-            f"{row.get('recommended_action', '')}"
+            f"{suffix}"
         )
     print("=" * 120)
 

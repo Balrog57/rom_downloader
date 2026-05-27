@@ -627,24 +627,26 @@ class _WebHandler(BaseHTTPRequestHandler):
                 failures = src.get("failure_count", 0)
                 speed = format_bytes_for_web(src.get("average_speed", 0)) + "/s" if src.get("average_speed") else ""
                 status = html.escape(str(src.get("status", "")))
+                score = f"{float(src.get('score') or 0):.2f}"
                 coverage = int(src.get("coverage") or 0)
                 candidates = int(src.get("active_candidates") or 0)
                 last_error = html.escape(str(src.get("last_error_code") or ""))
+                reasons = html.escape(", ".join(src.get("score_reasons") or []))
                 action = html.escape(str(src.get("recommended_action") or ""))
                 js_name = html.escape(json.dumps(str(name)), quote=True)
                 rows += (
                     f"<tr><td>{html.escape(str(name))}</td><td>{html.escape(str(src.get('type','')))}</td>"
-                    f"<td>{status}</td><td>{coverage}</td><td>{candidates}</td>"
+                    f"<td>{status}</td><td>{score}</td><td>{coverage}</td><td>{candidates}</td>"
                     f"<td>{successes}</td><td>{failures}</td><td>{speed}</td>"
-                    f"<td>{last_error}</td><td>{action}</td>"
+                    f"<td>{last_error}</td><td>{reasons}</td><td>{action}</td>"
                     f"<td><button onclick=\"clearCaches({js_name})\">Cache</button></td></tr>"
                 )
             self._html(
                 "<h1>Sources</h1><button onclick=\"testSources()\">Tester maintenant</button>"
                 "<button class=\"secondary\" onclick=\"clearCaches('')\">Vider caches</button>"
-                "<table><tr><th>Provider</th><th>Type</th><th>Statut</th><th>Couverture</th>"
+                "<table><tr><th>Provider</th><th>Type</th><th>Statut</th><th>Score</th><th>Couverture</th>"
                 "<th>Candidats</th><th>Succes</th><th>Echecs</th><th>Vitesse</th>"
-                "<th>Derniere erreur</th><th>Action</th><th>Cache</th></tr>"
+                "<th>Derniere erreur</th><th>Raisons</th><th>Action</th><th>Cache</th></tr>"
                 f"{rows}</table><pre id=\"api-result\"></pre>"
             )
         else:
