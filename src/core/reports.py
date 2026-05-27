@@ -307,6 +307,11 @@ def _format_txt_report(payload: dict, summary: dict) -> str:
     if rebuild:
         lines.extend([
             f"Rebuild ToSort - reconstruits: {rebuild.get('rebuilt', 0)}",
+            f"Rebuild ToSort - deplaces: {rebuild.get('moved', 0)}",
+            f"Rebuild ToSort - copies: {rebuild.get('copied', 0)}",
+            f"Rebuild ToSort - deja en place: {rebuild.get('already_in_place', 0)}",
+            f"Rebuild ToSort - ZIP: {rebuild.get('zipped', 0)}",
+            f"Rebuild ToSort - TorrentZip: {rebuild.get('torrentzipped', 0)}",
             f"Rebuild ToSort - non reconnus: {rebuild.get('hash_mismatch', 0)}",
             f"Rebuild ToSort - archives non supportees: {rebuild.get('archive_unsupported', 0)}",
             f"Rebuild ToSort - echecs: {rebuild.get('failed', 0)}",

@@ -77,9 +77,49 @@ with tempfile.TemporaryDirectory() as tmp:
     candidate = tosort / "loose.bin"
     candidate.write_bytes(b"abcd")
     rebuilt = rebuild_tosort(parsed, str(tosort), str(out_dir), output_mode="verified")
-    if rebuilt["rebuilt"] != 1 or not (out_dir / "Verified" / "parent.bin").exists():
+    if rebuilt["rebuilt"] != 1 or rebuilt["moved"] != 1 or not (out_dir / "Verified" / "parent.bin").exists():
         print("rebuild ToSort FAILED")
         sys.exit(1)
     print("rebuild ToSort OK")
+
+    copy_root = tmp_path / "copy-out"
+    copy_tosort = copy_root / "ToSort"
+    copy_tosort.mkdir(parents=True, exist_ok=True)
+    copy_candidate = copy_tosort / "copy.bin"
+    copy_candidate.write_bytes(b"abcd")
+    copied = rebuild_tosort(parsed, str(copy_tosort), str(copy_root), output_mode="verified", copy=True)
+    if copied["rebuilt"] != 1 or copied["copied"] != 1 or not copy_candidate.exists() or not (copy_root / "Verified" / "parent.bin").exists():
+        print("rebuild ToSort copy FAILED")
+        sys.exit(1)
+
+    zip_root = tmp_path / "zip-out"
+    zip_tosort = zip_root / "ToSort"
+    zip_tosort.mkdir(parents=True, exist_ok=True)
+    zip_candidate = zip_tosort / "zip.bin"
+    zip_candidate.write_bytes(b"abcd")
+    zipped = rebuild_tosort(parsed, str(zip_tosort), str(zip_root), output_mode="verified", archive_mode="zip")
+    if zipped["rebuilt"] != 1 or zipped["zipped"] != 1 or not (zip_root / "Verified" / "parent.zip").exists():
+        print("rebuild ToSort ZIP FAILED")
+        sys.exit(1)
+
+    tz_root = tmp_path / "torrentzip-out"
+    tz_tosort = tz_root / "ToSort"
+    tz_tosort.mkdir(parents=True, exist_ok=True)
+    tz_candidate = tz_tosort / "torrentzip.bin"
+    tz_candidate.write_bytes(b"abcd")
+    torrentzipped = rebuild_tosort(parsed, str(tz_tosort), str(tz_root), output_mode="verified", archive_mode="torrentzip")
+    if torrentzipped["rebuilt"] != 1 or torrentzipped["torrentzipped"] != 1 or not (tz_root / "Verified" / "parent.zip").exists():
+        print("rebuild ToSort TorrentZip FAILED")
+        sys.exit(1)
+
+    already_root = tmp_path / "already-out"
+    already_verified = already_root / "Verified"
+    already_verified.mkdir(parents=True, exist_ok=True)
+    already_candidate = already_verified / "parent.bin"
+    already_candidate.write_bytes(b"abcd")
+    already = rebuild_tosort(parsed, str(already_verified), str(already_root), output_mode="verified")
+    if already["rebuilt"] != 1 or already["already_in_place"] != 1:
+        print("rebuild ToSort already-in-place FAILED")
+        sys.exit(1)
 
 print("\nALL CHECKS PASSED")

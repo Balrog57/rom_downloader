@@ -49,7 +49,13 @@ def cli_mode(args):
             "skipped_items": [],
             "not_available": [],
         }, formats=getattr(args, "report_formats", "txt"))
-        print(f"Rebuild ToSort: {summary['rebuilt']} reconstruit(s), {summary['hash_mismatch']} non reconnu(s)")
+        print(
+            f"Rebuild ToSort: {summary['rebuilt']} reconstruit(s), "
+            f"{summary.get('moved', 0)} deplace(s), {summary.get('copied', 0)} copie(s), "
+            f"{summary.get('already_in_place', 0)} deja en place, "
+            f"{summary.get('zipped', 0)} ZIP, {summary.get('torrentzipped', 0)} TorrentZip, "
+            f"{summary['hash_mismatch']} non reconnu(s)"
+        )
         print("Rapports: " + ", ".join(report_paths.values()))
         return
 
