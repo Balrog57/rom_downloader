@@ -592,19 +592,56 @@ def cancel_download_job(job_id: str, path: str | Path | None = None) -> bool:
         return True
 
 
-def retry_failed_queue_items(job_id: str, path: str | Path | None = None) -> int:
-    """Remet en file les items echoues ou annules d'un job."""
+def retry_failed_queue_items(job_id: str, path: str | Path | None = None,
+                             error_code: str = "", retryable_only: bool = False) -> int:
+    """Remet en file les items echoues ou annules d'un job, avec filtres optionnels."""
     with open_local_database(path) as conn:
         row = conn.execute("SELECT status FROM download_jobs WHERE job_id = ?", (job_id,)).fetchone()
         if not row:
             return 0
         now = time.time()
-        cursor = conn.execute(
-            "UPDATE download_queue_items SET status='pending', updated_at=?, attempt_count=0, next_retry_at=0, locked_by='', locked_at=0 "
-            "WHERE job_id = ? AND status IN ('failed', 'cancelled', 'not_found')",
-            (now, job_id),
-        )
-        retried = cursor.rowcount
+        target_error = (error_code or "").strip()
+        if target_error or retryable_only:
+            candidates = conn.execute(
+                "SELECT item_id, game_id, game_name FROM download_queue_items "
+                "WHERE job_id = ? AND status IN ('failed', 'cancelled', 'not_found')",
+                (job_id,),
+            ).fetchall()
+            item_ids = []
+            for item in candidates:
+                latest = conn.execute(
+                    """
+                    SELECT error_code, retryable FROM download_attempts
+                    WHERE job_id = ? AND (game_id = ? OR game_name = ?)
+                    ORDER BY created_at DESC
+                    LIMIT 1
+                    """,
+                    (job_id, item["game_id"] or "", item["game_name"] or ""),
+                ).fetchone()
+                if not latest:
+                    continue
+                if target_error and latest["error_code"] != target_error:
+                    continue
+                if retryable_only and not latest["retryable"]:
+                    continue
+                item_ids.append(item["item_id"])
+            if not item_ids:
+                retried = 0
+            else:
+                placeholders = ", ".join("?" for _ in item_ids)
+                cursor = conn.execute(
+                    "UPDATE download_queue_items SET status='pending', updated_at=?, attempt_count=0, next_retry_at=0, locked_by='', locked_at=0 "
+                    f"WHERE item_id IN ({placeholders})",
+                    [now, *item_ids],
+                )
+                retried = cursor.rowcount
+        else:
+            cursor = conn.execute(
+                "UPDATE download_queue_items SET status='pending', updated_at=?, attempt_count=0, next_retry_at=0, locked_by='', locked_at=0 "
+                "WHERE job_id = ? AND status IN ('failed', 'cancelled', 'not_found')",
+                (now, job_id),
+            )
+            retried = cursor.rowcount
         if retried:
             conn.execute(
                 "UPDATE download_jobs SET status=?, completed=0, updated_at=? WHERE job_id = ?",
@@ -1166,6 +1203,24 @@ def get_download_job_detail(job_id: str, item_limit: int = 200, attempt_limit: i
     items = [dict(row) for row in queue_rows]
     retryable_count = sum(1 for attempt in attempts if attempt.get("retryable"))
     last_error = next((attempt for attempt in attempts if attempt.get("error_code") not in {"", "skipped", "dry_run"}), {})
+    part_files = []
+    part_bytes = 0
+    output_folder_value = job["output_folder"] or ""
+    output_folder = Path(output_folder_value) if output_folder_value else None
+    if output_folder and output_folder.is_dir():
+        for part_path in sorted(output_folder.rglob("*.part"))[:50]:
+            try:
+                size = part_path.stat().st_size
+            except OSError:
+                size = 0
+            part_bytes += size
+            part_files.append({"path": str(part_path), "size": size})
+    next_retry_values = [
+        float(item.get("next_retry_at") or 0)
+        for item in items
+        if float(item.get("next_retry_at") or 0) > 0
+    ]
+    now = time.time()
     return {
         "job": dict(job),
         "settings": settings,
@@ -1173,8 +1228,11 @@ def get_download_job_detail(job_id: str, item_limit: int = 200, attempt_limit: i
         "items": items,
         "attempts": attempts,
         "errors": {row["error_code"]: row["count"] for row in error_rows},
+        "parts": {"count": len(part_files), "bytes": part_bytes, "files": part_files},
         "summary": {
             "retryable_recent": retryable_count,
+            "next_retry_at": min(next_retry_values) if next_retry_values else 0,
+            "seconds_since_update": max(0, now - float(job["updated_at"] or now)),
             "last_error_code": last_error.get("error_code") or "",
             "last_error": last_error.get("detail") or "",
             "last_provider": last_error.get("provider") or "",

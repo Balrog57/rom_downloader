@@ -35,6 +35,7 @@ from .local_database import (
 from .mapping_status import build_mapping_status
 from .diagnostics import provider_healthcheck
 from .sources import get_default_sources, resolve_system_mapping
+from .downloads import recover_orphaned_parts
 from .env import PREFERENCES_FILE
 from ..network.cache import clear_listing_cache_file, clear_resolution_cache_file
 from ..network.utils import load_json_file, save_json_file
@@ -110,7 +111,10 @@ function formData(run) {{
 }}
 async function analyzeForm() {{ return apiPost('/api/analyze', formData(false)); }}
 async function createJob(run) {{ return apiPost('/api/job/create', formData(run)); }}
-async function jobAction(path, job_id) {{ return apiPost(path, {{job_id}}); }}
+async function jobAction(path, job_id, extra) {{ return apiPost(path, Object.assign({{job_id}}, extra || {{}})); }}
+async function retryError(job_id, error_code) {{ return jobAction('/api/job/retry', job_id, {{error_code}}); }}
+async function retryRetryable(job_id) {{ return jobAction('/api/job/retry', job_id, {{retryable_only:true}}); }}
+async function cleanupJobParts(job_id) {{ return jobAction('/api/job/cleanup-parts', job_id); }}
 async function clearCaches(source) {{ return apiPost('/api/cache/clear', source ? {{source}} : {{}}); }}
 async function testSources() {{ return apiPost('/api/source/test', {{}}); }}
 setInterval(() => {{
@@ -252,7 +256,9 @@ class _WebHandler(BaseHTTPRequestHandler):
         if path == "/api/job/cancel":
             return self._job_action(cancel_download_job)
         if path == "/api/job/retry":
-            return self._job_action(retry_failed_queue_items, count=True)
+            return self._api_job_retry()
+        if path == "/api/job/cleanup-parts":
+            return self._api_job_cleanup_parts()
         if path == "/api/analyze":
             return self._api_analyze()
         if path == "/api/job/create":
@@ -290,6 +296,34 @@ class _WebHandler(BaseHTTPRequestHandler):
         if count:
             return self._json({"retried": result})
         return self._json({"ok": result})
+
+    def _api_job_retry(self):
+        body = self._json_body()
+        if isinstance(body, tuple):
+            return self._error(body[0], body[1])
+        job_id = body.get("job_id", "")
+        if not job_id:
+            return self._error(400, "missing job_id")
+        retried = retry_failed_queue_items(
+            job_id,
+            error_code=body.get("error_code", "") or "",
+            retryable_only=bool(body.get("retryable_only", False)),
+        )
+        return self._json({"retried": retried})
+
+    def _api_job_cleanup_parts(self):
+        body = self._json_body()
+        if isinstance(body, tuple):
+            return self._error(body[0], body[1])
+        job_id = body.get("job_id", "")
+        if not job_id:
+            return self._error(400, "missing job_id")
+        config = get_job_config(job_id) or {}
+        output_folder = config.get("output_folder", "")
+        if not output_folder:
+            return self._error(404, "job introuvable")
+        removed = recover_orphaned_parts(output_folder)
+        return self._json({"ok": True, "removed": len(removed), "files": removed[:50]})
 
     def _json_body(self, max_length: int = 65536):
         try:
@@ -523,6 +557,8 @@ class _WebHandler(BaseHTTPRequestHandler):
             job_id = html.escape(str(job.get("job_id", "")), quote=True)
             queue_txt = ", ".join(f"{k}={v}" for k, v in sorted((detail.get("queue") or {}).items())) or "vide"
             errors_txt = ", ".join(f"{k}={v}" for k, v in sorted((detail.get("errors") or {}).items())) or "aucune"
+            parts = detail.get("parts") or {}
+            summary = detail.get("summary") or {}
             item_rows = ""
             for item in detail.get("items", [])[:100]:
                 item_rows += (
@@ -550,14 +586,23 @@ class _WebHandler(BaseHTTPRequestHandler):
                 f"<button class=\"secondary\" onclick=\"jobAction('/api/job/pause','{job_id}')\">Pause</button>"
                 f"<button class=\"secondary\" onclick=\"jobAction('/api/job/resume','{job_id}')\">Resume</button>"
                 f"<button class=\"secondary\" onclick=\"jobAction('/api/job/retry','{job_id}')\">Retry</button>"
+                f"<button class=\"secondary\" onclick=\"retryRetryable('{job_id}')\">Retry retryable</button>"
+                f"<button class=\"secondary\" onclick=\"cleanupJobParts('{job_id}')\">Nettoyer .part</button>"
                 f"<button class=\"secondary\" onclick=\"jobAction('/api/job/cancel','{job_id}')\">Cancel</button>"
             )
+            error_actions = ""
+            for error_code in sorted((detail.get("errors") or {}).keys()):
+                code = html.escape(str(error_code), quote=True)
+                error_actions += f"<button class=\"secondary\" onclick=\"retryError('{job_id}','{code}')\">Retry {code}</button>"
             self._html(
                 f"<h1>Job {html.escape(str(job.get('job_id', ''))[:8])}</h1>"
                 f"<p>Statut: {html.escape(str(job.get('status', '')))} - Progression: {job.get('completed', 0)}/{job.get('total', 0)}</p>"
                 f"<p>Dossier: {html.escape(str(job.get('output_folder', '')))}</p>"
-                f"<p>File: {html.escape(queue_txt)}<br>Erreurs: {html.escape(errors_txt)}</p>"
-                f"<div class=\"row\">{actions}</div><pre id=\"api-result\"></pre>"
+                f"<p>File: {html.escape(queue_txt)}<br>Erreurs: {html.escape(errors_txt)}"
+                f"<br>Fragments .part: {parts.get('count', 0)} ({format_bytes_for_web(parts.get('bytes', 0))})"
+                f"<br>Retryable recents: {summary.get('retryable_recent', 0)}"
+                f"<br>Derniere mise a jour: {int(summary.get('seconds_since_update') or 0)}s</p>"
+                f"<div class=\"row\">{actions}{error_actions}</div><pre id=\"api-result\"></pre>"
                 "<h2>Items</h2><table><tr><th>Statut</th><th>Jeu</th><th>Priorite</th><th>Essais</th><th>Lock</th></tr>"
                 f"{item_rows}</table>"
                 "<h2>Tentatives recentes</h2><table><tr><th>Statut</th><th>Jeu</th><th>Provider</th><th>Erreur</th><th>Detail</th></tr>"

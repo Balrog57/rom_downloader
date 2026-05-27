@@ -72,6 +72,7 @@ from src.core import (  # noqa: E402
     cancel_download_job,
     retry_failed_queue_items,
     update_download_job,
+    recover_orphaned_parts,
     QUEUE_TERMINAL_STATUSES,
     reset_local_database,
     apply_config_profile,
@@ -628,6 +629,60 @@ def main() -> None:
         jobs_after = list_download_jobs(path=catalog_root)
         retry_job = next(j for j in jobs_after if j["job_id"] == running_job_id)
         assert_true(retry_job["status"] == "running" and retry_job["completed"] == 0, "retry must reset job to running")
+
+        filtered_job_id = create_download_job(
+            systems[0]["system_id"],
+            [enriched, beta],
+            str(tmp_path / "filtered-downloads"),
+            path=catalog_root,
+        )
+        update_download_queue_item(filtered_job_id, game_id=enriched["game_id"], status="failed", path=catalog_root)
+        update_download_queue_item(filtered_job_id, game_id=beta["game_id"], status="failed", path=catalog_root)
+        record_download_history(
+            {
+                "job_id": filtered_job_id,
+                "game_id": enriched["game_id"],
+                "system_id": systems[0]["system_id"],
+                "game_name": enriched["game_name"],
+                "provider": "ProviderA",
+                "status": "failed",
+                "error_code": "http_429",
+                "error": "HTTP 429",
+                "retryable": True,
+            },
+            path=catalog_root,
+        )
+        record_download_history(
+            {
+                "job_id": filtered_job_id,
+                "game_id": beta["game_id"],
+                "system_id": systems[0]["system_id"],
+                "game_name": beta["game_name"],
+                "provider": "ProviderB",
+                "status": "failed",
+                "error_code": "checksum_mismatch",
+                "error": "MD5 KO",
+                "retryable": False,
+            },
+            path=catalog_root,
+        )
+        retried_filtered = _retry(filtered_job_id, path=catalog_root, error_code="http_429")
+        filtered_items = list_download_queue_items({"job_id": filtered_job_id}, path=catalog_root)
+        assert_true(
+            retried_filtered == 1
+            and next(item for item in filtered_items if item["game_id"] == enriched["game_id"])["status"] == "pending"
+            and next(item for item in filtered_items if item["game_id"] == beta["game_id"])["status"] == "failed",
+            "retry by error code failed",
+        )
+        update_download_queue_item(filtered_job_id, game_id=enriched["game_id"], status="failed", path=catalog_root)
+        retried_retryable = _retry(filtered_job_id, path=catalog_root, retryable_only=True)
+        assert_true(retried_retryable == 1, "retry retryable-only failed")
+        part_folder = tmp_path / "parts"
+        part_folder.mkdir()
+        orphan_part = part_folder / "orphan.bin.part"
+        orphan_part.write_bytes(b"partial")
+        removed_parts = recover_orphaned_parts(str(part_folder))
+        assert_true(len(removed_parts) == 1 and not orphan_part.exists(), "orphan .part cleanup failed")
 
         stored_candidates = record_provider_candidates(
             enriched["game_id"],

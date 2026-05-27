@@ -93,6 +93,10 @@ Exemples:
     parser.add_argument('--queue-status', action='store_true', help='Afficher les derniers jobs de telechargement persistants')
     parser.add_argument('--queue-limit', type=int, default=20, help='Nombre de jobs affiches avec --queue-status')
     parser.add_argument('--queue-details', metavar='JOB_ID', help="Afficher le detail d'un job persistant")
+    parser.add_argument('--retry-error-code', help='Limiter --retry-job a un code erreur precis')
+    parser.add_argument('--retry-retryable-only', action='store_true', help='Limiter --retry-job aux erreurs retryable')
+    parser.add_argument('--cleanup-parts', metavar='DOSSIER', help='Supprimer les fichiers .part orphelins dans un dossier')
+    parser.add_argument('--cleanup-job-parts', metavar='JOB_ID', help="Supprimer les fichiers .part orphelins dans le dossier de sortie d'un job")
     parser.add_argument('--pause-job', metavar='JOB_ID', help='Mettre en pause un job en cours')
     parser.add_argument('--resume-job', metavar='JOB_ID', help='Reprendre un job en pause')
     parser.add_argument('--cancel-job', metavar='JOB_ID', help='Annuler un job')
@@ -222,7 +226,13 @@ Exemples:
         print(f"File: {queue_text}")
         if detail.get("errors"):
             print("Erreurs: " + ", ".join(f"{key}={value}" for key, value in sorted(detail["errors"].items())))
+        parts = detail.get("parts") or {}
+        if parts.get("count"):
+            print(f"Fragments .part: {parts.get('count', 0)} fichier(s), {parts.get('bytes', 0)} octet(s)")
         summary = detail.get("summary") or {}
+        if summary.get("next_retry_at"):
+            print(f"Prochain retry: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(summary['next_retry_at']))}")
+        print(f"Derniere mise a jour: il y a {int(summary.get('seconds_since_update') or 0)}s")
         if summary.get("last_error_code"):
             print(f"Derniere erreur: {summary.get('last_error_code')} [{summary.get('last_provider')}] {summary.get('last_error')}")
         print("Items recents:")
@@ -239,6 +249,24 @@ Exemples:
             code = attempt.get("error_code") or "-"
             provider = attempt.get("provider") or "-"
             print(f"  - {attempt.get('status', ''):<10} {provider:<20} {code:<18} {attempt.get('game_name', '')}")
+        return
+
+    if args.cleanup_parts:
+        from .downloads import recover_orphaned_parts
+        removed = recover_orphaned_parts(args.cleanup_parts)
+        print(f"{len(removed)} fichier(s) .part orphelin(s) supprime(s)")
+        return
+
+    if args.cleanup_job_parts:
+        from .downloads import recover_orphaned_parts
+        from .local_database import get_job_config
+        config = get_job_config(args.cleanup_job_parts)
+        output_folder = config.get("output_folder", "")
+        if not output_folder:
+            print(f"Job introuvable ou dossier absent: {args.cleanup_job_parts}")
+            return
+        removed = recover_orphaned_parts(output_folder)
+        print(f"{len(removed)} fichier(s) .part orphelin(s) supprime(s) pour le job {args.cleanup_job_parts}")
         return
 
     if args.pause_job:
@@ -261,7 +289,11 @@ Exemples:
 
     if args.retry_job:
         from .local_database import retry_failed_queue_items
-        count = retry_failed_queue_items(args.retry_job)
+        count = retry_failed_queue_items(
+            args.retry_job,
+            error_code=getattr(args, "retry_error_code", "") or "",
+            retryable_only=bool(getattr(args, "retry_retryable_only", False)),
+        )
         print(f"{count} item(s) remis en file pour retry")
         if count and args.dat_file and args.rom_folder:
             print("Relance automatique du job...")
