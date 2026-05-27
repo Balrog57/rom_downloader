@@ -45,7 +45,7 @@ from .scanner import (
     move_files_to_tosort,
     scan_local_roms,
 )
-from .local_database import dashboard_stats, system_coverage_data
+from .local_database import dashboard_stats, system_coverage_data, build_source_health_summary
 from .sources import (
     apply_source_policies,
     get_default_sources,
@@ -1197,20 +1197,21 @@ def gui_mode():
                 self._populate_source_system_filter()
 
                 self.sources_tree = ttk.Treeview(frame, style="Catalog.Treeview",
-                                                  columns=("type", "etat", "coverage", "success_rate", "success", "failures", "speed", "quota", "delay", "timeout", "last_ok", "last_fail"),
+                                                  columns=("type", "etat", "score", "coverage", "candidates", "success_rate", "success", "failures", "speed", "last_error", "action", "quota", "delay", "timeout", "last_ok", "last_fail"),
                                                   show="tree headings")
                 for col, label, width in [
                     ("#0", "Provider", 180), ("type", "Type", 100), ("etat", "Etat", 70),
-                    ("coverage", "Couverture", 90), ("success_rate", "Taux", 55),
+                    ("score", "Score", 55), ("coverage", "Couverture", 90), ("candidates", "Candidats", 75), ("success_rate", "Taux", 55),
                     ("success", "Succes", 60), ("failures", "Echecs", 60),
-                    ("speed", "Vitesse", 80), ("quota", "Quota", 60), ("delay", "Delai", 60),
+                    ("speed", "Vitesse", 80), ("last_error", "Erreur", 110), ("action", "Action", 180),
+                    ("quota", "Quota", 60), ("delay", "Delai", 60),
                     ("timeout", "Timeout", 70), ("last_ok", "Dernier OK", 130), ("last_fail", "Dernier echec", 130)
                 ]:
                     self.sources_tree.heading(col, text=label)
                     if col == "#0":
                         self.sources_tree.column("#0", width=width, anchor="w")
                     else:
-                        self.sources_tree.column(col, width=width, anchor="e" if col in ("priority", "success", "failures", "quota", "delay", "success_rate", "coverage") else "w")
+                        self.sources_tree.column(col, width=width, anchor="e" if col in ("priority", "success", "failures", "quota", "delay", "success_rate", "coverage", "candidates", "score") else "w")
                 self.sources_tree.grid(row=2, column=0, sticky="nsew", pady=(18, 0))
                 self.sources_tree.bind("<Double-1>", self._edit_source_policy)
                 actions = tk.Frame(frame, bg=UI_COLOR_BG)
@@ -1320,6 +1321,10 @@ def gui_mode():
                 show_system = system_filter and system_filter != "Tous"
                 metrics = list_provider_metrics()
                 known = {source["name"]: source for source in self.default_sources}
+                health_by_provider = {
+                    row.get("provider", ""): row
+                    for row in build_source_health_summary(self.default_sources)
+                }
                 if show_system:
                     sys_metrics = list_provider_system_metrics(system_filter)
                 else:
@@ -1339,6 +1344,12 @@ def gui_mode():
                     avg_speed = format_bytes(m.get("average_speed", 0)) + "/s" if m.get("average_speed") else ""
                     last_ok = time.strftime("%Y-%m-%d %H:%M", time.localtime(m["last_success_at"])) if m.get("last_success_at") else ""
                     last_fail = time.strftime("%Y-%m-%d %H:%M", time.localtime(m["last_failure_at"])) if m.get("last_failure_at") else ""
+                    health = health_by_provider.get(name, {})
+                    health_status = health.get("status") or ""
+                    score = float(health.get("score") or 0)
+                    candidates = int(health.get("active_candidates") or 0)
+                    last_error = health.get("last_error_code") or ""
+                    action = health.get("recommended_action") or ""
                     policy = self.source_policies.get(name, {})
                     quota_val = policy.get("quota_per_run", "") or source.get("quota_per_run", "")
                     delay_val = policy.get("delay_seconds") if policy.get("delay_seconds") is not None else source.get("delay_seconds", "")
@@ -1358,15 +1369,19 @@ def gui_mode():
                         etat = "CF"
                     elif cb_open:
                         etat = "Bloque"
+                    elif health_status == "degraded":
+                        etat = "Degrade"
+                    elif health_status == "candidate":
+                        etat = "Candidat"
                     elif success_val > 0:
                         etat = "OK"
                     else:
                         etat = "?"
                     prefix = "[x]" if active else "[ ]"
                     self.sources_tree.insert("", "end", iid=name, text=f"{prefix} {name}",
-                        values=(source.get("type", ""), etat, coverage, f"{success_rate:.0f}%" if attempts > 0 else "",
+                        values=(source.get("type", ""), etat, f"{score:.2f}", coverage, candidates, f"{success_rate:.0f}%" if attempts > 0 else "",
                                 success_val, failure_val,
-                                avg_speed, quota_val, delay_val, timeout_val, last_ok, last_fail))
+                                avg_speed, last_error, action, quota_val, delay_val, timeout_val, last_ok, last_fail))
                 self.refresh_cloudflare_status()
 
             def _test_provider_connection(self):

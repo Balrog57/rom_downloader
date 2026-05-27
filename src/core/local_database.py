@@ -1646,6 +1646,8 @@ def list_download_history(filters: dict | None = None, limit: int = 500,
     query = (filters.get("query") or "").strip().lower()
     status = (filters.get("status") or "all").strip().lower()
     system = (filters.get("system_name") or "").strip().lower()
+    error_code = (filters.get("error_code") or "").strip().lower()
+    retryable_filter = filters.get("retryable")
     rows = []
     with open_local_database(path) as conn:
         db_rows = conn.execute(
@@ -1682,6 +1684,10 @@ def list_download_history(filters: dict | None = None, limit: int = 500,
         if status not in {"", "all"} and item["status"].lower() != status:
             continue
         if system and system not in item["system_name"].lower():
+            continue
+        if error_code and item["error_code"].lower() != error_code:
+            continue
+        if retryable_filter is not None and bool(item["retryable"]) != bool(retryable_filter):
             continue
         rows.append(item)
         if limit and len(rows) >= limit:
