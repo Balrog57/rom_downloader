@@ -871,6 +871,8 @@ def main() -> None:
             len(failed_history) == 1 and failed_history[0]["error_code"] == "cloudflare_challenge" and failed_history[0]["retryable"],
             "download history error code failed",
         )
+        retryable_history = list_download_history({"status": "failed", "retryable": True, "error_code": "cloudflare_challenge"}, path=history_file)
+        assert_true(len(retryable_history) == 1 and retryable_history[0]["game_name"].startswith("Beta"), "download history retryable export filter failed")
         metrics = list_provider_metrics(path=history_file)
         assert_true(
             metrics["LoLROMs"]["attempts"] == 1 and metrics["LoLROMs"]["failed"] == 1,

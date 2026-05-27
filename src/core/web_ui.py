@@ -223,7 +223,20 @@ class _WebHandler(BaseHTTPRequestHandler):
         if path == "/api/history":
             limit = int(self._query().get("limit", ["200"])[0])
             q = self._query().get("q", [""])[0]
-            return self._json(list_download_history({"query": q}, limit=limit))
+            status = self._query().get("status", ["all"])[0]
+            error_code = self._query().get("error_code", [""])[0]
+            retryable_raw = self._query().get("retryable", [""])[0].strip().lower()
+            retryable = None
+            if retryable_raw in {"1", "true", "yes", "oui"}:
+                retryable = True
+            elif retryable_raw in {"0", "false", "no", "non"}:
+                retryable = False
+            return self._json(list_download_history({
+                "query": q,
+                "status": status,
+                "error_code": error_code,
+                "retryable": retryable,
+            }, limit=limit))
         if path == "/api/metrics":
             return self._json(list_provider_metrics())
         if path == "/api/source/health":
@@ -617,7 +630,14 @@ class _WebHandler(BaseHTTPRequestHandler):
                 provider = html.escape(str(item.get('provider', '')))
                 status = html.escape(str(item.get('status', '')))
                 rows += f"<tr><td>{date}</td><td>{game_name}</td><td>{provider}</td><td>{status}</td></tr>"
-            self._html(f"<h1>Historique</h1><table><tr><th>Date</th><th>Jeu</th><th>Provider</th><th>Statut</th></tr>{rows}</table>")
+            self._html(
+                "<h1>Historique</h1>"
+                "<div class=\"row\">"
+                "<a class=\"badge badge-fail\" href=\"/api/history?status=failed&limit=500\">Export echecs JSON</a>"
+                "<a class=\"badge badge-ok\" href=\"/api/history?status=failed&retryable=1&limit=500\">Export retryable JSON</a>"
+                "</div>"
+                f"<table><tr><th>Date</th><th>Jeu</th><th>Provider</th><th>Statut</th></tr>{rows}</table>"
+            )
         elif path == "/sources":
             health_rows = build_source_health_summary(get_default_sources())
             rows = ""

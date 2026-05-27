@@ -56,6 +56,8 @@ def main() -> None:
             assert_true("path" in status, "status API shape failed")
             source_health = _get(base + "/api/source/health")
             assert_true(isinstance(source_health, list), "source health API shape failed")
+            retryable_history = _get(base + "/api/history?status=failed&retryable=1")
+            assert_true(isinstance(retryable_history, list), "history retryable API shape failed")
             analysis = _post(base + "/api/analyze", {"dat_path": str(dat_path), "rom_folder": str(rom_dir)})
             assert_true(analysis.get("missing_games") == 1, "analyze API missing count failed")
             created = _post(base + "/api/job/create", {"dat_path": str(dat_path), "rom_folder": str(rom_dir), "output_folder": str(rom_dir)})

@@ -60,7 +60,8 @@ Pages utiles:
 - `Accueil`: statistiques et formulaire analyse/job.
 - `Systemes`: navigation catalogue.
 - `Jobs`: suivi, detail de file, tentatives recentes, pause, reprise, retry et annulation.
-- `Sources`: etat SQLite, couverture candidats, dernier diagnostic, test source et nettoyage cache.
+- `Sources`: etat SQLite, score provider, couverture candidats, dernier diagnostic, test source et nettoyage cache.
+- `Historique`: exports JSON des echecs et des echecs retryable pour preparer une relance ciblee.
 - `Historique`: tentatives passees.
 
 Les endpoints `/api/*` renvoient du JSON et utilisent le polling, pas de WebSocket.
