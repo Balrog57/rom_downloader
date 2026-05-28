@@ -2,8 +2,15 @@
 
 Cette roadmap transforme les objectifs produit en lots suivables. Elle garde deux limites volontaires:
 
-- Myrient n'est pas une source a gerer directement. Minerva torrent et archive.org restent les derniers recours.
+- Minerva torrent et archive.org restent les derniers recours; l'ancien provider HTTP Myrient n'est pas expose ni developpe.
 - ROM Downloader ne choisit pas les variantes 1G1R. Pour un set 1G1R, utilisez un DAT Retool/1G1R deja filtre.
+
+## Livre en v0.1.5
+
+- Alignement produit: Minerva torrent et archive.org comme derniers recours, sans provider HTTP obsolete.
+- Documentation et `goal.md` synchronises sur la contrainte 1G1R externe via DAT Retool/1G1R deja filtre.
+- Tests de garde contre la reintroduction d'un provider obsolete ou d'un profil 1G1R interne.
+- Nettoyage progressif des libelles internes de source personnalisee, avec alias de compatibilite.
 
 ## Livre en v0.1.4
 
@@ -41,7 +48,7 @@ Cette roadmap transforme les objectifs produit en lots suivables. Elle garde deu
 
 ## Hors scope volontaire
 
-- Provider Myrient HTTP.
-- Selection 1G1R interne par region/langue.
+- Provider HTTP obsolete remplace par Minerva torrent.
+- Selection 1G1R interne par region/langue; le DAT fourni reste la source de verite.
 - Scraping reseau obligatoire dans les tests CI.
 - Transformation en gestionnaire ROM complet type RomVault/clrmamepro.

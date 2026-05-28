@@ -117,6 +117,7 @@ def attempt_download_from_resolved_provider(game_info: dict, output_folder: str,
                                             progress_callback=None, log_func=print,
                                             progress_detail_callback=None) -> tuple[bool, str]:
     """Telecharge une resolution provider deja choisie, puis valide son MD5 DAT."""
+    custom_source_url = myrient_url
     source = game_info.get('source', 'unknown')
     filename = game_info.get('download_filename', game_info.get('game_name', ''))
     dest_path = os.path.join(output_folder, filename)
@@ -348,7 +349,7 @@ def attempt_download_from_resolved_provider(game_info: dict, output_folder: str,
 
     else:
         source_info = next((item for item in sources if item['name'] == source), None)
-        base_url = source_info['base_url'] if source_info else myrient_url
+        base_url = source_info['base_url'] if source_info else custom_source_url
         if base_url:
             download_url = f"{base_url.rstrip('/')}/{quote(filename)}"
             log_func(f"  URL: {download_url[:80]}...")
@@ -376,6 +377,7 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
                                    source_usage_lock=None, progress_detail_callback=None,
                                    circuit_breaker=None) -> tuple[str, dict]:
     """Essaie les providers un par un jusqu'a obtenir un fichier valide MD5 DAT."""
+    custom_source_url = myrient_url
     original_game = clean_download_resolution(game_info)
     original_game.pop('provider_candidates', None)
     provider_candidates = []
@@ -539,7 +541,7 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
                 output_folder,
                 sources,
                 session,
-                myrient_url,
+                custom_source_url,
                 progress_callback,
                 log_func,
                 progress_detail_callback
@@ -684,6 +686,7 @@ def download_missing_games_sequentially(
     Traite les jeux un par un: resolution DDL, telechargement, validation MD5,
     fallback provider, puis passage au jeu suivant.
     """
+    custom_source_url = myrient_url
     from . import _facade
     resolved_items = []
     downloaded_items = []
@@ -811,7 +814,7 @@ def download_missing_games_sequentially(
                 system_name,
                 dat_profile,
                 output_folder,
-                myrient_url,
+                custom_source_url,
                 dry_run,
                 None,
                 safe_log,
@@ -991,7 +994,7 @@ def download_missing_games_sequentially(
                 system_name,
                 dat_profile,
                 output_folder,
-                myrient_url,
+                custom_source_url,
                 dry_run,
                 None,
                 log_func,

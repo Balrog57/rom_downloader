@@ -4,7 +4,7 @@ Ce guide couvre le parcours recommande pour utiliser ROM Downloader sans surpris
 
 ## Premier lancement avec l'EXE
 
-1. Telechargez `ROMDownloader.exe` depuis la release GitHub `v0.1.4`.
+1. Telechargez `ROMDownloader.exe` depuis la release GitHub `v0.1.5`.
 2. Placez-le dans un dossier dedie, par exemple `D:\Apps\ROMDownloader`.
 3. Lancez l'exe.
 4. Chargez un DAT No-Intro, Redump ou Retool.
@@ -114,5 +114,5 @@ Minerva utilise `aria2c` en priorite pour les torrents. Installez-le via Winget/
 **CHD**  
 Les CHD sont detectes et peuvent etre valides par hash/taille si le DAT contient les informations utiles. ROM Downloader ne convertit pas les CHD et ne reconstruit pas les sets arcade split/merged complets.
 
-**Myrient**  
-Myrient reste hors scope comme provider expose. Minerva torrent et archive.org restent les derniers recours.
+**Minerva et derniers recours**  
+Minerva torrent et archive.org restent les derniers recours. L'ancien provider HTTP Myrient n'est pas expose dans l'application.

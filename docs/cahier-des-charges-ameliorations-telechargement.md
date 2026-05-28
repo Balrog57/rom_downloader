@@ -53,6 +53,8 @@ Sources consultees:
 4. La DB devient la source de verite locale: plus de dependance a des caches JSON pour les decisions critiques.
 5. Les providers doivent etre evalues par preuve: lien resolu, fichier telecharge, hash valide, vitesse, erreurs, quota et derniere reussite.
 6. Les sources Cloudflare doivent etre lentes mais fiables: bascule controlee vers navigateur, delai adaptatif, circuit breaker et reprise.
+7. Minerva torrent et archive.org sont les seuls derniers recours generiques; l'ancien provider HTTP Myrient n'est pas expose.
+8. Le logiciel ne choisit pas les variantes 1G1R: regions, langues et exclusions doivent etre determinees par le DAT Retool/1G1R fourni.
 
 ## 5. Interface cible sans images
 

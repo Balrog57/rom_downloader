@@ -59,6 +59,7 @@ def _extract_session_metrics(result: dict, system_name: str = "") -> dict:
 def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_run, limit, move_to_tosort=False, custom_sources=None):
     """Run the download process."""
     from . import _facade
+    custom_source_url = myrient_url
     session = requests.Session()
     session.headers.update({
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
@@ -76,8 +77,8 @@ def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_ru
     print(f"DAT detecte : {describe_dat_profile(dat_profile)}")
 
     sources = [source.copy() for source in (custom_sources if custom_sources else get_default_sources())]
-    if myrient_url and myrient_url not in [s['base_url'] for s in sources]:
-        sources.insert(0, build_custom_source(myrient_url))
+    if custom_source_url and custom_source_url not in [s['base_url'] for s in sources]:
+        sources.insert(0, build_custom_source(custom_source_url))
     from ._facade import load_preferences
     sources = apply_source_policies(sources, load_preferences().get('source_policies', {}))
     sources = prepare_sources_for_profile(sources, dat_profile)
@@ -89,8 +90,8 @@ def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_ru
     else:
         sources = custom_sources if custom_sources else get_default_sources().copy()
         
-        if myrient_url and myrient_url not in [s['base_url'] for s in sources]:
-            sources.insert(0, build_custom_source(myrient_url))
+        if custom_source_url and custom_source_url not in [s['base_url'] for s in sources]:
+            sources.insert(0, build_custom_source(custom_source_url))
         
         to_download, not_available = search_all_sources(missing_games, sources, session, system_name)
 
@@ -178,7 +179,7 @@ def run_download_legacy(dat_file, rom_folder, myrient_url, output_folder, dry_ru
 
                 else:
                     source_info = next((s for s in sources if s['name'] == source), None)
-                    base_url = source_info['base_url'] if source_info else myrient_url
+                    base_url = source_info['base_url'] if source_info else custom_source_url
                     download_url = f"{base_url.rstrip('/')}/{quote(filename)}"
                     print(f"  URL: {download_url[:80]}...")
                     success = download_file(download_url, dest_path, session)
@@ -226,6 +227,7 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
                  archive_mode: str = "none"):
     """Run the download process with archive.org as the final fallback."""
     from . import _facade
+    custom_source_url = myrient_url
     if refresh_resolution_cache:
         _facade.clear_resolution_cache()
         _facade.clear_listing_cache()
@@ -260,8 +262,8 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
         'skipped': 0,
     }
     sources = [source.copy() for source in (custom_sources if custom_sources else get_default_sources())]
-    if myrient_url and myrient_url not in [s['base_url'] for s in sources]:
-        sources.insert(0, build_custom_source(myrient_url))
+    if custom_source_url and custom_source_url not in [s['base_url'] for s in sources]:
+        sources.insert(0, build_custom_source(custom_source_url))
     from ._facade import load_preferences
     _prefs = load_preferences()
     _policies = _prefs.get('source_policies', {})
@@ -284,8 +286,8 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
     else:
         sources = [source.copy() for source in (custom_sources if custom_sources else get_default_sources())]
 
-        if myrient_url and myrient_url not in [s['base_url'] for s in sources]:
-            sources.insert(0, build_custom_source(myrient_url))
+        if custom_source_url and custom_source_url not in [s['base_url'] for s in sources]:
+            sources.insert(0, build_custom_source(custom_source_url))
 
         sources = apply_source_policies(sources, _policies)
         sources = prepare_sources_for_profile(sources, dat_profile, prefer_1fichier=prefer_1fichier)
@@ -303,7 +305,7 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
             system_name,
             dat_profile,
             output_folder,
-            myrient_url,
+            custom_source_url,
             dry_run,
             limit,
             None,
@@ -352,7 +354,7 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
                     system_name,
                     dat_profile,
                     output_folder,
-                    myrient_url,
+                    custom_source_url,
                     dry_run,
                     None,
                     print
@@ -444,7 +446,7 @@ def run_download(dat_file, rom_folder, myrient_url, output_folder, dry_run, limi
         'system_name': system_name,
         'dat_profile': describe_dat_profile(dat_profile),
         'output_folder': output_folder,
-        'source_url': myrient_url,
+        'source_url': custom_source_url,
         'dry_run': bool(dry_run),
         'active_sources': report_active_sources,
         'total_dat_games': len(dat_games),

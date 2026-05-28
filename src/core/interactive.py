@@ -36,7 +36,7 @@ def interactive_mode():
 
     dat_file = get_input("Chemin vers le fichier DAT: ")
     rom_folder = get_input("Chemin vers le dossier des ROMs: ")
-    myrient_url = ''
+    custom_source_url = ''
     print()
     
     tosort_input = get_input("Deplacer les ROMs non presentes dans le DAT vers ToSort ? (o/n): ")
@@ -53,7 +53,7 @@ def interactive_mode():
         return
 
     from .pipeline import run_download
-    run_download(dat_file, rom_folder, myrient_url, rom_folder, False, None, move_to_tosort, clean_torrentzip)
+    run_download(dat_file, rom_folder, custom_source_url, rom_folder, False, None, move_to_tosort, clean_torrentzip)
 
 
 __all__ = [

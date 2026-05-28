@@ -1236,13 +1236,13 @@ def resolve_retrogamesets_game(game_info: dict, system_slug: str, session: reque
     return None
 
 
-def list_myrient_directory(myrient_url: str, session: requests.Session) -> set:
-    """List all files in a Myrient directory."""
-    print(f"Fetching Myrient directory listing: {myrient_url}")
+def list_source_directory(source_url: str, session: requests.Session, source_name: str = 'Source Custom') -> set:
+    """Liste les fichiers ROM d'un repertoire HTTP simple."""
+    print(f"Fetching {source_name} directory listing: {source_url}")
 
     files = set()
     try:
-        response = session.get(myrient_url, timeout=60)
+        response = session.get(source_url, timeout=60)
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, 'html.parser')
 
@@ -1263,25 +1263,25 @@ def list_myrient_directory(myrient_url: str, session: requests.Session) -> set:
                     if decoded.lower().endswith(ROM_EXTENSIONS):
                         files.add(decoded)
 
-        print(f"Found {len(files)} files in Myrient directory")
+        print(f"Found {len(files)} files in {source_name} directory")
     except Exception as e:
-        print(f"Error fetching Myrient directory: {e}")
+        print(f"Error fetching {source_name} directory: {e}")
 
     return files
 
 
-def match_myrient_files(missing_games: list, myrient_files: set, source_name: str = 'Myrient') -> tuple:
-    """Match missing games with files available on a Myrient-like source."""
+def match_source_files(missing_games: list, source_files: set, source_name: str = 'Source Custom') -> tuple:
+    """Associe les jeux manquants a des fichiers disponibles sur une source simple."""
     print(f"Matching missing games with {source_name} files...")
 
-    myrient_lookup = {}
-    for f in myrient_files:
+    source_lookup = {}
+    for f in source_files:
         name_no_ext = f
         for ext in ROM_EXTENSIONS:
             if f.lower().endswith(ext):
                 name_no_ext = f[:-len(ext)]
                 break
-        myrient_lookup[name_no_ext.lower()] = f
+        source_lookup[name_no_ext.lower()] = f
 
     to_download = []
     not_available = []
@@ -1291,20 +1291,20 @@ def match_myrient_files(missing_games: list, myrient_files: set, source_name: st
         for rom_info in game_info.get('roms', []):
             rom_name = rom_info.get('name', '')
             rom_name_no_ext = strip_rom_extension(rom_name)
-            if rom_name_no_ext.lower() in myrient_lookup:
-                matched_file = myrient_lookup[rom_name_no_ext.lower()]
+            if rom_name_no_ext.lower() in source_lookup:
+                matched_file = source_lookup[rom_name_no_ext.lower()]
                 break
 
         if not matched_file:
             primary_rom = game_info.get('primary_rom', '')
             primary_rom_no_ext = strip_rom_extension(primary_rom)
-            if primary_rom_no_ext.lower() in myrient_lookup:
-                matched_file = myrient_lookup[primary_rom_no_ext.lower()]
+            if primary_rom_no_ext.lower() in source_lookup:
+                matched_file = source_lookup[primary_rom_no_ext.lower()]
 
         if not matched_file:
             game_name_normalized = game_name.lower()
-            if game_name_normalized in myrient_lookup:
-                matched_file = myrient_lookup[game_name_normalized]
+            if game_name_normalized in source_lookup:
+                matched_file = source_lookup[game_name_normalized]
 
         if matched_file:
             game_info['download_filename'] = matched_file
@@ -1318,6 +1318,16 @@ def match_myrient_files(missing_games: list, myrient_files: set, source_name: st
         print(f"WARNING: {len(not_available)} games NOT found on {source_name}!")
 
     return to_download, not_available
+
+
+def list_myrient_directory(source_url: str, session: requests.Session) -> set:
+    """Alias de compatibilite: utiliser list_source_directory."""
+    return list_source_directory(source_url, session, source_name='Source Custom')
+
+
+def match_myrient_files(missing_games: list, source_files: set, source_name: str = 'Source Custom') -> tuple:
+    """Alias de compatibilite: utiliser match_source_files."""
+    return match_source_files(missing_games, source_files, source_name=source_name)
 
 
 def search_archive_org_for_games(not_available: list) -> tuple:
@@ -1961,6 +1971,8 @@ __all__ = [
     'RETRO_GAME_SETS_CACHE_DIR',
     'load_retrogamesets_database',
     'resolve_retrogamesets_game',
+    'list_source_directory',
+    'match_source_files',
     'list_myrient_directory',
     'match_myrient_files',
     'LOLROMS_SESSION',

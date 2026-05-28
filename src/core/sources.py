@@ -2264,7 +2264,7 @@ def provider_has_generic_fallback(system_name: str, provider: str,
 
 
 def build_custom_source(source_url: str) -> dict:
-    """Detecte et construit une source personnalisee Minerva ou legacy."""
+    """Detecte et construit une source personnalisee Minerva ou HTTP simple."""
     normalized_url = (source_url or '').strip()
     lower_url = normalized_url.lower()
 

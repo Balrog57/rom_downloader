@@ -241,6 +241,7 @@ def download_single_game(
         - 'md5_message': message de verification MD5
         - 'extract_result': resultat de l'extraction TorrentZip (ou None)
     """
+    custom_source_url = myrient_url
     game_name = game_info.get('game_name', 'Jeu inconnu')
     result = {
         'status': 'not_found',
@@ -305,7 +306,7 @@ def download_single_game(
         system_name,
         dat_profile,
         output_folder,
-        myrient_url,
+        custom_source_url,
         dry_run,
         progress_callback,
         log_func,

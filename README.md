@@ -4,7 +4,7 @@
 
 Audit, complete et verifie une collection ROMs a partir de DAT No-Intro, Redump ou Retool, avec sources multiples, reprise de telechargement, validation hash/taille, rapports exportables (TXT/JSON/CSV/HTML), scoring provider par systeme et interface Windows portable.
 
-Version developpement: `0.1.4` - Derniere release stable: [`v0.1.4`](https://github.com/Balrog57/rom_downloader/releases/tag/v0.1.4)
+Version developpement: `0.1.5` - Derniere release stable: [`v0.1.5`](https://github.com/Balrog57/rom_downloader/releases/tag/v0.1.5)
 
 > **Avertissement**: ROM Downloader est un outil de gestion de collection. Il ne fournit ni n'heberge de fichiers ROMs. Voir [DISCLAIMER.md](DISCLAIMER.md).
 
@@ -270,7 +270,7 @@ ROM Downloader ne fournit pas de profil 1G1R interne: utilisez directement un DA
 
 ## Roadmap
 
-La roadmap publique est maintenue dans [docs/ROADMAP.md](docs/ROADMAP.md). Elle liste les priorites court/moyen/long terme et les choix hors scope, notamment l'absence de provider Myrient HTTP et de selection 1G1R interne.
+La roadmap publique est maintenue dans [docs/ROADMAP.md](docs/ROADMAP.md). Elle liste les priorites court/moyen/long terme et les choix hors scope: Minerva torrent et archive.org restent les derniers recours, et la selection 1G1R se fait uniquement via un DAT deja filtre.
 
 ## FAQ erreurs courantes
 
