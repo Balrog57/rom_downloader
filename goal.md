@@ -14,6 +14,8 @@ Déjà en place dans le dépôt actuel :
 
 \* guide utilisateur, captures, roadmap publique, licence, disclaimer et templates d’issues ;
 
+\* description GitHub et topics publics configurés pour rendre le dépôt trouvable ;
+
 \* rapports TXT/JSON/CSV/HTML, rapport HTML autonome, FixDAT et aides frontend ;
 
 \* modes de sortie `--output-mode`, `--archive-mode`, `--rebuild-tosort`, compatibilité TorrentZip et helpers `missing.txt` / `gamelist.xml` ;
@@ -22,7 +24,7 @@ Déjà en place dans le dépôt actuel :
 
 \* queue SQLite, tentatives de téléchargement, candidats providers, métriques par système, santé sources et circuit-breaker persistant ;
 
-\* CI Windows, release EXE, checksum SHA256, Dependabot, CodeQL et tests autonomes sans pytest.
+\* CI Windows, release EXE, checksum SHA256, Dependabot, CodeQL, script de release couvrant aussi docs/goal et tests autonomes sans pytest.
 
 Contraintes actées :
 
@@ -779,7 +781,7 @@ Améliorations recommandées :
 
 \* release notes claires ;
 
-\* vérifier que `requirements-lock.txt` est réellement utilisé au build ;
+\* vérifier que `requirements-lock.txt` est réellement utilisé au build et inclus dans le script de release ;
 
 \* éviter les dépendances non épinglées dans le build release.
 
@@ -899,7 +901,7 @@ RomVault a une approche roadmap/feature requests visible et documentée, ce qui 
 
 
 
-1\. Description README, positionnement et version : alignés en v0.1.5, topics GitHub à vérifier côté dépôt distant.
+1\. Description README, positionnement, version et topics GitHub : alignés en v0.1.5.
 
 2\. Captures, guide premier lancement et FAQ : livré, à maintenir à chaque évolution GUI/Web UI.
 

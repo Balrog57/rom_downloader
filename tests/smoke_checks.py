@@ -60,6 +60,11 @@ def main() -> None:
         if "1g1r" in profile_key.lower() or "1g1r" in label:
             raise SystemExit(f"internal 1G1R profile exposed: {profile_key}")
 
+    release_script = _read_text("release.ps1").lower()
+    for required_path in ('"docs"', '"goal.md"', '"requirements-lock.txt"'):
+        if required_path not in release_script:
+            raise SystemExit(f"release.ps1 does not stage {required_path}")
+
     if not Path("main.py").exists():
         raise SystemExit("main.py missing")
 

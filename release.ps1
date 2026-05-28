@@ -28,7 +28,24 @@ python main.py --version
 python main.py --sources
 python main.py --diagnose
 
-git add VERSION README.md .gitignore install.ps1 release.ps1 ROMDownloader.spec .github src tests
+$releasePaths = @(
+    "VERSION",
+    "README.md",
+    "LICENSE",
+    "DISCLAIMER.md",
+    ".gitignore",
+    "install.ps1",
+    "release.ps1",
+    "ROMDownloader.spec",
+    "requirements.txt",
+    "requirements-lock.txt",
+    ".github",
+    "docs",
+    "src",
+    "tests",
+    "goal.md"
+) | Where-Object { Test-Path $_ }
+git add -- $releasePaths
 if (git diff --cached --quiet) {
     Write-Host "Aucune modification de release a committer pour $Version"
 } else {
