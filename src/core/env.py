@@ -60,6 +60,52 @@ def load_env_file(file_path: str = '.env'):
 
 load_env_file(APP_ROOT / '.env')
 
+
+def validate_env() -> dict:
+    """Valide les variables d'environnement et retourne un resume des cles connues.
+    
+    Retourne un dict avec:
+      - present: cles configurees avec leur statut
+      - missing_optional: cles absentes mais non critiques
+      - warnings: avertissements
+    """
+    example_keys = {
+        "ONE_FICHIER_API_KEY": "optionnel (1fichier)",
+        "ALLDEBRID_API_KEY": "optionnel (AllDebrid)",
+        "REALDEBRID_API_KEY": "optionnel (RealDebrid)",
+        "ARCHIVE_ORG_USERNAME": "optionnel (archive.org)",
+        "ARCHIVE_ORG_PASSWORD": "optionnel (archive.org)",
+        "LOLROMS_COOKIE": "optionnel (LoLROMs Cloudflare cookie)",
+        "LOLROMS_USER_AGENT": "optionnel (LoLROMs UA)",
+        "LOLROMS_BROWSER_HEADLESS": "optionnel (LoLROMs browser)",
+        "LOLROMS_BROWSER_MODE": "optionnel (LoLROMs browser mode)",
+        "LOLROMS_BROWSER_CHANNEL": "optionnel (LoLROMs browser channel)",
+        "LOLROMS_BROWSER_PROFILE": "optionnel (LoLROMs browser profile)",
+        "LOLROMS_BROWSER_DOWNLOAD_ATTEMPTS": "optionnel (LoLROMs browser attempts)",
+        "LIBTORRENT_DLL_DIR": "optionnel (libtorrent DLLs)",
+    }
+    present = {}
+    missing_optional = []
+    
+    for key, description in example_keys.items():
+        value = os.environ.get(key, "").strip()
+        if value:
+            present[key] = description
+        else:
+            missing_optional.append(key)
+    
+    warnings = []
+    if os.environ.get("ONE_FICHIER_API_KEY", "").strip() and not os.environ.get("ALLDEBRID_API_KEY", "").strip():
+        warnings.append("1fichier configure mais AllDebrid absent (recommandé pour 1fichier)")
+    if os.environ.get("ARCHIVE_ORG_USERNAME", "").strip() and not os.environ.get("ARCHIVE_ORG_PASSWORD", "").strip():
+        warnings.append("archive.org username present mais mot de passe absent")
+    
+    return {
+        "present": present,
+        "missing_optional": missing_optional,
+        "warnings": warnings,
+    }
+
 __all__ = [
     'APP_ROOT',
     'RESOURCE_ROOT',

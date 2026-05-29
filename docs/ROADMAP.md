@@ -27,7 +27,7 @@ Cette roadmap transforme les objectifs produit en lots suivables. Elle garde deu
 - Stabiliser les rapports TXT/JSON/CSV/HTML et conserver leur schema JSON.
 - Renforcer le mode audit/dry-run comme chemin par defaut pour les nouveaux utilisateurs.
 - Exposer plus clairement les erreurs reseau: Cloudflare, HTML inattendu, quota, 403, 404, hash KO.
-- Garder les tests autonomes sans pytest: compile-check, smoke, core helpers, download single, coverage DAT, output helpers, Web UI.
+- Garder les tests autonomes sans pytest: compile-check, smoke, core helpers, download single, coverage DAT, output helpers, Web UI, provider checks.
 
 ## Moyen terme
 
@@ -37,14 +37,22 @@ Cette roadmap transforme les objectifs produit en lots suivables. Elle garde deu
 - Ajouter des exports pratiques pour les workflows RomVault/clrmamepro: FixDAT, rapports filtrables, listes d'echecs.
 - Completer le tableau de sante des sources dans la GUI et la Web UI locale avec plus d'actions par provider.
 - Ajouter des variantes plus fines aux profils de configuration: debutant, rapide, archive propre sont disponibles en GUI et CLI.
+- Capture HTML brute dans `DownloadNetworkError` pour diagnostic Cloudflare.
+- Mapping LaunchBox: 95+ entrees de systemes.
+- Tests unitaires provider: 97 tests sur les fonctions pures (parsing, normalisation, matching).
+- Thread-safety des metriques providers.
+- Validation `.env` au demarrage.
+- Wiring des callbacks resolve/download dans `ProviderAdapter`.
+- chdman verify pour validation CHD.
+- Logging structure avec fichier `rom_downloader.log`.
 
 ## Long terme
 
 - Support CHD avance et cas disque au-dela de la validation hash/taille.
 - Merge arcade complet: split, merged, non-merged et cas multi-ROM/multi-disque complexes.
 - Rebuilder `ToSort` plus riche sans devenir un clone complet de RomVault.
-- Compatibilite frontend plus complete: BIOS, CHD, gamelist enrichi.
-- API/Web UI locale plus riche: progression temps reel type SSE/WebSocket si necessaire.
+- Compatibilite frontend plus complete: BIOS, CHD, gamelist enrichi (BIOS places dans `bios/` pour Batocera/RetroBat/ES-DE).
+- Web UI locale plus riche: SSE pour progression temps reel, dashboard auto-refresh.
 
 ## Hors scope volontaire
 

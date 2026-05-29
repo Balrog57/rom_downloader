@@ -136,11 +136,32 @@ def cleanup_failed_download_outputs(dest_path: str, folder: str, before_snapshot
         cleanup_invalid_download(candidate)
 
 
+def _try_chdman_verify(file_path: Path) -> tuple[bool, str]:
+    """Tente une validation CHD via chdman verify si l'outil est dans le PATH."""
+    import subprocess
+    try:
+        result = subprocess.run(
+            ["chdman", "verify", "-i", str(file_path)],
+            capture_output=True, text=True, timeout=120,
+        )
+        if result.returncode == 0:
+            return True, "CHD OK (chdman verify)"
+        msg = result.stderr.strip() or result.stdout.strip() or f"chdman exit code {result.returncode}"
+        return False, f"CHD KO (chdman: {msg[:200]})"
+    except FileNotFoundError:
+        return False, "chdman introuvable dans le PATH"
+    except subprocess.TimeoutExpired:
+        return False, "chdman verify timeout (120s)"
+    except Exception as exc:
+        return False, f"chdman verify erreur: {exc}"
+
+
 def verify_downloaded_md5(game_info: dict, downloaded_path: str) -> tuple[bool, str]:
     """
     Verifie le MD5 du fichier telecharge contre le DAT.
     Pour un ZIP, on verifie les entrees internes, car les DAT No-Intro
     reference souvent la ROM contenue plutot que le conteneur ZIP.
+    Pour un CHD, utilise chdman verify si disponible.
     """
     expected_md5 = expected_game_md5_values(game_info)
     expected_sizes = expected_game_sizes(game_info)
@@ -152,6 +173,17 @@ def verify_downloaded_md5(game_info: dict, downloaded_path: str) -> tuple[bool, 
 
     file_path = Path(downloaded_path)
     suffix = file_path.suffix.lower()
+
+    if suffix == '.chd':
+        ok, msg = _try_chdman_verify(file_path)
+        if ok:
+            return True, msg
+        if expected_sizes:
+            actual_size = file_path.stat().st_size
+            if actual_size in expected_sizes:
+                return True, f"Taille DAT OK: {format_bytes(actual_size)} (chdman indisp. ou KO)"
+            return False, f"Taille DAT KO: {format_bytes(actual_size)} != {', '.join(format_bytes(s) for s in sorted(expected_sizes))}"
+        return False, msg
 
     if suffix in {'.zip', '.7z', '.rar'}:
         try:

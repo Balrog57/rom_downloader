@@ -16,6 +16,33 @@ if ($Version -notmatch '^\d+\.\d+\.\d+([-.][0-9A-Za-z.-]+)?$') {
 
 Set-Content -Path VERSION -Value $Version -Encoding ASCII
 
+$changelog = "CHANGELOG.md"
+$prevTag = git describe --tags --abbrev=0 --match "v*" 2>$null
+if ($prevTag) {
+    $commits = git log "${prevTag}..HEAD" --pretty=format:"- %s" --no-merges 2>$null
+} else {
+    $commits = git log --pretty=format:"- %s" --no-merges 2>$null
+}
+$entry = @"
+## v$Version ($(Get-Date -Format 'yyyy-MM-dd'))
+
+$commits
+
+"@
+if (Test-Path $changelog) {
+    $existing = Get-Content $changelog -Raw -Encoding UTF8
+    $titleMatch = [regex]::Match($existing, '^# Changelog\s*\n\s*')
+    if ($titleMatch.Success) {
+        $afterTitle = $existing.Substring($titleMatch.Index + $titleMatch.Length)
+        Set-Content -Path $changelog -Value ("# Changelog`n`n" + $entry + $afterTitle) -Encoding UTF8 -NoNewline
+    } else {
+        Set-Content -Path $changelog -Value ("# Changelog`n`n" + $entry + $existing) -Encoding UTF8 -NoNewline
+    }
+} else {
+    Set-Content -Path $changelog -Value ("# Changelog`n`n" + $entry) -Encoding UTF8 -NoNewline
+}
+Write-Host "CHANGELOG.md mis a jour pour v$Version"
+
 $files = @("main.py") + (Get-ChildItem src,tests -Recurse -Filter *.py | ForEach-Object { $_.FullName })
 python -m py_compile @files
 python tests\smoke_checks.py
@@ -30,6 +57,7 @@ python main.py --diagnose
 
 $releasePaths = @(
     "VERSION",
+    "CHANGELOG.md",
     "README.md",
     "LICENSE",
     "DISCLAIMER.md",

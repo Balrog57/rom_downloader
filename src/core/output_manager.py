@@ -21,8 +21,13 @@ def _target_path(item: dict, output_folder: str, system_name: str = "",
                  output_mode: str = "flat", frontend: str | None = None) -> Path:
     filename = _safe_name(item.get("download_filename") or item.get("primary_rom") or item.get("game_name"))
     root = Path(output_folder)
+    is_bios = str(item.get("isbios") or "").lower() in {"yes", "true", "1"}
+    is_chd = (
+        (item.get("download_filename") or item.get("primary_rom") or "").lower().endswith(".chd")
+        or any((r.get("name") or "").lower().endswith(".chd") for r in (item.get("roms") or []))
+    )
     if frontend:
-        return Path(build_frontend_output_path(system_name, filename, output_folder, frontend))
+        return Path(build_frontend_output_path(system_name, filename, output_folder, frontend, is_bios=is_bios, is_chd=is_chd))
     if output_mode == "verified":
         return root / "Verified" / filename
     if output_mode == "tosort":

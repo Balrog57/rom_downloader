@@ -63,7 +63,7 @@ Pages utiles:
 - `Sources`: etat SQLite, score provider, couverture candidats, dernier diagnostic, test source et nettoyage cache.
 - `Historique`: tentatives passees, exports JSON des echecs et des echecs retryable pour preparer une relance ciblee.
 
-Les endpoints `/api/*` renvoient du JSON et utilisent le polling, pas de WebSocket.
+Les endpoints `/api/*` renvoient du JSON et la page Jobs utilise Server-Sent Events (SSE) pour la progression temps reel, pas de WebSocket.
 
 Pour reprendre proprement un job en echec, utilisez le detail puis un retry filtre:
 
@@ -97,6 +97,20 @@ python main.py "dat\Nintendo - Game Boy Advance.dat" "D:\Roms\GBA" --rebuild-tos
 Le rebuilder v1 matche par MD5, SHA1, CRC ou taille unique. Il ne remplace pas RomVault pour les sets arcade split/merged complexes.
 Les exports FixDAT et helpers frontend gardent les indices DAT utiles comme CHD, BIOS, devices et clones. Ils ne reconstruisent pas les sets arcade split/merged complets.
 
+## Frontend (Batocera, RetroBat, ES-DE, LaunchBox)
+
+L'option `--frontend` organise la sortie selon les conventions du frontend choisi:
+
+```powershell
+python main.py "dat\Nintendo - Game Boy Advance.dat" "D:\Roms\GBA" --frontend batocera --output-mode flat
+```
+
+Frontends supportes:
+- `batocera` / `retrobat` / `es-de` — les BIOS sont automatiquement places dans `bios/`, les ROMs dans le dossier systeme attendu (`gba`, `psx`, `snes`, etc.)
+- `launchbox` — les dossiers suivent la convention LaunchBox (`Nintendo Game Boy Advance`, `Sony PlayStation`, etc.)
+
+Disponible en CLI via `--frontend` et dans la Web UI via le selecteur "Frontend".
+
 ## FAQ rapide
 
 **Cloudflare ou page HTML**  
@@ -112,7 +126,7 @@ Renseignez `ARCHIVE_ORG_USERNAME` et `ARCHIVE_ORG_PASSWORD` dans `.env` si la co
 Minerva utilise `aria2c` en priorite pour les torrents. Installez-le via Winget/Chocolatey ou laissez l'application utiliser les sources HTTP disponibles.
 
 **CHD**  
-Les CHD sont detectes et peuvent etre valides par hash/taille si le DAT contient les informations utiles. ROM Downloader ne convertit pas les CHD et ne reconstruit pas les sets arcade split/merged complets.
+Les CHD sont detectes et valides par hash/taille. ROM Downloader peut utiliser `chdman verify` si l'outil est present dans le PATH pour une validation plus fine. ROM Downloader ne convertit pas les CHD et ne reconstruit pas les sets arcade split/merged complets.
 
 **Minerva et derniers recours**  
 Minerva torrent et archive.org restent les derniers recours. L'ancien provider HTTP Myrient n'est pas expose dans l'application.

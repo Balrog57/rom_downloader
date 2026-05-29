@@ -189,7 +189,7 @@ def attempt_download_from_resolved_provider(game_info: dict, output_folder: str,
                 if 'text/html' in content_type:
                     preview = resp.raw.read(160, decode_content=True)
                     message = preview.decode('utf-8', errors='ignore').strip()
-                    raise DownloadNetworkError(f"RomHustler n'a pas retourne un fichier: {message[:120]}")
+                    raise DownloadNetworkError(f"RomHustler n'a pas retourne un fichier: {message[:120]}", raw_html=message)
                 total = int(resp.headers.get('content-length', 0))
                 downloaded = 0
                 with open(part_path, 'wb') as handle:
@@ -582,12 +582,13 @@ def download_with_provider_retries(game_info: dict, sources: list, session, syst
         except DownloadNetworkError as exc:
             detail_str = str(exc)
             error_code = classify_error(detail=detail_str) or 'network_error'
+            raw_html = (getattr(exc, 'raw_html', '') or '').strip()
             provider_attempts.append({
                 'source': source,
                 'status': 'failed',
                 'duration_seconds': round(time.time() - attempt_started, 3),
                 'detail': detail_str or 'network_error',
-                'html_snippet': detail_str[:500] if 'html' in detail_str.lower() or 'cloudflare' in detail_str.lower() else '',
+                'html_snippet': raw_html,
                 'provider_rank': current_game.get('provider_rank', 0),
                 'candidate_url': current_game.get('download_url') or current_game.get('torrent_url') or current_game.get('page_url') or current_game.get('archive_org_identifier') or '',
             })

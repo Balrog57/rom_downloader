@@ -167,7 +167,8 @@ def download_file(url: str, dest_path: str, session: requests.Session, progress_
                     snippet = _response_preview(response)
                     if _looks_like_cloudflare_block(response, snippet):
                         raise DownloadNetworkError(
-                            f"Blocage Cloudflare ({response.status_code}) pour {response.url}: {snippet}"
+                            f"Blocage Cloudflare ({response.status_code}) pour {response.url}: {snippet}",
+                            raw_html=snippet,
                         )
                     response.raise_for_status()
 
@@ -175,10 +176,12 @@ def download_file(url: str, dest_path: str, session: requests.Session, progress_
                     snippet = _response_preview(response)
                     if _looks_like_cloudflare_block(response, snippet):
                         raise DownloadNetworkError(
-                            f"Blocage Cloudflare ({response.status_code}) pour {response.url}: {snippet}"
+                            f"Blocage Cloudflare ({response.status_code}) pour {response.url}: {snippet}",
+                            raw_html=snippet,
                         )
                     raise DownloadNetworkError(
-                        f"Reponse HTML inattendue (Cloudflare?): {snippet}"
+                        f"Reponse HTML inattendue (Cloudflare?): {snippet}",
+                        raw_html=snippet,
                     )
 
                 server_filename = ''

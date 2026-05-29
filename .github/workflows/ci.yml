@@ -38,6 +38,8 @@ jobs:
         run: python tests\output_checks.py
       - name: Web UI checks
         run: python tests\web_ui_checks.py
+      - name: Provider checks
+        run: python tests\provider_checks.py
       - name: Version command
         run: python main.py --version
       - name: Local diagnostics

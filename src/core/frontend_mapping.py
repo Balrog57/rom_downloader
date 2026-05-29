@@ -86,6 +86,113 @@ def _build_batocera_map() -> dict[str, str]:
     return mapping
 
 
+def _build_launchbox_map() -> dict[str, str]:
+    """Construit le mapping DAT -> dossier LaunchBox.
+
+    LaunchBox utilise des noms de plateforme comme 'Nintendo Game Boy Advance',
+    'Sony PlayStation', etc. On derive depuis le mapping Batocera + overrides
+    specifiques LaunchBox.
+    """
+    batocera = _build_batocera_map()
+    mapping: dict[str, str] = {}
+    overrides = {
+        "Nintendo - Game Boy Advance": "Nintendo Game Boy Advance",
+        "Nintendo - Nintendo DS": "Nintendo DS",
+        "Nintendo - Nintendo 64": "Nintendo 64",
+        "Nintendo - Super Nintendo Entertainment System": "Super Nintendo Entertainment System",
+        "Nintendo - Nintendo Entertainment System": "Nintendo Entertainment System",
+        "Nintendo - Game Boy": "Nintendo Game Boy",
+        "Nintendo - Game Boy Color": "Nintendo Game Boy Color",
+        "Nintendo - Nintendo 3DS": "Nintendo 3DS",
+        "Nintendo - Wii": "Nintendo Wii",
+        "Nintendo - Wii U": "Nintendo Wii U",
+        "Nintendo - GameCube": "Nintendo GameCube",
+        "Nintendo - Pokemon Mini": "Nintendo Pokemon Mini",
+        "Nintendo - Virtual Boy": "Nintendo Virtual Boy",
+        "Sony - PlayStation": "Sony PlayStation",
+        "Sony - PlayStation 2": "Sony PlayStation 2",
+        "Sony - PlayStation 3": "Sony PlayStation 3",
+        "Sony - PlayStation Portable": "Sony PSP",
+        "Sony - PlayStation Vita": "Sony PS Vita",
+        "Sony - PlayStation Portable (PSN)": "Sony PSP",
+        "Sony - PlayStation Vita (PSN)": "Sony PS Vita",
+        "Sega - Mega Drive - Genesis": "Sega Genesis",
+        "Sega - Master System - Mark III": "Sega Master System",
+        "Sega - Game Gear": "Sega Game Gear",
+        "Sega - Saturn": "Sega Saturn",
+        "Sega - Dreamcast": "Sega Dreamcast",
+        "Sega - 32X": "Sega 32X",
+        "Sega - CD": "Sega CD",
+        "Sega - Naomi": "Sega Naomi",
+        "NEC - PC Engine - TurboGrafx 16": "NEC TurboGrafx-16",
+        "NEC - PC Engine CD - TurboGrafx CD": "NEC TurboGrafx-CD",
+        "NEC - PC Engine SuperGrafx": "NEC SuperGrafx",
+        "Atari - 2600": "Atari 2600",
+        "Atari - 5200": "Atari 5200",
+        "Atari - 7800": "Atari 7800",
+        "Atari - Jaguar": "Atari Jaguar",
+        "Atari - Lynx": "Atari Lynx",
+        "Atari - ST": "Atari ST",
+        "Microsoft - Xbox": "Microsoft Xbox",
+        "Microsoft - Xbox 360": "Microsoft Xbox 360",
+        "Commodore - 64": "Commodore 64",
+        "Commodore - Amiga": "Commodore Amiga",
+        "Commodore - Amiga CD32": "Commodore Amiga CD32",
+        "Bandai - WonderSwan": "Bandai WonderSwan",
+        "Bandai - WonderSwan Color": "Bandai WonderSwan Color",
+        "SNK - Neo Geo AES": "SNK Neo Geo AES",
+        "SNK - Neo Geo CD": "SNK Neo Geo CD",
+        "SNK - Neo Geo Pocket": "SNK Neo Geo Pocket",
+        "SNK - Neo Geo Pocket Color": "SNK Neo Geo Pocket Color",
+        "Panasonic - 3DO": "Panasonic 3DO",
+        "Philips - CD-i": "Philips CD-i",
+        "Coleco - ColecoVision": "ColecoVision",
+        "Mattel - Intellivision": "Intellivision",
+        "Magnavox - Odyssey2": "Magnavox Odyssey 2",
+        "Fairchild - Channel F": "Fairchild Channel F",
+        "Capcom - CPS": "Capcom Play System",
+        "Capcom - CPS2": "Capcom Play System II",
+        "Capcom - CPS3": "Capcom Play System III",
+        "SNK - Neo Geo MVS": "SNK Neo Geo MVS",
+        "IGS - PolyGame Master": "IGS PGM",
+        "Nintendo - Family Computer Disk System": "Nintendo Famicom Disk System",
+        "Nintendo - Satellaview": "Nintendo Satellaview",
+        "Nintendo - Sufami Turbo": "Nintendo Sufami Turbo",
+        "Nintendo - Nintendo DSi": "Nintendo DSi",
+        "Nintendo - Nintendo Switch": "Nintendo Switch",
+        "Sony - PlayStation Portable (Minis)": "Sony PSP Minis",
+        "Sega - Game Gear (Retool)": "Sega Game Gear",
+        "Sega - Mega Drive - Genesis (Retool)": "Sega Genesis",
+        "Sony - PlayStation (Retool)": "Sony PlayStation",
+        "Sega - Saturn (Retool)": "Sega Saturn",
+        "Microsoft - MSX": "Microsoft MSX",
+        "Microsoft - MSX2": "Microsoft MSX2",
+        "ScummVM": "ScummVM",
+        "Watara - Supervision": "Watara Supervision",
+        "GCE - Vectrex": "GCE Vectrex",
+        "Emerson - Arcadia 2001": "Emerson Arcadia 2001",
+        "Texas Instruments - TI-99": "Texas Instruments TI-99",
+        "Texas Instruments - TI-83": "Texas Instruments TI-83",
+        "Amstrad - CPC": "Amstrad CPC",
+        "Amstrad - GX4000": "Amstrad GX4000",
+        "Sinclair - ZX Spectrum": "Sinclair ZX Spectrum",
+        "Sinclair - ZX 81": "Sinclair ZX81",
+        "TOSEC - Various": "TOSEC",
+        "Acorn - Electron": "Acorn Electron",
+        "Acorn - Archimedes": "Acorn Archimedes",
+        "Acorn - BBC Micro": "Acorn BBC Micro",
+    }
+    mapping.update(overrides)
+
+    for dat_name, batocera_slug in batocera.items():
+        if dat_name in mapping:
+            continue
+        clean = dat_name.replace(" - ", " ").strip()
+        mapping[dat_name] = clean
+
+    return mapping
+
+
 def get_frontend_mapping(frontend: str = "batocera") -> dict[str, str]:
     global _FRONTEND_SYSTEM_MAPPINGS
     if not _FRONTEND_SYSTEM_MAPPINGS:
@@ -93,7 +200,7 @@ def get_frontend_mapping(frontend: str = "batocera") -> dict[str, str]:
             "batocera": _build_batocera_map(),
             "retrobat": _build_batocera_map(),
             "es-de": _build_batocera_map(),
-            "launchbox": {},
+            "launchbox": _build_launchbox_map(),
         }
     return _FRONTEND_SYSTEM_MAPPINGS.get(frontend, _FRONTEND_SYSTEM_MAPPINGS["batocera"])
 
@@ -111,11 +218,15 @@ def frontend_folder_for_system(system_name: str, frontend: str = "batocera") -> 
 
 
 def build_frontend_output_path(system_name: str, rom_filename: str,
-                                output_root: str, frontend: str = "batocera") -> str:
+                                output_root: str, frontend: str = "batocera",
+                                is_bios: bool = False, is_chd: bool = False) -> str:
     """Construit le chemin de sortie organise par frontend.
-
-    Exemple: output_root/gba/rom.gba
+    Les BIOS sont places dans un sous-dossier bios/ pour Batocera/RetroBat/ES-DE.
+    Les CHD sont places dans leur dossier systeme (comportement par defaut).
+    Exemple: output_root/gba/rom.gba ou output_root/bios/bios_file.bin
     """
+    if is_bios and frontend in {"batocera", "retrobat", "es-de"}:
+        return os.path.join(output_root, "bios", rom_filename)
     folder = frontend_folder_for_system(system_name, frontend)
     return os.path.join(output_root, folder, rom_filename)
 

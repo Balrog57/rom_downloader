@@ -42,6 +42,33 @@ from ..network.utils import load_json_file, save_json_file
 from ..version import APP_VERSION
 
 _WEB_THREADS: dict[str, threading.Thread] = {}
+_sse_clients: list = []
+_sse_lock = threading.Lock()
+
+
+def _sse_broadcast(event_type: str, data: dict | None = None):
+    """Envoie un evenement SSE a tous les clients connectes."""
+    payload = json.dumps({"event": event_type, "data": data or {}}, ensure_ascii=False)
+    with _sse_lock:
+        clients = list(_sse_clients)
+    for client in clients:
+        try:
+            client(payload)
+        except Exception:
+            pass
+
+
+def _sse_add_client(callback):
+    with _sse_lock:
+        _sse_clients.append(callback)
+
+
+def _sse_remove_client(callback):
+    with _sse_lock:
+        try:
+            _sse_clients.remove(callback)
+        except ValueError:
+            pass
 
 
 def _load_preferences() -> dict:
@@ -117,10 +144,41 @@ async function retryRetryable(job_id) {{ return jobAction('/api/job/retry', job_
 async function cleanupJobParts(job_id) {{ return jobAction('/api/job/cleanup-parts', job_id); }}
 async function clearCaches(source) {{ return apiPost('/api/cache/clear', source ? {{source}} : {{}}); }}
 async function testSources() {{ return apiPost('/api/source/test', {{}}); }}
-setInterval(() => {{
+function refreshJobsTable() {{
   const table = document.getElementById('jobs-table');
   if (table) fetch('/jobs').then(r=>r.text()).then(t=>{{ const d=document.createElement('div'); d.innerHTML=t; const n=d.querySelector('#jobs-table'); if(n) table.innerHTML=n.innerHTML; }});
-}}, 5000);
+}}
+function refreshDashboard() {{
+  fetch('/api/dashboard').then(r=>r.json()).then(stats=>{{
+    var jobs = stats.jobs || {{}};
+    var cards = document.querySelectorAll('.card .value');
+    if (cards.length>=6) {{
+      cards[0].textContent = stats.systems || 0;
+      cards[1].textContent = stats.games || 0;
+      cards[2].textContent = stats.verified || 0;
+      cards[3].textContent = stats.valid_providers || 0;
+      cards[4].textContent = stats.attempts_24h || 0;
+      cards[5].textContent = (stats.average_speed||0) + '/s';
+    }}
+    var badges = document.querySelectorAll('.badge');
+    badges.forEach(b=>{{ if(b.textContent.includes('Actifs')) b.textContent='Actifs: '+(jobs.active||0); if(b.textContent.includes('Pause')) b.textContent='Pause: '+(jobs.paused||0); if(b.textContent.includes('Echoues')) b.textContent='Echoues: '+(jobs.failed||0); if(b.textContent.includes('Termines')) b.textContent='Termines: '+(jobs.completed||0); }});
+  }});
+}}
+(function() {{
+  var evtSource = new EventSource('/api/events');
+  evtSource.onmessage = function(event) {{
+    try {{
+      var data = JSON.parse(event.data);
+      if (data.event === 'job_update' || data.event === 'stats_update') {{
+        refreshJobsTable(); refreshDashboard();
+      }}
+    }} catch(e) {{}}
+  }};
+  evtSource.onerror = function() {{
+    setTimeout(function() {{ refreshJobsTable(); refreshDashboard(); }}, 15000);
+  }};
+  refreshJobsTable();
+}})();
 </script></head>
 <body>
 <div class="nav">
@@ -170,9 +228,47 @@ class _WebHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         path = urlparse(self.path).path.rstrip("/") or "/"
+        if path == "/api/events":
+            return self._handle_sse()
         if path.startswith("/api/"):
             return self._handle_api(path)
         return self._handle_page(path)
+
+    def _handle_sse(self):
+        """Connexion Server-Sent Events pour progression temps reel."""
+        self.send_response(200)
+        self.send_header("Content-Type", "text/event-stream")
+        self.send_header("Cache-Control", "no-cache")
+        self.send_header("Connection", "keep-alive")
+        self.send_header("X-Accel-Buffering", "no")
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.end_headers()
+
+        keep_alive = True
+
+        def send_event(payload: str):
+            nonlocal keep_alive
+            if not keep_alive:
+                return
+            try:
+                self.wfile.write(f"data: {payload}\n\n".encode("utf-8"))
+                self.wfile.flush()
+            except Exception:
+                keep_alive = False
+
+        _sse_add_client(send_event)
+        try:
+            while keep_alive:
+                import time as _time
+                try:
+                    self.wfile.write(": ping\n\n".encode("utf-8"))
+                    self.wfile.flush()
+                except Exception:
+                    break
+                _time.sleep(30)
+        finally:
+            _sse_remove_client(send_event)
+            keep_alive = False
 
     def _handle_api(self, path):
         if path == "/api/status":
@@ -306,6 +402,7 @@ class _WebHandler(BaseHTTPRequestHandler):
         if not job_id:
             return self._error(400, "missing job_id")
         result = action(job_id)
+        _sse_broadcast("job_update", {"job_id": job_id, "action": "status_change"})
         if count:
             return self._json({"retried": result})
         return self._json({"ok": result})
@@ -395,6 +492,7 @@ class _WebHandler(BaseHTTPRequestHandler):
         job_id = create_download_job(system_id, missing, output_folder, settings=settings)
         if body.get("run"):
             self._start_job_thread(job_id)
+        _sse_broadcast("job_update", {"job_id": job_id, "action": "create"})
         return self._json({"job_id": job_id, "queued": len(missing), "running": bool(body.get("run"))})
 
     def _start_job_thread(self, job_id: str):
@@ -418,6 +516,7 @@ class _WebHandler(BaseHTTPRequestHandler):
                     frontend=settings.get("frontend") or None,
                     report_formats=settings.get("report_formats", "txt"),
                 )
+            _sse_broadcast("job_update", {"job_id": job_id, "action": "completed"})
 
         thread = threading.Thread(target=_run, name=f"romdl-web-job-{job_id[:8]}", daemon=True)
         _WEB_THREADS[job_id] = thread

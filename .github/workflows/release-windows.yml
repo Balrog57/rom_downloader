@@ -67,9 +67,27 @@ jobs:
           python tests\dat_coverage_checks.py
           python tests\output_checks.py
           python tests\web_ui_checks.py
+          python tests\provider_checks.py
           python main.py --version
           python main.py --sources
           python main.py --diagnose
+
+      - name: Generate SBOM
+        shell: pwsh
+        run: |
+          pip freeze > requirements.frozen.txt
+          pip install pip-licenses 2>$null
+          pip-licenses --format=json --output-file ROMDownloader.sbom.json 2>$null
+          if (Test-Path ROMDownloader.sbom.json) {
+            $sbom = Get-Content ROMDownloader.sbom.json -Raw -Encoding UTF8 | ConvertFrom-Json
+            $count = @($sbom).Count
+            Write-Host "SBOM genere: $count licences"
+          } else {
+            Write-Host "pip-licenses non disponible, SBOM non genere (non bloquant)"
+            if (-not (Test-Path ROMDownloader.sbom.json)) {
+              "{}" | Set-Content ROMDownloader.sbom.json -Encoding UTF8
+            }
+          }
 
       - name: Build executable
         shell: pwsh
@@ -113,6 +131,8 @@ jobs:
             dist/ROMDownloader.exe
             ROMDownloader.exe.sha256
             ROMDownloader.diagnose.txt
+            ROMDownloader.sbom.json
+            requirements.frozen.txt
 
       - name: Publish GitHub Release
         if: startsWith(github.ref, 'refs/tags/v')
@@ -121,21 +141,35 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           $tag = "${{ steps.version.outputs.tag }}"
-          $notes = @"
+          $changelogBody = ""
+          if (Test-Path CHANGELOG.md) {
+            $changelogRaw = Get-Content CHANGELOG.md -Raw -Encoding UTF8
+            $versionHeader = "## v${{ steps.version.outputs.version }}"
+            $escaped = [regex]::Escape($versionHeader)
+            if ($changelogRaw -match "$escaped\s*\((\d{4}-\d{2}-\d{2})\)") {
+              $changelogBody = $changelogRaw
+            }
+          }
+          if ($changelogBody) {
+            $notes = $changelogBody
+          } else {
+            $notes = @"
           ROM Downloader $tag
 
           Portable Windows executable:
 
           - ROMDownloader.exe
           - ROMDownloader.exe.sha256
+          - ROMDownloader.sbom.json
 
           Installation rapide:
 
           Telecharger ROMDownloader.exe et executer directement.
           "@
+          }
           $args = @(
             "release", "create", $tag,
-            "dist\ROMDownloader.exe", "ROMDownloader.exe.sha256",
+            "dist\ROMDownloader.exe", "ROMDownloader.exe.sha256", "ROMDownloader.sbom.json", "requirements.frozen.txt",
             "--title", "ROM Downloader $tag",
             "--notes", $notes
           )
@@ -148,4 +182,4 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           $tag = "${{ steps.version.outputs.tag }}"
-          gh release upload $tag dist\ROMDownloader.exe ROMDownloader.exe.sha256 --clobber
+          gh release upload $tag dist\ROMDownloader.exe ROMDownloader.exe.sha256 ROMDownloader.sbom.json requirements.frozen.txt --clobber

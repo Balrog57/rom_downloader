@@ -20,6 +20,10 @@ class QuotaExceededError(RomDownloaderError):
 class DownloadNetworkError(RomDownloaderError):
     """Erreur reseau generique."""
 
+    def __init__(self, message: str = "", raw_html: str = ""):
+        super().__init__(message)
+        self.raw_html = raw_html
+
 
 class SourceUnavailableError(RomDownloaderError):
     """Source temporairement indisponible."""

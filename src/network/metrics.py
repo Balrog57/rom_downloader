@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import threading
 import time
 from pathlib import Path
 
@@ -10,6 +11,7 @@ from ..core.env import APP_ROOT
 
 
 METRICS_FILE = APP_ROOT / ".rom_downloader_provider_metrics.json"
+_metrics_lock = threading.Lock()
 
 
 def _composite_key(name: str, system: str) -> str:
@@ -125,34 +127,35 @@ def record_provider_attempt(
     duration_seconds: float = 0.0,
     system_name: str = "",
 ) -> dict:
-    """Enregistre une tentative provider (per-systeme si system_name fourni)."""
+    """Enregistre une tentative provider (per-systeme si system_name fourni). Thread-safe."""
     key = _composite_key(source_name, system_name) if system_name else source_name
-    metric = metrics.setdefault(key, _default_metric())
+    with _metrics_lock:
+        metric = metrics.setdefault(key, _default_metric())
 
-    if system_name:
-        global_metric = metrics.setdefault(source_name, _default_metric())
-        global_metric["attempts"] = global_metric.get("attempts", 0) + 1
-        global_metric[status] = global_metric.get(status, 0) + 1
-        global_metric["seconds"] = global_metric.get("seconds", 0.0) + duration_seconds
+        if system_name:
+            global_metric = metrics.setdefault(source_name, _default_metric())
+            global_metric["attempts"] = global_metric.get("attempts", 0) + 1
+            global_metric[status] = global_metric.get(status, 0) + 1
+            global_metric["seconds"] = global_metric.get("seconds", 0.0) + duration_seconds
+            now = time.time()
+            if status == "downloaded":
+                global_metric["last_success_at"] = max(global_metric.get("last_success_at", 0.0), now)
+            elif status == "failed":
+                global_metric["last_failure_at"] = max(global_metric.get("last_failure_at", 0.0), now)
+            if global_metric.get("seconds", 0) > 0 and global_metric.get("bytes", 0) > 0:
+                global_metric["average_speed"] = global_metric["bytes"] / global_metric["seconds"]
+
+        metric["attempts"] += 1
+        metric[status] = metric.get(status, 0) + 1
+        metric["seconds"] += duration_seconds
         now = time.time()
         if status == "downloaded":
-            global_metric["last_success_at"] = max(global_metric.get("last_success_at", 0.0), now)
+            metric["last_success_at"] = max(metric.get("last_success_at", 0.0), now)
         elif status == "failed":
-            global_metric["last_failure_at"] = max(global_metric.get("last_failure_at", 0.0), now)
-        if global_metric.get("seconds", 0) > 0 and global_metric.get("bytes", 0) > 0:
-            global_metric["average_speed"] = global_metric["bytes"] / global_metric["seconds"]
-
-    metric["attempts"] += 1
-    metric[status] = metric.get(status, 0) + 1
-    metric["seconds"] += duration_seconds
-    now = time.time()
-    if status == "downloaded":
-        metric["last_success_at"] = max(metric.get("last_success_at", 0.0), now)
-    elif status == "failed":
-        metric["last_failure_at"] = max(metric.get("last_failure_at", 0.0), now)
-    if metric.get("seconds", 0) > 0 and metric.get("bytes", 0) > 0:
-        metric["average_speed"] = metric["bytes"] / metric["seconds"]
-    return metric
+            metric["last_failure_at"] = max(metric.get("last_failure_at", 0.0), now)
+        if metric.get("seconds", 0) > 0 and metric.get("bytes", 0) > 0:
+            metric["average_speed"] = metric["bytes"] / metric["seconds"]
+        return metric
 
 
 __all__ = [
