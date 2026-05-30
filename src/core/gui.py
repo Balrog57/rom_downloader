@@ -9,6 +9,15 @@ import requests
 from ..network.metrics import prioritize_sources
 from ..network.circuits import SourceCircuitBreaker
 from ..network.utils import format_bytes
+
+def _format_size_mo(size_bytes: int | float | None) -> str:
+    """Formate une taille en Mo (1 decimale)."""
+    try:
+        value = float(size_bytes or 0)
+    except Exception:
+        value = 0.0
+    return f"{value / (1024 * 1024):.1f} Mo"
+
 from ..pipeline import build_pipeline_summary, merge_provider_metrics
 from ..progress import format_duration
 from ..version import APP_VERSION
@@ -136,7 +145,6 @@ def gui_mode():
                 self.downloads_tab = tk.StringVar(value="queue")
                 self.rom_folder = tk.StringVar(value=self.preferences.get("rom_folder", ""))
                 self.output_root_by_dat_var = tk.BooleanVar(value=bool(self.preferences.get("output_root_by_dat", False)))
-                self.auto_extract_var = tk.BooleanVar(value=bool(self.preferences.get("auto_extract", True)))
                 self.clean_torrentzip_var = tk.BooleanVar(value=bool(self.preferences.get("clean_torrentzip", True)))
                 self.move_to_tosort_var = tk.BooleanVar(value=bool(self.preferences.get("move_to_tosort", False)))
                 self.prefer_1fichier_var = tk.BooleanVar(value=bool(self.preferences.get("prefer_1fichier", False)))
@@ -191,7 +199,6 @@ def gui_mode():
                     "rom_folder": self.rom_folder.get().strip(),
                     "output_root_by_dat": bool(self.output_root_by_dat_var.get()),
                     "clean_torrentzip": bool(self.clean_torrentzip_var.get()),
-                    "auto_extract": bool(self.auto_extract_var.get()),
                     "move_to_tosort": bool(self.move_to_tosort_var.get()),
                     "prefer_1fichier": bool(self.prefer_1fichier_var.get()),
                     "audit_only": bool(self.audit_only_var.get()),
@@ -209,7 +216,7 @@ def gui_mode():
                 if not settings:
                     return
                 self.audit_only_var.set(bool(settings.get("dry_run", False)))
-                self.parallel_var.set(max(1, int(settings.get("parallel", self.parallel_var.get()) or 1)))
+                self.parallel_var.set(max(1, int(settings.get("parallel_downloads", self.parallel_var.get()) or 1)))
                 self.clean_torrentzip_var.set(bool(settings.get("clean_torrentzip", False)))
                 self.move_to_tosort_var.set(bool(settings.get("tosort", False)))
                 self.prefer_1fichier_var.set(bool(settings.get("prefer_1fichier", False)))
@@ -434,7 +441,7 @@ def gui_mode():
                     present = total - len(self.missing_games)
                     missing_size, _missing_unknown = estimate_games_size(self.missing_games)
                     profile_desc = describe_dat_profile(self.dat_profile) if self.dat_profile else "Inconnu"
-                    msg = f"DAT: {profile_desc} | {total} jeux, {present} presents, {len(self.missing_games)} manquants | {format_bytes(missing_size)} a auditer"
+                    msg = f"DAT: {profile_desc} | {total} jeux, {present} presents, {len(self.missing_games)} manquants | {_format_size_mo(missing_size)} a auditer"
                     self._ui(lambda m=msg: self.dat_results_var.set(m))
                     self._ui(lambda: self.show_page("games"))
                 except Exception as exc:
@@ -489,11 +496,12 @@ def gui_mode():
                     return
                 col = self.systems_tree.identify_column(event.x)
                 items = [(self.systems_tree.set(item, col), item) for item in self.systems_tree.get_children("")]
-                col_key = {1: "system_name", 2: "games", 3: "size", 4: "date"}.get(int(col.replace("#", "")), "system_name")
+                col_num = int(col.replace("#", ""))
+                col_key = {0: "system_name", 1: "coverage", 2: "section", 3: "games", 4: "size", 5: "date"}.get(col_num, "system_name")
                 self._systems_sort_reverse = not getattr(self, "_systems_sort_reverse", True)
                 if col_key == "size":
                     items.sort(key=lambda x: self._parse_size(x[0]), reverse=self._systems_sort_reverse)
-                elif col_key == "games":
+                elif col_key in ("games", "candidates"):
                     items.sort(key=lambda x: int(x[0] or 0), reverse=self._systems_sort_reverse)
                 else:
                     items.sort(reverse=self._systems_sort_reverse)
@@ -501,19 +509,29 @@ def gui_mode():
                     self.systems_tree.move(item, "", idx)
 
             def _parse_size(self, val: str) -> int:
-                val = (val or "").strip().lower()
-                if val.endswith("tb"):
-                    return int(float(val[:-2]) * 1024 * 1024 * 1024 * 1024)
-                if val.endswith("gb"):
-                    return int(float(val[:-2]) * 1024 * 1024 * 1024)
-                if val.endswith("mb"):
-                    return int(float(val[:-2]) * 1024 * 1024)
-                if val.endswith("kb"):
-                    return int(float(val[:-2]) * 1024)
+                """Parse la taille affichee par format_bytes (unites francaises)."""
+                val = (val or "0").strip().lower()
+                # format_bytes retourne "1.0 To", "2.3 Go", etc.
+                # On isole la partie numerique et l'unite
+                parts = val.rsplit(" ", 1)
+                if len(parts) != 2:
+                    try:
+                        return int(float(val))
+                    except ValueError:
+                        return 0
+                num_str, unit = parts
                 try:
-                    return int(float(val))
+                    num = float(num_str)
                 except ValueError:
                     return 0
+                multipliers = {
+                    "to": 1024 ** 4, "tb": 1024 ** 4,
+                    "go": 1024 ** 3, "gb": 1024 ** 3,
+                    "mo": 1024 ** 2, "mb": 1024 ** 2,
+                    "ko": 1024, "kb": 1024,
+                    "o": 1, "b": 1,
+                }
+                return int(num * multipliers.get(unit, 1))
 
             def _coverage_badge(self, item):
                 if item.get("verified_local", 0) >= item.get("game_count", 1):
@@ -538,7 +556,7 @@ def gui_mode():
                         continue
                     badge = self._coverage_badge(item)
                     badge_color = dict(_COVERAGE_BADGES).get(badge, UI_COLOR_TEXT_SUB)
-                    self.systems_tree.insert("", "end", iid=item["system_id"], text=item["system_name"], values=(badge, item["dat_section"], item["game_count"], format_bytes(item["total_size"]), item["dat_date"]), tags=(f"badge_{badge}",))
+                    self.systems_tree.insert("", "end", iid=item["system_id"], text=item["system_name"], values=(badge, item["dat_section"], item["game_count"], _format_size_mo(item["total_size"]), item["dat_date"]), tags=(f"badge_{badge}",))
                 for badge, _color in _COVERAGE_BADGES:
                     try:
                         self.systems_tree.tag_configure(f"badge_{badge}", foreground=_color)
@@ -672,7 +690,7 @@ def gui_mode():
                         continue
                     if game_filter == "network_error" and ("network" not in last_error.lower() and "timeout" not in last_error.lower() and "cloudflare" not in last_error.lower() and "quota" not in last_error.lower()):
                         continue
-                    self.games_tree.insert("", "end", iid=gid, text=game["game_name"], values=(game["primary_rom"], format_bytes(game["size"]), valid_count, candidates_count, local_status, last_error))
+                    self.games_tree.insert("", "end", iid=gid, text=game["game_name"], values=(game["primary_rom"], _format_size_mo(game["size"]), valid_count, candidates_count, local_status, last_error))
                 self.status_var.set(f"{len(self.games_tree.get_children())} jeu(x) affiche(s)")
 
             def _refresh_dat_games(self):
@@ -703,7 +721,7 @@ def gui_mode():
                         continue
                     status_text = "Manquant" if is_missing else "Present"
                     iid = f"dat_{idx}"
-                    self.games_tree.insert("", "end", iid=iid, text=game_name, values=(primary_rom, format_bytes(game_size), status_text))
+                    self.games_tree.insert("", "end", iid=iid, text=game_name, values=(primary_rom, _format_size_mo(game_size), status_text))
                     idx += 1
                 self.status_var.set(f"{idx} jeu(x) affiche(s) — {len(missing_names)} manquants")
 
@@ -990,13 +1008,12 @@ def gui_mode():
                     state="readonly", width=20, font=(self.font, 10))
                 self.profile_combo.grid(row=2, column=1, sticky="w", pady=(6, 0))
                 self.profile_combo.bind("<<ComboboxSelected>>", self._apply_profile)
-                self.check(settings, "Extraire + TorrentZip automatiquement", self.auto_extract_var).grid(row=3, column=1, sticky="w")
-                self.check(settings, "Recompresser en ZIP TorrentZip (apres telechargement complet)", self.clean_torrentzip_var).grid(row=4, column=1, sticky="w")
-                self.check(settings, "Deplacer les fichiers hors DAT vers ToSort", self.move_to_tosort_var).grid(row=5, column=1, sticky="w")
-                self.check(settings, "Privilegier les sources 1fichier configurees", self.prefer_1fichier_var).grid(row=6, column=1, sticky="w")
-                self.check(settings, "Audit uniquement (dry-run, aucun fichier ROM ecrit)", self.audit_only_var).grid(row=7, column=1, sticky="w")
-                tk.Label(settings, text="Parallele", bg=UI_COLOR_BG, fg=UI_COLOR_TEXT_MAIN).grid(row=8, column=0, sticky="w", pady=(6, 0))
-                tk.Spinbox(settings, from_=1, to=12, textvariable=self.parallel_var, width=5, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, buttonbackground=UI_COLOR_GHOST, relief="flat").grid(row=8, column=1, sticky="w", pady=(6, 0))
+                self.check(settings, "Extraire + TorrentZip automatiquement", self.clean_torrentzip_var).grid(row=3, column=1, sticky="w")
+                self.check(settings, "Deplacer les fichiers hors DAT vers ToSort", self.move_to_tosort_var).grid(row=4, column=1, sticky="w")
+                self.check(settings, "Privilegier les sources 1fichier configurees", self.prefer_1fichier_var).grid(row=5, column=1, sticky="w")
+                self.check(settings, "Audit uniquement (dry-run, aucun fichier ROM ecrit)", self.audit_only_var).grid(row=6, column=1, sticky="w")
+                tk.Label(settings, text="Parallele", bg=UI_COLOR_BG, fg=UI_COLOR_TEXT_MAIN).grid(row=7, column=0, sticky="w", pady=(6, 0))
+                tk.Spinbox(settings, from_=1, to=12, textvariable=self.parallel_var, width=5, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, buttonbackground=UI_COLOR_GHOST, relief="flat").grid(row=7, column=1, sticky="w", pady=(6, 0))
 
                 tabs = tk.Frame(frame, bg=UI_COLOR_BG)
                 tabs.grid(row=2, column=0, sticky="ew", pady=(12, 0))
@@ -1021,6 +1038,7 @@ def gui_mode():
                 self.button(actions, "Reessayer echecs", lambda: self._job_action("retry"), width=16).pack(side="left", padx=(0, 6))
                 self.button(actions, "Reessayer tout", self._retry_all_incomplete, width=16).pack(side="left", padx=(0, 6))
                 self.button(actions, "Nettoyer .part", self._cleanup_orphan_parts, width=16).pack(side="left", padx=(0, 6))
+                self.button(actions, "Configuration .env", self.open_api_settings, width=16).pack(side="left", padx=(0, 6))
                 self.button(actions, "Arreter", self.stop, kind="danger", width=12).pack(side="left", padx=(20, 6))
 
                 self.log_text = tk.Text(frame, height=10, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, insertbackground=UI_COLOR_TEXT_MAIN, relief="flat", wrap="word", font=(self.font, 9))
@@ -1221,7 +1239,6 @@ def gui_mode():
                     ("Monter", lambda: self.move_source(-1), "ghost"),
                     ("Descendre", lambda: self.move_source(1), "ghost"),
                     ("Editer politiques", self._edit_source_policy, "ghost"),
-                    ("Cles API", self.open_api_settings, "ghost"),
                     ("Tester connexion", self._test_provider_connection, "ghost"),
                     ("Vider cache", self._clear_source_cache, "ghost"),
                 ]:
@@ -1621,7 +1638,7 @@ def gui_mode():
                         dat_profile=dat_profile,
                         output_folder=output_folder,
                         dat_games=self.dat_games,
-                        clean_torrentzip=bool(self.auto_extract_var.get() or self.clean_torrentzip_var.get()),
+                        clean_torrentzip=bool(self.clean_torrentzip_var.get()),
                         progress_callback=lambda v: self._ui(lambda val=v: self.progress_var.set(val)),
                         log_func=self.log,
                         is_running=lambda: self.running,
@@ -1805,27 +1822,29 @@ def gui_mode():
 
             def open_api_settings(self):
                 window = tk.Toplevel(self.root)
-                window.title("Cles API locales")
+                window.title("Configuration .env")
                 window.configure(bg=UI_COLOR_BG)
-                window.geometry("560x280")
+                window.geometry("560x260")
                 window.transient(self.root)
                 window.columnconfigure(1, weight=1)
                 keys = load_api_keys()
-                fields = [
+                vars_by_key = {}
+                row = 0
+                for label, key, value in [
                     ("1fichier", "onefichier", keys.get("1fichier", "")),
                     ("AllDebrid", "alldebrid", keys.get("alldebrid", "")),
                     ("RealDebrid", "realdebrid", keys.get("realdebrid", "")),
                     ("archive.org compte", "archive_username", keys.get("archive_username", "")),
                     ("archive.org mot de passe", "archive_password", keys.get("archive_password", "")),
-                ]
-                vars_by_key = {}
-                for row, (label, key, value) in enumerate(fields):
-                    tk.Label(window, text=label, bg=UI_COLOR_BG, fg=UI_COLOR_TEXT_MAIN).grid(row=row, column=0, sticky="w", padx=14, pady=7)
+                ]:
+                    tk.Label(window, text=label, bg=UI_COLOR_BG, fg=UI_COLOR_TEXT_MAIN).grid(row=row, column=0, sticky="w", padx=14, pady=5)
                     var = tk.StringVar(value=value)
                     vars_by_key[key] = var
-                    tk.Entry(window, textvariable=var, show="*", bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, insertbackground=UI_COLOR_TEXT_MAIN, relief="flat").grid(row=row, column=1, sticky="ew", padx=(8, 14), pady=7, ipady=5)
+                    show = "*"
+                    tk.Entry(window, textvariable=var, show=show, bg=UI_COLOR_INPUT_BG, fg=UI_COLOR_TEXT_MAIN, insertbackground=UI_COLOR_TEXT_MAIN, relief="flat").grid(row=row, column=1, sticky="ew", padx=(8, 14), pady=5, ipady=5)
+                    row += 1
 
-                def save_keys():
+                def save_env():
                     save_api_keys({
                         "1fichier": vars_by_key["onefichier"].get().strip(),
                         "alldebrid": vars_by_key["alldebrid"].get().strip(),
@@ -1833,9 +1852,19 @@ def gui_mode():
                         "archive_username": vars_by_key["archive_username"].get().strip(),
                         "archive_password": vars_by_key["archive_password"].get().strip(),
                     })
+                    from .env import save_env_file
+                    save_env_file({
+                        "ONE_FICHIER_API_KEY": vars_by_key["onefichier"].get().strip(),
+                        "ALLDEBRID_API_KEY": vars_by_key["alldebrid"].get().strip(),
+                        "REALDEBRID_API_KEY": vars_by_key["realdebrid"].get().strip(),
+                        "ARCHIVE_ORG_USERNAME": vars_by_key["archive_username"].get().strip(),
+                        "ARCHIVE_ORG_PASSWORD": vars_by_key["archive_password"].get().strip(),
+                    })
+                    from .env import load_env_file
+                    load_env_file()
                     window.destroy()
 
-                self.button(window, "Sauver", save_keys, kind="accent", width=12).grid(row=len(fields), column=1, sticky="e", padx=14, pady=12)
+                self.button(window, "Sauver", save_env, kind="accent", width=12).grid(row=row, column=1, sticky="e", padx=14, pady=12)
 
             def _ui(self, callback):
                 if threading.current_thread() is threading.main_thread():

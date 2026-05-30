@@ -106,6 +106,57 @@ def validate_env() -> dict:
         "warnings": warnings,
     }
 
+def save_env_file(env_vars: dict, file_path: str | None = None):
+    """Sauvegarde les variables dans un fichier .env.
+
+    Conserve les commentaires et l'ordre existant si le fichier existe deja.
+    Met a jour les cles presentes dans env_vars, ajoute celles qui manquent a la fin.
+    """
+    file_path = file_path or (APP_ROOT / '.env')
+    file_path = Path(file_path)
+
+    known_keys = set(env_vars.keys())
+    lines: list[str] = []
+    seen_keys: set[str] = set()
+
+    if file_path.exists():
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                for line in f:
+                    stripped = line.strip()
+                    if stripped.startswith('#') or not stripped:
+                        lines.append(line.rstrip('\n'))
+                        continue
+                    if '=' in stripped:
+                        key, _ = stripped.split('=', 1)
+                        key = key.strip()
+                        if key in known_keys:
+                            val = str(env_vars[key])
+                            if ' ' in val or '#' in val:
+                                val = f'"{val}"'
+                            lines.append(f"{key}={val}")
+                            seen_keys.add(key)
+                        else:
+                            lines.append(line.rstrip('\n'))
+                    else:
+                        lines.append(line.rstrip('\n'))
+        except Exception as e:
+            print(f"Avertissement: erreur lecture .env: {e}")
+
+    for key, val in env_vars.items():
+        if key not in seen_keys:
+            val = str(val)
+            if ' ' in val or '#' in val:
+                val = f'"{val}"'
+            lines.append(f"{key}={val}")
+
+    try:
+        with open(file_path, 'w', encoding='utf-8') as f:
+            f.write('\n'.join(lines) + '\n')
+    except Exception as e:
+        print(f"Erreur ecriture .env: {e}")
+
+
 __all__ = [
     'APP_ROOT',
     'RESOURCE_ROOT',
@@ -119,4 +170,5 @@ __all__ = [
     'LISTING_CACHE_TTL_SECONDS',
     'DOWNLOAD_CHUNK_SIZE',
     'load_env_file',
+    'save_env_file',
 ]

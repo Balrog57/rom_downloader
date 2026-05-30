@@ -93,7 +93,7 @@ def adapt_sources_for_circuit_state(sources: list, circuit_breaker, parallel_dow
         if circuit_breaker.is_open(name, error_type='quota_exceeded'):
             src['enabled'] = False
         adapted.append(src)
-    parallel_downloads = max(1, min(12, int(parallel_downloads)))
+    parallel_downloads = max(1, min(12, int(parallel_downloads or 1)))
     return adapted, parallel_downloads
 
 
