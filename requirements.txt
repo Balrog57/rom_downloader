@@ -6,4 +6,4 @@ py7zr>=1.0,<2
 rarfile>=4.0,<5
 tkinterdnd2>=0.4.3,<1
 aiohttp>=3.9,<4
-libtorrent>=2.0,<3
+libtorrent>=2.0.11,<3
